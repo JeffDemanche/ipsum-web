@@ -1,12 +1,12 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useRef, useState } from "react";
 import styles from "./Surface.less";
 import { Editor, EditorState, RichUtils } from "draft-js";
 import { SurfaceControls } from "./SurfaceControls";
+import { SurfaceEditorContext } from "./SurfaceEditorContext";
 
 export const SurfaceEditor: React.FC<{}> = () => {
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
+  const { editorState, setEditorState, domEditorRef } =
+    useContext(SurfaceEditorContext);
 
   const handleKeyCommand = useCallback(
     (command: string, editorState: EditorState, eventTimeStamp: number) => {
@@ -25,6 +25,7 @@ export const SurfaceEditor: React.FC<{}> = () => {
         editorState={editorState}
         onChange={setEditorState}
         handleKeyCommand={handleKeyCommand}
+        ref={domEditorRef}
       ></Editor>
       <SurfaceControls
         editorState={editorState}
