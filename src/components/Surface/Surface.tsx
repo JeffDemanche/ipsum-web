@@ -4,11 +4,12 @@ import { SurfaceEditor } from "./SurfaceEditor";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 
 export const Surface: React.FC<{}> = () => {
-  const { domEditorRef } = useContext(SurfaceEditorContext);
+  const { domEditorRef, moveFocusToEnd } = useContext(SurfaceEditorContext);
 
   const onSurfaceClick = useCallback(() => {
     domEditorRef.current.focus();
-  }, [domEditorRef.current]);
+    moveFocusToEnd();
+  }, [domEditorRef.current, moveFocusToEnd]);
 
   return (
     <div className={styles["surface"]} onClick={onSurfaceClick}>

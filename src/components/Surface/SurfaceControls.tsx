@@ -20,8 +20,15 @@ export const SurfaceControls: React.FC<SurfaceControlsProps> = ({
     setEditorState(RichUtils.toggleInlineStyle(editorState, "ITALIC"));
   }, [editorState]);
 
+  const onSurfaceControlsClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
+
   return (
-    <div className={styles["surface-controls"]}>
+    <div
+      className={styles["surface-controls"]}
+      onClick={onSurfaceControlsClick}
+    >
       <ToggleStyleButton label={<b>b</b>} onToggle={onBoldClick} />
       <ToggleStyleButton label={<i>i</i>} onToggle={onItalicClick} />
     </div>
