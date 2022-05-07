@@ -1,5 +1,10 @@
-import { Editor, EditorState } from "draft-js";
-import React, { useCallback, useRef, useState } from "react";
+import {
+  convertFromRaw,
+  Editor,
+  EditorState,
+  RawDraftContentState,
+} from "draft-js";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 const noop = () => {};
 
@@ -39,6 +44,34 @@ export const SurfaceEditorContextProvider: React.FC<
 
   // https://draftjs.org/docs/api-reference-selection-state
   const selectionState = editorState.getSelection();
+
+  useEffect(() => {
+    const rawContent: RawDraftContentState = {
+      blocks: [
+        {
+          key: "todays-date",
+          depth: 0,
+          text: "TEST",
+          type: "header-1",
+          inlineStyleRanges: [],
+          entityRanges: [{ offset: 0, length: 4, key: 0 }],
+        },
+      ],
+      entityMap: {
+        0: {
+          type: "TOKEN",
+          mutability: "IMMUTABLE",
+          data: {},
+        },
+      },
+    };
+
+    const blocks = convertFromRaw(rawContent);
+
+    setEditorState(EditorState.createWithContent(blocks));
+  }, []);
+
+  console.log(editorState.toJS());
 
   const domEditorRef = useRef<Editor>();
 
