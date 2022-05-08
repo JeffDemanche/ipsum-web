@@ -5,7 +5,7 @@ import { ViewHome } from "./ViewHome";
 import { ViewIndex } from "./ViewIndex";
 import { ViewJournal } from "./ViewJournal";
 
-export const IpsumRouter: React.FC<{}> = () => {
+export const IpsumRouter: React.FC = () => {
   return (
     <JournalStateProvider>
       <BrowserRouter>

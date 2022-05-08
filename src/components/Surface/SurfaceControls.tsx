@@ -1,24 +1,24 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import styles from "./SurfaceControls.less";
-import { EditorState, RichUtils } from "draft-js";
+import { RichUtils } from "draft-js";
 import { ToggleStyleButton } from "../Buttons/ToggleStyleButton";
+import { SurfaceEditorContext } from "./SurfaceEditorContext";
 
-interface SurfaceControlsProps {
-  editorState: EditorState;
-  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
-}
+export const SurfaceControls = () => {
+  const { focusedEditorKey, setEntryEditorState } =
+    useContext(SurfaceEditorContext);
 
-export const SurfaceControls: React.FC<SurfaceControlsProps> = ({
-  editorState,
-  setEditorState,
-}: SurfaceControlsProps) => {
   const onBoldClick = useCallback(() => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, "BOLD"));
-  }, [editorState]);
+    setEntryEditorState(focusedEditorKey, (previousEditorState) =>
+      RichUtils.toggleInlineStyle(previousEditorState, "BOLD")
+    );
+  }, [focusedEditorKey, setEntryEditorState]);
 
   const onItalicClick = useCallback(() => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, "ITALIC"));
-  }, [editorState]);
+    setEntryEditorState(focusedEditorKey, (previousEditorState) =>
+      RichUtils.toggleInlineStyle(previousEditorState, "ITALIC")
+    );
+  }, [focusedEditorKey, setEntryEditorState]);
 
   const onSurfaceControlsClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();

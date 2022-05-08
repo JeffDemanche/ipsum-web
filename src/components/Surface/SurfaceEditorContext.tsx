@@ -4,24 +4,47 @@ import {
   EditorState,
   RawDraftContentState,
 } from "draft-js";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 const noop = () => {};
 
-interface SurfaceEditorContextValue {
-  editorState: EditorState;
-  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
-  domEditorRef: React.MutableRefObject<Editor>;
+type EditorStateMap = ReadonlyMap<string, EditorState>;
 
-  moveFocusToEnd: () => void;
+type EditorRefMap = ReadonlyMap<string, React.MutableRefObject<Editor>>;
+
+interface SurfaceEditorContextValue {
+  focusedEditorKey: string | undefined;
+  onEditorFocus: (editorKey: string) => void;
+  onEditorBlur: (editorKey: string) => void;
+
+  /**
+   * Maps entry keys (dates, probably) to the DraftJS editor state for them.
+   */
+  entryEditorStates: EditorStateMap;
+  setEntryEditorState: (
+    entryKey: string,
+    setEditorState: (previousEditorState: EditorState) => EditorState
+  ) => void;
+
+  /**
+   * Maps entry keys to a React ref of the DraftJS editor for them.
+   */
+  entryEditorRefs: EditorRefMap;
+  setEntryEditorRef: (
+    entryKey: string,
+    ref: React.MutableRefObject<Editor>
+  ) => void;
 }
 
 export const emptySurfaceEditorContextValue: SurfaceEditorContextValue = {
-  editorState: null,
-  setEditorState: noop,
-  domEditorRef: null,
+  focusedEditorKey: undefined,
+  onEditorFocus: noop,
+  onEditorBlur: noop,
 
-  moveFocusToEnd: noop,
+  entryEditorStates: new Map<string, EditorState>(),
+  setEntryEditorState: noop,
+  entryEditorRefs: new Map<string, React.MutableRefObject<Editor>>(),
+  setEntryEditorRef: noop,
 };
 
 export const SurfaceEditorContext = React.createContext(
@@ -35,6 +58,50 @@ interface SurfaceEditorContextProviderProps {
 export const SurfaceEditorContextProvider: React.FC<
   SurfaceEditorContextProviderProps
 > = ({ children }: SurfaceEditorContextProviderProps) => {
+  const [focusedEditorKey, setFocusedEditorKey] = useState(undefined);
+
+  const onEditorFocus = useCallback((editorKey: string) => {
+    setFocusedEditorKey(editorKey);
+  }, []);
+
+  const onEditorBlur = useCallback(
+    (editorKey: string) => {
+      if (focusedEditorKey === editorKey) {
+        setFocusedEditorKey(undefined);
+      }
+    },
+    [focusedEditorKey]
+  );
+
+  const [entryEditorStates, setEntryEditorStates] = useState<
+    ReadonlyMap<string, EditorState>
+  >(new Map());
+
+  const [entryEditorRefs, setEntryEditorRefs] = useState<
+    ReadonlyMap<string, React.MutableRefObject<Editor>>
+  >(new Map());
+
+  const setEntryEditorState = useCallback(
+    (
+      entryKey: string,
+      setEditorState: (previousEditorState: EditorState) => EditorState
+    ) => {
+      const editorsCopy = new Map(entryEditorStates);
+      editorsCopy.set(entryKey, setEditorState(editorsCopy.get(entryKey)));
+      setEntryEditorStates(editorsCopy);
+    },
+    [entryEditorStates]
+  );
+
+  const setEntryEditorRef = useCallback(
+    (entryKey: string, ref: React.MutableRefObject<Editor>) => {
+      const refsCopy = new Map(entryEditorRefs);
+      refsCopy.set(entryKey, ref);
+      setEntryEditorRefs(refsCopy);
+    },
+    [entryEditorRefs]
+  );
+
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
@@ -71,21 +138,21 @@ export const SurfaceEditorContextProvider: React.FC<
     setEditorState(EditorState.createWithContent(blocks));
   }, []);
 
-  console.log(editorState.toJS());
-
-  const domEditorRef = useRef<Editor>();
-
-  const moveFocusToEnd = useCallback(() => {
-    setEditorState(EditorState.moveFocusToEnd(editorState));
-  }, [editorState]);
+  // const moveFocusToEnd = useCallback(() => {
+  //   setEditorState(EditorState.moveFocusToEnd(editorState));
+  // }, [editorState]);
 
   return (
     <SurfaceEditorContext.Provider
       value={{
-        editorState,
-        setEditorState,
-        domEditorRef,
-        moveFocusToEnd,
+        focusedEditorKey,
+        onEditorFocus,
+        onEditorBlur,
+
+        entryEditorStates,
+        setEntryEditorState,
+        entryEditorRefs,
+        setEntryEditorRef,
       }}
     >
       {children}
