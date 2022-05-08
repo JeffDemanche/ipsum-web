@@ -7,7 +7,7 @@
     "webpack": "webpack --watch",
     "electron": "wait-on tcp:9000 && electron .",
     "devserver": "npx webpack serve",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   "homepage": "https://github.com/JeffDemanche/Ipsum-Web#readme",
   "browserslist": "last 2 versions",
   "dependencies": {
+    "@types/dexie": "^1.3.1",
     "@types/draft-js": "^0.11.9",
     "@types/react": "^18.0.6",
     "@types/react-dom": "^18.0.2",
@@ -28,6 +29,8 @@
     "@types/react-router-dom": "^5.3.3",
     "classnames": "^2.3.1",
     "css-loader": "^6.7.1",
+    "dexie": "^3.2.2",
+    "dexie-react-hooks": "^1.1.1",
     "draft-js": "^0.11.7",
     "electron": "^18.1.0",
     "electron-is-dev": "^2.0.0",
@@ -48,10 +51,12 @@
     "webpack-dev-server": "^4.8.1"
   },
   "devDependencies": {
+    "@types/jest": "^27.5.0",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
     "@typescript-eslint/parser": "^5.21.0",
     "eslint": "^8.14.0",
     "eslint-plugin-react": "^7.29.4",
+    "jest": "^28.1.0",
     "webpack-cli": "^4.9.2"
   }
 }
