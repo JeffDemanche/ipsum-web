@@ -42,6 +42,7 @@ export const JournalEntry: React.FC<JournalEntryProps> = ({
 
   return (
     <div className={styles["journal-entry"]}>
+      <h1>header</h1>
       <Editor
         editorState={editorState}
         onChange={onEditorChange}

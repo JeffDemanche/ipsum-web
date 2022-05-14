@@ -25,4 +25,11 @@ module.exports = {
     semi: ["error", "always"],
     "@typescript-eslint/no-empty-function": "off",
   },
+  settings: {
+    "import/resolver": {
+      webpack: {
+        config: "webpack.config.js",
+      },
+    },
+  },
 };

@@ -35,6 +35,12 @@ module.exports = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
+    alias: {
+      util: path.resolve(__dirname, "src/util"),
+      components: path.resolve(__dirname, "src/components"),
+      views: path.resolve(__dirname, "src/views"),
+      state: path.resolve(__dirname, "src/state"),
+    },
   },
   output: {
     filename: "bundle.js",

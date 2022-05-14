@@ -138,10 +138,6 @@ export const SurfaceEditorContextProvider: React.FC<
     setEditorState(EditorState.createWithContent(blocks));
   }, []);
 
-  // const moveFocusToEnd = useCallback(() => {
-  //   setEditorState(EditorState.moveFocusToEnd(editorState));
-  // }, [editorState]);
-
   return (
     <SurfaceEditorContext.Provider
       value={{

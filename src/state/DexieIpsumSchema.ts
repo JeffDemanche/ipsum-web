@@ -1,8 +1,7 @@
 import Dexie, { Table } from "dexie";
 
 export interface DexieEntry {
-  id: string;
-  date: Date;
+  entryKey: string;
 }
 
 /**
@@ -15,7 +14,9 @@ export class DexieIpsumSchema extends Dexie {
   constructor() {
     super("ipsum");
     this.version(1).stores({
-      entries: "++id, date",
+      entries: "++entryKey",
     });
   }
+
+  getEntry = (entryKey: string) => this.entries.get(entryKey);
 }

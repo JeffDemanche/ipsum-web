@@ -1,23 +1,27 @@
 import React, { useState } from "react";
-import { emptyJournalState, JournalState } from "./JournalState";
-import { JournalStateIndexedDB } from "./JournalStateIndexedDB";
+import { DexieIpsumSchema } from "./DexieIpsumSchema";
+import { InMemoryJournal } from "./JournalState.types";
 
-const JournalStateContext = React.createContext(emptyJournalState);
+export const emptyJournalState: InMemoryJournal = {
+  loadedEntries: [],
+};
 
-interface JournalStateContextProps {
-  stateStrategy: "LOCAL-STORAGE";
+export const JournalStateContext =
+  React.createContext<InMemoryJournal>(emptyJournalState);
+
+interface JournalStateProviderProps {
   children: React.ReactChild;
 }
 
-export const JournalStateProvider: React.FC<JournalState> = ({
+export const JournalStateProvider: React.FC<JournalStateProviderProps> = ({
   children,
-}: JournalStateContextProps) => {
-  // TODO to implement a server-side state, we would call the setter on this
-  // with a different implementation of JournalState.
-  const [journalState] = useState(new JournalStateIndexedDB());
+}: JournalStateProviderProps) => {
+  const [dexieIpsumSchema] = useState(new DexieIpsumSchema());
+
+  const [loadedEntries, setLoadedEntries] = useState([]);
 
   return (
-    <JournalStateContext.Provider value={journalState}>
+    <JournalStateContext.Provider value={{ loadedEntries }}>
       {children}
     </JournalStateContext.Provider>
   );

@@ -2,9 +2,22 @@ import React, { useContext } from "react";
 import { SurfaceControls } from "./SurfaceControls";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { JournalEntry } from "./JournalEntry";
+import { getCurrentLocalDay } from "util/dates";
+import { JournalEntryEmpty } from "./JournalEntryEmpty";
+import { JournalStateContext } from "state/JournalStateContext";
 
-export const SurfaceEditor: React.FC<Record<string, never>> = () => {
+export const SurfaceEditor = () => {
+  const { loadedEntries } = useContext(JournalStateContext);
+
   const { entryEditorStates } = useContext(SurfaceEditorContext);
+
+  const day = getCurrentLocalDay();
+
+  const showEmptyToday = !Array.from(entryEditorStates.keys()).includes(day);
+
+  const emptyEntryComponent = showEmptyToday && (
+    <JournalEntryEmpty></JournalEntryEmpty>
+  );
 
   const entryEditorComponents = Array.from(entryEditorStates.keys())
     .sort((a, b) => Date.parse(a) - Date.parse(b))
@@ -14,12 +27,7 @@ export const SurfaceEditor: React.FC<Record<string, never>> = () => {
 
   return (
     <>
-      {/* <Editor
-        editorState={editorState}
-        onChange={setEditorState}
-        handleKeyCommand={handleKeyCommand}
-        ref={domEditorRef}
-      ></Editor> */}
+      {emptyEntryComponent}
       {entryEditorComponents}
       <SurfaceControls />
     </>
