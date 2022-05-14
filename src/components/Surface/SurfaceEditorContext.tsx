@@ -1,4 +1,5 @@
 import {
+  ContentState,
   convertFromRaw,
   Editor,
   EditorState,
@@ -16,6 +17,21 @@ interface SurfaceEditorContextValue {
   focusedEditorKey: string | undefined;
   onEditorFocus: (editorKey: string) => void;
   onEditorBlur: (editorKey: string) => void;
+
+  /**
+   * For an editorKey, registers it on this context so it can be manipulated
+   * outside of its containing component.
+   */
+  registerEditor: (
+    editorKey: string,
+    contentState: ContentState,
+    editorRef: React.MutableRefObject<Editor>
+  ) => void;
+
+  /**
+   * Unregisters an editor, probably from a React cleanup function.
+   */
+  unregisterEditor: (editorKey: string) => void;
 
   /**
    * Maps entry keys (dates, probably) to the DraftJS editor state for them.
@@ -40,6 +56,9 @@ export const emptySurfaceEditorContextValue: SurfaceEditorContextValue = {
   focusedEditorKey: undefined,
   onEditorFocus: noop,
   onEditorBlur: noop,
+
+  registerEditor: noop,
+  unregisterEditor: noop,
 
   entryEditorStates: new Map<string, EditorState>(),
   setEntryEditorState: noop,
@@ -102,41 +121,43 @@ export const SurfaceEditorContextProvider: React.FC<
     [entryEditorRefs]
   );
 
+  const registerEditor = useCallback(
+    (
+      entryKey: string,
+      contentState: ContentState,
+      editorRef: React.MutableRefObject<Editor>
+    ) => {
+      if (entryEditorStates.has(entryKey) || entryEditorRefs.has(entryKey)) {
+        console.error("Tried to register editor that was already registered");
+        return;
+      } else {
+        setEntryEditorState(entryKey, () =>
+          contentState
+            ? EditorState.createWithContent(contentState)
+            : EditorState.createEmpty()
+        );
+        setEntryEditorRef(entryKey, editorRef);
+      }
+    },
+    [entryEditorRefs, entryEditorStates, setEntryEditorRef, setEntryEditorState]
+  );
+
+  const unregisterEditor = useCallback(
+    (entryKey: string) => {
+      const editorsCopy = new Map(entryEditorStates);
+      editorsCopy.delete(entryKey);
+      setEntryEditorStates(editorsCopy);
+
+      const editorRefsCopy = new Map(entryEditorRefs);
+      editorRefsCopy.delete(entryKey);
+      setEntryEditorRefs(editorRefsCopy);
+    },
+    [entryEditorRefs, entryEditorStates]
+  );
+
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
-
-  // https://draftjs.org/docs/api-reference-content-state/
-  const contentState = editorState.getCurrentContent();
-
-  // https://draftjs.org/docs/api-reference-selection-state
-  const selectionState = editorState.getSelection();
-
-  useEffect(() => {
-    const rawContent: RawDraftContentState = {
-      blocks: [
-        {
-          key: "todays-date",
-          depth: 0,
-          text: "TEST",
-          type: "header-1",
-          inlineStyleRanges: [],
-          entityRanges: [{ offset: 0, length: 4, key: 0 }],
-        },
-      ],
-      entityMap: {
-        0: {
-          type: "TOKEN",
-          mutability: "IMMUTABLE",
-          data: {},
-        },
-      },
-    };
-
-    const blocks = convertFromRaw(rawContent);
-
-    setEditorState(EditorState.createWithContent(blocks));
-  }, []);
 
   return (
     <SurfaceEditorContext.Provider
@@ -144,6 +165,9 @@ export const SurfaceEditorContextProvider: React.FC<
         focusedEditorKey,
         onEditorFocus,
         onEditorBlur,
+
+        registerEditor,
+        unregisterEditor,
 
         entryEditorStates,
         setEntryEditorState,
