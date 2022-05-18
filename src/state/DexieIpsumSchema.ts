@@ -16,7 +16,7 @@ export class DexieIpsumSchema extends Dexie {
   constructor() {
     super("ipsum");
     this.version(1).stores({
-      entries: "++entryKey,date,contentState",
+      entries: "++entryKey, date, contentState",
     });
   }
 
@@ -35,6 +35,8 @@ export class DexieIpsumSchema extends Dexie {
   readEntries = async (entryKeys: string[]) =>
     this.entries.where("entryKey").anyOf(entryKeys).toArray();
 
+  readAllEntries = async () => this.entries.toArray();
+
   updateEntry = async ({
     entryKey,
     contentState,
@@ -42,4 +44,8 @@ export class DexieIpsumSchema extends Dexie {
     entryKey: string;
     contentState: string;
   }) => this.entries.update(entryKey, { contentState });
+
+  deleteEntry = async (entryKey: string) => this.entries.delete(entryKey);
 }
+
+export const dexieIpsumSchema = new DexieIpsumSchema();

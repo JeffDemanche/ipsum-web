@@ -1,9 +1,13 @@
+@import "./../../styles/fonts.less";
+@import "./../../styles/colors.less";
+
 .journal-entry {
-  color: brown;
+  color: @paper-3;
+  font-family: @font-entry-1;
 
   h1 {
     &.empty-entry {
-      opacity: 0.5;
+      color: @paper-7;
     }
   }
 }

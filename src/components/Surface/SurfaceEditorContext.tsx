@@ -1,11 +1,5 @@
-import {
-  ContentState,
-  convertFromRaw,
-  Editor,
-  EditorState,
-  RawDraftContentState,
-} from "draft-js";
-import React, { useCallback, useEffect, useState } from "react";
+import { ContentState, Editor, EditorState } from "draft-js";
+import React, { useCallback, useState } from "react";
 
 const noop = () => {};
 
@@ -105,20 +99,25 @@ export const SurfaceEditorContextProvider: React.FC<
       entryKey: string,
       setEditorState: (previousEditorState: EditorState) => EditorState
     ) => {
-      const editorsCopy = new Map(entryEditorStates);
-      editorsCopy.set(entryKey, setEditorState(editorsCopy.get(entryKey)));
-      setEntryEditorStates(editorsCopy);
+      setEntryEditorStates((prevEntryEditorStates) => {
+        const editorsCopy = new Map(prevEntryEditorStates);
+        editorsCopy.set(entryKey, setEditorState(editorsCopy.get(entryKey)));
+        return editorsCopy;
+      });
     },
-    [entryEditorStates]
+    []
   );
 
   const setEntryEditorRef = useCallback(
     (entryKey: string, ref: React.MutableRefObject<Editor>) => {
-      const refsCopy = new Map(entryEditorRefs);
-      refsCopy.set(entryKey, ref);
-      setEntryEditorRefs(refsCopy);
+      setEntryEditorRefs((prevRefs) => {
+        const refsCopy = new Map(prevRefs);
+
+        refsCopy.set(entryKey, ref);
+        return refsCopy;
+      });
     },
-    [entryEditorRefs]
+    []
   );
 
   const registerEditor = useCallback(
@@ -153,10 +152,6 @@ export const SurfaceEditorContextProvider: React.FC<
       setEntryEditorRefs(editorRefsCopy);
     },
     [entryEditorRefs, entryEditorStates]
-  );
-
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
   );
 
   return (

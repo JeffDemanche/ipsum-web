@@ -1,7 +1,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { ContentState, convertFromRaw, convertToRaw } from "draft-js";
 import React, { useCallback, useMemo, useState } from "react";
-import { DexieIpsumSchema } from "./DexieIpsumSchema";
+import { dexieIpsumSchema } from "./DexieIpsumSchema";
 import { Entry, InMemoryJournal } from "./JournalState.types";
 
 const noop = async () => {};
@@ -9,8 +9,11 @@ const noop = async () => {};
 export const emptyJournalState: InMemoryJournal = {
   loadedEntries: new Map(),
   loadEntry: noop,
+  getAllEntryKeys: () => null,
   unloadEntry: noop,
+
   createOrUpdateEntry: noop,
+  deleteEntry: noop,
 };
 
 export const JournalStateContext =
@@ -31,17 +34,21 @@ const parseContentState = (contentState: string): ContentState =>
  * the underlying model which is persisting that state. At the moment this model
  * is Dexie.js, but a server-side API could be implemented in the future.
  */
-export const JournalStateProvider: React.FC<JournalStateProviderProps> = ({
+export const JournalStateDexieProvider: React.FC<JournalStateProviderProps> = ({
   children,
 }: JournalStateProviderProps) => {
-  const [dexieIpsumSchema] = useState(new DexieIpsumSchema());
-
   const [loadedEntryKeys, setLoadedEntryKeys] = useState<ReadonlySet<string>>(
     new Set<string>()
   );
 
   const loadEntry = (date: string) =>
     setLoadedEntryKeys((prev) => new Set([...prev, date]));
+
+  // TODO We should paginate, this is just in place until that gets implemented.
+  const getAllEntryKeys = async () => {
+    const entries = await dexieIpsumSchema.readAllEntries();
+    return new Set<string>(entries.map((entry) => entry.entryKey));
+  };
 
   const unloadEntry = (date: string) =>
     setLoadedEntryKeys((prev) => {
@@ -85,9 +92,23 @@ export const JournalStateProvider: React.FC<JournalStateProviderProps> = ({
       [dexieIpsumSchema]
     );
 
+  const deleteEntry: InMemoryJournal["deleteEntry"] = useCallback(
+    async (entryKey: string) => {
+      dexieIpsumSchema.deleteEntry(entryKey);
+    },
+    [dexieIpsumSchema]
+  );
+
   return (
     <JournalStateContext.Provider
-      value={{ loadedEntries, loadEntry, unloadEntry, createOrUpdateEntry }}
+      value={{
+        loadedEntries,
+        getAllEntryKeys,
+        loadEntry,
+        unloadEntry,
+        createOrUpdateEntry,
+        deleteEntry,
+      }}
     >
       {children}
     </JournalStateContext.Provider>

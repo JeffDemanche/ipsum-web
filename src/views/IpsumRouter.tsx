@@ -1,13 +1,13 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { JournalStateProvider } from "../state/JournalStateContext";
+import { JournalStateDexieProvider } from "../state/JournalStateContext";
 import { ViewHome } from "./ViewHome";
 import { ViewIndex } from "./ViewIndex";
 import { ViewJournal } from "./ViewJournal";
 
 export const IpsumRouter: React.FC = () => {
   return (
-    <JournalStateProvider>
+    <JournalStateDexieProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ViewIndex />}>
@@ -16,6 +16,6 @@ export const IpsumRouter: React.FC = () => {
           </Route>
         </Routes>
       </BrowserRouter>
-    </JournalStateProvider>
+    </JournalStateDexieProvider>
   );
 };

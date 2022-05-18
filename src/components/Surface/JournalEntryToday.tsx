@@ -1,11 +1,11 @@
-import React, { useCallback, useContext, useEffect, useRef } from "react";
+import React, { useCallback, useContext } from "react";
 import cx from "classnames";
-import { Editor, EditorState } from "draft-js";
-import { getCurrentLocalDay } from "util/dates";
+import _ from "underscore";
+import { Editor, EditorState, RichUtils } from "draft-js";
 import styles from "./JournalEntry.less";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { JournalStateContext } from "state/JournalStateContext";
-import { usePrevious } from "util/hooks/usePrevious";
+import { useJournalEntryEditor } from "./useJournalEntryEditor";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -17,71 +17,67 @@ interface JournalEntryTodayProps {
 export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   entryKey,
 }: JournalEntryTodayProps) => {
-  const { loadEntry, unloadEntry, loadedEntries, createOrUpdateEntry } =
-    useContext(JournalStateContext);
+  const { entry, editorRef, editorState, loading, changesSaved, empty } =
+    useJournalEntryEditor({ entryKey });
 
-  //
-  const entry = loadedEntries.get(entryKey);
-  const prevEntry = usePrevious(entry);
+  const { setEntryEditorState, onEditorFocus, onEditorBlur } =
+    useContext(SurfaceEditorContext);
+  const { createOrUpdateEntry, deleteEntry } = useContext(JournalStateContext);
 
-  const {
-    registerEditor,
-    setEntryEditorState,
-    unregisterEditor,
-    entryEditorStates,
-  } = useContext(SurfaceEditorContext);
-
-  const editorState = entryEditorStates.get(entryKey);
-
-  const editorRef = useRef();
-
-  const today = getCurrentLocalDay();
-
-  const empty = !editorState?.getCurrentContent().hasText();
-
-  const changesSaved = entry?.contentState
-    .getBlockMap()
-    .equals(editorState?.getCurrentContent().getBlockMap());
-
-  const loading = !entry;
-
-  useEffect(() => {
-    loadEntry(today);
-    registerEditor(entry?.date ?? today, undefined, editorRef);
-    return () => {
-      unloadEntry(today);
-      unregisterEditor(entry?.date ?? today);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    // The side effect of the entry becoming defined for the first time is to
-    // replace the content in the editor. This shouldn't happen on subsequent
-    // updates to the entry state (see changesSaved above).
-    if (entry && !prevEntry) {
-      setEntryEditorState(entryKey, () =>
-        EditorState.createWithContent(entry.contentState)
-      );
+  const saveEntry = (newEditorState: EditorState) => {
+    if (newEditorState) {
+      if (empty) {
+        deleteEntry(entryKey);
+      } else {
+        createOrUpdateEntry(entryKey, newEditorState.getCurrentContent());
+      }
     }
-  }, [entry, entryKey, prevEntry, setEntryEditorState]);
+  };
+
+  // Ignore deps warning because eslint can't handle the debouncing.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const saveEntryDebounced = useCallback(_.debounce(saveEntry, 500), [
+    createOrUpdateEntry,
+    empty,
+    entryKey,
+  ]);
 
   const onEditorChange = useCallback(
     (newEditorState: EditorState) => {
-      if (newEditorState) {
-        createOrUpdateEntry(today, newEditorState.getCurrentContent());
-        setEntryEditorState(entryKey, () => newEditorState);
-      }
+      setEntryEditorState(entryKey, () => newEditorState);
+      saveEntryDebounced(newEditorState);
     },
-    [createOrUpdateEntry, entryKey, setEntryEditorState, today]
+    [entryKey, saveEntryDebounced, setEntryEditorState]
   );
+
+  const handleKeyCommand = useCallback(
+    (command: string, editorState: EditorState, eventTimeStamp: number) => {
+      const newState = RichUtils.handleKeyCommand(editorState, command);
+      if (newState) {
+        setEntryEditorState(entryKey, newState);
+        return "handled";
+      } else return "not-handled";
+    },
+    [entryKey, setEntryEditorState]
+  );
+
+  const onFocus = useCallback(() => {
+    onEditorFocus(entryKey);
+  }, [entryKey, onEditorFocus]);
+
+  const onBlur = useCallback(() => {
+    onEditorBlur(entryKey);
+  }, [entryKey, onEditorBlur]);
 
   return (
     <div className={styles["journal-entry"]}>
-      <h1 className={cx({ [styles["empty-entry"]]: empty })}>{today}</h1>
+      <h1 className={cx({ [styles["empty-entry"]]: empty })}>{entryKey}</h1>
       {editorState && (
         <Editor
+          onFocus={onFocus}
+          onBlur={onBlur}
           editorState={editorState}
+          handleKeyCommand={handleKeyCommand}
           onChange={onEditorChange}
           ref={editorRef}
         ></Editor>
