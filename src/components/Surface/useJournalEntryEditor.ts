@@ -1,5 +1,5 @@
 import { ContentBlock, Editor, EditorState } from "draft-js";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./JournalEntry.less";
 import { Entry } from "state/JournalState.types";
 import { JournalStateContext } from "state/JournalStateContext";
@@ -67,16 +67,23 @@ export const useJournalEntryEditor = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // This approach makes sure we only set the editor state to the stored entry
+  // value once per component render.
+  const [hasFilledEntryFromState, setHasFilledEntryFromState] = useState(false);
   useEffect(() => {
-    // The side effect of the entry becoming defined for the first time is to
-    // replace the content in the editor. This shouldn't happen on subsequent
-    // updates to the entry state (see changesSaved above).
-    if (entry && !prevEntry) {
+    if (entry && !hasFilledEntryFromState) {
       setEntryEditorState(entryKey, () => {
         return EditorState.createWithContent(entry.contentState);
       });
+      setHasFilledEntryFromState(true);
     }
-  }, [entry, entryKey, prevEntry, setEntryEditorState]);
+  }, [
+    entry,
+    entryKey,
+    hasFilledEntryFromState,
+    prevEntry,
+    setEntryEditorState,
+  ]);
 
   return {
     entry,
