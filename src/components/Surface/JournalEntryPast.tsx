@@ -12,8 +12,15 @@ interface JournalEntryProps {
 export const JournalEntryPast: React.FC<JournalEntryProps> = ({
   entryKey,
 }: JournalEntryProps) => {
-  const { entry, editorRef, editorState, loading, changesSaved, empty } =
-    useJournalEntryEditor({ entryKey });
+  const {
+    entry,
+    editorRef,
+    editorState,
+    loading,
+    changesSaved,
+    empty,
+    blockStyleFn,
+  } = useJournalEntryEditor({ entryKey });
 
   const { setEntryEditorState, onEditorFocus, onEditorBlur } =
     useContext(SurfaceEditorContext);
@@ -60,6 +67,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
           onFocus={onFocus}
           onBlur={onBlur}
           handleKeyCommand={handleKeyCommand}
+          blockStyleFn={blockStyleFn}
           ref={editorRef}
         ></Editor>
       )}

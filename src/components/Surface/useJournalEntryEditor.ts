@@ -1,5 +1,6 @@
-import { Editor, EditorState } from "draft-js";
+import { ContentBlock, Editor, EditorState } from "draft-js";
 import { useContext, useEffect, useRef } from "react";
+import styles from "./JournalEntry.less";
 import { Entry } from "state/JournalState.types";
 import { JournalStateContext } from "state/JournalStateContext";
 import { usePrevious } from "util/hooks/usePrevious";
@@ -16,7 +17,12 @@ interface UseJournalEntryEditorResult {
   loading: boolean;
   changesSaved: boolean;
   empty: boolean;
+  blockStyleFn: (block: ContentBlock) => string;
 }
+
+const blockStyleFn = (block: ContentBlock) => {
+  if (block.getType() === "unstyled") return styles["editor-paragraph"];
+};
 
 /**
  * Provides common React functionality to use between both the JournalEntryToday
@@ -72,5 +78,13 @@ export const useJournalEntryEditor = ({
     }
   }, [entry, entryKey, prevEntry, setEntryEditorState]);
 
-  return { entry, editorRef, editorState, loading, changesSaved, empty };
+  return {
+    entry,
+    editorRef,
+    editorState,
+    loading,
+    changesSaved,
+    empty,
+    blockStyleFn,
+  };
 };
