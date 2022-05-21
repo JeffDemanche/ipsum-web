@@ -3,7 +3,7 @@ import { SurfaceControls } from "./SurfaceControls";
 import { JournalEntryPast } from "./JournalEntryPast";
 import { JournalEntryToday } from "./JournalEntryToday";
 
-import { getCurrentLocalDay } from "util/dates";
+import { useDateString } from "util/dates";
 import { JournalStateContext } from "state/JournalStateContext";
 
 /**
@@ -20,7 +20,7 @@ export const SurfaceEditor = () => {
     });
   }, [getAllEntryKeys]);
 
-  const today = getCurrentLocalDay();
+  const today = useDateString(30000, "month-day-year-slashes");
 
   const todayEntryComponent = (
     <JournalEntryToday entryKey={today}></JournalEntryToday>

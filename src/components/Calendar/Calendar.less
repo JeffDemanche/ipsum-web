@@ -1,0 +1,15 @@
+@import "../../styles/mixins.less";
+
+.calendar {
+  .journal-box();
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+}

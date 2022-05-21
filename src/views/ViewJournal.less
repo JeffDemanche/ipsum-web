@@ -4,18 +4,20 @@
 
 .fixed-width-interior {
   position: relative;
-  width: 800px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .diptych {
-  display: grid;
-  grid-template-columns: 200px auto;
+  display: flex;
+  justify-content: center;
 }
 
 .column-1 {
+  width: 270px;
 }
 
 .column-2 {
+  position: relative;
+  flex: 1;
+  max-width: 600px;
+  margin-left: 20px;
 }
