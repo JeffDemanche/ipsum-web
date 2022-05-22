@@ -11,7 +11,9 @@ export const ViewJournal: React.FC = () => {
         <div className={styles["fixed-width-interior"]}>
           <div className={styles["diptych"]}>
             <div className={styles["column-1"]}>
-              <Calendar></Calendar>
+              <div className={styles["column-1-floating"]}>
+                <Calendar></Calendar>
+              </div>
             </div>
             <div className={styles["column-2"]}>
               <Surface></Surface>

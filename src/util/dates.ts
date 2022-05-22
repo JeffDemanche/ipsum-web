@@ -37,11 +37,14 @@ export const useDate = (refreshRate: number): DateTime => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDate(getCurrentLocalDateTime());
+      const currentDate = getCurrentLocalDateTime();
+      if (currentDate.toISO() !== date.toISO()) {
+        setDate(getCurrentLocalDateTime());
+      }
     }, refreshRate);
 
     return () => clearInterval(interval);
-  }, [refreshRate]);
+  }, [date, refreshRate]);
 
   return date;
 };
@@ -63,4 +66,17 @@ export const useDateString = (
   }, []);
 
   return dateString;
+};
+
+export const getDaysBetween = (
+  startDay: DateTime,
+  endDay: DateTime
+): DateTime[] => {
+  const daysBetween: DateTime[] = [];
+  let cursor = startDay.startOf("day");
+  while (cursor <= endDay) {
+    daysBetween.push(cursor);
+    cursor = cursor.plus({ days: 1 });
+  }
+  return daysBetween;
 };

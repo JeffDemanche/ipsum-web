@@ -2,14 +2,25 @@
 
 .calendar {
   .journal-box();
-  position: fixed;
+  padding: 5px;
   display: flex;
   flex-direction: column;
   text-align: center;
 }
 
+.month-title {
+  font-size: 16pt;
+  font-weight: 500;
+  text-decoration: underline;
+  margin-bottom: 4px;
+}
+
+.day-of-week {
+  font-size: 9pt;
+}
+
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-rows: 20px repeat(5, 30px);
 }

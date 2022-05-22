@@ -9,5 +9,7 @@ interface CalendarDayTileProps {
 export const CalendarDayTile: React.FC<CalendarDayTileProps> = ({
   date,
 }: CalendarDayTileProps) => {
-  return <div className={styles["tile"]}></div>;
+  const dayNumber = date.day;
+
+  return <div className={styles["tile"]}>{dayNumber}</div>;
 };
