@@ -1,5 +1,6 @@
 import { Info, DateTime } from "luxon";
-import React, { useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
+import { JournalStateContext } from "state/JournalStateContext";
 import { formatDate, getDaysBetween, useDate } from "util/dates";
 import styles from "./Calendar.less";
 import { CalendarDayTile } from "./CalendarDayTile";
@@ -7,12 +8,21 @@ import { CalendarDayTile } from "./CalendarDayTile";
 export const Calendar: React.FC = () => {
   const date = useDate(3000);
 
+  const { allEntryDates } = useContext(JournalStateContext);
+
   const [monthYear, setMonthYear] = useState(() =>
     DateTime.fromObject({
       month: date.month,
       year: date.year,
     })
   );
+
+  const monthJournalEntries = useMemo(() => {
+    const c =
+      allEntryDates &&
+      allEntryDates.filter((entry) => entry.month === monthYear.month);
+    return c;
+  }, [allEntryDates, monthYear.month]);
 
   const startOfMonth = monthYear.startOf("month");
   const endOfMonth = monthYear.endOf("month");
@@ -41,7 +51,16 @@ export const Calendar: React.FC = () => {
   ));
 
   const actualDays = getDaysBetween(startOfMonth, endOfMonth).map((day, i) => {
-    return <CalendarDayTile date={day} key={i} />;
+    return (
+      <CalendarDayTile
+        date={day}
+        entryDate={
+          monthJournalEntries &&
+          monthJournalEntries.find((entry) => entry.toISO() === day.toISO())
+        }
+        key={i}
+      />
+    );
   });
 
   return (

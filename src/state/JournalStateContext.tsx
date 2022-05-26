@@ -1,5 +1,6 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { ContentState, convertFromRaw, convertToRaw } from "draft-js";
+import { DateTime } from "luxon";
 import React, { useCallback, useMemo, useState } from "react";
 import { dexieIpsumSchema } from "./DexieIpsumSchema";
 import { Entry, InMemoryJournal } from "./JournalState.types";
@@ -9,7 +10,8 @@ const noop = async () => {};
 export const emptyJournalState: InMemoryJournal = {
   loadedEntries: new Map(),
   loadEntry: noop,
-  getAllEntryKeys: () => null,
+  allEntryKeys: null,
+  allEntryDates: null,
   unloadEntry: noop,
 
   createOrUpdateEntry: noop,
@@ -45,10 +47,15 @@ export const JournalStateDexieProvider: React.FC<JournalStateProviderProps> = ({
     setLoadedEntryKeys((prev) => new Set([...prev, date]));
 
   // TODO We should paginate, this is just in place until that gets implemented.
-  const getAllEntryKeys = async () => {
+  const allEntryKeys = useLiveQuery(async () => {
     const entries = await dexieIpsumSchema.readAllEntries();
     return new Set<string>(entries.map((entry) => entry.entryKey));
-  };
+  });
+
+  const allEntryDates = useLiveQuery(async () => {
+    const entries = await dexieIpsumSchema.readAllEntries();
+    return entries.map((entry) => DateTime.fromFormat(entry.date, "D"));
+  });
 
   const unloadEntry = (date: string) =>
     setLoadedEntryKeys((prev) => {
@@ -74,36 +81,34 @@ export const JournalStateDexieProvider: React.FC<JournalStateProviderProps> = ({
   }, [loadedDexieEntries]);
 
   const createOrUpdateEntry: InMemoryJournal["createOrUpdateEntry"] =
-    useCallback(
-      async (date, contentState) => {
-        if ((await dexieIpsumSchema.readEntries([date])).length > 0) {
-          dexieIpsumSchema.updateEntry({
-            entryKey: date,
-            contentState: stringifyContentState(contentState),
-          });
-        } else {
-          dexieIpsumSchema.createEntry({
-            entryKey: date,
-            date,
-            contentState: stringifyContentState(contentState),
-          });
-        }
-      },
-      [dexieIpsumSchema]
-    );
+    useCallback(async (date, contentState) => {
+      if ((await dexieIpsumSchema.readEntries([date])).length > 0) {
+        dexieIpsumSchema.updateEntry({
+          entryKey: date,
+          contentState: stringifyContentState(contentState),
+        });
+      } else {
+        dexieIpsumSchema.createEntry({
+          entryKey: date,
+          date,
+          contentState: stringifyContentState(contentState),
+        });
+      }
+    }, []);
 
   const deleteEntry: InMemoryJournal["deleteEntry"] = useCallback(
     async (entryKey: string) => {
       dexieIpsumSchema.deleteEntry(entryKey);
     },
-    [dexieIpsumSchema]
+    []
   );
 
   return (
     <JournalStateContext.Provider
       value={{
         loadedEntries,
-        getAllEntryKeys,
+        allEntryKeys,
+        allEntryDates,
         loadEntry,
         unloadEntry,
         createOrUpdateEntry,

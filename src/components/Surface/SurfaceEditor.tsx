@@ -10,15 +10,14 @@ import { JournalStateContext } from "state/JournalStateContext";
  * Component that renders all loaded entries, including today's.
  */
 export const SurfaceEditor = () => {
-  const { getAllEntryKeys } = useContext(JournalStateContext);
+  const { allEntryKeys: allEntryKeysFromState } =
+    useContext(JournalStateContext);
 
   // TODO Smarter loading
   const [allEntryKeys, setAllEntryKeys] = useState<string[]>();
   useEffect(() => {
-    getAllEntryKeys?.().then((entryKeys) => {
-      setAllEntryKeys(Array.from(entryKeys));
-    });
-  }, [getAllEntryKeys]);
+    allEntryKeysFromState && setAllEntryKeys(Array.from(allEntryKeysFromState));
+  }, [allEntryKeysFromState]);
 
   const today = useDateString(30000, "month-day-year-slashes");
 

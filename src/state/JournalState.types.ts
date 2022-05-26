@@ -1,9 +1,11 @@
 import { ContentState } from "draft-js";
+import { DateTime } from "luxon";
 
 export interface InMemoryJournal {
   loadedEntries: ReadonlyMap<string, Entry>;
 
-  getAllEntryKeys: () => Promise<ReadonlySet<string>>;
+  allEntryKeys: ReadonlySet<string>;
+  allEntryDates: DateTime[];
 
   loadEntry: (date: string) => void;
   unloadEntry: (date: string) => void;
