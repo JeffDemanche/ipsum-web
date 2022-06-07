@@ -1,6 +1,5 @@
 import { Editor, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
-import { JournalStateContext } from "state/JournalStateContext";
 import styles from "./JournalEntry.less";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
@@ -12,19 +11,12 @@ interface JournalEntryProps {
 export const JournalEntryPast: React.FC<JournalEntryProps> = ({
   entryKey,
 }: JournalEntryProps) => {
-  const {
-    entry,
-    editorRef,
-    editorState,
-    loading,
-    changesSaved,
-    empty,
-    blockStyleFn,
-  } = useJournalEntryEditor({ entryKey });
+  const { editorRef, editorState, blockStyleFn } = useJournalEntryEditor({
+    entryKey,
+  });
 
   const { setEntryEditorState, onEditorFocus, onEditorBlur } =
     useContext(SurfaceEditorContext);
-  const { createOrUpdateEntry } = useContext(JournalStateContext);
 
   // We listen for clicks on Surface to move the focus to the end of the Editor,
   // this is a hacky way of overriding that if the click is on the Editor
@@ -37,7 +29,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
   // }, [editorRef, entryKey, setEntryEditorRef]);
 
   const handleKeyCommand = useCallback(
-    (command: string, editorState: EditorState, eventTimeStamp: number) => {
+    (command: string, editorState: EditorState) => {
       const newState = RichUtils.handleKeyCommand(editorState, command);
       if (newState) {
         setEntryEditorState(entryKey, newState);

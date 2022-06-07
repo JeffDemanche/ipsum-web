@@ -1,17 +1,17 @@
-import { DateTime } from "luxon";
 import React from "react";
+import { IpsumDateTime } from "util/dates";
 import styles from "./CalendarDayTile.less";
 
 interface CalendarDayTileProps {
-  date: DateTime;
-  entryDate?: DateTime;
+  date: IpsumDateTime;
+  entryDate?: IpsumDateTime;
 }
 
 export const CalendarDayTile: React.FC<CalendarDayTileProps> = ({
   date,
   entryDate,
 }: CalendarDayTileProps) => {
-  const dayNumber = date.day;
+  const dayNumber = date.dateTime.day;
 
   return entryDate ? (
     <a>{dayNumber}</a>

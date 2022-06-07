@@ -1,25 +1,29 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { SurfaceControls } from "./SurfaceControls";
 import { JournalEntryPast } from "./JournalEntryPast";
 import { JournalEntryToday } from "./JournalEntryToday";
 
 import { useDateString } from "util/dates";
-import { JournalStateContext } from "state/JournalStateContext";
+import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 
 /**
  * Component that renders all loaded entries, including today's.
  */
 export const SurfaceEditor = () => {
-  const { allEntryKeys: allEntryKeysFromState } =
-    useContext(JournalStateContext);
+  const { state } = useContext(InMemoryStateContext);
+
+  const allEntryKeysFromState = useMemo(
+    () => Object.values(state.entries).map((entry) => entry.entryKey),
+    [state.entries]
+  );
 
   // TODO Smarter loading
   const [allEntryKeys, setAllEntryKeys] = useState<string[]>();
   useEffect(() => {
-    allEntryKeysFromState && setAllEntryKeys(Array.from(allEntryKeysFromState));
+    allEntryKeysFromState && setAllEntryKeys(allEntryKeysFromState);
   }, [allEntryKeysFromState]);
 
-  const today = useDateString(30000, "month-day-year-slashes");
+  const today = useDateString(30000, "entry-printed-date");
 
   const todayEntryComponent = (
     <JournalEntryToday entryKey={today}></JournalEntryToday>
@@ -27,7 +31,7 @@ export const SurfaceEditor = () => {
 
   const entryEditorComponents =
     allEntryKeys &&
-    Array.from(allEntryKeys)
+    allEntryKeysFromState
       .filter((entryKey) => entryKey !== today)
       .sort((a, b) => Date.parse(b) - Date.parse(a))
       .map((sortedEntryKey, i) => (

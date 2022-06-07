@@ -5,7 +5,11 @@
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 
-type DateFormatString = "month-day-year-slashes" | "month-word";
+/** Date formats we can create a string of from a DateTime. */
+type IpsumDateFormatTo = "entry-printed-date" | "month-word";
+
+/** Date formats we can create a DateTime of from a string. */
+type IpsumDateFormatFrom = "entry-printed-date";
 
 /**
  * Gets current Luxon DateTime object.
@@ -14,25 +18,7 @@ export const getCurrentLocalDateTime = (): DateTime => {
   return DateTime.now();
 };
 
-/**
- * Given a Luxon DateTime object, returns a string corresponding to the given
- * format.
- */
-export const formatDate = (
-  date: DateTime,
-  format: DateFormatString
-): string => {
-  switch (format) {
-    case "month-day-year-slashes":
-      return date.toLocaleString();
-    case "month-word":
-      return date.toLocaleString({ month: "long" });
-    default:
-      return undefined;
-  }
-};
-
-export const useDate = (refreshRate: number): DateTime => {
+export const useDate = (refreshRate: number): IpsumDateTime => {
   const [date, setDate] = useState(getCurrentLocalDateTime());
 
   useEffect(() => {
@@ -46,37 +32,73 @@ export const useDate = (refreshRate: number): DateTime => {
     return () => clearInterval(interval);
   }, [date, refreshRate]);
 
-  return date;
+  return new IpsumDateTime(date);
 };
 
 export const useDateString = (
   refreshRate: number,
-  format: DateFormatString
+  format: IpsumDateFormatTo
 ): string => {
   const [dateString, setDateString] = useState(
-    formatDate(getCurrentLocalDateTime(), format)
+    new IpsumDateTime(getCurrentLocalDateTime())
   );
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDateString(formatDate(getCurrentLocalDateTime(), format));
+      setDateString(new IpsumDateTime(getCurrentLocalDateTime()));
     }, refreshRate);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return dateString;
+  return dateString.toString(format);
 };
 
 export const getDaysBetween = (
-  startDay: DateTime,
-  endDay: DateTime
-): DateTime[] => {
-  const daysBetween: DateTime[] = [];
-  let cursor = startDay.startOf("day");
-  while (cursor <= endDay) {
-    daysBetween.push(cursor);
+  startDay: IpsumDateTime,
+  endDay: IpsumDateTime
+): IpsumDateTime[] => {
+  const daysBetween: IpsumDateTime[] = [];
+  let cursor = startDay.dateTime.startOf("day");
+  while (cursor <= endDay.dateTime) {
+    daysBetween.push(new IpsumDateTime(cursor));
     cursor = cursor.plus({ days: 1 });
   }
   return daysBetween;
 };
+
+export class IpsumDateTime {
+  private _luxonDateTime: DateTime;
+
+  constructor(dateTime: DateTime) {
+    this._luxonDateTime = dateTime;
+  }
+
+  static fromJsDate = (jsDate: Date) => {
+    return new this(DateTime.fromJSDate(jsDate));
+  };
+
+  static fromString = (dateString: string, format: IpsumDateFormatFrom) => {
+    switch (format) {
+      case "entry-printed-date":
+        return new this(DateTime.fromFormat(dateString, "D"));
+      default:
+        return undefined;
+    }
+  };
+
+  toString = (format: IpsumDateFormatTo): string => {
+    switch (format) {
+      case "entry-printed-date":
+        return this._luxonDateTime.toLocaleString();
+      case "month-word":
+        return this._luxonDateTime.toLocaleString({ month: "long" });
+      default:
+        return undefined;
+    }
+  };
+
+  get dateTime() {
+    return this._luxonDateTime;
+  }
+}

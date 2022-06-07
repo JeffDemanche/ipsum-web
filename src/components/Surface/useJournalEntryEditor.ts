@@ -1,21 +1,17 @@
-import { ContentBlock, Editor, EditorState } from "draft-js";
-import { useContext, useEffect, useRef, useState } from "react";
+import { ContentBlock, ContentState, Editor, EditorState } from "draft-js";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./JournalEntry.less";
-import { Entry } from "state/JournalState.types";
-import { JournalStateContext } from "state/JournalStateContext";
-import { usePrevious } from "util/hooks/usePrevious";
+import { parseContentState } from "util/content-state";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
+import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 
 interface UseJournalEntryEditorArgs {
   entryKey: string;
 }
 
 interface UseJournalEntryEditorResult {
-  entry: Entry;
   editorRef: React.MutableRefObject<Editor>;
   editorState: EditorState;
-  loading: boolean;
-  changesSaved: boolean;
   empty: boolean;
   blockStyleFn: (block: ContentBlock) => string;
 }
@@ -31,12 +27,15 @@ const blockStyleFn = (block: ContentBlock) => {
 export const useJournalEntryEditor = ({
   entryKey,
 }: UseJournalEntryEditorArgs): UseJournalEntryEditorResult => {
-  const { loadEntry, unloadEntry, loadedEntries } =
-    useContext(JournalStateContext);
+  const { state } = useContext(InMemoryStateContext);
 
-  const entry = loadedEntries.get(entryKey);
-
-  const prevEntry = usePrevious(entry);
+  const contentState = useMemo(
+    () =>
+      state && state.entries[entryKey]
+        ? parseContentState(state.entries[entryKey].contentState)
+        : ContentState.createFromText(""),
+    [state, entryKey]
+  );
 
   const {
     registerEditor,
@@ -49,19 +48,11 @@ export const useJournalEntryEditor = ({
 
   const editorRef = useRef<Editor>();
 
-  const loading = !entry;
-
-  const changesSaved = entry?.contentState
-    .getBlockMap()
-    .equals(editorState?.getCurrentContent().getBlockMap());
-
   const empty = !editorState?.getCurrentContent().hasText();
 
   useEffect(() => {
-    loadEntry(entryKey);
     registerEditor(entryKey, undefined, editorRef);
     return () => {
-      unloadEntry(entryKey);
       unregisterEditor(entryKey);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,26 +62,17 @@ export const useJournalEntryEditor = ({
   // value once per component render.
   const [hasFilledEntryFromState, setHasFilledEntryFromState] = useState(false);
   useEffect(() => {
-    if (entry && !hasFilledEntryFromState) {
+    if (!hasFilledEntryFromState) {
       setEntryEditorState(entryKey, () => {
-        return EditorState.createWithContent(entry.contentState);
+        return EditorState.createWithContent(contentState);
       });
       setHasFilledEntryFromState(true);
     }
-  }, [
-    entry,
-    entryKey,
-    hasFilledEntryFromState,
-    prevEntry,
-    setEntryEditorState,
-  ]);
+  }, [contentState, entryKey, hasFilledEntryFromState, setEntryEditorState]);
 
   return {
-    entry,
     editorRef,
     editorState,
-    loading,
-    changesSaved,
     empty,
     blockStyleFn,
   };

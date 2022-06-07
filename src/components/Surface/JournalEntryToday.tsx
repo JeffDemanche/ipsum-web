@@ -4,8 +4,10 @@ import _ from "underscore";
 import { Editor, EditorState, RichUtils } from "draft-js";
 import styles from "./JournalEntry.less";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
-import { JournalStateContext } from "state/JournalStateContext";
+import { stringifyContentState } from "util/content-state";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
+import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { IpsumDateTime } from "util/dates";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -17,26 +19,30 @@ interface JournalEntryTodayProps {
 export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   entryKey,
 }: JournalEntryTodayProps) => {
-  const {
-    entry,
-    editorRef,
-    editorState,
-    loading,
-    changesSaved,
-    empty,
-    blockStyleFn,
-  } = useJournalEntryEditor({ entryKey });
+  const { editorRef, editorState, empty, blockStyleFn } = useJournalEntryEditor(
+    { entryKey }
+  );
 
   const { setEntryEditorState, onEditorFocus, onEditorBlur } =
     useContext(SurfaceEditorContext);
-  const { createOrUpdateEntry, deleteEntry } = useContext(JournalStateContext);
+
+  const { dispatch } = useContext(InMemoryStateContext);
 
   const saveEntry = (newEditorState: EditorState) => {
     if (newEditorState) {
       if (empty) {
-        deleteEntry(entryKey);
+        dispatch({ type: "DELETE-ENTRY", payload: { entryKey } });
       } else {
-        createOrUpdateEntry(entryKey, newEditorState.getCurrentContent());
+        dispatch({
+          type: "CREATE-OR-UPDATE-ENTRY",
+          payload: {
+            entryKey,
+            date: IpsumDateTime.fromString(entryKey, "entry-printed-date"),
+            contentState: stringifyContentState(
+              newEditorState.getCurrentContent()
+            ),
+          },
+        });
       }
     }
   };
@@ -44,7 +50,6 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   // Ignore deps warning because eslint can't handle the debouncing.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const saveEntryDebounced = useCallback(_.debounce(saveEntry, 500), [
-    createOrUpdateEntry,
     empty,
     entryKey,
   ]);
@@ -58,7 +63,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   );
 
   const handleKeyCommand = useCallback(
-    (command: string, editorState: EditorState, eventTimeStamp: number) => {
+    (command: string, editorState: EditorState) => {
       const newState = RichUtils.handleKeyCommand(editorState, command);
       if (newState) {
         setEntryEditorState(entryKey, newState);

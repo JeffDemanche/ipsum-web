@@ -9,5 +9,6 @@ module.exports = {
   moduleNameMapper: {
     "\\.(css|less)$": "identity-obj-proxy",
   },
+  setupFiles: ["fake-indexeddb/auto"],
   setupFilesAfterEnv: ["<rootDir>/src/test/setupTests.ts"],
 };

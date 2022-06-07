@@ -1,36 +1,41 @@
 import { Info, DateTime } from "luxon";
 import React, { useContext, useMemo, useState } from "react";
-import { JournalStateContext } from "state/JournalStateContext";
-import { formatDate, getDaysBetween, useDate } from "util/dates";
+import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { getDaysBetween, IpsumDateTime, useDate } from "util/dates";
 import styles from "./Calendar.less";
 import { CalendarDayTile } from "./CalendarDayTile";
 
 export const Calendar: React.FC = () => {
   const date = useDate(3000);
 
-  const { allEntryDates } = useContext(JournalStateContext);
+  const { state } = useContext(InMemoryStateContext);
 
-  const [monthYear, setMonthYear] = useState(() =>
+  const allEntryDates = useMemo(
+    () => Object.values(state.entries).map((entry) => entry.date),
+    [state]
+  );
+
+  const [monthYear] = useState(() =>
     DateTime.fromObject({
-      month: date.month,
-      year: date.year,
+      month: date.dateTime.month,
+      year: date.dateTime.year,
     })
   );
 
   const monthJournalEntries = useMemo(() => {
     const c =
       allEntryDates &&
-      allEntryDates.filter((entry) => entry.month === monthYear.month);
+      allEntryDates.filter((entry) => entry.dateTime.month === monthYear.month);
     return c;
   }, [allEntryDates, monthYear.month]);
 
-  const startOfMonth = monthYear.startOf("month");
-  const endOfMonth = monthYear.endOf("month");
+  const startOfMonth = new IpsumDateTime(monthYear.startOf("month"));
+  const endOfMonth = new IpsumDateTime(monthYear.endOf("month"));
 
-  const dateString = useMemo(() => formatDate(date, "month-word"), [date]);
+  const dateString = useMemo(() => date.toString("month-word"), [date]);
 
   // This would be different if we started the week on a different day.
-  const emptyDaysAtStartOfMonth = startOfMonth.weekday % 7;
+  const emptyDaysAtStartOfMonth = startOfMonth.dateTime.weekday % 7;
 
   // By default this starts with Monday, we want it to start with Sunday.
   const weekdays = Info.weekdays("short");
@@ -56,7 +61,9 @@ export const Calendar: React.FC = () => {
         date={day}
         entryDate={
           monthJournalEntries &&
-          monthJournalEntries.find((entry) => entry.toISO() === day.toISO())
+          monthJournalEntries.find(
+            (entry) => entry.dateTime.toISO() === day.dateTime.toISO()
+          )
         }
         key={i}
       />
