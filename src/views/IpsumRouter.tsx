@@ -10,7 +10,9 @@ export const IpsumRouter: React.FC = () => {
       <Routes>
         <Route path="/" element={<ViewIndex />}>
           <Route index element={<ViewHome />} />
-          <Route path="/journal" element={<ViewJournal />} />
+          <Route path="journal" element={<ViewJournal />}>
+            <Route path=":date" element={<ViewJournal />}></Route>
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

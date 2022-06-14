@@ -1,5 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { IpsumDateTime } from "util/dates";
+import { entryUrl } from "util/urls";
 import styles from "./CalendarDayTile.less";
 
 interface CalendarDayTileProps {
@@ -14,7 +16,7 @@ export const CalendarDayTile: React.FC<CalendarDayTileProps> = ({
   const dayNumber = date.dateTime.day;
 
   return entryDate ? (
-    <a>{dayNumber}</a>
+    <Link to={entryUrl(entryDate)}>{dayNumber}</Link>
   ) : (
     <div className={styles["tile"]}>{dayNumber}</div>
   );

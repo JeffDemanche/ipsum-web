@@ -15,24 +15,32 @@ export const Calendar: React.FC = () => {
     [state]
   );
 
-  const [monthYear] = useState(() =>
-    DateTime.fromObject({
-      month: date.dateTime.month,
-      year: date.dateTime.year,
-    })
+  const [monthYear, setMonthYear] = useState(
+    () =>
+      new IpsumDateTime(
+        DateTime.fromObject({
+          month: date.dateTime.month,
+          year: date.dateTime.year,
+        })
+      )
   );
 
   const monthJournalEntries = useMemo(() => {
     const c =
       allEntryDates &&
-      allEntryDates.filter((entry) => entry.dateTime.month === monthYear.month);
+      allEntryDates.filter((entry) => {
+        return entry.dateTime.month === monthYear.dateTime.month;
+      });
     return c;
-  }, [allEntryDates, monthYear.month]);
+  }, [allEntryDates, monthYear.dateTime.month]);
 
-  const startOfMonth = new IpsumDateTime(monthYear.startOf("month"));
-  const endOfMonth = new IpsumDateTime(monthYear.endOf("month"));
+  const startOfMonth = new IpsumDateTime(monthYear.dateTime.startOf("month"));
+  const endOfMonth = new IpsumDateTime(monthYear.dateTime.endOf("month"));
 
-  const dateString = useMemo(() => date.toString("month-word"), [date]);
+  const monthString = useMemo(
+    () => monthYear.toString("month-word"),
+    [monthYear]
+  );
 
   // This would be different if we started the week on a different day.
   const emptyDaysAtStartOfMonth = startOfMonth.dateTime.weekday % 7;
@@ -70,9 +78,34 @@ export const Calendar: React.FC = () => {
     );
   });
 
+  const nextMonth = () => {
+    setMonthYear(new IpsumDateTime(monthYear.dateTime.plus({ months: 1 })));
+  };
+
+  const previousMonth = () => {
+    setMonthYear(new IpsumDateTime(monthYear.dateTime.minus({ months: 1 })));
+  };
+
   return (
     <div className={styles["calendar"]}>
-      <div className={styles["month-title"]}>{dateString}</div>
+      <div className={styles["year-title"]}>{monthYear.dateTime.year}</div>
+      <div className={styles["month-title-with-arrows"]}>
+        <a
+          className={styles["arrow"]}
+          aria-label="Previous month"
+          onClick={previousMonth}
+        >
+          «
+        </a>{" "}
+        <span className={styles["month-name"]}>{monthString}</span>{" "}
+        <a
+          className={styles["arrow"]}
+          aria-label="Next month"
+          onClick={nextMonth}
+        >
+          »
+        </a>
+      </div>
       <div className={styles["calendar-grid"]}>
         {daysOfWeek}
         {emptyDays}

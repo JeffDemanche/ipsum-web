@@ -141,18 +141,19 @@ export const SurfaceEditorContextProvider: React.FC<
     [entryEditorRefs, entryEditorStates, setEntryEditorRef, setEntryEditorState]
   );
 
-  const unregisterEditor = useCallback(
-    (entryKey: string) => {
-      const editorsCopy = new Map(entryEditorStates);
+  const unregisterEditor = useCallback((entryKey: string) => {
+    setEntryEditorStates((editors) => {
+      const editorsCopy = new Map(editors);
       editorsCopy.delete(entryKey);
-      setEntryEditorStates(editorsCopy);
+      return editorsCopy;
+    });
 
-      const editorRefsCopy = new Map(entryEditorRefs);
-      editorRefsCopy.delete(entryKey);
-      setEntryEditorRefs(editorRefsCopy);
-    },
-    [entryEditorRefs, entryEditorStates]
-  );
+    setEntryEditorRefs((refs) => {
+      const refsCopy = new Map(refs);
+      refsCopy.delete(entryKey);
+      return refsCopy;
+    });
+  }, []);
 
   return (
     <SurfaceEditorContext.Provider

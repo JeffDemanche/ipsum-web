@@ -6,10 +6,10 @@ import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 
 /** Date formats we can create a string of from a DateTime. */
-type IpsumDateFormatTo = "entry-printed-date" | "month-word";
+type IpsumDateFormatTo = "entry-printed-date" | "month-word" | "url-format";
 
 /** Date formats we can create a DateTime of from a string. */
-type IpsumDateFormatFrom = "entry-printed-date";
+type IpsumDateFormatFrom = "entry-printed-date" | "url-format";
 
 /**
  * Gets current Luxon DateTime object.
@@ -67,6 +67,16 @@ export const getDaysBetween = (
   return daysBetween;
 };
 
+export const sortDates = (
+  dates: IpsumDateTime[],
+  ascending = false
+): IpsumDateTime[] => {
+  return dates.sort((a, b) => {
+    if (ascending) return a.dateTime.valueOf() > b.dateTime.valueOf() ? 1 : -1;
+    else return a.dateTime.valueOf() < b.dateTime.valueOf() ? 1 : -1;
+  });
+};
+
 export class IpsumDateTime {
   private _luxonDateTime: DateTime;
 
@@ -82,6 +92,8 @@ export class IpsumDateTime {
     switch (format) {
       case "entry-printed-date":
         return new this(DateTime.fromFormat(dateString, "D"));
+      case "url-format":
+        return new this(DateTime.fromFormat(dateString, "MM-dd-yyyy"));
       default:
         return undefined;
     }
@@ -93,6 +105,8 @@ export class IpsumDateTime {
         return this._luxonDateTime.toLocaleString();
       case "month-word":
         return this._luxonDateTime.toLocaleString({ month: "long" });
+      case "url-format":
+        return this._luxonDateTime.toFormat("MM-dd-yyyy");
       default:
         return undefined;
     }

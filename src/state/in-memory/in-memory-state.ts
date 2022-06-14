@@ -1,13 +1,13 @@
 import { IpsumDateTime } from "util/dates";
 import { dispatch, InMemoryAction } from "./in-memory-actions";
 
-interface InMemoryEntry {
+export interface InMemoryEntry {
   entryKey: string;
   date: IpsumDateTime;
   contentState: string;
 }
 
-interface InMemoryArc {
+export interface InMemoryArc {
   name: string;
 }
 

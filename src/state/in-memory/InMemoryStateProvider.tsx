@@ -7,7 +7,7 @@ import {
   reducer,
 } from "./in-memory-state";
 
-interface InMemoryStateContextType {
+export interface InMemoryStateContextType {
   state: InMemoryState;
   dispatch: React.Dispatch<InMemoryAction>;
 

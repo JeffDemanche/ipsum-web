@@ -1,4 +1,5 @@
 @import "../../styles/mixins.less";
+@import "../../styles/colors.less";
 
 .calendar {
   .journal-box();
@@ -8,11 +9,28 @@
   text-align: center;
 }
 
-.month-title {
+.year-title {
+  font-size: 10pt;
+}
+
+.month-title-with-arrows {
+  color: @paper-1;
   font-size: 16pt;
   font-weight: 500;
-  text-decoration: underline;
   margin-bottom: 4px;
+
+  .arrow {
+    opacity: 0.7;
+
+    &:hover {
+      cursor: pointer;
+      opacity: 1;
+    }
+  }
+
+  .month-name {
+    text-decoration: underline;
+  }
 }
 
 .day-of-week {

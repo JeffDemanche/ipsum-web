@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { getDaysBetween, IpsumDateTime } from "util/dates";
+import { getDaysBetween, IpsumDateTime, sortDates } from "util/dates";
 
 describe("dates", () => {
   describe("date formatting", () => {
@@ -25,7 +25,35 @@ describe("dates", () => {
     });
   });
 
-  describe("getDaysBetween", () => {
+  describe("sort dates", () => {
+    it("sorts dates in ascending order", () => {
+      const ipsumDates = [
+        new IpsumDateTime(DateTime.fromISO("2000-03-03")),
+        new IpsumDateTime(DateTime.fromISO("2000-01-01")),
+        new IpsumDateTime(DateTime.fromISO("2000-04-04")),
+        new IpsumDateTime(DateTime.fromISO("2000-02-02")),
+      ];
+
+      expect(
+        sortDates(ipsumDates, true).map((d) => d.toString("entry-printed-date"))
+      ).toEqual(["1/1/2000", "2/2/2000", "3/3/2000", "4/4/2000"]);
+    });
+
+    it("sorts dates in descending order", () => {
+      const ipsumDates = [
+        new IpsumDateTime(DateTime.fromISO("2000-03-03")),
+        new IpsumDateTime(DateTime.fromISO("2000-01-01")),
+        new IpsumDateTime(DateTime.fromISO("2000-04-04")),
+        new IpsumDateTime(DateTime.fromISO("2000-02-02")),
+      ];
+
+      expect(
+        sortDates(ipsumDates).map((d) => d.toString("entry-printed-date"))
+      ).toEqual(["4/4/2000", "3/3/2000", "2/2/2000", "1/1/2000"]);
+    });
+  });
+
+  describe("get days between", () => {
     it("gets days over a week", () => {
       const out = getDaysBetween(
         IpsumDateTime.fromString("8/9/1998", "entry-printed-date"),
