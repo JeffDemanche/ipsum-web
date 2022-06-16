@@ -81,9 +81,18 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
     onEditorBlur(entryKey);
   }, [entryKey, onEditorBlur]);
 
+  const onHeaderClick = useCallback(() => {
+    editorRef.current.focus();
+  }, [editorRef]);
+
   return (
     <div className={styles["journal-entry"]}>
-      <h1 className={cx({ [styles["empty-entry"]]: empty })}>{entryKey}</h1>
+      <h1
+        className={cx({ [styles["empty-entry"]]: empty })}
+        onClick={onHeaderClick}
+      >
+        {entryKey}
+      </h1>
       {editorState && (
         <Editor
           onFocus={onFocus}
