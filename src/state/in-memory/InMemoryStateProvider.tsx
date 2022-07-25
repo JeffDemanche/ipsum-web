@@ -1,5 +1,8 @@
-import React, { useEffect, useReducer, useState } from "react";
-import { dexieIpsumSchema } from "state/DexieIpsumSchema";
+import React, { useCallback, useReducer } from "react";
+import {
+  readFileToInMemoryState,
+  writeInMemoryStateToFile,
+} from "util/file/serializer";
 import { InMemoryAction } from "./in-memory-actions";
 import {
   initialInMemoryState,
@@ -11,33 +14,39 @@ export interface InMemoryStateContextType {
   state: InMemoryState;
   dispatch: React.Dispatch<InMemoryAction>;
 
-  loadedFromDexie: boolean;
+  saveToFile: () => Promise<void>;
+  loadFromFile: () => Promise<void>;
 }
 
 export const InMemoryStateContext =
   React.createContext<InMemoryStateContextType>({
     state: initialInMemoryState,
     dispatch: () => {},
-    loadedFromDexie: false,
+    saveToFile: async () => {},
+    loadFromFile: async () => {},
   });
 
 export const InMemoryStateProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }: { children: React.ReactElement }) => {
-  // could be adjusted to be "which" dexie instance to use.
-  const [loadedFromDexie, setLoadedFromDexie] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialInMemoryState);
 
-  useEffect(() => {
-    dexieIpsumSchema.loadInMemoryState().then((state) => {
-      dispatch({ type: "OVERRIDE-FROM-DEXIE", payload: { state } });
-      setLoadedFromDexie(true);
+  const saveToFile = useCallback(async () => {
+    await writeInMemoryStateToFile(state);
+  }, [state]);
+
+  const loadFromFile = useCallback(async () => {
+    dispatch({
+      type: "OVERRIDE",
+      payload: { state: await readFileToInMemoryState() },
     });
   }, []);
 
   return (
-    <InMemoryStateContext.Provider value={{ state, dispatch, loadedFromDexie }}>
-      {loadedFromDexie ? children : <div>Loading...</div>}
+    <InMemoryStateContext.Provider
+      value={{ state, dispatch, saveToFile, loadFromFile }}
+    >
+      {state ? children : <div>Loading...</div>}
     </InMemoryStateContext.Provider>
   );
 };

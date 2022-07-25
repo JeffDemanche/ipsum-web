@@ -1,4 +1,5 @@
 import { Calendar } from "components/Calendar/Calendar";
+import { JournalInfoBox } from "components/JournalInfoBox/JournalInfoBox";
 import React from "react";
 import { Surface } from "../components/Surface/Surface";
 import { SurfaceEditorContextProvider } from "../components/Surface/SurfaceEditorContext";
@@ -14,6 +15,7 @@ export const ViewJournal: React.FC = () => {
             <div className={styles["diptych"]}>
               <div className={styles["column-1"]}>
                 <div className={styles["column-1-floating"]}>
+                  <JournalInfoBox></JournalInfoBox>
                   <Calendar></Calendar>
                 </div>
               </div>

@@ -1,7 +1,8 @@
+/* eslint-disable no-undef */
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
-module.exports = {
+module.exports = (env) => ({
   entry: "./src/index.tsx",
   mode: "development",
   module: {
@@ -41,6 +42,10 @@ module.exports = {
       views: path.resolve(__dirname, "src/views"),
       state: path.resolve(__dirname, "src/state"),
     },
+    fallback: {
+      fs: false,
+      path: false,
+    },
   },
   output: {
     filename: "bundle.js",
@@ -58,8 +63,9 @@ module.exports = {
     static: {
       directory: path.join(__dirname, "dist"),
     },
+    watchFiles: "./src",
     historyApiFallback: true,
     compress: true,
     port: 9000,
   },
-};
+});

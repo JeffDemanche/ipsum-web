@@ -1,0 +1,26 @@
+@import "../styles/colors.less";
+@import "../styles/fonts.less";
+
+// Define "global" styles.
+body {
+  color: @paper-1;
+}
+
+h1 {
+  font-family: @font-headers;
+  font-size: 24pt;
+  color: @paper-1;
+}
+
+button {
+  color: @paper-7;
+  font-family: @font-controls-1;
+  background: none;
+  border: 1px solid @paper-7;
+  cursor: pointer;
+
+  &:hover {
+    color: @paper-5;
+    border: 1px solid @paper-5;
+  }
+}

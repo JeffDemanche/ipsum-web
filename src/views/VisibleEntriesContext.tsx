@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useMemo } from "react";
 import { useParams } from "react-router";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { IpsumDateTime, sortDates } from "util/dates";
@@ -38,19 +38,13 @@ export const VisibleEntriesProvider: React.FC<{
       )
     : undefined;
 
-  const [visibleEntryKeys, setVisibleEntryKeys] = useState<string[]>(() =>
-    entryKeyFromURL
+  const visibleEntryKeys = useMemo(() => {
+    return entryKeyFromURL
       ? [entryKeyFromURL]
       : sortedEntryKeys
           .slice(0, DEFAULT_NUM_VISIBLE_ENTRIES)
-          .map((entryKey) => entryKey.toString("entry-printed-date"))
-  );
-
-  useEffect(() => {
-    if (entryKeyFromURL) {
-      setVisibleEntryKeys([entryKeyFromURL]);
-    }
-  }, [entries, entryKeyFromURL]);
+          .map((entryKey) => entryKey.toString("entry-printed-date"));
+  }, [entryKeyFromURL, sortedEntryKeys]);
 
   return (
     <VisibleEntriesContext.Provider value={{ visibleEntryKeys }}>
