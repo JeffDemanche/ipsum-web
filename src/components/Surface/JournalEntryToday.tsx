@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from "react";
 import cx from "classnames";
 import _ from "underscore";
-import { Editor, EditorState, RichUtils } from "draft-js";
+import { DraftEditorCommand, Editor, EditorState, RichUtils } from "draft-js";
 import styles from "./JournalEntry.less";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { stringifyContentState } from "util/content-state";
@@ -63,10 +63,10 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   );
 
   const handleKeyCommand = useCallback(
-    (command: string, editorState: EditorState) => {
+    (command: DraftEditorCommand, editorState: EditorState) => {
       const newState = RichUtils.handleKeyCommand(editorState, command);
       if (newState) {
-        setEntryEditorState(entryKey, newState);
+        setEntryEditorState(entryKey, () => newState);
         return "handled";
       } else return "not-handled";
     },
