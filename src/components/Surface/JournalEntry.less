@@ -6,10 +6,12 @@
   font-family: @font-entry-1;
 
   h1 {
-    cursor: pointer;
+    &:not(.editor-header-one) {
+      cursor: pointer;
 
-    &.empty-entry {
-      color: @paper-7;
+      &.empty-entry {
+        color: @paper-7;
+      }
     }
   }
 
@@ -19,5 +21,11 @@
     &:not(:last-child) {
       margin-bottom: 15px;
     }
+  }
+
+  .editor-header-one {
+    color: @paper-3;
+    font-size: 16pt;
+    font-weight: bold;
   }
 }

@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { SurfaceControls } from "./SurfaceControls";
+import React, { useContext } from "react";
 import { JournalEntryPast } from "./JournalEntryPast";
 import { JournalEntryToday } from "./JournalEntryToday";
 
@@ -36,7 +35,6 @@ export const SurfaceEditor = () => {
     <>
       {todayEntryComponent}
       {entryEditorComponents}
-      <SurfaceControls />
     </>
   );
 };

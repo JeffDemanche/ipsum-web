@@ -8,6 +8,7 @@ import { stringifyContentState } from "util/content-state";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { IpsumDateTime } from "util/dates";
+import { SurfaceControls } from "./SurfaceControls";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -94,15 +95,18 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
         {entryKey}
       </h1>
       {editorState && (
-        <Editor
-          onFocus={onFocus}
-          onBlur={onBlur}
-          editorState={editorState}
-          handleKeyCommand={handleKeyCommand}
-          blockStyleFn={blockStyleFn}
-          onChange={onEditorChange}
-          ref={editorRef}
-        ></Editor>
+        <>
+          <SurfaceControls />
+          <Editor
+            onFocus={onFocus}
+            onBlur={onBlur}
+            editorState={editorState}
+            handleKeyCommand={handleKeyCommand}
+            blockStyleFn={blockStyleFn}
+            onChange={onEditorChange}
+            ref={editorRef}
+          ></Editor>
+        </>
       )}
     </div>
   );

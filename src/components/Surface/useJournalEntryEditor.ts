@@ -18,6 +18,7 @@ interface UseJournalEntryEditorResult {
 
 const blockStyleFn = (block: ContentBlock) => {
   if (block.getType() === "unstyled") return styles["editor-paragraph"];
+  if (block.getType() === "header-one") return styles["editor-header-one"];
 };
 
 /**
