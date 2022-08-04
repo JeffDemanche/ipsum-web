@@ -1,5 +1,6 @@
 import { Editor, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
+import { EditorWrapper } from "./EditorWrapper";
 import styles from "./JournalEntry.less";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
@@ -53,7 +54,8 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
     <div className={styles["journal-entry"]}>
       <h1>{entryKey}</h1>
       {editorState && (
-        <Editor
+        <EditorWrapper
+          enableHighlights={true}
           editorState={editorState}
           onChange={onEditorChange}
           onFocus={onFocus}
@@ -61,7 +63,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
           handleKeyCommand={handleKeyCommand}
           blockStyleFn={blockStyleFn}
           ref={editorRef}
-        ></Editor>
+        ></EditorWrapper>
       )}
     </div>
   );

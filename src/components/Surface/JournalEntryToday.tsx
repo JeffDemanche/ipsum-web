@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import cx from "classnames";
 import _ from "underscore";
 import { DraftEditorCommand, Editor, EditorState, RichUtils } from "draft-js";
@@ -9,6 +9,7 @@ import { useJournalEntryEditor } from "./useJournalEntryEditor";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { IpsumDateTime } from "util/dates";
 import { SurfaceControls } from "./SurfaceControls";
+import { EditorWrapper } from "./EditorWrapper";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -97,7 +98,8 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
       {editorState && (
         <>
           <SurfaceControls />
-          <Editor
+          <EditorWrapper
+            enableHighlights={true}
             onFocus={onFocus}
             onBlur={onBlur}
             editorState={editorState}
@@ -105,7 +107,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
             blockStyleFn={blockStyleFn}
             onChange={onEditorChange}
             ref={editorRef}
-          ></Editor>
+          ></EditorWrapper>
         </>
       )}
     </div>
