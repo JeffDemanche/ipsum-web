@@ -7,6 +7,12 @@ type EditorStateMap = ReadonlyMap<string, EditorState>;
 
 type EditorRefMap = ReadonlyMap<string, React.MutableRefObject<Editor>>;
 
+// Just keep this around because I think it'll come in handy.
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface EditorMetadata {}
+
+type EditorMetadataMap = ReadonlyMap<string, EditorMetadata>;
+
 interface SurfaceEditorContextValue {
   focusedEditorKey: string | undefined;
   onEditorFocus: (editorKey: string) => void;
@@ -36,6 +42,9 @@ interface SurfaceEditorContextValue {
     setEditorState: (previousEditorState: EditorState) => EditorState
   ) => void;
 
+  entryEditorMetadatas: EditorMetadataMap;
+  setEntryEditorMetadata: (entryKey: string, metadata: EditorMetadata) => void;
+
   /**
    * Maps entry keys to a React ref of the DraftJS editor for them.
    */
@@ -56,6 +65,8 @@ export const emptySurfaceEditorContextValue: SurfaceEditorContextValue = {
 
   entryEditorStates: new Map<string, EditorState>(),
   setEntryEditorState: noop,
+  entryEditorMetadatas: new Map<string, EditorMetadata>(),
+  setEntryEditorMetadata: noop,
   entryEditorRefs: new Map<string, React.MutableRefObject<Editor>>(),
   setEntryEditorRef: noop,
 };
@@ -90,6 +101,10 @@ export const SurfaceEditorContextProvider: React.FC<
     ReadonlyMap<string, EditorState>
   >(new Map());
 
+  const [entryEditorMetadatas, setEntryEditorMetadatas] = useState<
+    ReadonlyMap<string, EditorMetadata>
+  >(new Map());
+
   const [entryEditorRefs, setEntryEditorRefs] = useState<
     ReadonlyMap<string, React.MutableRefObject<Editor>>
   >(new Map());
@@ -102,6 +117,17 @@ export const SurfaceEditorContextProvider: React.FC<
       setEntryEditorStates((prevEntryEditorStates) => {
         const editorsCopy = new Map(prevEntryEditorStates);
         editorsCopy.set(entryKey, setEditorState(editorsCopy.get(entryKey)));
+        return editorsCopy;
+      });
+    },
+    []
+  );
+
+  const setEntryEditorMetadata = useCallback(
+    (entryKey: string, metadata: EditorMetadata) => {
+      setEntryEditorMetadatas((prevMetadatas) => {
+        const editorsCopy = new Map(prevMetadatas);
+        editorsCopy.set(entryKey, metadata);
         return editorsCopy;
       });
     },
@@ -135,10 +161,17 @@ export const SurfaceEditorContextProvider: React.FC<
             ? EditorState.createWithContent(contentState)
             : EditorState.createEmpty()
         );
+        setEntryEditorMetadata(entryKey, { syncedWithState: false });
         setEntryEditorRef(entryKey, editorRef);
       }
     },
-    [entryEditorRefs, entryEditorStates, setEntryEditorRef, setEntryEditorState]
+    [
+      entryEditorRefs,
+      entryEditorStates,
+      setEntryEditorMetadata,
+      setEntryEditorRef,
+      setEntryEditorState,
+    ]
   );
 
   const unregisterEditor = useCallback((entryKey: string) => {
@@ -146,6 +179,12 @@ export const SurfaceEditorContextProvider: React.FC<
       const editorsCopy = new Map(editors);
       editorsCopy.delete(entryKey);
       return editorsCopy;
+    });
+
+    setEntryEditorMetadatas((metadatas) => {
+      const metadatasCopy = new Map(metadatas);
+      metadatasCopy.delete(entryKey);
+      return metadatasCopy;
     });
 
     setEntryEditorRefs((refs) => {
@@ -167,6 +206,8 @@ export const SurfaceEditorContextProvider: React.FC<
 
         entryEditorStates,
         setEntryEditorState,
+        entryEditorMetadatas,
+        setEntryEditorMetadata,
         entryEditorRefs,
         setEntryEditorRef,
       }}

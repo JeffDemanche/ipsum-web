@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext } from "react";
 import cx from "classnames";
 import _ from "underscore";
-import { DraftEditorCommand, Editor, EditorState, RichUtils } from "draft-js";
+import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
 import styles from "./JournalEntry.less";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { stringifyContentState } from "util/content-state";

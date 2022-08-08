@@ -28,9 +28,9 @@ const blockStyleFn = (block: ContentBlock) => {
 export const useJournalEntryEditor = ({
   entryKey,
 }: UseJournalEntryEditorArgs): UseJournalEntryEditorResult => {
-  const { state } = useContext(InMemoryStateContext);
+  const { state, reloadEditor } = useContext(InMemoryStateContext);
 
-  const contentState = useMemo(
+  const contentStateFromState = useMemo(
     () =>
       state && state.entries[entryKey]
         ? parseContentState(state.entries[entryKey].contentState)
@@ -41,12 +41,14 @@ export const useJournalEntryEditor = ({
   const {
     registerEditor,
     setEntryEditorState,
+    setEntryEditorMetadata,
     unregisterEditor,
     entryEditorStates,
+    entryEditorMetadatas,
   } = useContext(SurfaceEditorContext);
 
   const editorState = entryEditorStates.get(entryKey);
-
+  const editorMetadata = entryEditorMetadatas.get(entryKey);
   const editorRef = useRef<Editor>();
 
   const empty = !editorState?.getCurrentContent().hasText();
@@ -59,17 +61,28 @@ export const useJournalEntryEditor = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // This approach makes sure we only set the editor state to the stored entry
-  // value once per component render.
-  const [hasFilledEntryFromState, setHasFilledEntryFromState] = useState(false);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   useEffect(() => {
-    if (!hasFilledEntryFromState) {
+    if (editorMetadata && (!hasLoadedOnce || reloadEditor)) {
+      // Occurs when a syncedWithState is set to false, triggering a re-load.
       setEntryEditorState(entryKey, () => {
-        return EditorState.createWithContent(contentState);
+        return EditorState.createWithContent(contentStateFromState);
       });
-      setHasFilledEntryFromState(true);
+      setEntryEditorMetadata(entryKey, {
+        ...editorMetadata,
+        syncedWithState: true,
+      });
+      setHasLoadedOnce(true);
     }
-  }, [contentState, entryKey, hasFilledEntryFromState, setEntryEditorState]);
+  }, [
+    contentStateFromState,
+    editorMetadata,
+    entryKey,
+    hasLoadedOnce,
+    reloadEditor,
+    setEntryEditorMetadata,
+    setEntryEditorState,
+  ]);
 
   return {
     editorRef,

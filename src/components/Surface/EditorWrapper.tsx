@@ -26,7 +26,5 @@ export const EditorWrapper: React.FC<EditorWrapperPropsCombined> = ({
     [ipsumSelectionState]
   );
 
-  console.log(showNewArcPopover);
-
   return <Editor {...editorProps}></Editor>;
 };

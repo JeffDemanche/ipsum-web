@@ -1,4 +1,3 @@
-import { ChangeEvent } from "react";
 import { InMemoryState, stateReviver } from "state/in-memory/in-memory-state";
 
 /**
@@ -11,17 +10,16 @@ export const writeInMemoryStateToFile = async (
   if (window.electronAPI) {
     await window.electronAPI.saveFile(JSON.stringify(state));
   } else {
-    const element = document.createElement("a");
-    element.setAttribute(
-      "href",
-      "data:text/plain;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(state))
-    );
-    element.setAttribute("download", `${state.journalTitle}.ipsum`);
-    element.style.display = "none";
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+    const newHandle = await window.showSaveFilePicker({
+      excludeAcceptAllOption: true,
+      suggestedName: `${state.journalTitle}.ipsum`,
+      types: [
+        { description: "Ipsum Files", accept: { "text/plain": [".ipsum"] } },
+      ],
+    });
+    const writableStream = await newHandle.createWritable();
+    await writableStream.write(JSON.stringify(state));
+    await writableStream.close();
   }
 };
 
@@ -29,30 +27,20 @@ export const readFileToInMemoryState = async (): Promise<InMemoryState> => {
   if (window.electronAPI) {
     const fileContents = await window.electronAPI.openFile();
     const state = JSON.parse(fileContents, stateReviver) as InMemoryState;
-    console.log(state);
     return state;
   } else {
-    return new Promise<InMemoryState>((resolve, reject) => {
-      const element = document.createElement("input");
-      element.setAttribute("type", "file");
-      element.onchange = (e: Event) => {
-        if (
-          (e.target as HTMLInputElement).files &&
-          (e.target as HTMLInputElement).files.length === 1
-        ) {
-          const [file] = (e.target as HTMLInputElement).files;
-          const reader = new FileReader();
-          reader.readAsText(file, "UTF-8");
-          reader.onload = (e: ProgressEvent<FileReader>) => {
-            const state = JSON.parse(
-              e.target.result as string,
-              stateReviver
-            ) as InMemoryState;
-            resolve(state);
-          };
-        }
-      };
-      element.click();
+    const [fileHandle] = await window.showOpenFilePicker({
+      excludeAcceptAllOption: true,
+      multiple: false,
+      types: [
+        { description: "Ipsum Files", accept: { "text/plain": [".ipsum"] } },
+      ],
     });
+
+    if (fileHandle.kind === "file") {
+      const file = await fileHandle.getFile();
+      const fileText = await file.text();
+      return JSON.parse(fileText, stateReviver) as InMemoryState;
+    }
   }
 };
