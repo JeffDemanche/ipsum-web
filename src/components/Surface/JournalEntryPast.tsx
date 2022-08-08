@@ -1,5 +1,6 @@
 import { Editor, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
+import { IpsumDateTime } from "util/dates";
 import { EditorWrapper } from "./EditorWrapper";
 import styles from "./JournalEntry.less";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
@@ -52,7 +53,11 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
 
   return (
     <div className={styles["journal-entry"]}>
-      <h1>{entryKey}</h1>
+      <h1>
+        {IpsumDateTime.fromString(entryKey, "entry-printed-date").toString(
+          "entry-printed-date-nice"
+        )}
+      </h1>
       {editorState && (
         <EditorWrapper
           enableHighlights={true}

@@ -6,10 +6,17 @@ import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 
 /** Date formats we can create a string of from a DateTime. */
-type IpsumDateFormatTo = "entry-printed-date" | "month-word" | "url-format";
+type IpsumDateFormatTo =
+  | "entry-printed-date"
+  | "entry-printed-date-nice"
+  | "month-word"
+  | "url-format";
 
 /** Date formats we can create a DateTime of from a string. */
-type IpsumDateFormatFrom = "entry-printed-date" | "url-format";
+type IpsumDateFormatFrom =
+  | "entry-printed-date"
+  | "entry-printed-date-nice"
+  | "url-format";
 
 /**
  * Gets current Luxon DateTime object.
@@ -92,6 +99,8 @@ export class IpsumDateTime {
     switch (format) {
       case "entry-printed-date":
         return new this(DateTime.fromFormat(dateString, "D"));
+      case "entry-printed-date-nice":
+        return new this(DateTime.fromFormat(dateString, "D"));
       case "url-format":
         return new this(DateTime.fromFormat(dateString, "MM-dd-yyyy"));
       default:
@@ -103,6 +112,12 @@ export class IpsumDateTime {
     switch (format) {
       case "entry-printed-date":
         return this._luxonDateTime.toLocaleString();
+      case "entry-printed-date-nice":
+        return this._luxonDateTime.toLocaleString({
+          weekday: "long",
+          month: "long",
+          day: "2-digit",
+        });
       case "month-word":
         return this._luxonDateTime.toLocaleString({ month: "long" });
       case "url-format":

@@ -90,10 +90,14 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   return (
     <div className={styles["journal-entry"]}>
       <h1
-        className={cx({ [styles["empty-entry"]]: empty })}
+        className={cx(styles["entry-heading"], {
+          [styles["empty-entry"]]: empty,
+        })}
         onClick={onHeaderClick}
       >
-        {entryKey}
+        {IpsumDateTime.fromString(entryKey, "entry-printed-date").toString(
+          "entry-printed-date-nice"
+        )}
       </h1>
       {editorState && (
         <>
