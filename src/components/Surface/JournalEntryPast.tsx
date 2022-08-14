@@ -41,7 +41,25 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
     [entryKey, setEntryEditorState]
   );
 
-  const onEditorChange = useCallback(() => {}, []);
+  const onEditorChange = useCallback(
+    (newEditorState: EditorState) => {
+      // This function prevents the content from being changed but allows
+      // selection changes.
+      if (
+        editorState.getSelection().getHasFocus() &&
+        newEditorState.getSelection().getHasFocus()
+      ) {
+        const onlySelectionChanges = EditorState.forceSelection(
+          EditorState.createWithContent(editorState.getCurrentContent()),
+          newEditorState.getSelection()
+        );
+        setEntryEditorState(entryKey, () => onlySelectionChanges);
+      } else {
+        setEntryEditorState(entryKey, () => newEditorState);
+      }
+    },
+    [editorState, entryKey, setEntryEditorState]
+  );
 
   const onFocus = useCallback(() => {
     onEditorFocus(entryKey);
@@ -60,6 +78,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
       </h1>
       {editorState && (
         <EditorWrapper
+          editorKey={entryKey}
           enableHighlights={true}
           editorState={editorState}
           onChange={onEditorChange}

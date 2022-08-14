@@ -103,6 +103,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
         <>
           <SurfaceControls />
           <EditorWrapper
+            editorKey={entryKey}
             enableHighlights={true}
             onFocus={onFocus}
             onBlur={onBlur}

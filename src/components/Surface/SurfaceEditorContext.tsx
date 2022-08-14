@@ -76,7 +76,7 @@ export const SurfaceEditorContext = React.createContext(
 );
 
 interface SurfaceEditorContextProviderProps {
-  children: React.ReactChild;
+  children: React.ReactNode;
 }
 
 export const SurfaceEditorContextProvider: React.FC<

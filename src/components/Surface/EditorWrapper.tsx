@@ -1,30 +1,28 @@
 import { Editor, EditorProps } from "draft-js";
-import React, { useMemo } from "react";
-import { IpsumSelectionState } from "util/selection";
+import React, { useContext, useRef } from "react";
+import { TextRangeHighlight } from "components/EditorSelection/TextRangeHighlight";
+import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
 
 interface EditorWrapperProps {
   enableHighlights: boolean;
 }
 
 type EditorWrapperPropsCombined = EditorWrapperProps &
-  EditorProps & { ref: React.LegacyRef<Editor> };
+  EditorProps & { ref: React.Ref<Editor> };
 
-export const EditorWrapper: React.FC<EditorWrapperPropsCombined> = ({
-  enableHighlights,
-  ...editorProps
-}: EditorWrapperPropsCombined) => {
-  const editorState = editorProps.editorState;
+export const EditorWrapper: React.FC<EditorWrapperPropsCombined> =
+  React.forwardRef<Editor, EditorWrapperPropsCombined>((props, ref) => {
+    const { getSelection } = useContext(EditorSelectionContext);
 
-  const selectionState = editorState.getSelection();
-  const ipsumSelectionState = useMemo(
-    () => new IpsumSelectionState(selectionState),
-    [selectionState]
-  );
+    const editorSelection = getSelection(props.editorKey);
+    const range = editorSelection.getRange();
 
-  const showNewArcPopover = useMemo(
-    () => ipsumSelectionState.isSomethingSelected(),
-    [ipsumSelectionState]
-  );
+    return (
+      <div>
+        <Editor {...props} ref={ref}></Editor>
+        <TextRangeHighlight range={range} color={"black"}></TextRangeHighlight>
+      </div>
+    );
+  });
 
-  return <Editor {...editorProps}></Editor>;
-};
+EditorWrapper.displayName = "EditorWrapper";

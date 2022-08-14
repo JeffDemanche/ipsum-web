@@ -4,6 +4,7 @@ import styles from "./JournalEntry.less";
 import { parseContentState } from "util/content-state";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import cx from "classnames";
 
 interface UseJournalEntryEditorArgs {
   entryKey: string;
@@ -17,8 +18,10 @@ interface UseJournalEntryEditorResult {
 }
 
 const blockStyleFn = (block: ContentBlock) => {
-  if (block.getType() === "unstyled") return styles["editor-paragraph"];
-  if (block.getType() === "header-one") return styles["editor-header-one"];
+  return cx(styles["editor-block"], {
+    [styles["editor-paragraph"]]: block.getType() === "unstyled",
+    [styles["editor-header-one"]]: block.getType() === "header-one",
+  });
 };
 
 /**

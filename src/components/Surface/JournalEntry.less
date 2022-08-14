@@ -20,17 +20,21 @@
     }
   }
 
-  .editor-paragraph {
-    line-height: 1.5;
+  .editor-block {
+    z-index: 1;
 
-    &:not(:last-child) {
-      margin-bottom: 15px;
+    &.editor-paragraph {
+      line-height: 1.5;
+
+      &:not(:last-child) {
+        margin-bottom: 15px;
+      }
     }
-  }
 
-  .editor-header-one {
-    color: @paper-3;
-    font-size: 16pt;
-    font-weight: bold;
+    &.editor-header-one {
+      color: @paper-3;
+      font-size: 16pt;
+      font-weight: bold;
+    }
   }
 }
