@@ -1,5 +1,5 @@
-import { Popover, Typography } from "@mui/material";
 import React, { useMemo, useRef } from "react";
+import { SelectionRotorPopper } from "./SelectionRotorPopper";
 import styles from "./TextRangeHighlight.less";
 
 interface TextRangeHighlightProps {
@@ -13,6 +13,13 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
 }) => {
   const rectList: DOMRectList = useMemo(() => range?.getClientRects(), [range]);
 
+  const containerRef = useRef<HTMLDivElement>();
+  const completeSelectionRef = useRef<HTMLDivElement>();
+
+  const containerTop = containerRef?.current?.getBoundingClientRect().top;
+  const containerLeft = containerRef?.current?.getBoundingClientRect().left;
+
+  // Calculates a div for each line of text selection.
   const backgroundDivs = useMemo(() => {
     if (!rectList) return undefined;
 
@@ -23,9 +30,10 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
       const div = (
         <div
           key={i}
+          className={styles["highlightDiv"]}
           style={{
-            top: `${rect.top}px`,
-            left: `${rect.left}px`,
+            top: `${rect.top - containerTop}px`,
+            left: `${rect.left - containerLeft}px`,
             width: `${rect.width}px`,
             height: `${rect.height}px`,
             backgroundColor: color,
@@ -35,60 +43,53 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
       divs.push(div);
     }
     return divs;
-  }, [color, rectList]);
+  }, [color, containerLeft, containerTop, rectList]);
 
-  const parentDims = useMemo(() => {
-    if (!rectList?.length) return {};
+  // Calculates dims for an element that exactly wraps all selection boxes.
+  const completeSelectionDims = useMemo(() => {
+    if (!rectList) return undefined;
 
-    let lowestLeft = Number.MAX_SAFE_INTEGER;
-    let lowestTop = Number.MAX_SAFE_INTEGER;
-    let highestRight = 0;
-    let highestBottom = 0;
+    let top = Number.MAX_SAFE_INTEGER;
+    let left = Number.MAX_SAFE_INTEGER;
+    let right = 0;
+    let bottom = 0;
 
     for (let i = 0; i < rectList.length; i++) {
       const rect = rectList.item(i);
-      if (rect.left < lowestLeft) lowestLeft = rect.left;
-      if (rect.top < lowestTop) lowestTop = rect.top;
-      if (rect.right > highestRight) highestRight = rect.right;
-      if (rect.bottom > highestBottom) highestBottom = rect.bottom;
+      if (rect.top < top) top = rect.top;
+      if (rect.left < left) left = rect.left;
+      if (rect.bottom > bottom) bottom = rect.bottom;
+      if (rect.right > right) right = rect.right;
     }
 
-    return {
-      left: `${lowestLeft}px`,
-      top: `${lowestTop}px`,
-      width: `${highestRight - lowestLeft}px`,
-      height: `${highestBottom - lowestTop}px`,
-    };
-  }, [rectList]);
+    const px = (n: number) => `${n}px`;
 
-  const ref = useRef<HTMLDivElement>();
+    return {
+      top: px(top - containerTop),
+      left: px(left - containerLeft),
+      height: px(bottom - top),
+      width: px(right - left),
+    };
+  }, [containerLeft, containerTop, rectList]);
 
   const anchorEl = useMemo(() => {
-    return rectList?.length ? ref.current : null;
+    return rectList?.length ? completeSelectionRef.current : null;
   }, [rectList?.length]);
 
   return (
     <>
-      <div className={styles["fixedContainer"]}>
+      <div className={styles["container"]} ref={containerRef}>
         <div
-          className={styles["textRangeHighlight"]}
-          style={parentDims}
-          ref={ref}
-        >
-          {backgroundDivs}
-        </div>
+          className={styles["completeSelection"]}
+          style={completeSelectionDims}
+          ref={completeSelectionRef}
+        ></div>
+        {backgroundDivs}
+        <SelectionRotorPopper
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+        ></SelectionRotorPopper>
       </div>
-      <Popover
-        id="new-arc-popover"
-        disableAutoFocus
-        disableScrollLock
-        disableEnforceFocus
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Typography>Some text</Typography>
-      </Popover>
     </>
   );
 };

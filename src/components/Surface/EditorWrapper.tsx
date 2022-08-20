@@ -1,5 +1,5 @@
 import { Editor, EditorProps } from "draft-js";
-import React, { useContext } from "react";
+import React, { useContext, useMemo, useRef } from "react";
 import { TextRangeHighlight } from "components/EditorSelection/TextRangeHighlight";
 import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
 
@@ -18,7 +18,7 @@ export const EditorWrapper: React.FC<EditorWrapperPropsCombined> =
     const range = editorSelection.getRange();
 
     return (
-      <div>
+      <div style={{ position: "relative" }}>
         <Editor {...props} ref={ref}></Editor>
         <TextRangeHighlight range={range} color={"black"}></TextRangeHighlight>
       </div>
