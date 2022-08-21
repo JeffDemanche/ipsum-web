@@ -41,6 +41,7 @@ module.exports = (env) => ({
       components: path.resolve(__dirname, "src/components"),
       views: path.resolve(__dirname, "src/views"),
       state: path.resolve(__dirname, "src/state"),
+      styles: path.resolve(__dirname, "src/styles"),
     },
     fallback: {
       fs: false,

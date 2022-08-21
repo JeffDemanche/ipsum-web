@@ -36,6 +36,7 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
             left: `${rect.left - containerLeft}px`,
             width: `${rect.width}px`,
             height: `${rect.height}px`,
+            opacity: 0,
             backgroundColor: color,
           }}
         ></div>

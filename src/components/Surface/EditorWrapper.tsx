@@ -1,5 +1,5 @@
 import { Editor, EditorProps } from "draft-js";
-import React, { useContext, useMemo, useRef } from "react";
+import React, { useContext } from "react";
 import { TextRangeHighlight } from "components/EditorSelection/TextRangeHighlight";
 import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
 
