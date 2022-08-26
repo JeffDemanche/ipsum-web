@@ -2,25 +2,40 @@ import { Editor, SelectionState } from "draft-js";
 import React from "react";
 
 export class IpsumSelectionState {
-  private readonly _selectionState: SelectionState;
-  private readonly _documentSelection: Selection;
+  private readonly _draftSelectionState: SelectionState;
+  private readonly _documentRange: Range;
   private readonly _editorRef: React.RefObject<Editor>;
 
   constructor(
     selectionState: SelectionState,
+    range: Range,
     editorRef: React.RefObject<Editor>
   ) {
-    this._selectionState = selectionState;
-    this._documentSelection = document.getSelection();
+    this._draftSelectionState = selectionState;
+    this._documentRange = range;
     this._editorRef = editorRef;
   }
 
   get selectionState() {
-    return this._selectionState;
+    return this._draftSelectionState;
   }
 
-  get documentSelection() {
-    return this._documentSelection;
+  get range() {
+    return this._documentRange;
+  }
+
+  static rangeFromDocument() {
+    return document.getSelection().rangeCount > 0
+      ? document.getSelection().getRangeAt(0)
+      : null;
+  }
+
+  clone() {
+    return new IpsumSelectionState(
+      this._draftSelectionState,
+      this.range?.cloneRange(),
+      this._editorRef
+    );
   }
 
   /**
@@ -29,9 +44,9 @@ export class IpsumSelectionState {
    * doesn't include editor text.
    */
   isContained() {
-    if (this._documentSelection.rangeCount === 0) return false;
+    if (!this.range) return false;
     const selectionCommonAncestor =
-      this._documentSelection.getRangeAt(0).commonAncestorContainer.parentNode;
+      this.range.commonAncestorContainer.parentNode;
 
     return !!this._editorRef.current?.editor.contains(selectionCommonAncestor);
   }
@@ -41,19 +56,16 @@ export class IpsumSelectionState {
    */
   isNonEmpty() {
     return (
-      this._selectionState &&
-      this._selectionState.getAnchorOffset() !==
-        this._selectionState.getFocusOffset()
+      this._draftSelectionState &&
+      this._documentRange?.START_TO_END &&
+      this._draftSelectionState.getAnchorOffset() !==
+        this._draftSelectionState.getFocusOffset()
     );
   }
 
   getRange(): Range {
-    if (
-      this.isContained() &&
-      this.isNonEmpty() &&
-      this._documentSelection.rangeCount > 0
-    ) {
-      return this._documentSelection.getRangeAt(0);
+    if (this.isContained() && this.isNonEmpty() && this.range) {
+      return this.range;
     } else return null;
   }
 }

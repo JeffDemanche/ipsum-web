@@ -34,6 +34,7 @@ export const EditorSelectionProvider: React.FC<
           key,
           new IpsumSelectionState(
             editorState.getSelection(),
+            IpsumSelectionState.rangeFromDocument(),
             entryEditorRefs.get(key)
           )
         );

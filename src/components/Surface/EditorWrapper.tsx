@@ -1,5 +1,5 @@
 import { Editor, EditorProps } from "draft-js";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { TextRangeHighlight } from "components/EditorSelection/TextRangeHighlight";
 import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
 
@@ -14,13 +14,37 @@ export const EditorWrapper: React.FC<EditorWrapperPropsCombined> =
   React.forwardRef<Editor, EditorWrapperPropsCombined>((props, ref) => {
     const { getSelection } = useContext(EditorSelectionContext);
 
-    const editorSelection = getSelection(props.editorKey);
-    const range = editorSelection.getRange();
+    const editorSelection = useMemo(
+      () => getSelection(props.editorKey),
+      [getSelection, props.editorKey]
+    );
+
+    // editorSelection will become an empty selection as soon as the user
+    // interacts with the rotor popper. This state persists the selection until
+    // the user explicitly performs an action that should close the popper.
+    const [persistentSelection, setPersistentState] = useState(() =>
+      editorSelection?.clone()
+    );
+
+    useEffect(() => {
+      if (
+        editorSelection &&
+        (editorSelection.isNonEmpty() || editorSelection.isContained())
+      ) {
+        setPersistentState(editorSelection.clone());
+      }
+    }, [editorSelection]);
 
     return (
       <div style={{ position: "relative" }}>
         <Editor {...props} ref={ref}></Editor>
-        <TextRangeHighlight range={range} color={"black"}></TextRangeHighlight>
+        <TextRangeHighlight
+          selection={persistentSelection}
+          color={"black"}
+          onClickAway={() => {
+            setPersistentState(editorSelection.clone());
+          }}
+        ></TextRangeHighlight>
       </div>
     );
   });

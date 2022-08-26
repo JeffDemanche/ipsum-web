@@ -1,16 +1,20 @@
 import React, { useMemo, useRef } from "react";
-import { SelectionRotorPopper } from "./SelectionRotorPopper";
+import { SelectionRotorPopper } from "components/SelectionRotor/SelectionRotorPopper";
 import styles from "./TextRangeHighlight.less";
+import { IpsumSelectionState } from "util/selection";
 
 interface TextRangeHighlightProps {
-  range: Range;
+  selection: IpsumSelectionState;
   color: string;
+  onClickAway: () => void;
 }
 
 export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
-  range,
+  selection,
   color,
+  onClickAway,
 }) => {
+  const range = selection.getRange();
   const rectList: DOMRectList = useMemo(() => range?.getClientRects(), [range]);
 
   const containerRef = useRef<HTMLDivElement>();
@@ -36,7 +40,7 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
             left: `${rect.left - containerLeft}px`,
             width: `${rect.width}px`,
             height: `${rect.height}px`,
-            opacity: 0,
+            opacity: 0.4,
             backgroundColor: color,
           }}
         ></div>
@@ -89,6 +93,7 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
         <SelectionRotorPopper
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
+          onClickAway={onClickAway}
         ></SelectionRotorPopper>
       </div>
     </>

@@ -25,6 +25,22 @@ export const theme = createTheme({
     },
   },
   components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          color: stylesheet.colors.paper_9,
+          backgroundColor: stylesheet.colors.paper_1_90,
+          borderBottom: `1px solid ${stylesheet.colors.paper_9}`,
+        },
+      },
+    },
+    MuiDivider: {
+      styleOverrides: {
+        root: {
+          backgroundColor: stylesheet.colors.paper_9,
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

@@ -1,15 +1,20 @@
-import React from "react";
-import styles from "./Button.less";
-import { Button as MuiButton } from "@mui/material";
+import React, { useMemo } from "react";
+import { Button as MuiButton, Tooltip } from "@mui/material";
 
 interface ButtonProps extends React.ComponentProps<typeof MuiButton> {
+  tooltip?: string;
   children: React.ReactNode;
 }
 
-export const Button: React.FC<ButtonProps> = ({ children, ...buttonProps }) => {
-  return (
-    <MuiButton className={styles["button"]} {...buttonProps}>
-      {children}
-    </MuiButton>
+export const Button: React.FC<ButtonProps> = ({
+  tooltip,
+  children,
+  ...buttonProps
+}) => {
+  const button = useMemo(
+    () => <MuiButton {...buttonProps}>{children}</MuiButton>,
+    [buttonProps, children]
   );
+
+  return tooltip ? <Tooltip title={tooltip}>{button}</Tooltip> : button;
 };
