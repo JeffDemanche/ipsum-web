@@ -7,6 +7,7 @@ import { AssignArcRotorScreen } from "./AssignArcRotorScreen";
 import { HomeRotorScreen } from "./HomeRotorScreen";
 
 interface SelectionRotorPopperProps {
+  editorKey: string;
   open: boolean;
   anchorEl: HTMLElement;
   onClickAway?: (event: MouseEvent | TouchEvent) => void;
@@ -15,6 +16,7 @@ interface SelectionRotorPopperProps {
 export type RotorScreen = "Home" | "Add Arc" | "Assign Arc";
 
 export const SelectionRotorPopper: React.FC<SelectionRotorPopperProps> = ({
+  editorKey,
   open,
   anchorEl,
   onClickAway,
@@ -22,10 +24,11 @@ export const SelectionRotorPopper: React.FC<SelectionRotorPopperProps> = ({
   const [currentScreen, setCurrentScreen] = useState<RotorScreen>("Home");
 
   const screen = useMemo(() => {
-    if (currentScreen === "Add Arc") return <AddArcRotorScreen />;
+    if (currentScreen === "Add Arc")
+      return <AddArcRotorScreen editorKey={editorKey} />;
     else if (currentScreen === "Assign Arc") return <AssignArcRotorScreen />;
     else return <HomeRotorScreen setCurrentScreen={setCurrentScreen} />;
-  }, [currentScreen]);
+  }, [currentScreen, editorKey]);
 
   useEffect(() => {
     if (!open) setCurrentScreen("Home");

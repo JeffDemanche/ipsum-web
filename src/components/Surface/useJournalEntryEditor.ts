@@ -5,6 +5,7 @@ import { parseContentState } from "util/content-state";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import cx from "classnames";
+import { decorator } from "components/Decorator/decorator";
 
 interface UseJournalEntryEditorArgs {
   entryKey: string;
@@ -31,7 +32,7 @@ const blockStyleFn = (block: ContentBlock) => {
 export const useJournalEntryEditor = ({
   entryKey,
 }: UseJournalEntryEditorArgs): UseJournalEntryEditorResult => {
-  const { state, reloadEditor } = useContext(InMemoryStateContext);
+  const { state, shouldReloadEditor } = useContext(InMemoryStateContext);
 
   const contentStateFromState = useMemo(
     () =>
@@ -66,10 +67,10 @@ export const useJournalEntryEditor = ({
 
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   useEffect(() => {
-    if (editorMetadata && (!hasLoadedOnce || reloadEditor)) {
+    if (editorMetadata && (!hasLoadedOnce || shouldReloadEditor)) {
       // Occurs when a syncedWithState is set to false, triggering a re-load.
       setEntryEditorState(entryKey, () => {
-        return EditorState.createWithContent(contentStateFromState);
+        return EditorState.createWithContent(contentStateFromState, decorator);
       });
       setEntryEditorMetadata(entryKey, {
         ...editorMetadata,
@@ -82,7 +83,7 @@ export const useJournalEntryEditor = ({
     editorMetadata,
     entryKey,
     hasLoadedOnce,
-    reloadEditor,
+    shouldReloadEditor,
     setEntryEditorMetadata,
     setEntryEditorState,
   ]);

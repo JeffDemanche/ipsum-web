@@ -1,4 +1,5 @@
-import { Editor, EditorState, RichUtils } from "draft-js";
+import { decorator } from "components/Decorator/decorator";
+import { EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
 import { IpsumDateTime } from "util/dates";
 import { EditorWrapper } from "./EditorWrapper";
@@ -50,7 +51,10 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
         newEditorState.getSelection().getHasFocus()
       ) {
         const onlySelectionChanges = EditorState.forceSelection(
-          EditorState.createWithContent(editorState.getCurrentContent()),
+          EditorState.createWithContent(
+            editorState.getCurrentContent(),
+            decorator
+          ),
           newEditorState.getSelection()
         );
         setEntryEditorState(entryKey, () => onlySelectionChanges);

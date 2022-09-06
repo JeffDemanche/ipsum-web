@@ -4,12 +4,14 @@ import styles from "./TextRangeHighlight.less";
 import { IpsumSelectionState } from "util/selection";
 
 interface TextRangeHighlightProps {
+  editorKey: string;
   selection: IpsumSelectionState;
   color: string;
   onClickAway: () => void;
 }
 
 export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
+  editorKey,
   selection,
   color,
   onClickAway,
@@ -91,6 +93,7 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
         ></div>
         {backgroundDivs}
         <SelectionRotorPopper
+          editorKey={editorKey}
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
           onClickAway={onClickAway}

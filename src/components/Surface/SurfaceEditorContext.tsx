@@ -1,3 +1,4 @@
+import { decorator } from "components/Decorator/decorator";
 import { ContentState, Editor, EditorState } from "draft-js";
 import React, { useCallback, useState } from "react";
 
@@ -158,8 +159,8 @@ export const SurfaceEditorContextProvider: React.FC<
       } else {
         setEntryEditorState(entryKey, () =>
           contentState
-            ? EditorState.createWithContent(contentState)
-            : EditorState.createEmpty()
+            ? EditorState.createWithContent(contentState, decorator)
+            : EditorState.createEmpty(decorator)
         );
         setEntryEditorMetadata(entryKey, { syncedWithState: false });
         setEntryEditorRef(entryKey, editorRef);

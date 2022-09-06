@@ -6,10 +6,10 @@ import styles from "./JournalEntry.less";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { stringifyContentState } from "util/content-state";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { IpsumDateTime } from "util/dates";
 import { SurfaceControls } from "./SurfaceControls";
 import { EditorWrapper } from "./EditorWrapper";
+import { useApiAction } from "state/api/use-api-action";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -28,22 +28,24 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   const { setEntryEditorState, onEditorFocus, onEditorBlur } =
     useContext(SurfaceEditorContext);
 
-  const { dispatch } = useContext(InMemoryStateContext);
+  const { act: deleteEntry } = useApiAction<"deleteEntry">({
+    name: "deleteEntry",
+  });
+  const { act: createOrUpdateEntry } = useApiAction<"createOrUpdateEntry">({
+    name: "createOrUpdateEntry",
+  });
 
   const saveEntry = (newEditorState: EditorState) => {
     if (newEditorState) {
       if (empty) {
-        dispatch({ type: "DELETE-ENTRY", payload: { entryKey } });
+        deleteEntry({ entryKey });
       } else {
-        dispatch({
-          type: "CREATE-OR-UPDATE-ENTRY",
-          payload: {
-            entryKey,
-            date: IpsumDateTime.fromString(entryKey, "entry-printed-date"),
-            contentState: stringifyContentState(
-              newEditorState.getCurrentContent()
-            ),
-          },
+        createOrUpdateEntry({
+          entryKey,
+          date: IpsumDateTime.fromString(entryKey, "entry-printed-date"),
+          contentState: stringifyContentState(
+            newEditorState.getCurrentContent()
+          ),
         });
       }
     }

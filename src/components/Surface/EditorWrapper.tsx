@@ -39,6 +39,7 @@ export const EditorWrapper: React.FC<EditorWrapperPropsCombined> =
       <div style={{ position: "relative" }}>
         <Editor {...props} ref={ref}></Editor>
         <TextRangeHighlight
+          editorKey={props.editorKey}
           selection={persistentSelection}
           color={"black"}
           onClickAway={() => {

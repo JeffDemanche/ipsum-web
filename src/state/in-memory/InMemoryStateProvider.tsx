@@ -23,7 +23,8 @@ export interface InMemoryStateContextType {
   dispatch: React.Dispatch<InMemoryAction>;
   saveToFile: () => Promise<void>;
   loadFromFile: () => Promise<void>;
-  reloadEditor: boolean;
+  shouldReloadEditor: boolean;
+  reloadEditor: () => void;
 }
 
 export const InMemoryStateContext =
@@ -32,7 +33,8 @@ export const InMemoryStateContext =
     dispatch: () => {},
     saveToFile: async () => {},
     loadFromFile: async () => {},
-    reloadEditor: false,
+    shouldReloadEditor: false,
+    reloadEditor: () => {},
   });
 
 export const InMemoryStateProvider: React.FC<{
@@ -79,10 +81,10 @@ const InMemoryStateProviderWithAutosave: React.FC<{
     }
   }, [idbWrapper, stateFromAutosave]);
 
-  const [reloadEditor, setReloadEditor] = useState(false);
+  const [shouldReloadEditor, setReloadEditor] = useState(false);
   useEffect(() => {
-    if (reloadEditor === true) setReloadEditor(false);
-  }, [reloadEditor]);
+    if (shouldReloadEditor === true) setReloadEditor(false);
+  }, [shouldReloadEditor]);
 
   const autosave = useCallback(() => {
     localStorage.setItem("ipsum-autosave-id", state.journalId);
@@ -117,7 +119,10 @@ const InMemoryStateProviderWithAutosave: React.FC<{
 
         saveToFile,
         loadFromFile,
-        reloadEditor,
+        shouldReloadEditor,
+        reloadEditor: () => {
+          setReloadEditor(true);
+        },
       }}
     >
       {state ? children : <div>Loading...</div>}

@@ -10,14 +10,23 @@ export interface InMemoryEntry {
 }
 
 export interface InMemoryArc {
+  id: string;
   name: string;
+  color: number;
+}
+
+export interface InMemoryArcAssignment {
+  id: string;
+  arcId: string;
+  entryKey: string;
 }
 
 export interface InMemoryState {
   journalId: string;
   journalTitle: string;
   entries: { [entryKey: string]: InMemoryEntry };
-  arcs: { [arcKey: string]: InMemoryArc };
+  arcs: { [id: string]: InMemoryArc };
+  arcAssignments: { [id: string]: InMemoryArcAssignment };
 }
 
 export const stateReviver: Parameters<typeof JSON.parse>[1] = (key, value) => {
@@ -33,6 +42,7 @@ export const initialInMemoryState: InMemoryState = {
   journalTitle: "new journal",
   entries: {},
   arcs: {},
+  arcAssignments: {},
 };
 
 export const reducer = (
