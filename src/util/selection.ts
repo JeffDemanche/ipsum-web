@@ -48,7 +48,7 @@ export class IpsumSelectionState {
     const selectionCommonAncestor =
       this.range.commonAncestorContainer.parentNode;
 
-    return !!this._editorRef.current?.editor.contains(selectionCommonAncestor);
+    return !!this._editorRef?.current?.editor.contains(selectionCommonAncestor);
   }
 
   /**
