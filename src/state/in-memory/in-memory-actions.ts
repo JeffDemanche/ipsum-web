@@ -55,6 +55,7 @@ const dispatchers = {
     return {
       ...state,
       arcs: {
+        ...state.arcs,
         [payload.id]: {
           id: payload.id,
           name: payload.name,

@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
+import { DateTime } from "luxon";
 import React from "react";
-import { useDate } from "util/dates";
+import { IpsumDateTime, useDate } from "util/dates";
 import { Calendar } from "../Calendar";
 
 jest.mock("../Calendar.less", () => jest.fn());
@@ -11,10 +12,15 @@ jest.mock("util/dates", () => ({
 
 describe("Calendar", () => {
   beforeEach(() => {
-    (useDate as jest.Mock).mockImplementation(() => ({
-      month: 1,
-      year: 3000,
-    }));
+    (useDate as jest.Mock).mockImplementation(
+      () =>
+        new IpsumDateTime(
+          DateTime.fromObject({
+            month: 1,
+            year: 3000,
+          })
+        )
+    );
   });
 
   it("renders days of week starting on sunday", async () => {
@@ -43,10 +49,15 @@ describe("Calendar", () => {
   `(
     "should render the correct starting day for a month",
     ({ month, year, expectedEmptyDays }) => {
-      (useDate as jest.Mock).mockImplementation(() => ({
-        month,
-        year,
-      }));
+      (useDate as jest.Mock).mockImplementation(
+        () =>
+          new IpsumDateTime(
+            DateTime.fromObject({
+              month,
+              year,
+            })
+          )
+      );
 
       render(<Calendar />);
 
@@ -61,7 +72,9 @@ describe("Calendar", () => {
   );
 
   it("renders 3 empty days at the start of the month for june 2022", async () => {
-    (useDate as jest.Mock).mockReturnValue({ month: 6, year: 2022 });
+    (useDate as jest.Mock).mockReturnValue(
+      new IpsumDateTime(DateTime.fromObject({ month: 6, year: 2022 }))
+    );
     render(<Calendar />);
 
     const emptyDays = screen.getAllByTestId("calendar-empty-day");
@@ -69,7 +82,9 @@ describe("Calendar", () => {
   });
 
   it("renders 28 days in february", async () => {
-    (useDate as jest.Mock).mockReturnValue({ month: 2, year: 3000 });
+    (useDate as jest.Mock).mockReturnValue(
+      new IpsumDateTime(DateTime.fromObject({ month: 2, year: 3000 }))
+    );
     render(<Calendar />);
 
     expect(await screen.findByText("28")).toBeDefined();
