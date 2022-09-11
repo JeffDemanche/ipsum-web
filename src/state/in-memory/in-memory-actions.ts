@@ -1,7 +1,8 @@
 import { IpsumDateTime } from "util/dates";
 import { InMemoryState } from "./in-memory-state";
-import { Modifier, SelectionState } from "draft-js";
+import { SelectionState } from "draft-js";
 import { parseContentState, stringifyContentState } from "util/content-state";
+import { IpsumEntityTransformer } from "util/entities";
 
 export type InMemoryAction =
   | {
@@ -74,16 +75,10 @@ const dispatchers = {
     }
   ): InMemoryState => {
     const entry = state.entries[payload.entryKey];
-    const contentState = parseContentState(entry.contentState);
-    const contentStateWithEntity = contentState.createEntity("ARC", "MUTABLE", {
-      arcId: payload.arcId,
-    });
-    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    const contentStateWithArc = Modifier.applyEntity(
-      contentStateWithEntity,
-      payload.selectionState,
-      entityKey
-    );
+
+    const contentStateWithArc = new IpsumEntityTransformer(
+      parseContentState(entry.contentState)
+    ).applyArc(payload.selectionState, payload.arcId).contentState;
 
     return {
       ...state,
