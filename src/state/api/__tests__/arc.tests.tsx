@@ -100,7 +100,11 @@ describe("Arc API", () => {
               context
             );
 
-            const editorState2 = moveEditorSelection(editorState1, 0, 5);
+            const editorState2 = moveEditorSelection({
+              editorState: editorState1,
+              anchorOffset: 0,
+              focusOffset: 5,
+            });
 
             apiCreateAndAssignArc(
               {
