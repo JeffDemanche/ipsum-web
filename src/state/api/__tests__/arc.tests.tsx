@@ -8,7 +8,7 @@ import { apiCreateAndAssignArc } from "../arc";
 import {
   createEditorState,
   moveEditorSelection,
-} from "util/__tests__/editor-state.tests";
+} from "util/__tests__/editor-utils";
 import { apiCreateOrUpdateEntry } from "../entry";
 import { parseContentState, stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";

@@ -47,7 +47,7 @@ describe("Calendar", () => {
     ${8}  | ${1998} | ${6}
     ${10} | ${2035} | ${1}
   `(
-    "should render the correct starting day for a month",
+    "should render the correct starting day month: $month, year: $year",
     ({ month, year, expectedEmptyDays }) => {
       (useDate as jest.Mock).mockImplementation(
         () =>
