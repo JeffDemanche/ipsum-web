@@ -11,7 +11,7 @@ export const Popper: React.FC<PopperProps> = ({
   ...muiPopperProps
 }) => {
   return (
-    <MuiPopper {...muiPopperProps}>
+    <MuiPopper style={{ zIndex: 1 }} {...muiPopperProps}>
       <div className={styles["popperContainer"]}>{children}</div>
     </MuiPopper>
   );

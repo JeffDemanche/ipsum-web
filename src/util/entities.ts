@@ -4,7 +4,7 @@
  */
 
 import { ContentState, Modifier, SelectionState } from "draft-js";
-import { setEquals } from "./set-equals";
+import { setEquals } from "./set";
 
 interface CharacterMetadata {
   char: string;

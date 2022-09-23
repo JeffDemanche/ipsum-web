@@ -1,4 +1,4 @@
-export const randomHue = () => Math.floor(Math.random() * 255);
+export const randomHue = () => Math.floor(Math.random() * 360);
 
 export class IpsumArcColor {
   private _hue: number;

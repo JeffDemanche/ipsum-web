@@ -1,4 +1,4 @@
-import { ManageSearch, PlaylistAdd } from "@mui/icons-material";
+import { Add, Search } from "@mui/icons-material";
 import { Divider } from "@mui/material";
 import { Button } from "components/Button/Button";
 import React from "react";
@@ -22,7 +22,7 @@ export const HomeRotorScreen: React.FC<HomeRotorScreenProps> = ({
           setCurrentScreen("Add Arc");
         }}
       >
-        <PlaylistAdd />
+        <Add />
       </Button>
       <Divider orientation="vertical" color="primary"></Divider>
       <Button
@@ -33,7 +33,7 @@ export const HomeRotorScreen: React.FC<HomeRotorScreenProps> = ({
           setCurrentScreen("Assign Arc");
         }}
       >
-        <ManageSearch />
+        <Search />
       </Button>
     </div>
   );

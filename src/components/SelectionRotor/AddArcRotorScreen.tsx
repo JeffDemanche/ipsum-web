@@ -1,6 +1,6 @@
 import styles from "./AddArcRotorScreen.less";
-import { Add, HubOutlined, WorkspacesOutlined } from "@mui/icons-material";
-import { TextField, Typography } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import { TextField } from "@mui/material";
 import { Button } from "components/Button/Button";
 import React, { useCallback, useContext, useRef } from "react";
 import { useApiAction } from "state/api/use-api-action";
@@ -35,15 +35,11 @@ export const AddArcRotorScreen: React.FC<AddArcRotorScreenProps> = ({
   return (
     <div className={styles["addArcRotorScreen"]}>
       <div className={styles["row"]}>
-        <WorkspacesOutlined color="secondary" fontSize="small" />
         <TextField
+          autoFocus
           inputRef={inputRef}
           placeholder="New arc name..."
         ></TextField>
-      </div>
-      <div className={styles["row"]}>
-        <HubOutlined color="secondary" fontSize="small" />
-        <Typography color="secondary">Arc searcher component</Typography>
         <Button color="secondary" onClick={onAdd}>
           <Add></Add>
         </Button>
