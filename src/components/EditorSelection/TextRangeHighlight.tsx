@@ -6,7 +6,7 @@ import { IpsumSelectionState } from "util/selection";
 interface TextRangeHighlightProps {
   editorKey: string;
   selection: IpsumSelectionState;
-  color: string;
+  color?: string;
   onClickAway: () => void;
 }
 
