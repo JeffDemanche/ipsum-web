@@ -31,6 +31,20 @@ export const theme = createTheme({
     },
   },
   components: {
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          fontFamily: stylesheet.fonts.controls_2,
+          cursor: "pointer",
+          color: stylesheet.colors.paper_9,
+          textDecorationColor: stylesheet.colors.paper_9,
+          ":hover": {
+            color: stylesheet.colors.paper_7,
+            textDecorationColor: stylesheet.colors.paper_7,
+          },
+        },
+      },
+    },
     MuiOutlinedInput: {
       styleOverrides: {
         root: {

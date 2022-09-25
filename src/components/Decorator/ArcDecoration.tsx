@@ -1,11 +1,12 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, { useContext, useMemo, useRef } from "react";
 import styles from "./ArcDecoration.less";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { ContentState } from "draft-js";
 import { ArcSelectionContext } from "components/ArcSelection/ArcSelectionContext";
-import { intersection, isSubset, setEquals } from "util/set";
+import { intersection, isSubset } from "util/set";
 import { JournalHotkeysContext } from "components/JournalHotkeys/JournalHotkeysContext";
-import { ClickAwayListener } from "@mui/material";
+import { ArcDisambiguator } from "components/ArcDisambiguator/ArcDisambiguator";
+import { IpsumArcColor } from "util/colors";
 
 // Draft doesn't provide this type, this is inferred from logging the props
 // value.
@@ -36,26 +37,30 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
   const arcs = arcIds?.map((id) => state.arcs[id]).filter((arc) => !!arc) ?? [];
 
   const isHovered = useMemo(
-    () =>
-      hoveredArcIds &&
-      intersection(new Set(arcIds), new Set(hoveredArcIds)).size > 0,
+    () => hoveredArcIds && isSubset(new Set(arcIds), new Set(hoveredArcIds)),
     [arcIds, hoveredArcIds]
   );
 
-  const isSelected = useMemo(
-    () =>
-      selectedArcIds &&
-      intersection(new Set(arcIds), new Set(selectedArcIds)).size > 0,
+  const allArcsSelected = useMemo(
+    () => selectedArcIds && isSubset(new Set(arcIds), new Set(selectedArcIds)),
     [arcIds, selectedArcIds]
   );
 
-  const isHighlighted = isHovered || isSelected;
+  const someArcsSelected = useMemo(
+    () => selectedArcIds && isSubset(new Set(selectedArcIds), new Set(arcIds)),
+    [arcIds, selectedArcIds]
+  );
+
+  const isHighlighted = isHovered || someArcsSelected;
 
   const boxShadow = arcs.reduce(
     (acc, cur, i): string =>
-      `${acc} 0 0 0 ${(i + 1) * 2}px hsla(${cur.color}, 100%, 50%, ${
+      `${acc} 0 ${(i + 1) * 2}px 0 0 ${new IpsumArcColor(cur.color).toHsla(
+        100,
+        50,
         isHighlighted ? 0.4 : 0.25
-      })${i === arcs.length - 1 ? "" : ","}`,
+      )}
+      ${i === arcs.length - 1 ? "" : ","}`,
     ""
   );
 
@@ -64,29 +69,46 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
   );
 
   const backgroundColor = arcs
-    ? `hsla(${avgHue}, 100%, 50%, ${isHighlighted ? 0.2 : 0.05})`
+    ? new IpsumArcColor(avgHue).toHsla(100, 50, isHighlighted ? 0.2 : 0.05)
     : `rgba(0, 0, 0, ${isHighlighted ? 0.2 : 0.05})`;
 
   const cursor = ctrlKey ? "pointer" : undefined;
 
+  const ref = useRef<HTMLSpanElement>(null);
+  const disambiguatorOpen = !!(allArcsSelected && arcIds.length > 1);
+
   return (
-    <span
-      aria-details={arcs.map((arc) => `${arc.name}`).join(" ")}
-      onMouseEnter={() => {
-        setHoveredArcIds(arcIds);
-      }}
-      onMouseLeave={() => {
-        setHoveredArcIds(undefined);
-      }}
-      onClick={() => {
-        if (ctrlKey) {
-          setSelectedArcIds(arcIds);
-        }
-      }}
-      className={styles.arc}
-      style={{ cursor, boxShadow, backgroundColor }}
-    >
-      {props.children}
-    </span>
+    <>
+      <span
+        ref={ref}
+        aria-details={arcs.map((arc) => `${arc.name}`).join(" ")}
+        onMouseEnter={() => {
+          setHoveredArcIds(arcIds);
+        }}
+        onMouseLeave={() => {
+          setHoveredArcIds(undefined);
+        }}
+        onClick={() => {
+          if (ctrlKey) {
+            setSelectedArcIds(arcIds);
+          }
+        }}
+        className={styles.arc}
+        style={{ cursor, boxShadow, backgroundColor }}
+      >
+        {props.children}
+      </span>
+      <ArcDisambiguator
+        arcIds={arcIds}
+        onArcSelected={(arcId: string) => {
+          setSelectedArcIds([arcId]);
+        }}
+        open={disambiguatorOpen}
+        anchorEl={ref.current}
+        onClickAway={() => {
+          setSelectedArcIds(undefined);
+        }}
+      ></ArcDisambiguator>
+    </>
   );
 };

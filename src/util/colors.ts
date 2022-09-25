@@ -6,4 +6,8 @@ export class IpsumArcColor {
   constructor(hue: number) {
     this._hue = hue;
   }
+
+  toHsla(saturation: number, lightness: number, alpha: number) {
+    return `hsla(${this._hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+  }
 }
