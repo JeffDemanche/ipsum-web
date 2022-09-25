@@ -7,7 +7,7 @@ import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { stringifyContentState } from "util/content-state";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
 import { IpsumDateTime } from "util/dates";
-import { SurfaceControls } from "./SurfaceControls";
+import { FormattingControls } from "../FormattingControls/FormattingControls";
 import { EditorWrapper } from "./EditorWrapper";
 import { useApiAction } from "state/api/use-api-action";
 
@@ -103,7 +103,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
       </h1>
       {editorState && (
         <>
-          <SurfaceControls />
+          <FormattingControls />
           <EditorWrapper
             editorKey={entryKey}
             enableHighlights={true}

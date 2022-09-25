@@ -1,10 +1,10 @@
 import React, { useCallback, useContext, useMemo } from "react";
-import styles from "./SurfaceControls.less";
+import styles from "./FormattingControls.less";
 import { RichUtils } from "draft-js";
 import { ToggleStyleButton } from "../Buttons/ToggleStyleButton";
-import { SurfaceEditorContext } from "./SurfaceEditorContext";
+import { SurfaceEditorContext } from "../Surface/SurfaceEditorContext";
 
-export const SurfaceControls = () => {
+export const FormattingControls: React.FunctionComponent = () => {
   const { focusedEditorKey, setEntryEditorState, entryEditorStates } =
     useContext(SurfaceEditorContext);
 
