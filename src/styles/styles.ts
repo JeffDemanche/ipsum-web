@@ -113,11 +113,11 @@ export const theme = createTheme({
           ":hover": {
             backgroundColor: stylesheet.colors.foreground,
           },
-        },
-        selected: {
-          backgroundColor: stylesheet.colors.foreground,
-          ":hover": {
+          "&.Mui-selected": {
             backgroundColor: stylesheet.colors.foreground,
+            ":hover": {
+              backgroundColor: stylesheet.colors.foreground,
+            },
           },
         },
       },

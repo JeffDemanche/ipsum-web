@@ -18,7 +18,7 @@ export const ViewJournal: React.FC = () => {
             <ArcSelectionProvider>
               <div className={styles["view-journal"]}>
                 <div className={styles["fixed-width-interior"]}>
-                  <div className={styles["diptych"]}>
+                  <div className={styles["column-container"]}>
                     <div className={styles["column-1"]}>
                       <div className={styles["column-1-floating"]}>
                         <JournalInfoBox></JournalInfoBox>
