@@ -1,15 +1,14 @@
-import React, { useCallback, useContext } from "react";
 import cx from "classnames";
-import _ from "underscore";
 import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
+import React, { useCallback, useContext } from "react";
+import { useApiAction } from "state/api/use-api-action";
+import _ from "underscore";
+import { stringifyContentState } from "util/content-state";
+import { IpsumDateTime } from "util/dates";
+import { EditorWrapper } from "./EditorWrapper";
 import styles from "./JournalEntry.less";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
-import { stringifyContentState } from "util/content-state";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
-import { IpsumDateTime } from "util/dates";
-import { FormattingControls } from "../FormattingControls/FormattingControls";
-import { EditorWrapper } from "./EditorWrapper";
-import { useApiAction } from "state/api/use-api-action";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -103,7 +102,6 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
       </h1>
       {editorState && (
         <>
-          <FormattingControls />
           <EditorWrapper
             editorKey={entryKey}
             enableHighlights={true}

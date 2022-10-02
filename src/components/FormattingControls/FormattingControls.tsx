@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./FormattingControls.less";
 import { RichUtils } from "draft-js";
-import { ToggleStyleButton } from "../Buttons/ToggleStyleButton";
 import { SurfaceEditorContext } from "../Surface/SurfaceEditorContext";
+import { ToggleButton } from "@mui/material";
 
 export const FormattingControls: React.FunctionComponent = () => {
   const { focusedEditorKey, setEntryEditorState, entryEditorStates } =
@@ -50,21 +50,33 @@ export const FormattingControls: React.FunctionComponent = () => {
       className={styles["surface-controls"]}
       onClick={onSurfaceControlsClick}
     >
-      <ToggleStyleButton
-        label={<b>b</b>}
-        enabled={boldEnabled}
-        onToggle={onBoldClick}
-      />
-      <ToggleStyleButton
-        label={<i>i</i>}
-        enabled={italicEnabled}
-        onToggle={onItalicClick}
-      />
-      <ToggleStyleButton
-        label={<b>h1</b>}
-        enabled={headerOneEnabled}
-        onToggle={onHeaderClick}
-      />
+      <ToggleButton
+        value="check"
+        className={styles["toggle-button"]}
+        disabled={!focusedEditorKey}
+        selected={boldEnabled}
+        onChange={onBoldClick}
+      >
+        <b>b</b>
+      </ToggleButton>
+      <ToggleButton
+        value="check"
+        className={styles["toggle-button"]}
+        disabled={!focusedEditorKey}
+        selected={italicEnabled}
+        onMouseDown={onItalicClick}
+      >
+        <b>i</b>
+      </ToggleButton>
+      <ToggleButton
+        value="check"
+        className={styles["toggle-button"]}
+        disabled={!focusedEditorKey}
+        selected={headerOneEnabled}
+        onChange={onHeaderClick}
+      >
+        <b>h1</b>
+      </ToggleButton>
     </div>
   );
 };

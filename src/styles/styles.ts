@@ -8,6 +8,8 @@ export const stylesheet = {
     paper_5: "rgb(131, 112, 87)",
     paper_7: "rgb(166, 144, 115)",
     paper_9: "rgb(237, 222, 201)",
+    background: "rgb(245, 237, 224)",
+    foreground: "rgb(255, 250, 243)",
   },
   fonts: {
     headers: '"Libre Baskerville", serif',
@@ -100,6 +102,23 @@ export const theme = createTheme({
       styleOverrides: {
         paper: {
           boxShadow: "none",
+        },
+      },
+    },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: stylesheet.colors.foreground,
+          borderRadius: "0px",
+          ":hover": {
+            backgroundColor: stylesheet.colors.foreground,
+          },
+        },
+        selected: {
+          backgroundColor: stylesheet.colors.foreground,
+          ":hover": {
+            backgroundColor: stylesheet.colors.foreground,
+          },
         },
       },
     },

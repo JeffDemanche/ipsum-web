@@ -1,5 +1,18 @@
+@import "./../../styles/colors.less";
+
 .surface-controls {
-  float: right;
+  float: left;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  position: fixed;
+  z-index: 1;
+
+  .toggle-button {
+    height: 30px;
+    width: 30px;
+
+    &:not(:last-child) {
+      margin-right: 4px;
+    }
+  }
 }

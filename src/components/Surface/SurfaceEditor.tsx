@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
 import { JournalEntryPast } from "./JournalEntryPast";
 import { JournalEntryToday } from "./JournalEntryToday";
+import styles from "./SurfaceEditor.less";
 
+import { FormattingControls } from "components/FormattingControls/FormattingControls";
 import { useDateString } from "util/dates";
 import { VisibleEntriesContext } from "views/VisibleEntriesContext";
 
@@ -33,6 +35,8 @@ export const SurfaceEditor = () => {
 
   return (
     <>
+      <FormattingControls />
+      <div className={styles["spacer"]}></div>
       {todayEntryComponent}
       {entryEditorComponents}
     </>
