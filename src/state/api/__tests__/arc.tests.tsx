@@ -19,7 +19,7 @@ describe("Arc API", () => {
   describe("createAndAssignArc", () => {
     it("creates a single arc assignment on an entry and includes entities in editor content state", () => {
       const newStateFn = jest.fn();
-      render(
+      const { unmount } = render(
         <APIDispatcher
           beforeState={initialInMemoryState}
           action={(context) => {
@@ -70,11 +70,13 @@ describe("Arc API", () => {
         updatedState.entries["entry_key"].contentState
       );
       expect(contentState.getAllEntities().size).toBe(2);
+
+      unmount();
     });
 
     it("creates two arcs on the same entry", () => {
       const newStateFn = jest.fn();
-      render(
+      const { unmount } = render(
         <APIDispatcher
           beforeState={initialInMemoryState}
           action={(context) => {
@@ -151,6 +153,8 @@ describe("Arc API", () => {
       expect(updatedState.arcAssignments[assignmentId2].entryKey).toBe(
         "entry_key"
       );
+
+      unmount();
     });
   });
 });

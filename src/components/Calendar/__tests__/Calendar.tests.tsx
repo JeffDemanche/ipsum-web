@@ -24,7 +24,7 @@ describe("Calendar", () => {
   });
 
   it("renders days of week starting on sunday", async () => {
-    render(<Calendar />);
+    const { unmount } = render(<Calendar />);
 
     const daysOfWeek = screen.getAllByTestId("calendar-day-of-week", {
       exact: false,
@@ -37,6 +37,8 @@ describe("Calendar", () => {
     expect(daysOfWeek[4]).toHaveTextContent("thu");
     expect(daysOfWeek[5]).toHaveTextContent("fri");
     expect(daysOfWeek[6]).toHaveTextContent("sat");
+
+    unmount();
   });
 
   it.each`
@@ -59,7 +61,7 @@ describe("Calendar", () => {
           )
       );
 
-      render(<Calendar />);
+      const { unmount } = render(<Calendar />);
 
       if (expectedEmptyDays === 0) {
         expect(screen.queryByTestId("calendar-empty-day")).toBeNull();
@@ -68,6 +70,8 @@ describe("Calendar", () => {
           expectedEmptyDays
         );
       }
+
+      unmount();
     }
   );
 
@@ -75,18 +79,22 @@ describe("Calendar", () => {
     (useDate as jest.Mock).mockReturnValue(
       new IpsumDateTime(DateTime.fromObject({ month: 6, year: 2022 }))
     );
-    render(<Calendar />);
+    const { unmount } = render(<Calendar />);
 
     const emptyDays = screen.getAllByTestId("calendar-empty-day");
     expect(emptyDays).toHaveLength(3);
+
+    unmount();
   });
 
   it("renders 28 days in february", async () => {
     (useDate as jest.Mock).mockReturnValue(
       new IpsumDateTime(DateTime.fromObject({ month: 2, year: 3000 }))
     );
-    render(<Calendar />);
+    const { unmount } = render(<Calendar />);
 
     expect(await screen.findByText("28")).toBeDefined();
+
+    unmount();
   });
 });

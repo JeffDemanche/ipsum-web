@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import styles from "./ArcDisambiguator.less";
 import { ClickAwayListener } from "@mui/material";
 import { ArcToken } from "components/Arc/ArcToken";
 import { Popper } from "components/Popper/Popper";
+import { ArcSelectionContext } from "components/ArcSelection/ArcSelectionContext";
 
 interface ArcDisambiguatorProps {
   open: boolean;
@@ -15,6 +16,8 @@ interface ArcDisambiguatorProps {
 export const ArcDisambiguator: React.FunctionComponent<
   ArcDisambiguatorProps
 > = ({ open, anchorEl, arcIds, onArcSelected, onClickAway }) => {
+  const { setHoveredArcIds } = useContext(ArcSelectionContext);
+
   return (
     <Popper
       id="arc-disambiguator"
@@ -32,6 +35,12 @@ export const ArcDisambiguator: React.FunctionComponent<
                   arcId={arcId}
                   onClick={() => {
                     onArcSelected(arcId);
+                  }}
+                  onMouseEnter={() => {
+                    setHoveredArcIds([arcId]);
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredArcIds(undefined);
                   }}
                 ></ArcToken>
               </div>

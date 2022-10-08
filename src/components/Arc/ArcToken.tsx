@@ -28,19 +28,29 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
 
   const [hover, setHover] = useState(false);
 
-  console.log(highlighted);
-
   const style: CSSProperties =
     hover || highlighted
       ? {
-          color: new IpsumArcColor(arc.color).toHsla(50, 90, 1),
-          textDecorationColor: new IpsumArcColor(arc.color).toHsla(50, 90, 1),
-          backgroundColor: new IpsumArcColor(arc.color).toHsla(50, 50, 1),
+          color: new IpsumArcColor(arc.color)
+            .toIpsumColor({ saturation: 50, lightness: 90 })
+            .toRgbaCSS(),
+          textDecorationColor: new IpsumArcColor(arc.color)
+            .toIpsumColor({ saturation: 50, lightness: 90 })
+            .toRgbaCSS(),
+          backgroundColor: new IpsumArcColor(arc.color)
+            .toIpsumColor({ saturation: 50, lightness: 50 })
+            .toRgbaCSS(),
         }
       : {
-          color: new IpsumArcColor(arc.color).toHsla(50, 80, 1),
-          textDecorationColor: new IpsumArcColor(arc.color).toHsla(50, 80, 1),
-          backgroundColor: new IpsumArcColor(arc.color).toHsla(50, 30, 1),
+          color: new IpsumArcColor(arc.color)
+            .toIpsumColor({ saturation: 50, lightness: 80 })
+            .toRgbaCSS(),
+          textDecorationColor: new IpsumArcColor(arc.color)
+            .toIpsumColor({ saturation: 50, lightness: 80 })
+            .toRgbaCSS(),
+          backgroundColor: new IpsumArcColor(arc.color)
+            .toIpsumColor({ saturation: 50, lightness: 30 })
+            .toRgbaCSS(),
         };
 
   return (

@@ -30,25 +30,23 @@ const TestDisambiguator: React.FunctionComponent<{
 
 describe("ArcDisambiguator", () => {
   it("has links for both arcs with correct hues", async () => {
-    render(<TestDisambiguator open></TestDisambiguator>);
+    const { unmount } = render(<TestDisambiguator open></TestDisambiguator>);
 
     const arc1 = await screen.findByRole("link", { name: "Arc one" });
     const arc2 = await screen.findByRole("link", { name: "Arc two" });
 
     expect(arc1).toBeInTheDocument();
-    expect(
-      arc1.style.textDecorationColor.split("hsla(")[1].split(",")[0]
-    ).toEqual("0");
+    expect(arc1.style.textDecorationColor).toEqual("rgba(230, 179, 179, 1)");
     expect(arc2).toBeInTheDocument();
-    expect(
-      arc2.style.textDecorationColor.split("hsla(")[1].split(",")[0]
-    ).toEqual("100");
+    expect(arc2.style.textDecorationColor).toEqual("rgba(195, 230, 179, 1)");
+
+    unmount();
   });
 
   it("selects arc on click", async () => {
     const mockOnArcSelected = jest.fn();
 
-    render(
+    const { unmount } = render(
       <TestDisambiguator
         open
         onArcSelected={mockOnArcSelected}
@@ -59,5 +57,7 @@ describe("ArcDisambiguator", () => {
     const arc1 = await screen.findByRole("link", { name: "Arc one" });
     fireEvent.click(arc1);
     expect(mockOnArcSelected).toHaveBeenCalledWith("arc_1");
+
+    unmount();
   });
 });
