@@ -3,7 +3,7 @@ import styles from "./ArcDecoration.less";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { ContentState } from "draft-js";
 import { ArcSelectionContext } from "components/ArcSelection/ArcSelectionContext";
-import { intersection, isSubset } from "util/set";
+import { isSubset } from "util/set";
 import { JournalHotkeysContext } from "components/JournalHotkeys/JournalHotkeysContext";
 import { ArcDisambiguator } from "components/ArcDisambiguator/ArcDisambiguator";
 import { IpsumArcColor } from "util/colors";
@@ -37,7 +37,9 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
   const arcs = arcIds?.map((id) => state.arcs[id]).filter((arc) => !!arc) ?? [];
 
   const isHovered = useMemo(
-    () => hoveredArcIds && isSubset(new Set(arcIds), new Set(hoveredArcIds)),
+    () =>
+      hoveredArcIds?.length &&
+      isSubset(new Set(hoveredArcIds), new Set(arcIds)),
     [arcIds, hoveredArcIds]
   );
 

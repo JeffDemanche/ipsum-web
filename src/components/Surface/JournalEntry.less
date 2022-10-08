@@ -9,6 +9,7 @@
 .journal-entry {
   color: @paper-3;
   font-family: @font-entry-1;
+  position: relative;
 
   h1 {
     &:not(.editor-header-one) {
@@ -36,5 +37,11 @@
       font-size: 16pt;
       font-weight: bold;
     }
+  }
+
+  .digest-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 }

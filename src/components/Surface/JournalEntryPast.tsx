@@ -1,4 +1,5 @@
 import { decorator } from "components/Decorator/decorator";
+import { Digest } from "components/Digest/Digest";
 import { EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
 import { IpsumDateTime } from "util/dates";
@@ -81,17 +82,22 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
         )}
       </h1>
       {editorState && (
-        <EditorWrapper
-          editorKey={entryKey}
-          enableHighlights={true}
-          editorState={editorState}
-          onChange={onEditorChange}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          handleKeyCommand={handleKeyCommand}
-          blockStyleFn={blockStyleFn}
-          ref={editorRef}
-        ></EditorWrapper>
+        <>
+          <EditorWrapper
+            editorKey={entryKey}
+            enableHighlights={true}
+            editorState={editorState}
+            onChange={onEditorChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            handleKeyCommand={handleKeyCommand}
+            blockStyleFn={blockStyleFn}
+            ref={editorRef}
+          ></EditorWrapper>
+          <div className={styles["digest-wrapper"]}>
+            <Digest entryKey={entryKey} />
+          </div>
+        </>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import cx from "classnames";
+import { Digest } from "components/Digest/Digest";
 import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
 import { useApiAction } from "state/api/use-api-action";
@@ -113,6 +114,9 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
             onChange={onEditorChange}
             ref={editorRef}
           ></EditorWrapper>
+          <div className={styles["digest-wrapper"]}>
+            <Digest entryKey={entryKey} />
+          </div>
         </>
       )}
     </div>
