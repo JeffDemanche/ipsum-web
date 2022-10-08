@@ -1,4 +1,5 @@
 import React, { CSSProperties, useContext, useState } from "react";
+import cx from "classnames";
 import styles from "./ArcToken.less";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { Link } from "@mui/material";
@@ -7,6 +8,7 @@ import { IpsumArcColor } from "util/colors";
 interface ArcToken {
   arcId: string;
   selected?: boolean;
+  className?: string;
   onClick?: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
@@ -15,6 +17,7 @@ interface ArcToken {
 export const ArcToken: React.FunctionComponent<ArcToken> = ({
   arcId,
   selected,
+  className,
   onClick,
   onMouseEnter,
   onMouseLeave,
@@ -51,7 +54,7 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
       }}
       onClick={onClick}
       style={style}
-      className={styles["arc-token"]}
+      className={cx(styles["arc-token"], className)}
     >
       {arc.name}
     </Link>

@@ -27,6 +27,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
         {assignments.map((assgn, i) => (
           <ArcToken
             key={i}
+            className={styles["digest-token"]}
             arcId={assgn.arcId}
             selected={selectedArcIds?.includes(assgn.arcId)}
             onMouseEnter={() => {
