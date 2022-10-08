@@ -1,6 +1,6 @@
 import { ArcToken } from "components/Arc/ArcToken";
 import { ArcSelectionContext } from "components/ArcSelection/ArcSelectionContext";
-import React, { useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import styles from "./Digest.less";
 
@@ -12,7 +12,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
   const {
     state: { arcAssignments },
   } = useContext(InMemoryStateContext);
-  const { selectedArcIds, setHoveredArcIds, setSelectedArcIds } =
+  const { selectedArcIds, hoveredArcIds, setHoveredArcIds, setSelectedArcIds } =
     useContext(ArcSelectionContext);
 
   const assignments = useMemo(() => {
@@ -20,6 +20,12 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
       (assignment) => assignment.entryKey === entryKey
     );
   }, [arcAssignments, entryKey]);
+
+  const tokenHighlighted = useCallback(
+    (arcId: string) =>
+      selectedArcIds?.includes(arcId) || hoveredArcIds?.includes(arcId),
+    [hoveredArcIds, selectedArcIds]
+  );
 
   const entryDigests = useMemo(() => {
     return (
@@ -29,7 +35,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
             key={i}
             className={styles["digest-token"]}
             arcId={assgn.arcId}
-            selected={selectedArcIds?.includes(assgn.arcId)}
+            highlighted={tokenHighlighted(assgn.arcId)}
             onMouseEnter={() => {
               setHoveredArcIds([assgn.arcId]);
             }}
@@ -43,7 +49,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
         ))}
       </div>
     );
-  }, [assignments, selectedArcIds, setHoveredArcIds, setSelectedArcIds]);
+  }, [assignments, setHoveredArcIds, setSelectedArcIds, tokenHighlighted]);
 
   return <div className={styles["digest"]}>{entryDigests}</div>;
 };

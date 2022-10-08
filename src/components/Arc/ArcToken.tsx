@@ -7,7 +7,7 @@ import { IpsumArcColor } from "util/colors";
 
 interface ArcToken {
   arcId: string;
-  selected?: boolean;
+  highlighted?: boolean;
   className?: string;
   onClick?: () => void;
   onMouseEnter?: () => void;
@@ -16,7 +16,7 @@ interface ArcToken {
 
 export const ArcToken: React.FunctionComponent<ArcToken> = ({
   arcId,
-  selected,
+  highlighted,
   className,
   onClick,
   onMouseEnter,
@@ -28,8 +28,10 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
 
   const [hover, setHover] = useState(false);
 
+  console.log(highlighted);
+
   const style: CSSProperties =
-    hover || selected
+    hover || highlighted
       ? {
           color: new IpsumArcColor(arc.color).toHsla(50, 90, 1),
           textDecorationColor: new IpsumArcColor(arc.color).toHsla(50, 90, 1),
