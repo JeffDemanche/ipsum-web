@@ -14,6 +14,7 @@ import { parseContentState, stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";
 import { DateTime } from "luxon";
 import { APIDispatcher } from "./api-test-utils";
+import { nextHue } from "util/colors";
 
 describe("Arc API", () => {
   describe("createAndAssignArc", () => {
@@ -152,6 +153,46 @@ describe("Arc API", () => {
       expect(updatedState.arcAssignments[assignmentId2].arcId).toBe(arcId2);
       expect(updatedState.arcAssignments[assignmentId2].entryKey).toBe(
         "entry_key"
+      );
+
+      unmount();
+    });
+
+    it("advances hue in journal metadata", () => {
+      const newStateFn = jest.fn();
+      const { unmount } = render(
+        <APIDispatcher
+          beforeState={initialInMemoryState}
+          action={(context) => {
+            const editorState = createEditorState("Hello World!", 0, 2);
+
+            apiCreateOrUpdateEntry(
+              {
+                entryKey: "entry_key",
+                contentState: stringifyContentState(
+                  editorState.getCurrentContent()
+                ),
+                date: new IpsumDateTime(DateTime.now()),
+              },
+              context
+            );
+
+            apiCreateAndAssignArc(
+              {
+                name: "new arc",
+                entryKey: "entry_key",
+                selectionState: editorState.getSelection(),
+              },
+              context
+            );
+          }}
+          onStateChange={newStateFn}
+        />
+      );
+
+      const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
+      expect(updatedState.journalMetadata.lastArcHue).toEqual(
+        nextHue(initialInMemoryState.journalMetadata.lastArcHue)
       );
 
       unmount();

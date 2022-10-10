@@ -27,7 +27,7 @@ interface DecoratorProps {
  */
 export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
   const arcIds = props.contentState.getEntity(props.entityKey).getData()
-    .arcIds as string[];
+    .arcIds as string[] | undefined;
 
   const { ctrlKey } = useContext(JournalHotkeysContext);
   const { hoveredArcIds, setHoveredArcIds, selectedArcIds, setSelectedArcIds } =
@@ -113,7 +113,7 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
           setHoveredArcIds(undefined);
         }}
         onClick={() => {
-          if (ctrlKey) {
+          if (ctrlKey && arcIds) {
             setSelectedArcIds(arcIds);
           }
         }}
@@ -122,7 +122,7 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
       >
         {props.children}
       </span>
-      {ref?.current && (
+      {ref?.current && arcIds && (
         <ArcDisambiguator
           arcIds={arcIds}
           onArcSelected={(arcId: string) => {

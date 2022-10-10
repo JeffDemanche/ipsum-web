@@ -7,11 +7,13 @@
 
 import { useContext, useState } from "react";
 import { InMemoryAction } from "state/in-memory/in-memory-actions";
+import { InMemoryState } from "state/in-memory/in-memory-state";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { apiCreateAndAssignArc } from "./arc";
 import { apiCreateOrUpdateEntry, apiDeleteEntry } from "./entry";
 
 export interface APIContext {
+  state: InMemoryState;
   dispatch: React.Dispatch<InMemoryAction>;
   reloadEditor: () => void;
 }

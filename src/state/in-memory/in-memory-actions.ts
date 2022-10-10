@@ -1,5 +1,5 @@
 import { IpsumDateTime } from "util/dates";
-import { InMemoryState } from "./in-memory-state";
+import { InMemoryJournalMetadata, InMemoryState } from "./in-memory-state";
 import { SelectionState } from "draft-js";
 import { parseContentState, stringifyContentState } from "util/content-state";
 import { IpsumEntityTransformer } from "util/entities";
@@ -24,6 +24,10 @@ export type InMemoryAction =
   | {
       type: "DELETE-ENTRY";
       payload: Parameters<typeof dispatchers["DELETE-ENTRY"]>["1"];
+    }
+  | {
+      type: "UPDATE-JOURNAL-METADATA";
+      payload: Parameters<typeof dispatchers["UPDATE-JOURNAL-METADATA"]>["1"];
     };
 
 export type InMemoryActionType = InMemoryAction["type"];
@@ -107,6 +111,17 @@ const dispatchers = {
     delete copy.entries[payload.entryKey];
     return copy;
   },
+  "UPDATE-JOURNAL-METADATA": (
+    state: InMemoryState,
+    payload: { journalMetadata: Partial<InMemoryJournalMetadata> }
+  ): InMemoryState => {
+    const copy = { ...state };
+    copy.journalMetadata = {
+      ...copy.journalMetadata,
+      ...payload.journalMetadata,
+    };
+    return copy;
+  },
 };
 
 export const dispatch = (
@@ -123,6 +138,8 @@ export const dispatch = (
     case "CREATE-OR-UPDATE-ENTRY":
       return dispatchers[action.type](state, action.payload);
     case "DELETE-ENTRY":
+      return dispatchers[action.type](state, action.payload);
+    case "UPDATE-JOURNAL-METADATA":
       return dispatchers[action.type](state, action.payload);
     default:
       return { ...state };

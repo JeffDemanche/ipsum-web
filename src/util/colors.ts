@@ -1,7 +1,17 @@
 import convert from "color-convert";
 import { HSL, RGB } from "color-convert/conversions";
 
-export const randomHue = () => Math.floor(Math.random() * 360);
+/**
+ * Generates a new hue given the last hue created. The new hue will have be 2/11
+ * of the way around the color wheel from the old hue, which also gives this
+ * function the property that continuing to generate new hues will traverse all
+ * 255 possible hue values before a duplicate is generated.
+ */
+export const nextHue = (prevHue: number): number => {
+  const step = 2 / 11;
+
+  return Math.round(prevHue + step * 255) % 255;
+};
 
 export const rgbToHsl = (rgb: number[]): HSL => convert.rgb.hsl(rgb as RGB);
 

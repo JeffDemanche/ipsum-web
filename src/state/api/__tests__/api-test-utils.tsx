@@ -11,7 +11,7 @@ export const APIDispatcher: React.FunctionComponent<{
   const [state, dispatch] = useReducer(reducer, beforeState);
 
   useEffect(() => {
-    action({ dispatch, reloadEditor: jest.fn() });
+    action({ state, dispatch, reloadEditor: jest.fn() });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

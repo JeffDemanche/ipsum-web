@@ -1,7 +1,7 @@
 import { SelectionState } from "draft-js";
 import { APIContext } from "./use-api-action";
 import { v4 as uuidv4 } from "uuid";
-import { randomHue } from "util/colors";
+import { nextHue } from "util/colors";
 
 export const apiCreateAndAssignArc = (
   {
@@ -13,7 +13,7 @@ export const apiCreateAndAssignArc = (
 ) => {
   const arcId = uuidv4();
   const assignmentId = uuidv4();
-  const color = randomHue();
+  const color = nextHue(context.state.journalMetadata.lastArcHue);
 
   context.dispatch({
     type: "CREATE-ARC",
@@ -27,6 +27,10 @@ export const apiCreateAndAssignArc = (
       entryKey,
       selectionState,
     },
+  });
+  context.dispatch({
+    type: "UPDATE-JOURNAL-METADATA",
+    payload: { journalMetadata: { lastArcHue: color } },
   });
   context.reloadEditor();
 };

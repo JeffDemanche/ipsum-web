@@ -3,7 +3,7 @@ import cx from "classnames";
 import styles from "./ArcToken.less";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { Link } from "@mui/material";
-import { IpsumArcColor } from "util/colors";
+import { IpsumArcColor, IpsumColor } from "util/colors";
 
 interface ArcToken {
   arcId: string;
@@ -28,29 +28,42 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
 
   const [hover, setHover] = useState(false);
 
+  const ipsumColorL90 = arc
+    ? new IpsumArcColor(arc.color).toIpsumColor({
+        saturation: 50,
+        lightness: 90,
+      })
+    : new IpsumColor("hsl", [0, 0, 90]);
+  const ipsumColorL80 = arc
+    ? new IpsumArcColor(arc.color).toIpsumColor({
+        saturation: 50,
+        lightness: 80,
+      })
+    : new IpsumColor("hsl", [0, 0, 80]);
+  const ipsumColorL50 = arc
+    ? new IpsumArcColor(arc.color).toIpsumColor({
+        saturation: 50,
+        lightness: 50,
+      })
+    : new IpsumColor("hsl", [0, 0, 50]);
+  const ipsumColorL30 = arc
+    ? new IpsumArcColor(arc.color).toIpsumColor({
+        saturation: 50,
+        lightness: 30,
+      })
+    : new IpsumColor("hsl", [0, 0, 30]);
+
   const style: CSSProperties =
     hover || highlighted
       ? {
-          color: new IpsumArcColor(arc.color)
-            .toIpsumColor({ saturation: 50, lightness: 90 })
-            .toRgbaCSS(),
-          textDecorationColor: new IpsumArcColor(arc.color)
-            .toIpsumColor({ saturation: 50, lightness: 90 })
-            .toRgbaCSS(),
-          backgroundColor: new IpsumArcColor(arc.color)
-            .toIpsumColor({ saturation: 50, lightness: 50 })
-            .toRgbaCSS(),
+          color: ipsumColorL90.toRgbaCSS(),
+          textDecorationColor: ipsumColorL90.toRgbaCSS(),
+          backgroundColor: ipsumColorL50.toRgbaCSS(),
         }
       : {
-          color: new IpsumArcColor(arc.color)
-            .toIpsumColor({ saturation: 50, lightness: 80 })
-            .toRgbaCSS(),
-          textDecorationColor: new IpsumArcColor(arc.color)
-            .toIpsumColor({ saturation: 50, lightness: 80 })
-            .toRgbaCSS(),
-          backgroundColor: new IpsumArcColor(arc.color)
-            .toIpsumColor({ saturation: 50, lightness: 30 })
-            .toRgbaCSS(),
+          color: ipsumColorL80.toRgbaCSS(),
+          textDecorationColor: ipsumColorL80.toRgbaCSS(),
+          backgroundColor: ipsumColorL30.toRgbaCSS(),
         };
 
   return (
@@ -68,7 +81,7 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
       style={style}
       className={cx(styles["arc-token"], className)}
     >
-      {arc.name}
+      {arc?.name ?? "null"}
     </Link>
   );
 };
