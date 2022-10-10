@@ -4,6 +4,7 @@ import { ClickAwayListener } from "@mui/material";
 import { ArcToken } from "components/Arc/ArcToken";
 import { Popper } from "components/Popper/Popper";
 import { ArcSelectionContext } from "components/ArcSelection/ArcSelectionContext";
+import { noop } from "underscore";
 
 interface ArcDisambiguatorProps {
   open: boolean;
@@ -26,7 +27,7 @@ export const ArcDisambiguator: React.FunctionComponent<
       anchorEl={anchorEl}
       popperOptions={{ strategy: "absolute" }}
     >
-      <ClickAwayListener onClickAway={onClickAway}>
+      <ClickAwayListener onClickAway={onClickAway ?? noop}>
         <div className={styles["disambiguator"]}>
           {arcIds.map((arcId, i) => {
             return (

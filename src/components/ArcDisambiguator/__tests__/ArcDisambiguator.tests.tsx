@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ArcDisambiguator } from "../ArcDisambiguator";
 import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
@@ -7,7 +7,7 @@ const TestDisambiguator: React.FunctionComponent<{
   open: boolean;
   onArcSelected?: (arcId: string) => void;
 }> = ({ open, onArcSelected }) => {
-  const ref = useRef(null);
+  const [anchor, setAnchor] = useState<HTMLDivElement>(null);
   return (
     <MockInMemoryStateProvider
       state={{
@@ -17,13 +17,19 @@ const TestDisambiguator: React.FunctionComponent<{
         },
       }}
     >
-      <div ref={ref}></div>
-      <ArcDisambiguator
-        open={open}
-        anchorEl={ref.current}
-        onArcSelected={onArcSelected}
-        arcIds={["arc_1", "arc_2"]}
-      ></ArcDisambiguator>
+      <div
+        ref={(el) => {
+          setAnchor(el);
+        }}
+      ></div>
+      {anchor && (
+        <ArcDisambiguator
+          open={open}
+          anchorEl={anchor}
+          onArcSelected={onArcSelected}
+          arcIds={["arc_1", "arc_2"]}
+        ></ArcDisambiguator>
+      )}
     </MockInMemoryStateProvider>
   );
 };
