@@ -60,6 +60,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           color: stylesheet.colors.paper_9,
+          padding: "0px",
           backgroundColor: stylesheet.colors.paper_1_90,
           borderBottom: `1px solid ${stylesheet.colors.paper_9}`,
         },

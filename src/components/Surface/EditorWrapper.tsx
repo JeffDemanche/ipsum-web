@@ -20,8 +20,8 @@ export const EditorWrapper: React.FC<EditorWrapperPropsCombined> =
     );
 
     // editorSelection will become an empty selection as soon as the user
-    // interacts with the rotor popper. This state persists the selection until
-    // the user explicitly performs an action that should close the popper.
+    // interacts with the popper. This state persists the selection until the
+    // user explicitly performs an action that should close the popper.
     const [persistentSelection, setPersistentState] = useState(() =>
       editorSelection?.clone()
     );
@@ -44,6 +44,7 @@ export const EditorWrapper: React.FC<EditorWrapperPropsCombined> =
           onClickAway={() => {
             setPersistentState(editorSelection.clone());
           }}
+          color={"blue"}
         ></TextRangeHighlight>
       </div>
     );

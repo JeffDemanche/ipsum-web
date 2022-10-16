@@ -7,7 +7,9 @@ import { HSL, RGB } from "color-convert/conversions";
  * function the property that continuing to generate new hues will traverse all
  * 255 possible hue values before a duplicate is generated.
  */
-export const nextHue = (prevHue: number): number => {
+export const nextHue = (prevHue: number | undefined): number => {
+  if (prevHue === undefined) return 0;
+
   const step = 2 / 11;
 
   return Math.round(prevHue + step * 255) % 255;

@@ -33,7 +33,7 @@ export const ArcDisambiguator: React.FunctionComponent<
             return (
               <div key={i}>
                 <ArcToken
-                  arcId={arcId}
+                  arcForToken={{ type: "from id", id: arcId }}
                   onClick={() => {
                     onArcSelected(arcId);
                   }}

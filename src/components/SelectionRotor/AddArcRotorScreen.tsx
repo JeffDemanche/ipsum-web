@@ -17,7 +17,7 @@ export const AddArcRotorScreen: React.FC<AddArcRotorScreenProps> = ({
 
   const inputRef = useRef<HTMLInputElement>();
 
-  const { act } = useApiAction<"createAndAssignArc">({
+  const { act } = useApiAction({
     name: "createAndAssignArc",
   });
 

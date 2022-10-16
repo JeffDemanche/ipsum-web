@@ -13,7 +13,7 @@ export const apiCreateAndAssignArc = (
 ) => {
   const arcId = uuidv4();
   const assignmentId = uuidv4();
-  const color = nextHue(context.state.journalMetadata.lastArcHue);
+  const color = nextHue(context.state.journalMetadata?.lastArcHue ?? 0);
 
   context.dispatch({
     type: "CREATE-ARC",

@@ -41,7 +41,7 @@ interface UseApiActionResult<T extends keyof typeof APIFunctions> {
 export const useApiAction = <T extends keyof typeof APIFunctions>(
   apiCall: UseApiActionArgs<T>
 ): UseApiActionResult<T> => {
-  const { dispatch, reloadEditor } = useContext(InMemoryStateContext);
+  const { state, dispatch, reloadEditor } = useContext(InMemoryStateContext);
 
   const [isLoadingPromise, setIsLoadingPromise] = useState(false);
   const [data, setData] = useState<ReturnType<typeof APIFunctions[T]>>();
@@ -63,12 +63,14 @@ export const useApiAction = <T extends keyof typeof APIFunctions>(
         // @ts-ignore sue me
         const result = fn(params, {
           dispatch,
+          state,
           reloadEditor,
         }) as ReturnType<typeof APIFunctions[T]>;
 
         setData(result);
         return result;
       } catch (err) {
+        console.error(err);
         setError(err);
         return null;
       }

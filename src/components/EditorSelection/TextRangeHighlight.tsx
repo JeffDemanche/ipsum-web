@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from "react";
-import { SelectionRotorPopper } from "components/SelectionRotor/SelectionRotorPopper";
 import styles from "./TextRangeHighlight.less";
 import { IpsumSelectionState } from "util/selection";
+import { ArcAssignmentPopper } from "components/ArcAssignmentPopper/ArcAssignmentPopper";
 
 interface TextRangeHighlightProps {
   editorKey: string;
@@ -92,12 +92,12 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
           ref={completeSelectionRef}
         ></div>
         {backgroundDivs}
-        <SelectionRotorPopper
-          editorKey={editorKey}
+        <ArcAssignmentPopper
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
-          onClickAway={onClickAway}
-        ></SelectionRotorPopper>
+          editorKey={editorKey}
+          onClose={onClickAway}
+        />
       </div>
     </>
   );

@@ -34,7 +34,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
           <ArcToken
             key={i}
             className={styles["digest-token"]}
-            arcId={assgn.arcId}
+            arcForToken={{ type: "from id", id: assgn.arcId }}
             highlighted={tokenHighlighted(assgn.arcId)}
             onMouseEnter={() => {
               setHoveredArcIds([assgn.arcId]);

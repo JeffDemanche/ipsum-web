@@ -1,12 +1,16 @@
 import React, { CSSProperties, useContext, useState } from "react";
-import cx from "classnames";
 import styles from "./ArcToken.less";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { Link } from "@mui/material";
 import { IpsumArcColor, IpsumColor } from "util/colors";
+import cx from "classnames";
+
+type ArcForToken =
+  | { type: "from id"; id: string }
+  | { type: "from data"; color: number; name: string };
 
 interface ArcToken {
-  arcId: string;
+  arcForToken: ArcForToken;
   highlighted?: boolean;
   className?: string;
   onClick?: () => void;
@@ -15,7 +19,7 @@ interface ArcToken {
 }
 
 export const ArcToken: React.FunctionComponent<ArcToken> = ({
-  arcId,
+  arcForToken,
   highlighted,
   className,
   onClick,
@@ -24,7 +28,8 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
 }) => {
   const { state } = useContext(InMemoryStateContext);
 
-  const arc = state.arcs[arcId];
+  const arc: { color: number; name: string } =
+    arcForToken.type === "from id" ? state.arcs[arcForToken.id] : arcForToken;
 
   const [hover, setHover] = useState(false);
 
@@ -67,21 +72,23 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
         };
 
   return (
-    <Link
-      href={"#"}
-      onMouseEnter={() => {
-        setHover(true);
-        onMouseEnter();
-      }}
-      onMouseLeave={() => {
-        setHover(false);
-        onMouseLeave();
-      }}
-      onClick={onClick}
-      style={style}
-      className={cx(styles["arc-token"], className)}
-    >
-      {arc?.name ?? "null"}
-    </Link>
+    <p className={cx(className, styles["arc-token-p"])}>
+      <Link
+        href={"#"}
+        onMouseEnter={() => {
+          setHover(true);
+          onMouseEnter?.();
+        }}
+        onMouseLeave={() => {
+          setHover(false);
+          onMouseLeave?.();
+        }}
+        className={styles["arc-token-a"]}
+        onClick={onClick}
+        style={style}
+      >
+        <span className={styles["arc-token-span"]}>{arc?.name ?? "null"}</span>
+      </Link>
+    </p>
   );
 };
