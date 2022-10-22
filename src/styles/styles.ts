@@ -51,7 +51,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           color: stylesheet.colors.paper_9,
-          height: "22px",
+          height: "100%",
           borderRadius: "0px",
         },
       },

@@ -11,6 +11,7 @@ import { InMemoryState } from "state/in-memory/in-memory-state";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { apiAssignArc, apiCreateAndAssignArc } from "./arc";
 import { apiCreateOrUpdateEntry, apiDeleteEntry } from "./entry";
+import { apiUpdateJournalTitle } from "./journalTitle";
 
 export interface APIContext {
   state: InMemoryState;
@@ -24,6 +25,8 @@ const APIFunctions = {
 
   createAndAssignArc: apiCreateAndAssignArc,
   assignArc: apiAssignArc,
+
+  updateJournalTitle: apiUpdateJournalTitle,
 };
 
 interface UseApiActionArgs<T extends keyof typeof APIFunctions> {

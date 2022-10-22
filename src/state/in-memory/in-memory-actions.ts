@@ -28,6 +28,10 @@ export type InMemoryAction =
   | {
       type: "UPDATE-JOURNAL-METADATA";
       payload: Parameters<typeof dispatchers["UPDATE-JOURNAL-METADATA"]>["1"];
+    }
+  | {
+      type: "UPDATE-JOURNAL-TITLE";
+      payload: Parameters<typeof dispatchers["UPDATE-JOURNAL-TITLE"]>["1"];
     };
 
 export type InMemoryActionType = InMemoryAction["type"];
@@ -132,6 +136,12 @@ const dispatchers = {
     };
     return copy;
   },
+  "UPDATE-JOURNAL-TITLE": (
+    state: InMemoryState,
+    payload: { title: string }
+  ): InMemoryState => {
+    return { ...state, journalTitle: payload.title };
+  },
 };
 
 export const dispatch = (
@@ -150,6 +160,8 @@ export const dispatch = (
     case "DELETE-ENTRY":
       return dispatchers[action.type](state, action.payload);
     case "UPDATE-JOURNAL-METADATA":
+      return dispatchers[action.type](state, action.payload);
+    case "UPDATE-JOURNAL-TITLE":
       return dispatchers[action.type](state, action.payload);
     default:
       return { ...state };

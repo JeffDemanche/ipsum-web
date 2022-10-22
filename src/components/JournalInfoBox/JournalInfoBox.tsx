@@ -2,9 +2,10 @@ import { Button } from "components/Button/Button";
 import React, { useCallback, useContext } from "react";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import styles from "./JournalInfoBox.less";
+import { JournalTitle } from "./JournalTitle";
 
 export const JournalInfoBox: React.FC = () => {
-  const { state, saveToFile, loadFromFile, resetToInitial } =
+  const { saveToFile, loadFromFile, resetToInitial } =
     useContext(InMemoryStateContext);
 
   const onClickNew = useCallback(() => {
@@ -21,7 +22,7 @@ export const JournalInfoBox: React.FC = () => {
 
   return (
     <div className={styles["journal-info-box"]}>
-      <h1>{state.journalTitle}</h1>
+      <JournalTitle></JournalTitle>
       <div>
         <Button onClick={onClickNew} tooltip="New journal">
           N
