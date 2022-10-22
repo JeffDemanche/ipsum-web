@@ -8,6 +8,7 @@ interface MockInMemoryStateProviderProps {
   dispatch?: React.Dispatch<InMemoryAction>;
   saveToFile?: () => Promise<void>;
   loadFromFile?: () => Promise<void>;
+  resetToInitial?: () => void;
   shouldReloadEditor?: boolean;
   reloadEditor?: () => void;
   children: React.ReactNode;
@@ -20,6 +21,7 @@ export const MockInMemoryStateProvider: React.FunctionComponent<
   dispatch,
   saveToFile,
   loadFromFile,
+  resetToInitial,
   shouldReloadEditor,
   reloadEditor,
   children,
@@ -33,6 +35,7 @@ export const MockInMemoryStateProvider: React.FunctionComponent<
         dispatch,
         saveToFile,
         loadFromFile,
+        resetToInitial,
         shouldReloadEditor,
         reloadEditor,
       }}

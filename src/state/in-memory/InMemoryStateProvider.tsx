@@ -23,6 +23,7 @@ export interface InMemoryStateContextType {
   dispatch: React.Dispatch<InMemoryAction>;
   saveToFile: () => Promise<void>;
   loadFromFile: () => Promise<void>;
+  resetToInitial: () => void;
   shouldReloadEditor: boolean;
   reloadEditor: () => void;
 }
@@ -33,6 +34,7 @@ export const InMemoryStateContext =
     dispatch: () => {},
     saveToFile: async () => {},
     loadFromFile: async () => {},
+    resetToInitial: () => {},
     shouldReloadEditor: false,
     reloadEditor: () => {},
   });
@@ -111,14 +113,22 @@ const InMemoryStateProviderWithAutosave: React.FC<{
     setReloadEditor(true);
   }, []);
 
+  const resetToInitial = useCallback(() => {
+    dispatch({
+      type: "OVERRIDE",
+      payload: { state: initialInMemoryState },
+    });
+    setReloadEditor(true);
+  }, []);
+
   return (
     <InMemoryStateContext.Provider
       value={{
         state,
         dispatch,
-
         saveToFile,
         loadFromFile,
+        resetToInitial,
         shouldReloadEditor,
         reloadEditor: () => {
           setReloadEditor(true);
