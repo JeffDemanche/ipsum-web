@@ -23,7 +23,7 @@ export const apiCreateAndAssignArc = (
     type: "ASSIGN-ARC",
     payload: {
       assignmentId,
-      arcId: arcId,
+      arcId,
       entryKey,
       selectionState,
     },
@@ -31,6 +31,34 @@ export const apiCreateAndAssignArc = (
   context.dispatch({
     type: "UPDATE-JOURNAL-METADATA",
     payload: { journalMetadata: { lastArcHue: color } },
+  });
+  context.reloadEditor();
+};
+
+export const apiAssignArc = (
+  {
+    arcId,
+    entryKey,
+    selectionState,
+  }: { arcId: string; entryKey: string; selectionState: SelectionState },
+  context: APIContext
+) => {
+  if (!Object.keys(context.state.arcs).includes(arcId))
+    throw new Error("assignArc: arc not found");
+
+  if (!Object.keys(context.state.entries).includes(entryKey))
+    throw new Error("assignArc: entry not found");
+
+  const assignmentId = uuidv4();
+
+  context.dispatch({
+    type: "ASSIGN-ARC",
+    payload: {
+      assignmentId,
+      arcId,
+      entryKey,
+      selectionState,
+    },
   });
   context.reloadEditor();
 };

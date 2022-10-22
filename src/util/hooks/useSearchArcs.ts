@@ -2,11 +2,19 @@ import { useContext } from "react";
 import { InMemoryArc } from "state/in-memory/in-memory-state";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 
+interface UseSearchArcsParams {
+  query: string;
+  maxResults?: number;
+}
+
 interface UseSearchArcsReturn {
   returnedArcs: InMemoryArc[];
 }
 
-export const useSearchArcs = (query: string): UseSearchArcsReturn => {
+export const useSearchArcs = ({
+  query,
+  maxResults = 10,
+}: UseSearchArcsParams): UseSearchArcsReturn => {
   const {
     state: { arcs },
   } = useContext(InMemoryStateContext);
@@ -15,5 +23,5 @@ export const useSearchArcs = (query: string): UseSearchArcsReturn => {
     return arc.name.toLowerCase().includes(query.toLowerCase());
   });
 
-  return { returnedArcs: allArcs };
+  return { returnedArcs: allArcs.slice(0, maxResults) };
 };

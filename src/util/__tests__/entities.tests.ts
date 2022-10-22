@@ -185,6 +185,37 @@ describe("entities", () => {
     );
   });
 
+  describe("clearEntities", () => {
+    it("clears a single arc from an editor state with a single block", () => {
+      const initialEditor = createEditorStateFromFormat("he[ll]o world!");
+      const transformer = new IpsumEntityTransformer(
+        initialEditor.getCurrentContent()
+      );
+      const withArc = transformer.applyArc(
+        initialEditor.getSelection(),
+        "test_arc_id"
+      );
+
+      const editorAllSelected = moveEditorSelectionFromFormat(
+        initialEditor,
+        "[hello world!]"
+      );
+
+      const withRemovedArcs = withArc.clearEntities();
+
+      const arcIds = (n: number) =>
+        arcIdsForChar(n, withRemovedArcs, editorAllSelected.getSelection());
+
+      expect(arcIds(2)).toBeNull();
+
+      // Ideally this would pass but I'm not seeing an easy way for DraftJS to
+      // remove unused entities from the contentState's entityMap.
+
+      // const removedArcsContent = withRemovedArcs.contentState;
+      // expect(removedArcsContent.getAllEntities().size).toEqual(0);
+    });
+  });
+
   describe("applyArc", () => {
     it("can apply an entity for a single arc", () => {
       const initialEditor = createEditorStateFromFormat("he[ll]o world!");
@@ -361,6 +392,34 @@ describe("entities", () => {
       expect(arcIds(8)).toEqual({ arcIds: ["arc_1", "arc_2"] });
       expect(arcIds(9)).toEqual({ arcIds: ["arc_1", "arc_2"] });
       expect(arcIds(10)).toBeNull();
+    });
+
+    it("applying the same arc overlapped combines the entities", () => {
+      const editorArc1 = createEditorStateFromFormat("0[123]456789");
+
+      const withArc = new IpsumEntityTransformer(
+        editorArc1.getCurrentContent()
+      ).applyArc(editorArc1.getSelection(), "arc_1");
+
+      const editorArc2 = moveEditorSelectionFromFormat(
+        editorArc1,
+        "012[345]6789"
+      );
+      const withConsolidatedArc = withArc.applyArc(
+        editorArc2.getSelection(),
+        "arc_1"
+      );
+
+      const editorAllSelected = moveEditorSelectionFromFormat(
+        editorArc1,
+        "[0123456789]"
+      );
+
+      const arcIds = (n: number) =>
+        arcIdsForChar(n, withConsolidatedArc, editorAllSelected.getSelection());
+
+      // Should not include "arc_1" twice
+      expect(arcIds(3)).toEqual({ arcIds: ["arc_1"] });
     });
   });
 });

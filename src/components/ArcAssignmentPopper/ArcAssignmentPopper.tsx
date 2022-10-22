@@ -15,6 +15,7 @@ import { nextHue } from "util/colors";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { useApiAction } from "state/api/use-api-action";
 import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
+import { noop } from "underscore";
 
 interface ArcAssignmentPopoverProps {
   open: boolean;
@@ -32,12 +33,19 @@ export const ArcAssignmentPopper: React.FunctionComponent<
 
   const [inputVal, setInputVal] = useState("");
 
+  useEffect(() => {
+    setInputVal("");
+  }, [open]);
+
   const { state } = useContext(InMemoryStateContext);
-  const { act } = useApiAction({ name: "createAndAssignArc" });
+  const { act: addArcAction } = useApiAction({
+    name: "createAndAssignArc",
+  });
+  const { act: assignArcAction } = useApiAction({ name: "assignArc" });
 
   const lastArcHue = state.journalMetadata?.lastArcHue;
 
-  const arcs = useSearchArcs(inputVal);
+  const arcs = useSearchArcs({ query: inputVal });
 
   const onInputKeyUp = () => {
     setInputVal(inputRef.current.value);
@@ -45,18 +53,35 @@ export const ArcAssignmentPopper: React.FunctionComponent<
 
   const addArc = useCallback(() => {
     const selection = getSelection(editorKey);
-    act({
+    addArcAction({
       name: inputVal,
       entryKey: editorKey,
       selectionState: selection.selectionState,
     });
     onClose?.();
-  }, [act, editorKey, getSelection, inputVal, onClose]);
+  }, [addArcAction, editorKey, getSelection, inputVal, onClose]);
+
+  const assignArc = useCallback(
+    (arcId: string) => {
+      const selection = getSelection(editorKey);
+      assignArcAction({
+        arcId,
+        entryKey: editorKey,
+        selectionState: selection.selectionState,
+      });
+    },
+    [assignArcAction, editorKey, getSelection]
+  );
 
   const tokens = [
     ...arcs.returnedArcs.map((arc, i) => (
       <div key={i} className={styles["token-wrapper"]}>
-        <ArcToken arcForToken={{ type: "from id", id: arc.id }} />
+        <ArcToken
+          arcForToken={{ type: "from id", id: arc.id }}
+          onClick={() => {
+            assignArc(arc.id);
+          }}
+        />
       </div>
     )),
   ];
@@ -85,7 +110,7 @@ export const ArcAssignmentPopper: React.FunctionComponent<
       anchorEl={anchorEl}
       popperOptions={{ strategy: "absolute" }}
     >
-      <ClickAwayListener onClickAway={onClose}>
+      <ClickAwayListener onClickAway={onClose ?? noop}>
         <div className={styles["arc-assignment"]}>
           <TextField
             autoCorrect="off"

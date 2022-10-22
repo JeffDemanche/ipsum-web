@@ -84,6 +84,23 @@ const dispatchers = {
       parseContentState(entry.contentState)
     ).applyArc(payload.selectionState, payload.arcId).contentState;
 
+    const assignmentAlreadyExists = !!Object.values(state.arcAssignments).find(
+      (assignment) =>
+        assignment.arcId === payload.arcId &&
+        assignment.entryKey === payload.entryKey
+    );
+
+    const arcAssignments = assignmentAlreadyExists
+      ? state.arcAssignments
+      : {
+          ...state.arcAssignments,
+          [payload.assignmentId]: {
+            id: payload.assignmentId,
+            arcId: payload.arcId,
+            entryKey: payload.entryKey,
+          },
+        };
+
     return {
       ...state,
       entries: {
@@ -93,14 +110,7 @@ const dispatchers = {
           contentState: stringifyContentState(contentStateWithArc),
         },
       },
-      arcAssignments: {
-        ...state.arcAssignments,
-        [payload.assignmentId]: {
-          id: payload.assignmentId,
-          arcId: payload.arcId,
-          entryKey: payload.entryKey,
-        },
-      },
+      arcAssignments,
     };
   },
   "DELETE-ENTRY": (

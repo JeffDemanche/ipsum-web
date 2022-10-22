@@ -4,10 +4,12 @@ import {
   initialInMemoryState,
   InMemoryState,
 } from "state/in-memory/in-memory-state";
-import { apiCreateAndAssignArc } from "../arc";
+import { apiAssignArc, apiCreateAndAssignArc } from "../arc";
 import {
   createEditorState,
+  createEditorStateFromFormat,
   moveEditorSelection,
+  moveEditorSelectionFromFormat,
 } from "util/__tests__/editor-utils";
 import { apiCreateOrUpdateEntry } from "../entry";
 import { parseContentState, stringifyContentState } from "util/content-state";
@@ -196,6 +198,112 @@ describe("Arc API", () => {
       );
 
       unmount();
+    });
+  });
+
+  describe("assignArc", () => {
+    it("creates an arc assignment for an existing arc being assigned", () => {
+      const newStateFn = jest.fn();
+
+      const editorState = createEditorStateFromFormat("<p>hello world<p>");
+
+      const { unmount } = render(
+        <APIDispatcher
+          beforeState={{
+            ...initialInMemoryState,
+            arcs: { arc_id: { id: "arc_id", name: "test arc", color: 0 } },
+            entries: {
+              entry_key: {
+                date: new IpsumDateTime(DateTime.now()),
+                entryKey: "entry_key",
+                contentState: stringifyContentState(
+                  editorState.getCurrentContent()
+                ),
+              },
+            },
+          }}
+          action={(context) => {
+            apiAssignArc(
+              {
+                arcId: "arc_id",
+                entryKey: "entry_key",
+                selectionState: moveEditorSelectionFromFormat(
+                  editorState,
+                  "<p>hello [world]<p>"
+                ).getSelection(),
+              },
+              context
+            );
+          }}
+          onStateChange={newStateFn}
+        />
+      );
+
+      const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
+
+      expect(Object.values(updatedState.arcAssignments).length).toEqual(1);
+      expect(Object.values(updatedState.arcAssignments)[0].arcId).toEqual(
+        "arc_id"
+      );
+      expect(Object.values(updatedState.arcAssignments)[0].entryKey).toEqual(
+        "entry_key"
+      );
+
+      const contentState = parseContentState(
+        updatedState.entries["entry_key"].contentState
+      );
+      expect(
+        contentState
+          .getAllEntities()
+          .find(
+            (entity) =>
+              entity.getType() === "ARC" &&
+              entity.getData().arcIds.includes("arc_id")
+          )
+      ).toBeDefined();
+
+      unmount();
+    });
+
+    it("throws an error if the arc is not found", () => {
+      const newStateFn = jest.fn();
+
+      const editorState = createEditorStateFromFormat("<p>hello world<p>");
+
+      global.console.error = jest.fn();
+      expect(() =>
+        render(
+          <APIDispatcher
+            beforeState={{
+              ...initialInMemoryState,
+              arcs: { arc_id: { id: "arc_id", name: "test arc", color: 0 } },
+              entries: {
+                entry_key: {
+                  date: new IpsumDateTime(DateTime.now()),
+                  entryKey: "entry_key",
+                  contentState: stringifyContentState(
+                    editorState.getCurrentContent()
+                  ),
+                },
+              },
+            }}
+            action={(context) => {
+              apiAssignArc(
+                {
+                  arcId: "wrong_arc_id",
+                  entryKey: "entry_key",
+                  selectionState: moveEditorSelectionFromFormat(
+                    editorState,
+                    "<p>hello [world]<p>"
+                  ).getSelection(),
+                },
+                context
+              );
+            }}
+            onStateChange={newStateFn}
+          />
+        )
+      ).toThrow();
     });
   });
 });

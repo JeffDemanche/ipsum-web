@@ -9,7 +9,7 @@ import { useContext, useState } from "react";
 import { InMemoryAction } from "state/in-memory/in-memory-actions";
 import { InMemoryState } from "state/in-memory/in-memory-state";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
-import { apiCreateAndAssignArc } from "./arc";
+import { apiAssignArc, apiCreateAndAssignArc } from "./arc";
 import { apiCreateOrUpdateEntry, apiDeleteEntry } from "./entry";
 
 export interface APIContext {
@@ -23,6 +23,7 @@ const APIFunctions = {
   deleteEntry: apiDeleteEntry,
 
   createAndAssignArc: apiCreateAndAssignArc,
+  assignArc: apiAssignArc,
 };
 
 interface UseApiActionArgs<T extends keyof typeof APIFunctions> {
