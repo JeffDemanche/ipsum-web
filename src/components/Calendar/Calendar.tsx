@@ -28,8 +28,8 @@ export const Calendar: React.FC = () => {
   const monthJournalEntries = useMemo(() => {
     const c =
       allEntryDates &&
-      allEntryDates.filter((entry) => {
-        return entry.dateTime.month === monthYear.dateTime.month;
+      allEntryDates.filter((date) => {
+        return date.dateTime?.month === monthYear.dateTime?.month;
       });
     return c;
   }, [allEntryDates, monthYear.dateTime.month]);

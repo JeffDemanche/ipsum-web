@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import { IpsumDateTime } from "util/dates";
 import { dispatch, InMemoryAction } from "./in-memory-actions";
 import { v4 as uuidv4 } from "uuid";
@@ -50,9 +49,14 @@ export const stateReviver: Parameters<typeof JSON.parse>[1] = (key, value) => {
       const revivedEntries: { [id: string]: InMemoryEntry } = {};
       Object.keys(value as { [id: string]: InMemoryEntry }).forEach(
         (entryKey) => {
+          // Revives the date from the entry key if it gets lost for some reason
+          const defaultedDate = value.date?._luxonDateTime
+            ? new IpsumDateTime(value.date?._luxonDateTime)
+            : IpsumDateTime.fromString(entryKey, "entry-printed-date");
+
           revivedEntries[entryKey] = {
             ...value[entryKey],
-            date: new IpsumDateTime(DateTime.fromISO(value._luxonDateTime)),
+            date: defaultedDate,
           };
         }
       );
