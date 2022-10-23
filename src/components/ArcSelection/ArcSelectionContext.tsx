@@ -3,7 +3,9 @@
  * other abilities across components.
  */
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
+import { useNavigate } from "react-router";
+import { useSearchParams } from "react-router-dom";
 
 interface ArcSelectionContextValue {
   hoveredArcIds: string[] | undefined;
@@ -30,8 +32,22 @@ interface ArcSelectionProviderProps {
 export const ArcSelectionProvider: React.FC<ArcSelectionProviderProps> = ({
   children,
 }) => {
+  const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+
+  const selectedArcIds = searchParams.has("arcs")
+    ? searchParams.get("arcs").split(",")
+    : [];
+
+  const setSelectedArcIds = useCallback(
+    (arcs: string[]) => {
+      navigate({ search: `?arcs=${arcs.join(",")}` }, { replace: false });
+    },
+    [navigate]
+  );
+
   const [hoveredArcIds, setHoveredArcIds] = useState<string[]>(undefined);
-  const [selectedArcIds, setSelectedArcIds] = useState<string[]>(undefined);
 
   return (
     <ArcSelectionContext.Provider
