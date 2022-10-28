@@ -10,10 +10,12 @@ import { useJournalEntryEditor } from "./useJournalEntryEditor";
 
 interface JournalEntryProps {
   entryKey: string;
+  showDivider?: boolean;
 }
 
 export const JournalEntryPast: React.FC<JournalEntryProps> = ({
   entryKey,
+  showDivider,
 }: JournalEntryProps) => {
   const { editorRef, editorState, blockStyleFn } = useJournalEntryEditor({
     entryKey,
@@ -99,6 +101,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
           </div>
         </>
       )}
+      {showDivider && <hr></hr>}
     </div>
   );
 };
