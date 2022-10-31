@@ -101,7 +101,11 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
           </div>
         </>
       )}
-      {showDivider && <hr></hr>}
+      {showDivider && (
+        <div className={styles["divider-container"]}>
+          <hr></hr>
+        </div>
+      )}
     </div>
   );
 };

@@ -16,13 +16,11 @@ export const SurfaceEditor = () => {
   const today = useDateString(30000, "entry-printed-date");
 
   const todayEntryComponent = (
-    <>
-      <JournalEntryToday
-        entryKey={today}
-        showDivider={!!visibleEntryKeys.length}
-        key={today}
-      ></JournalEntryToday>
-    </>
+    <JournalEntryToday
+      entryKey={today}
+      showDivider={!!visibleEntryKeys.length}
+      key={today}
+    ></JournalEntryToday>
   );
 
   const entryEditorComponents =
@@ -32,13 +30,11 @@ export const SurfaceEditor = () => {
       .sort((a, b) => Date.parse(b) - Date.parse(a))
       .map((sortedEntryKey, i) => {
         return (
-          <>
-            <JournalEntryPast
-              entryKey={sortedEntryKey}
-              showDivider={i !== visibleEntryKeys.length - 1}
-              key={sortedEntryKey}
-            ></JournalEntryPast>
-          </>
+          <JournalEntryPast
+            entryKey={sortedEntryKey}
+            showDivider={i !== visibleEntryKeys.length - 1}
+            key={sortedEntryKey}
+          ></JournalEntryPast>
         );
       });
 

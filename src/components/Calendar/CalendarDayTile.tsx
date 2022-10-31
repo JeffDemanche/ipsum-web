@@ -1,7 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { IpsumDateTime } from "util/dates";
-import { entryUrl } from "util/urls";
 import styles from "./CalendarDayTile.less";
 
 interface CalendarDayTileProps {
@@ -13,10 +12,24 @@ export const CalendarDayTile: React.FC<CalendarDayTileProps> = ({
   date,
   entryDate,
 }: CalendarDayTileProps) => {
+  const [searchParams] = useSearchParams();
+
   const dayNumber = date.dateTime.day;
 
+  const linkSearchParams = new URLSearchParams(searchParams);
+  if (entryDate) {
+    linkSearchParams.set("startDate", entryDate.toString("url-format"));
+    linkSearchParams.set("endDate", entryDate.toString("url-format"));
+  }
+
   return entryDate ? (
-    <Link to={entryUrl(entryDate)}>{dayNumber}</Link>
+    <Link
+      to={{
+        search: linkSearchParams.toString(),
+      }}
+    >
+      {dayNumber}
+    </Link>
   ) : (
     <div className={styles["tile"]}>{dayNumber}</div>
   );

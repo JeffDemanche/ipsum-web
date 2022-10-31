@@ -108,6 +108,13 @@ export class IpsumDateTime {
     }
   };
 
+  isInRange = (before: IpsumDateTime, after: IpsumDateTime): boolean => {
+    return (
+      before.dateTime.diff(this.dateTime, "hours").hours <= 0 &&
+      after.dateTime.diff(this.dateTime, "hours").hours >= 0
+    );
+  };
+
   toString = (format: IpsumDateFormatTo): string => {
     switch (format) {
       case "entry-printed-date":

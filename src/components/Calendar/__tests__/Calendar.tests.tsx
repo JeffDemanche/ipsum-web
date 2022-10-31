@@ -3,7 +3,9 @@ import { DateTime } from "luxon";
 import React from "react";
 import { IpsumDateTime, useDate } from "util/dates";
 import { Calendar } from "../Calendar";
+import { useSearchParams } from "react-router-dom";
 
+jest.mock("react-router-dom");
 jest.mock("../Calendar.less", () => jest.fn());
 jest.mock("util/dates", () => ({
   ...jest.requireActual("util/dates"),
@@ -12,6 +14,11 @@ jest.mock("util/dates", () => ({
 
 describe("Calendar", () => {
   beforeEach(() => {
+    (useSearchParams as jest.Mock).mockReturnValue([
+      {
+        get: () => {},
+      },
+    ]);
     (useDate as jest.Mock).mockImplementation(
       () =>
         new IpsumDateTime(

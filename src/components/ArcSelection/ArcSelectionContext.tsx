@@ -42,9 +42,11 @@ export const ArcSelectionProvider: React.FC<ArcSelectionProviderProps> = ({
 
   const setSelectedArcIds = useCallback(
     (arcs: string[]) => {
-      navigate({ search: `?arcs=${arcs.join(",")}` }, { replace: false });
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set("arcs", arcs.join(","));
+      navigate({ search: newParams.toString() }, { replace: false });
     },
-    [navigate]
+    [navigate, searchParams]
   );
 
   const [hoveredArcIds, setHoveredArcIds] = useState<string[]>(undefined);

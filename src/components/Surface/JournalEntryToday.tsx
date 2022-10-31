@@ -106,6 +106,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
       {editorState && (
         <>
           <EditorWrapper
+            placeholder="Tell a story to your future..."
             editorKey={entryKey}
             enableHighlights={true}
             onFocus={onFocus}
@@ -121,7 +122,11 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
           </div>
         </>
       )}
-      {showDivider && <hr></hr>}
+      {showDivider && (
+        <div className={styles["divider-container"]}>
+          <hr></hr>
+        </div>
+      )}
     </div>
   );
 };

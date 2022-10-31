@@ -102,4 +102,42 @@ describe("dates", () => {
       expect(out).toHaveLength(366);
     });
   });
+
+  describe("isInRange", () => {
+    it("specify date within range", () => {
+      expect(
+        IpsumDateTime.fromString("10/28/2022", "entry-printed-date").isInRange(
+          IpsumDateTime.fromString("10/27/2022", "entry-printed-date"),
+          IpsumDateTime.fromString("10/29/2022", "entry-printed-date")
+        )
+      ).toBeTruthy();
+      expect(
+        IpsumDateTime.fromString("10/26/2022", "entry-printed-date").isInRange(
+          IpsumDateTime.fromString("10/27/2022", "entry-printed-date"),
+          IpsumDateTime.fromString("10/29/2022", "entry-printed-date")
+        )
+      ).toBeFalsy();
+      expect(
+        IpsumDateTime.fromString("10/30/2022", "entry-printed-date").isInRange(
+          IpsumDateTime.fromString("10/27/2022", "entry-printed-date"),
+          IpsumDateTime.fromString("10/29/2022", "entry-printed-date")
+        )
+      ).toBeFalsy();
+      expect(
+        IpsumDateTime.fromString("10-03-2022", "url-format").isInRange(
+          IpsumDateTime.fromString("10-01-2022", "url-format"),
+          IpsumDateTime.fromString("10-31-2022", "url-format")
+        )
+      ).toBeTruthy();
+    });
+
+    it("inclusive to before and after params", () => {
+      expect(
+        IpsumDateTime.fromString("10/27/2022", "entry-printed-date").isInRange(
+          IpsumDateTime.fromString("10/27/2022", "entry-printed-date"),
+          IpsumDateTime.fromString("10/27/2022", "entry-printed-date")
+        )
+      ).toBeTruthy();
+    });
+  });
 });

@@ -5,6 +5,7 @@ import { IpsumRouter } from "../views/IpsumRouter";
 import { InMemoryStateProvider } from "state/in-memory/InMemoryStateProvider";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "styles/styles";
+import "draft-js/dist/Draft.css";
 
 export const App: React.FC = () => {
   return (
