@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
+import cx from "classnames";
 import { Link, useSearchParams } from "react-router-dom";
 import { IpsumDateTime } from "util/dates";
+import { VisibleEntriesContext } from "views/VisibleEntriesContext";
 import styles from "./CalendarDayTile.less";
 
 interface CalendarDayTileProps {
@@ -12,6 +14,12 @@ export const CalendarDayTile: React.FC<CalendarDayTileProps> = ({
   date,
   entryDate,
 }: CalendarDayTileProps) => {
+  const { visibleDateRangeStart, visibleDateRangeEnd } = useContext(
+    VisibleEntriesContext
+  );
+
+  const isInRange = date.isInRange(visibleDateRangeStart, visibleDateRangeEnd);
+
   const [searchParams] = useSearchParams();
 
   const dayNumber = date.dateTime.day;
@@ -23,14 +31,26 @@ export const CalendarDayTile: React.FC<CalendarDayTileProps> = ({
   }
 
   return entryDate ? (
-    <Link
-      to={{
-        search: linkSearchParams.toString(),
-      }}
+    <div
+      className={cx(styles["tile"], {
+        [styles["in-selected-range"]]: isInRange,
+      })}
+    >
+      <Link
+        to={{
+          search: linkSearchParams.toString(),
+        }}
+      >
+        {dayNumber}
+      </Link>
+    </div>
+  ) : (
+    <div
+      className={cx(styles["tile"], {
+        [styles["in-selected-range"]]: isInRange,
+      })}
     >
       {dayNumber}
-    </Link>
-  ) : (
-    <div className={styles["tile"]}>{dayNumber}</div>
+    </div>
   );
 };

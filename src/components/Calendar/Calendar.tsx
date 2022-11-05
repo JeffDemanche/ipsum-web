@@ -1,5 +1,7 @@
+import { Button } from "@mui/material";
 import { Info, DateTime } from "luxon";
-import React, { useContext, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
 import { getDaysBetween, IpsumDateTime, useDate } from "util/dates";
 import styles from "./Calendar.less";
@@ -86,6 +88,17 @@ export const Calendar: React.FC = () => {
     setMonthYear(new IpsumDateTime(monthYear.dateTime.minus({ months: 1 })));
   };
 
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const resetDates = useCallback(() => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete("startDate");
+    newParams.delete("endDate");
+    newParams.delete("date");
+    navigate({ search: newParams.toString() }, { replace: false });
+  }, [navigate, searchParams]);
+
   return (
     <div className={styles["calendar"]}>
       <div className={styles["year-title"]}>{monthYear.dateTime.year}</div>
@@ -110,6 +123,11 @@ export const Calendar: React.FC = () => {
         {daysOfWeek}
         {emptyDays}
         {actualDays}
+      </div>
+      <div>
+        <Button href="#" onClick={resetDates}>
+          reset to today
+        </Button>
       </div>
     </div>
   );

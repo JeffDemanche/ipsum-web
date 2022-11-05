@@ -27,7 +27,6 @@ export const SurfaceEditor = () => {
     visibleEntryKeys &&
     visibleEntryKeys
       .filter((entryKey) => entryKey !== today)
-      .sort((a, b) => Date.parse(b) - Date.parse(a))
       .map((sortedEntryKey, i) => {
         return (
           <JournalEntryPast

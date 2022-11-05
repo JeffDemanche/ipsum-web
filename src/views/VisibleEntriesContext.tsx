@@ -6,10 +6,14 @@ import { IpsumDateTime, sortDates } from "util/dates";
 
 export interface VisibleEntries {
   visibleEntryKeys: string[];
+  visibleDateRangeStart: IpsumDateTime;
+  visibleDateRangeEnd: IpsumDateTime;
 }
 
 const emptyVisibleEntries: VisibleEntries = {
   visibleEntryKeys: [],
+  visibleDateRangeStart: IpsumDateTime.fromJsDate(new Date()),
+  visibleDateRangeEnd: IpsumDateTime.fromJsDate(new Date()),
 };
 
 export const VisibleEntriesContext =
@@ -24,19 +28,22 @@ export const VisibleEntriesProvider: React.FC<{
     state: { entries = undefined },
   } = useContext(InMemoryStateContext);
 
-  const entryKeysInState = Object.keys(entries);
-  const sortedEntryDateTimes = sortDates(
-    entryKeysInState.map((entryKey) =>
-      IpsumDateTime.fromString(entryKey, "entry-printed-date")
-    )
-  );
-
   const [searchParams] = useSearchParams();
+
+  const sort = searchParams.get("sort");
 
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
 
   const { date } = useParams();
+
+  const entryKeysInState = Object.keys(entries);
+  const sortedEntryDateTimes = sortDates(
+    entryKeysInState.map((entryKey) =>
+      IpsumDateTime.fromString(entryKey, "entry-printed-date")
+    ),
+    sort === "asc"
+  );
 
   const visibleEntryKeys = useMemo(() => {
     let dateRangeEntries = sortedEntryDateTimes;
@@ -52,13 +59,40 @@ export const VisibleEntriesProvider: React.FC<{
       dateRangeEntries = [IpsumDateTime.fromString(date, "url-format")];
     }
 
-    return dateRangeEntries
-      .slice(0, DEFAULT_NUM_VISIBLE_ENTRIES)
-      .map((entryKey) => entryKey.toString("entry-printed-date"));
-  }, [date, endDate, sortedEntryDateTimes, startDate]);
+    if (sort === "asc") {
+      return dateRangeEntries
+        .slice(-DEFAULT_NUM_VISIBLE_ENTRIES)
+        .map((entryKey) => entryKey.toString("entry-printed-date"));
+    } else {
+      return dateRangeEntries
+        .slice(0, DEFAULT_NUM_VISIBLE_ENTRIES)
+        .map((entryKey) => entryKey.toString("entry-printed-date"));
+    }
+  }, [date, endDate, sort, sortedEntryDateTimes, startDate]);
+
+  console.log(visibleEntryKeys);
+  const visibleDateRangeStart = startDate
+    ? IpsumDateTime.fromString(startDate, "url-format")
+    : sortDates(
+        visibleEntryKeys.map((entryKey) =>
+          IpsumDateTime.fromString(entryKey, "entry-printed-date")
+        ),
+        true
+      )[0];
+
+  const visibleDateRangeEnd = endDate
+    ? IpsumDateTime.fromString(endDate, "url-format")
+    : sortDates(
+        visibleEntryKeys.map((entryKey) =>
+          IpsumDateTime.fromString(entryKey, "entry-printed-date")
+        ),
+        false
+      )[0];
 
   return (
-    <VisibleEntriesContext.Provider value={{ visibleEntryKeys }}>
+    <VisibleEntriesContext.Provider
+      value={{ visibleEntryKeys, visibleDateRangeStart, visibleDateRangeEnd }}
+    >
       {children}
     </VisibleEntriesContext.Provider>
   );
