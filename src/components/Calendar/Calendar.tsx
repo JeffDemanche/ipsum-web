@@ -97,24 +97,40 @@ export const Calendar: React.FC = () => {
     newParams.delete("endDate");
     newParams.delete("date");
     navigate({ search: newParams.toString() }, { replace: false });
-  }, [navigate, searchParams]);
+    setMonthYear(
+      new IpsumDateTime(
+        DateTime.fromObject({
+          month: date.dateTime.month,
+          year: date.dateTime.year,
+        })
+      )
+    );
+  }, [date.dateTime.month, date.dateTime.year, navigate, searchParams]);
 
   return (
     <div className={styles["calendar"]}>
       <div className={styles["year-title"]}>{monthYear.dateTime.year}</div>
       <div className={styles["month-title-with-arrows"]}>
         <a
+          tabIndex={0}
           className={styles["arrow"]}
           aria-label="Previous month"
           onClick={previousMonth}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") previousMonth();
+          }}
         >
           «
         </a>{" "}
         <span className={styles["month-name"]}>{monthString}</span>{" "}
         <a
+          tabIndex={0}
           className={styles["arrow"]}
           aria-label="Next month"
           onClick={nextMonth}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") nextMonth();
+          }}
         >
           »
         </a>
@@ -124,9 +140,9 @@ export const Calendar: React.FC = () => {
         {emptyDays}
         {actualDays}
       </div>
-      <div>
+      <div className={styles["reset-button-container"]}>
         <Button href="#" onClick={resetDates}>
-          reset to today
+          Today
         </Button>
       </div>
     </div>

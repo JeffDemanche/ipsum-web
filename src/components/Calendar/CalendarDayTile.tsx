@@ -41,16 +41,17 @@ export const CalendarDayTile: React.FC<CalendarDayTileProps> = ({
           search: linkSearchParams.toString(),
         }}
       >
-        {dayNumber}
+        <p>{dayNumber}</p>
       </Link>
     </div>
   ) : (
     <div
+      tabIndex={0}
       className={cx(styles["tile"], {
         [styles["in-selected-range"]]: isInRange,
       })}
     >
-      {dayNumber}
+      <p>{dayNumber}</p>
     </div>
   );
 };
