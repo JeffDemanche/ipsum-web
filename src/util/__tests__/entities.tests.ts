@@ -422,4 +422,83 @@ describe("entities", () => {
       expect(arcIds(3)).toEqual({ arcIds: ["arc_1"] });
     });
   });
+
+  describe("removeArc", () => {
+    it("can remove a single arc in one entity from an entry", () => {
+      const editorArc1 = createEditorStateFromFormat(
+        "<p>[paragraph 1</p><p>paragraph 2]</p>"
+      );
+      const withArc = new IpsumEntityTransformer(
+        editorArc1.getCurrentContent()
+      ).applyArc(editorArc1.getSelection(), "arc_1");
+
+      const withArcRemoved = withArc.removeArc("arc_1");
+
+      const arcIds = (n: number) =>
+        arcIdsForChar(n, withArcRemoved, editorArc1.getSelection());
+
+      expect(arcIds(0)).toEqual(null);
+    });
+
+    it("can remove an arc when there are multiple arcs overlapping", () => {
+      const editorArc1 = createEditorStateFromFormat(
+        "<p>[paragraph 1</p><p>paragraph 2]</p>"
+      );
+      const editorArc2 = moveEditorSelectionFromFormat(
+        editorArc1,
+        "<p>p[a]ragraph 1</p><p>paragraph 2</p>"
+      );
+
+      const with2Arcs = new IpsumEntityTransformer(
+        editorArc1.getCurrentContent()
+      )
+        .applyArc(editorArc1.getSelection(), "arc_1")
+        .applyArc(editorArc2.getSelection(), "arc_2");
+
+      const withArc1Removed = with2Arcs.removeArc("arc_1");
+
+      const arcIds = (n: number) =>
+        arcIdsForChar(n, withArc1Removed, editorArc1.getSelection());
+
+      expect(arcIds(0)).toEqual(null);
+      expect(arcIds(1)).toEqual({ arcIds: ["arc_2"] });
+      expect(arcIds(2)).toEqual(null);
+    });
+
+    // it("consolidates equivalent (empty) consecutive entities", () => {
+    //   const editorArc1 = createEditorStateFromFormat(
+    //     "<p>[p]aragraph 1</p><p>paragraph 2</p>"
+    //   );
+    //   const editorArc2 = moveEditorSelectionFromFormat(
+    //     editorArc1,
+    //     "<p>p[a]ragraph 1</p><p>paragraph 2</p>"
+    //   );
+
+    //   const withArcs = new IpsumEntityTransformer(
+    //     editorArc1.getCurrentContent()
+    //   )
+    //     .applyArc(editorArc1.getSelection(), "arc_1")
+    //     .applyArc(editorArc2.getSelection(), "arc_1");
+
+    //   const withArc1Removed = withArcs.removeArc("arc_1");
+
+    //   const arcIds = (n: number) =>
+    //     arcIdsForChar(n, withArc1Removed, editorArc1.getSelection());
+
+    //   const editorArcAllSelected = moveEditorSelectionFromFormat(
+    //     editorArc1,
+    //     "<p>[paragraph 1</p><p>paragraph 2]</p>"
+    //   );
+
+    //   const char1EntityId = withArc1Removed.getSelectedCharacters(
+    //     editorArcAllSelected.getSelection()
+    //   )[0].entityId;
+    //   const char2EntityId = withArc1Removed.getSelectedCharacters(
+    //     editorArcAllSelected.getSelection()
+    //   )[1].entityId;
+    //   expect(char);
+    // });
+  });
+
+  describe("consolidateEntities", () => {});
 });

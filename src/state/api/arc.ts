@@ -62,3 +62,17 @@ export const apiAssignArc = (
   });
   context.reloadEditor();
 };
+
+export const apiUnassignArc = (
+  { arcId, entryKey }: { arcId: string; entryKey: string },
+  context: APIContext
+) => {
+  if (!Object.keys(context.state.arcs).includes(arcId))
+    throw new Error("unassignArc: arc not found");
+
+  if (!Object.keys(context.state.entries).includes(entryKey))
+    throw new Error("unassignArc: entry not found");
+
+  context.dispatch({ type: "UNASSIGN-ARC", payload: { arcId, entryKey } });
+  context.reloadEditor();
+};

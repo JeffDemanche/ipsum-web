@@ -141,7 +141,7 @@ export const Calendar: React.FC = () => {
         {actualDays}
       </div>
       <div className={styles["reset-button-container"]}>
-        <Button href="#" onClick={resetDates}>
+        <Button href="#" onClick={resetDates} variant="outlined">
           Today
         </Button>
       </div>

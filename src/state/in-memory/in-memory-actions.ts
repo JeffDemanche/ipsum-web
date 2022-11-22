@@ -32,6 +32,10 @@ export type InMemoryAction =
   | {
       type: "UPDATE-JOURNAL-TITLE";
       payload: Parameters<typeof dispatchers["UPDATE-JOURNAL-TITLE"]>["1"];
+    }
+  | {
+      type: "UNASSIGN-ARC";
+      payload: Parameters<typeof dispatchers["UNASSIGN-ARC"]>["1"];
     };
 
 export type InMemoryActionType = InMemoryAction["type"];
@@ -142,6 +146,29 @@ const dispatchers = {
   ): InMemoryState => {
     return { ...state, journalTitle: payload.title };
   },
+  "UNASSIGN-ARC": (
+    state: InMemoryState,
+    payload: { arcId: string; entryKey: string }
+  ): InMemoryState => {
+    const entry = state.entries[payload.entryKey];
+
+    const contentStateWithoutArc = new IpsumEntityTransformer(
+      parseContentState(entry.contentState)
+    ).removeArc(payload.arcId).contentState;
+
+    const copy = { ...state };
+    const assignment = Object.values(copy.arcAssignments).find(
+      (assgn) =>
+        assgn.arcId === payload.arcId && assgn.entryKey === payload.entryKey
+    );
+    copy.entries[payload.entryKey].contentState = stringifyContentState(
+      contentStateWithoutArc
+    );
+    if (assignment) {
+      delete copy.arcAssignments[assignment.id];
+    }
+    return copy;
+  },
 };
 
 export const dispatch = (
@@ -162,6 +189,8 @@ export const dispatch = (
     case "UPDATE-JOURNAL-METADATA":
       return dispatchers[action.type](state, action.payload);
     case "UPDATE-JOURNAL-TITLE":
+      return dispatchers[action.type](state, action.payload);
+    case "UNASSIGN-ARC":
       return dispatchers[action.type](state, action.payload);
     default:
       return { ...state };

@@ -70,7 +70,6 @@ export const VisibleEntriesProvider: React.FC<{
     }
   }, [date, endDate, sort, sortedEntryDateTimes, startDate]);
 
-  console.log(visibleEntryKeys);
   const visibleDateRangeStart = startDate
     ? IpsumDateTime.fromString(startDate, "url-format")
     : sortDates(

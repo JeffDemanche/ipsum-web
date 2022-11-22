@@ -13,6 +13,10 @@ interface CharacterMetadata {
   entityId: string;
 }
 
+interface IpsumEntityData {
+  arcIds?: string[];
+}
+
 export class IpsumEntityTransformer {
   private _contentState: ContentState;
 
@@ -81,6 +85,73 @@ export class IpsumEntityTransformer {
     return charData;
   };
 
+  entityDataEquals = (
+    entityData1: IpsumEntityData,
+    entityData2: IpsumEntityData
+  ) => {
+    return setEquals(
+      new Set(entityData1?.arcIds ?? []),
+      new Set(entityData2?.arcIds ?? [])
+    );
+  };
+
+  entityDataDefined = (entityData: IpsumEntityData) => {
+    return !!entityData?.arcIds.length;
+  };
+
+  getEntityRanges = (selectedCharacters: CharacterMetadata[]) => {
+    const getEntityData = (char: CharacterMetadata) => {
+      if (!char.entityId) return null;
+      return this.contentState.getEntity(char.entityId).getData();
+    };
+
+    const newEntityRanges: {
+      entityRangeSelState: SelectionState;
+      entityData: IpsumEntityData;
+    }[] = [];
+
+    let currStartOffset = selectedCharacters[0].blockOffset;
+    let currStartBlock = selectedCharacters[0].block;
+
+    for (let i = 1; i <= selectedCharacters.length; i++) {
+      if (i === selectedCharacters.length) {
+        newEntityRanges.push({
+          entityRangeSelState: SelectionState.createEmpty(currStartBlock).merge(
+            {
+              anchorKey: currStartBlock,
+              anchorOffset: currStartOffset,
+              focusKey: selectedCharacters[i - 1].block,
+              focusOffset: selectedCharacters[i - 1].blockOffset + 1,
+            }
+          ),
+          entityData: getEntityData(selectedCharacters[i - 1]),
+        });
+        break;
+      } else if (
+        !this.entityDataEquals(
+          getEntityData(selectedCharacters[i]),
+          getEntityData(selectedCharacters[i - 1])
+        )
+      ) {
+        newEntityRanges.push({
+          entityRangeSelState: SelectionState.createEmpty(currStartBlock).merge(
+            {
+              anchorKey: currStartBlock,
+              anchorOffset: currStartOffset,
+              focusKey: selectedCharacters[i - 1].block,
+              focusOffset: selectedCharacters[i - 1].blockOffset + 1,
+            }
+          ),
+          entityData: getEntityData(selectedCharacters[i - 1]),
+        });
+        currStartOffset = selectedCharacters[i].blockOffset;
+        currStartBlock = selectedCharacters[i].block;
+      }
+    }
+
+    return newEntityRanges;
+  };
+
   /**
    * Removes all entity assignments from the `ContentState`. Currently doesn't
    * remove the entities from the ContentState's entityMap, which would be
@@ -125,67 +196,18 @@ export class IpsumEntityTransformer {
     //    SelectionState.
     const selectedCharacters = this.getSelectedCharacters(selectionState);
 
-    const getEntityData = (char: CharacterMetadata) => {
-      if (!char.entityId) return null;
-      return this.contentState.getEntity(char.entityId).getData();
-    };
-
     // 2. Iterate through the characters, building an array for which every
     //    entry contains a SelectionState range for an entity we will create,
     //    and an array of the arc IDs which already exist for it.
-    const newEntityRanges: {
-      entityRangeSelState: SelectionState;
-      existingArcIds: Set<string>;
-    }[] = [];
-
-    let currStartOffset = selectedCharacters[0].blockOffset;
-    let currStartBlock = selectedCharacters[0].block;
-
-    for (let i = 1; i <= selectedCharacters.length; i++) {
-      if (i === selectedCharacters.length) {
-        newEntityRanges.push({
-          entityRangeSelState: SelectionState.createEmpty(currStartBlock).merge(
-            {
-              anchorKey: currStartBlock,
-              anchorOffset: currStartOffset,
-              focusKey: selectedCharacters[i - 1].block,
-              focusOffset: selectedCharacters[i - 1].blockOffset + 1,
-            }
-          ),
-          existingArcIds: new Set(
-            getEntityData(selectedCharacters[i - 1])?.arcIds as string[]
-          ),
-        });
-        break;
-      } else if (
-        !setEquals(
-          new Set(getEntityData(selectedCharacters[i])?.arcIds ?? []),
-          new Set(getEntityData(selectedCharacters[i - 1])?.arcIds ?? [])
-        )
-      ) {
-        newEntityRanges.push({
-          entityRangeSelState: SelectionState.createEmpty(currStartBlock).merge(
-            {
-              anchorKey: currStartBlock,
-              anchorOffset: currStartOffset,
-              focusKey: selectedCharacters[i - 1].block,
-              focusOffset: selectedCharacters[i - 1].blockOffset + 1,
-            }
-          ),
-          existingArcIds: new Set(
-            getEntityData(selectedCharacters[i - 1])?.arcIds as string[]
-          ),
-        });
-        currStartOffset = selectedCharacters[i].blockOffset;
-        currStartBlock = selectedCharacters[i].block;
-      }
-    }
+    const newEntityRanges = this.getEntityRanges(selectedCharacters);
 
     // 3. Loop through the array of text ranges... for each, create and assign a
     //    new DraftJS entity which includes the new arc ID as well as existing
     //    ones.
     let contentStateWithAppliedEntities: ContentState = this.contentState;
-    newEntityRanges.forEach(({ entityRangeSelState, existingArcIds }) => {
+    newEntityRanges.forEach(({ entityRangeSelState, entityData }) => {
+      const existingArcIds = new Set(entityData?.arcIds as string[]);
+
       const newArcIds = [...(Array.from(existingArcIds) ?? [])];
       if (!existingArcIds.has(arcId)) newArcIds.push(arcId);
 
@@ -203,5 +225,57 @@ export class IpsumEntityTransformer {
     });
 
     return new IpsumEntityTransformer(contentStateWithAppliedEntities);
+  };
+
+  removeArc = (arcId: string): IpsumEntityTransformer => {
+    const entityKeys = this.contentState.getAllEntities().keySeq().toArray();
+
+    const newContentState = entityKeys.reduce((acc, cur) => {
+      const currentEntityData = {
+        ...this.contentState.getEntity(cur).getData(),
+      };
+
+      const newArcIds = (currentEntityData.arcIds as string[]).filter(
+        (id) => id !== arcId
+      );
+
+      return acc.mergeEntityData(cur, { arcIds: newArcIds });
+    }, this.contentState);
+
+    return new IpsumEntityTransformer(newContentState).removeEmptyEntities();
+  };
+
+  /**
+   * Applies `null` to any entity ranges which are "empty" (see
+   * `entityDataDefined`). This
+   */
+  removeEmptyEntities = () => {
+    const firstBlock = this.contentState.getFirstBlock();
+    const lastBlock = this.contentState.getLastBlock();
+    const completeSelection = SelectionState.createEmpty(
+      firstBlock.getKey()
+    ).merge({
+      anchorKey: firstBlock.getKey(),
+      anchorOffset: 0,
+      focusKey: lastBlock.getKey(),
+      focusOffset: lastBlock.getText().length,
+    });
+
+    const selectedCharacters = this.getSelectedCharacters(completeSelection);
+    const entityRanges = this.getEntityRanges(selectedCharacters);
+
+    let newContentState = this.contentState;
+
+    entityRanges.forEach((range) => {
+      if (!this.entityDataDefined(range.entityData)) {
+        newContentState = Modifier.applyEntity(
+          newContentState,
+          range.entityRangeSelState,
+          null
+        );
+      }
+    });
+
+    return new IpsumEntityTransformer(newContentState);
   };
 }

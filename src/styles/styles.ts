@@ -77,18 +77,22 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           color: stylesheet.colors.paper_3,
-          border: `1px solid ${stylesheet.colors.paper_3}`,
-          boxShadow: "1px 1px 0px rgba(0, 0, 0, 0.5)",
           fontFamily: stylesheet.fonts.controls_2,
           padding: "2px 6px 2px 6px",
-          borderRadius: "0px",
+          borderRadius: "2px",
           minWidth: "25px",
         },
         textPrimary: {
+          ":hover": {
+            border: "none",
+          },
+        },
+        outlinedPrimary: {
           color: stylesheet.colors.paper_3,
           border: `1px solid ${stylesheet.colors.paper_3}`,
+          boxShadow: "1px 1px 0px rgba(0, 0, 0, 0.5)",
         },
-        textSecondary: {
+        outlinedSecondary: {
           color: stylesheet.colors.paper_9,
           border: `1px solid ${stylesheet.colors.paper_9}`,
           boxShadow: "1px 1px 0px rgba(255, 255, 255, 0.5)",

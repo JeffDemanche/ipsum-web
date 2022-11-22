@@ -109,6 +109,8 @@ export class IpsumDateTime {
   };
 
   isInRange = (before: IpsumDateTime, after: IpsumDateTime): boolean => {
+    if (!before && !after) return false;
+
     return (
       before.dateTime.diff(this.dateTime, "hours").hours <= 0 &&
       after.dateTime.diff(this.dateTime, "hours").hours >= 0
