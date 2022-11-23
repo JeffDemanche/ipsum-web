@@ -14,7 +14,7 @@ const arcIdsForChar = (
   transformer: IpsumEntityTransformer,
   selection: SelectionState
 ): unknown => {
-  const charMeta = transformer.getSelectedCharacters(selection)[char];
+  const charMeta = transformer.getCharacters(selection)[char];
   if (charMeta.entityId === null) return null;
   return transformer.contentState.getEntity(charMeta.entityId).getData();
 };
@@ -47,9 +47,7 @@ describe("entities", () => {
       const transformer = new IpsumEntityTransformer(
         initialEditor.getCurrentContent()
       );
-      const charData = transformer.getSelectedCharacters(
-        initialEditor.getSelection()
-      );
+      const charData = transformer.getCharacters(initialEditor.getSelection());
       expect(charData.length).toBe(5);
       expect(charData[0]).toEqual({
         char: "h",
@@ -70,9 +68,7 @@ describe("entities", () => {
       const transformer = new IpsumEntityTransformer(
         initialEditor.getCurrentContent()
       );
-      const charData = transformer.getSelectedCharacters(
-        initialEditor.getSelection()
-      );
+      const charData = transformer.getCharacters(initialEditor.getSelection());
       expect(charData.length).toBe(11);
       expect(charData[0]).toEqual({
         char: "e",
@@ -108,8 +104,7 @@ describe("entities", () => {
       );
 
       expect(
-        withOneArc.getSelectedCharacters(editorAllSelected.getSelection())[7]
-          .char
+        withOneArc.getCharacters(editorAllSelected.getSelection())[7].char
       ).toBe("7");
     });
 
@@ -126,9 +121,7 @@ describe("entities", () => {
         "<p>[0123</p><p>4567</p><p>8901]</p>"
       );
 
-      const chars = withOneArc.getSelectedCharacters(
-        editorAllSelected.getSelection()
-      );
+      const chars = withOneArc.getCharacters(editorAllSelected.getSelection());
 
       expect(chars[10].char).toBe("0");
       expect(chars[10].blockOffset).toBe(2);
@@ -140,7 +133,7 @@ describe("entities", () => {
       );
       const chars = new IpsumEntityTransformer(
         initialEditor.getCurrentContent()
-      ).getSelectedCharacters(initialEditor.getSelection());
+      ).getCharacters(initialEditor.getSelection());
 
       expect(chars.length).toBe(2);
       expect(chars[0].char).toBe("1");
@@ -171,7 +164,7 @@ describe("entities", () => {
           initialEditor,
           selectionString
         );
-        const charData = transformer.getSelectedCharacters(
+        const charData = transformer.getCharacters(
           newSelectionEditor.getSelection()
         );
 
@@ -278,7 +271,7 @@ describe("entities", () => {
       );
 
       const arcIdsForChar = (char: number): unknown => {
-        const charMeta = withTwoArcs.getSelectedCharacters(
+        const charMeta = withTwoArcs.getCharacters(
           editorAllSelected.getSelection()
         )[char];
         return withTwoArcs.contentState.getEntity(charMeta.entityId).getData();
@@ -498,6 +491,37 @@ describe("entities", () => {
     //   )[1].entityId;
     //   expect(char);
     // });
+  });
+
+  describe("getAppliedArcs", () => {
+    it("gets the correct arcs, including when one was removed", () => {
+      const editor0Selected = createEditorStateFromFormat(
+        "<p>[0]1234567890</p>"
+      );
+      const editor1Selected = moveEditorSelectionFromFormat(
+        editor0Selected,
+        "<p>0[1]234567890</p>"
+      );
+      const editor2Selected = moveEditorSelectionFromFormat(
+        editor1Selected,
+        "<p>01[2]34567890</p>"
+      );
+
+      const editor3ArcsApplied1Removed = new IpsumEntityTransformer(
+        editor0Selected.getCurrentContent()
+      )
+        .applyArc(editor0Selected.getSelection(), "arc_0_1")
+        .applyArc(editor0Selected.getSelection(), "arc_0_2")
+        .applyArc(editor1Selected.getSelection(), "arc_1")
+        .applyArc(editor2Selected.getSelection(), "arc_2")
+        .removeArc("arc_1");
+
+      expect(editor3ArcsApplied1Removed.getAppliedArcs()).toEqual([
+        "arc_0_1",
+        "arc_0_2",
+        "arc_2",
+      ]);
+    });
   });
 
   describe("consolidateEntities", () => {});

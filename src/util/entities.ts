@@ -32,10 +32,21 @@ export class IpsumEntityTransformer {
    * A helper function that iterates through a selection state which might
    * contain multiple blocks and builds a sequence of characters in that
    * selection with entity-related metadata.
+   *
+   * @param selectionState
    */
-  getSelectedCharacters = (
-    selectionState: SelectionState
-  ): CharacterMetadata[] => {
+  getCharacters = (selectionState?: SelectionState): CharacterMetadata[] => {
+    if (!selectionState) {
+      const firstBlock = this.contentState.getFirstBlock();
+      const lastBlock = this.contentState.getLastBlock();
+      selectionState = SelectionState.createEmpty(firstBlock.getKey()).merge({
+        anchorKey: firstBlock.getKey(),
+        anchorOffset: 0,
+        focusKey: lastBlock.getKey(),
+        focusOffset: lastBlock.getText().length,
+      });
+    }
+
     const contentBlocks = this.contentState.getBlocksAsArray();
 
     const charData: CharacterMetadata[] = [];
@@ -95,11 +106,13 @@ export class IpsumEntityTransformer {
     );
   };
 
-  entityDataDefined = (entityData: IpsumEntityData) => {
+  private entityDataDefined = (entityData: IpsumEntityData) => {
     return !!entityData?.arcIds.length;
   };
 
-  getEntityRanges = (selectedCharacters: CharacterMetadata[]) => {
+  private getEntityRanges = (selectedCharacters: CharacterMetadata[]) => {
+    if (selectedCharacters.length === 0) return [];
+
     const getEntityData = (char: CharacterMetadata) => {
       if (!char.entityId) return null;
       return this.contentState.getEntity(char.entityId).getData();
@@ -194,7 +207,7 @@ export class IpsumEntityTransformer {
 
     // 1. Get an array that contains data on every character in the
     //    SelectionState.
-    const selectedCharacters = this.getSelectedCharacters(selectionState);
+    const selectedCharacters = this.getCharacters(selectionState);
 
     // 2. Iterate through the characters, building an array for which every
     //    entry contains a SelectionState range for an entity we will create,
@@ -250,19 +263,8 @@ export class IpsumEntityTransformer {
    * `entityDataDefined`). This
    */
   removeEmptyEntities = () => {
-    const firstBlock = this.contentState.getFirstBlock();
-    const lastBlock = this.contentState.getLastBlock();
-    const completeSelection = SelectionState.createEmpty(
-      firstBlock.getKey()
-    ).merge({
-      anchorKey: firstBlock.getKey(),
-      anchorOffset: 0,
-      focusKey: lastBlock.getKey(),
-      focusOffset: lastBlock.getText().length,
-    });
-
-    const selectedCharacters = this.getSelectedCharacters(completeSelection);
-    const entityRanges = this.getEntityRanges(selectedCharacters);
+    const allCharacters = this.getCharacters();
+    const entityRanges = this.getEntityRanges(allCharacters);
 
     let newContentState = this.contentState;
 
@@ -277,5 +279,20 @@ export class IpsumEntityTransformer {
     });
 
     return new IpsumEntityTransformer(newContentState);
+  };
+
+  /**
+   * Returns an array of all arcs which are *applied* on the `ContentState`.
+   * *Applied* here implies that the arc exists on an entity with a non-empty
+   * range in the `ContentState` (the `ContentState`'s entity map could contain
+   * entities that aren't actually applied in the content).
+   */
+  getAppliedArcs = () => {
+    const allCharacters = this.getCharacters();
+    const arcIds = new Set<string>();
+    this.getEntityRanges(allCharacters).forEach((entityRange) => {
+      entityRange.entityData?.arcIds?.forEach((arcId) => arcIds.add(arcId));
+    });
+    return Array.from(arcIds);
   };
 }

@@ -37,7 +37,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
     name: "createOrUpdateEntry",
   });
 
-  const saveEntry = (newEditorState: EditorState) => {
+  const onEditorUpdate = (newEditorState: EditorState) => {
     if (newEditorState) {
       if (empty) {
         deleteEntry({ entryKey });
@@ -55,7 +55,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
 
   // Ignore deps warning because eslint can't handle the debouncing.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const saveEntryDebounced = useCallback(_.debounce(saveEntry, 500), [
+  const onEditorUpdateDebounced = useCallback(_.debounce(onEditorUpdate, 500), [
     empty,
     entryKey,
   ]);
@@ -63,9 +63,9 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   const onEditorChange = useCallback(
     (newEditorState: EditorState) => {
       setEntryEditorState(entryKey, () => newEditorState);
-      saveEntryDebounced(newEditorState);
+      onEditorUpdateDebounced(newEditorState);
     },
-    [entryKey, saveEntryDebounced, setEntryEditorState]
+    [entryKey, onEditorUpdateDebounced, setEntryEditorState]
   );
 
   const handleKeyCommand = useCallback(
