@@ -1,3 +1,4 @@
+import { Divider, Typography } from "@mui/material";
 import { decorator } from "components/Decorator/decorator";
 import { Digest } from "components/Digest/Digest";
 import { EditorState, RichUtils } from "draft-js";
@@ -78,11 +79,14 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
 
   return (
     <div className={styles["journal-entry"]}>
-      <h1>
+      <Typography
+        variant="h4"
+        color={(theme) => theme.palette.onSurfaceHighEmphasis}
+      >
         {IpsumDateTime.fromString(entryKey, "entry-printed-date").toString(
           "entry-printed-date-nice"
         )}
-      </h1>
+      </Typography>
       {editorState && (
         <>
           <EditorWrapper
@@ -101,11 +105,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
           </div>
         </>
       )}
-      {showDivider && (
-        <div className={styles["divider-container"]}>
-          <hr></hr>
-        </div>
-      )}
+      {showDivider && <Divider></Divider>}
     </div>
   );
 };

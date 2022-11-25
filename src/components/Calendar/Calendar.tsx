@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Box, Button, Link, Paper, Typography } from "@mui/material";
 import { Info, DateTime } from "luxon";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -52,13 +52,14 @@ export const Calendar: React.FC = () => {
   weekdays.unshift(weekdays.pop());
 
   const daysOfWeek = weekdays.map((dayString, i) => (
-    <div
+    <Typography
+      variant="caption"
       data-testid={`calendar-day-of-week-${dayString}`}
       className={styles["day-of-week"]}
       key={i}
     >
       {dayString.toLocaleLowerCase()}
-    </div>
+    </Typography>
   ));
 
   const emptyDays = [...Array(emptyDaysAtStartOfMonth)].map((_, i) => (
@@ -108,10 +109,10 @@ export const Calendar: React.FC = () => {
   }, [date.dateTime.month, date.dateTime.year, navigate, searchParams]);
 
   return (
-    <div className={styles["calendar"]}>
-      <div className={styles["year-title"]}>{monthYear.dateTime.year}</div>
-      <div className={styles["month-title-with-arrows"]}>
-        <a
+    <Paper className={styles["calendar"]}>
+      <Typography variant="overline">{monthYear.dateTime.year}</Typography>
+      <Typography variant="h6" className={styles["month-title-with-arrows"]}>
+        <Link
           tabIndex={0}
           className={styles["arrow"]}
           aria-label="Previous month"
@@ -121,9 +122,9 @@ export const Calendar: React.FC = () => {
           }}
         >
           «
-        </a>{" "}
+        </Link>{" "}
         <span className={styles["month-name"]}>{monthString}</span>{" "}
-        <a
+        <Link
           tabIndex={0}
           className={styles["arrow"]}
           aria-label="Next month"
@@ -133,8 +134,8 @@ export const Calendar: React.FC = () => {
           }}
         >
           »
-        </a>
-      </div>
+        </Link>
+      </Typography>
       <div className={styles["calendar-grid"]}>
         {daysOfWeek}
         {emptyDays}
@@ -145,6 +146,6 @@ export const Calendar: React.FC = () => {
           Today
         </Button>
       </div>
-    </div>
+    </Paper>
   );
 };

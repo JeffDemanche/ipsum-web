@@ -18,114 +18,125 @@ export const stylesheet = {
   },
 };
 
+declare module "@mui/material/styles" {
+  interface Palette {
+    onSurfaceDisabled: string;
+    onSurfaceHighEmphasis: string;
+    onSurfaceMediumEmphasis: string;
+  }
+  interface PaletteOptions {
+    onSurfaceDisabled: string;
+    onSurfaceHighEmphasis: string;
+    onSurfaceMediumEmphasis: string;
+  }
+}
+
 export const theme = createTheme({
   typography: {
     allVariants: {},
   },
   palette: {
-    primary: {
-      main: stylesheet.colors.paper_3,
-      contrastText: stylesheet.colors.paper_9,
+    background: {
+      default: "#EBEBEB",
     },
-    secondary: {
-      main: stylesheet.colors.paper_9,
-      contrastText: stylesheet.colors.paper_1,
-    },
+    onSurfaceDisabled: "rgba(0, 0, 0, 0.38)",
+    onSurfaceHighEmphasis: "rgba(0, 0, 0, 0.60)",
+    onSurfaceMediumEmphasis: "rgba(0, 0, 0, 0.87)",
   },
   components: {
     MuiLink: {
-      styleOverrides: {
-        root: {
-          fontFamily: stylesheet.fonts.controls_2,
-          cursor: "pointer",
-          color: stylesheet.colors.paper_9,
-          textDecorationColor: stylesheet.colors.paper_9,
-          ":hover": {
-            color: stylesheet.colors.paper_7,
-            textDecorationColor: stylesheet.colors.paper_7,
-          },
-        },
-      },
+      // styleOverrides: {
+      //   root: {
+      //     fontFamily: stylesheet.fonts.controls_2,
+      //     cursor: "pointer",
+      //     color: stylesheet.colors.paper_9,
+      //     textDecorationColor: stylesheet.colors.paper_9,
+      //     ":hover": {
+      //       color: stylesheet.colors.paper_7,
+      //       textDecorationColor: stylesheet.colors.paper_7,
+      //     },
+      //   },
+      // },
     },
     MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          color: stylesheet.colors.paper_9,
-          height: "100%",
-          borderRadius: "0px",
-        },
-      },
+      // styleOverrides: {
+      //   root: {
+      //     color: stylesheet.colors.paper_9,
+      //     height: "100%",
+      //     borderRadius: "0px",
+      //   },
+      // },
     },
     MuiTextField: {
-      styleOverrides: {
-        root: {
-          color: stylesheet.colors.paper_9,
-          padding: "0px",
-          backgroundColor: stylesheet.colors.paper_1_90,
-          borderBottom: `1px solid ${stylesheet.colors.paper_9}`,
-        },
-      },
+      // styleOverrides: {
+      //   root: {
+      //     color: stylesheet.colors.paper_9,
+      //     padding: "0px",
+      //     backgroundColor: stylesheet.colors.paper_1_90,
+      //     borderBottom: `1px solid ${stylesheet.colors.paper_9}`,
+      //   },
+      // },
     },
     MuiDivider: {
-      styleOverrides: {
-        root: {
-          backgroundColor: stylesheet.colors.paper_9,
-        },
-      },
+      // styleOverrides: {
+      //   root: {
+      //     backgroundColor: stylesheet.colors.paper_9,
+      //   },
+      // },
     },
     MuiButton: {
-      styleOverrides: {
-        root: {
-          color: stylesheet.colors.paper_3,
-          fontFamily: stylesheet.fonts.controls_2,
-          padding: "2px 6px 2px 6px",
-          borderRadius: "2px",
-          minWidth: "25px",
-        },
-        textPrimary: {
-          ":hover": {
-            border: "none",
-          },
-        },
-        outlinedPrimary: {
-          color: stylesheet.colors.paper_3,
-          border: `1px solid ${stylesheet.colors.paper_3}`,
-          boxShadow: "1px 1px 0px rgba(0, 0, 0, 0.5)",
-        },
-        outlinedSecondary: {
-          color: stylesheet.colors.paper_9,
-          border: `1px solid ${stylesheet.colors.paper_9}`,
-          boxShadow: "1px 1px 0px rgba(255, 255, 255, 0.5)",
-          ":hover": {
-            color: stylesheet.colors.paper_7,
-            border: `1px solid ${stylesheet.colors.paper_7}`,
-          },
-        },
-      },
+      // styleOverrides: {
+      //   root: {
+      //     color: stylesheet.colors.paper_3,
+      //     fontFamily: stylesheet.fonts.controls_2,
+      //     padding: "2px 6px 2px 6px",
+      //     borderRadius: "2px",
+      //     minWidth: "25px",
+      //   },
+      //   textPrimary: {
+      //     ":hover": {
+      //       border: "none",
+      //     },
+      //   },
+      //   outlinedPrimary: {
+      //     color: stylesheet.colors.paper_3,
+      //     border: `1px solid ${stylesheet.colors.paper_3}`,
+      //     boxShadow: "1px 1px 0px rgba(0, 0, 0, 0.5)",
+      //   },
+      //   outlinedSecondary: {
+      //     color: stylesheet.colors.paper_9,
+      //     border: `1px solid ${stylesheet.colors.paper_9}`,
+      //     boxShadow: "1px 1px 0px rgba(255, 255, 255, 0.5)",
+      //     ":hover": {
+      //       color: stylesheet.colors.paper_7,
+      //       border: `1px solid ${stylesheet.colors.paper_7}`,
+      //     },
+      //   },
+      // },
     },
     MuiPopover: {
-      styleOverrides: {
-        paper: {
-          boxShadow: "none",
-        },
-      },
+      // styleOverrides: {
+      //   paper: {
+      //     boxShadow: "none",
+      //   },
+      // },
     },
     MuiToggleButton: {
-      styleOverrides: {
-        root: {
-          backgroundColor: stylesheet.colors.foreground,
-          borderRadius: "0px",
-          ":hover": {
-            backgroundColor: stylesheet.colors.foreground,
-          },
-          "&.Mui-selected": {
-            backgroundColor: stylesheet.colors.foreground,
-            ":hover": {
-              backgroundColor: stylesheet.colors.foreground,
-            },
-          },
-        },
-      },
+      // styleOverrides: {
+      //   root: {
+      //     backgroundColor: stylesheet.colors.foreground,
+      //     borderRadius: "0px",
+      //     ":hover": {
+      //       backgroundColor: stylesheet.colors.foreground,
+      //     },
+      //     "&.Mui-selected": {
+      //       backgroundColor: stylesheet.colors.foreground,
+      //       ":hover": {
+      //         backgroundColor: stylesheet.colors.foreground,
+      //       },
+      //     },
+      //   },
+      // },
     },
   },
 });

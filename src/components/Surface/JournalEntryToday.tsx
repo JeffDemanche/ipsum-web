@@ -1,3 +1,4 @@
+import { Divider, Typography } from "@mui/material";
 import cx from "classnames";
 import { Digest } from "components/Digest/Digest";
 import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
@@ -93,7 +94,13 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
 
   return (
     <div className={styles["journal-entry"]}>
-      <h1
+      <Typography
+        variant="h4"
+        color={(theme) =>
+          empty
+            ? theme.palette.onSurfaceDisabled
+            : theme.palette.onSurfaceHighEmphasis
+        }
         className={cx(styles["entry-heading"], {
           [styles["empty-entry"]]: empty,
         })}
@@ -102,7 +109,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
         {IpsumDateTime.fromString(entryKey, "entry-printed-date").toString(
           "entry-printed-date-nice"
         )}
-      </h1>
+      </Typography>
       {editorState && (
         <>
           <EditorWrapper
@@ -122,11 +129,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
           </div>
         </>
       )}
-      {showDivider && (
-        <div className={styles["divider-container"]}>
-          <hr></hr>
-        </div>
-      )}
+      {showDivider && <Divider></Divider>}
     </div>
   );
 };

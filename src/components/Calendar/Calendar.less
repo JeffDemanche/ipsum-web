@@ -2,34 +2,26 @@
 @import "../../styles/colors.less";
 
 .calendar {
-  .journal-box();
   padding: 5px;
   display: flex;
   flex-direction: column;
   text-align: center;
 }
 
-.year-title {
-  font-size: 10pt;
-}
-
 .month-title-with-arrows {
-  color: @paper-1;
-  font-size: 16pt;
-  font-weight: 500;
+  display: flex;
+  justify-content: center;
   margin-bottom: 4px;
 
   .arrow {
     opacity: 0.7;
+    padding-left: 3px;
+    padding-right: 3px;
 
     &:hover {
       cursor: pointer;
       opacity: 1;
     }
-  }
-
-  .month-name {
-    text-decoration: underline;
   }
 }
 

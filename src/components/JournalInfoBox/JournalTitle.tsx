@@ -1,4 +1,9 @@
-import { ClickAwayListener, TextField } from "@mui/material";
+import {
+  Button,
+  ClickAwayListener,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, {
   useCallback,
   useContext,
@@ -59,10 +64,8 @@ export const JournalTitle: React.FunctionComponent = () => {
       );
     } else {
       return (
-        <h1
-          role="button"
-          tabIndex={0}
-          className={styles["journal-title-h1"]}
+        <Button
+          variant="text"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               setEditing(true);
@@ -73,7 +76,7 @@ export const JournalTitle: React.FunctionComponent = () => {
           }}
         >
           {state.journalTitle}
-        </h1>
+        </Button>
       );
     }
   }, [editing, state.journalTitle, update]);

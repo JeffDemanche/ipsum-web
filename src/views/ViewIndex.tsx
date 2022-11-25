@@ -1,12 +1,16 @@
 import React from "react";
 import styles from "./ViewIndex.less";
 import { Outlet } from "react-router";
+import { Box } from "@mui/material";
 
-export const ViewIndex: React.FC<{}> = () => {
+export const ViewIndex: React.FC = () => {
   return (
-    <div className={styles["index-wrapper"]}>
+    <Box
+      sx={{ backgroundColor: "background.default" }}
+      className={styles["index-wrapper"]}
+    >
       <div>TODO Index screen</div>
       <Outlet />
-    </div>
+    </Box>
   );
 };

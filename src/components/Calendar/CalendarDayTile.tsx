@@ -4,6 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { IpsumDateTime } from "util/dates";
 import { VisibleEntriesContext } from "views/VisibleEntriesContext";
 import styles from "./CalendarDayTile.less";
+import { Typography } from "@mui/material";
 
 interface CalendarDayTileProps {
   date: IpsumDateTime;
@@ -31,27 +32,32 @@ export const CalendarDayTile: React.FC<CalendarDayTileProps> = ({
   }
 
   return entryDate ? (
-    <div
+    <Typography
+      textAlign={"center"}
+      variant="caption"
       className={cx(styles["tile"], {
         [styles["in-selected-range"]]: isInRange,
       })}
     >
-      <Link
-        to={{
-          search: linkSearchParams.toString(),
-        }}
-      >
-        <p>{dayNumber}</p>
-      </Link>
-    </div>
+      <p>
+        <Link
+          to={{
+            search: linkSearchParams.toString(),
+          }}
+        >
+          {dayNumber}
+        </Link>
+      </p>
+    </Typography>
   ) : (
-    <div
+    <Typography
+      variant="caption"
       tabIndex={0}
       className={cx(styles["tile"], {
         [styles["in-selected-range"]]: isInRange,
       })}
     >
       <p>{dayNumber}</p>
-    </div>
+    </Typography>
   );
 };
