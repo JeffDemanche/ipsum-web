@@ -1,7 +1,7 @@
 import React, { CSSProperties, useContext, useState } from "react";
 import styles from "./ArcToken.less";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
-import { Link } from "@mui/material";
+import { Link, Typography } from "@mui/material";
 import { IpsumArcColor, IpsumColor } from "util/colors";
 import cx from "classnames";
 
@@ -72,23 +72,27 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
         };
 
   return (
-    <p className={cx(className, styles["arc-token-p"])}>
-      <Link
-        href={"#"}
-        onMouseEnter={() => {
-          setHover(true);
-          onMouseEnter?.();
-        }}
-        onMouseLeave={() => {
-          setHover(false);
-          onMouseLeave?.();
-        }}
-        className={styles["arc-token-a"]}
-        onClick={onClick}
-        style={style}
-      >
-        <span className={styles["arc-token-span"]}>{arc?.name ?? "null"}</span>
-      </Link>
-    </p>
+    <Typography variant="body2">
+      <p className={cx(className, styles["arc-token-p"])}>
+        <Link
+          href={"#"}
+          onMouseEnter={() => {
+            setHover(true);
+            onMouseEnter?.();
+          }}
+          onMouseLeave={() => {
+            setHover(false);
+            onMouseLeave?.();
+          }}
+          className={styles["arc-token-a"]}
+          onClick={onClick}
+          style={style}
+        >
+          <span className={styles["arc-token-span"]}>
+            {arc?.name ?? "null"}
+          </span>
+        </Link>
+      </p>
+    </Typography>
   );
 };

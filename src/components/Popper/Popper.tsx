@@ -1,6 +1,5 @@
-import { Popper as MuiPopper } from "@mui/material";
+import { Paper, Popper as MuiPopper } from "@mui/material";
 import React, { ComponentProps } from "react";
-import styles from "./Popper.less";
 
 type PopperProps = {
   children: React.ReactNode;
@@ -12,7 +11,12 @@ export const Popper: React.FC<PopperProps> = ({
 }) => {
   return (
     <MuiPopper style={{ zIndex: 1 }} {...muiPopperProps}>
-      <div className={styles["popperContainer"]}>{children}</div>
+      <Paper
+        elevation={1}
+        sx={(theme) => ({ backgroundColor: theme.palette.secondary.dark })}
+      >
+        {children}
+      </Paper>
     </MuiPopper>
   );
 };

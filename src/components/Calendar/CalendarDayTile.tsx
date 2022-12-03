@@ -4,7 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { IpsumDateTime } from "util/dates";
 import { VisibleEntriesContext } from "views/VisibleEntriesContext";
 import styles from "./CalendarDayTile.less";
-import { Typography } from "@mui/material";
+import { Card, Container, Paper, Typography } from "@mui/material";
 
 interface CalendarDayTileProps {
   date: IpsumDateTime;
@@ -32,23 +32,57 @@ export const CalendarDayTile: React.FC<CalendarDayTileProps> = ({
   }
 
   return entryDate ? (
-    <Typography
-      textAlign={"center"}
-      variant="caption"
-      className={cx(styles["tile"], {
-        [styles["in-selected-range"]]: isInRange,
-      })}
-    >
-      <p>
-        <Link
-          to={{
-            search: linkSearchParams.toString(),
-          }}
+    isInRange ? (
+      <Paper variant="elevation">
+        <Typography
+          textAlign={"center"}
+          variant="caption"
+          className={cx(styles["tile"], {
+            [styles["in-selected-range"]]: isInRange,
+          })}
         >
-          {dayNumber}
-        </Link>
-      </p>
-    </Typography>
+          <p>
+            <Link
+              to={{
+                search: linkSearchParams.toString(),
+              }}
+            >
+              {dayNumber}
+            </Link>
+          </p>
+        </Typography>
+      </Paper>
+    ) : (
+      <Typography
+        textAlign={"center"}
+        variant="caption"
+        className={cx(styles["tile"], {
+          [styles["in-selected-range"]]: isInRange,
+        })}
+      >
+        <p>
+          <Link
+            to={{
+              search: linkSearchParams.toString(),
+            }}
+          >
+            {dayNumber}
+          </Link>
+        </p>
+      </Typography>
+    )
+  ) : isInRange ? (
+    <Paper variant="elevation">
+      <Typography
+        variant="caption"
+        tabIndex={0}
+        className={cx(styles["tile"], {
+          [styles["in-selected-range"]]: isInRange,
+        })}
+      >
+        <p>{dayNumber}</p>
+      </Typography>
+    </Paper>
   ) : (
     <Typography
       variant="caption"

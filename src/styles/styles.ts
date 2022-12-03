@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import { blueGrey, brown } from "@mui/material/colors";
 
 export const stylesheet = {
   colors: {
@@ -23,120 +24,68 @@ declare module "@mui/material/styles" {
     onSurfaceDisabled: string;
     onSurfaceHighEmphasis: string;
     onSurfaceMediumEmphasis: string;
+    onPrimaryDisabled: string;
+    onPrimaryHighEmphasis: string;
+    onPrimaryMediumEmphasis: string;
   }
   interface PaletteOptions {
     onSurfaceDisabled: string;
     onSurfaceHighEmphasis: string;
     onSurfaceMediumEmphasis: string;
+    onPrimaryDisabled: string;
+    onPrimaryHighEmphasis: string;
+    onPrimaryMediumEmphasis: string;
+  }
+}
+
+declare module "@mui/material/Paper" {
+  interface PaperPropsVariantOverrides {
+    onSurface: true;
   }
 }
 
 export const theme = createTheme({
   typography: {
     allVariants: {},
+    h1: { fontFamily: "Inria Sans", fontWeight: "light", fontSize: "96px" },
+    h2: { fontFamily: "Inria Sans", fontWeight: "light", fontSize: "60px" },
+    h3: { fontFamily: "Inria Sans", fontWeight: "regular", fontSize: "48px" },
+    h4: { fontFamily: "Inria Sans", fontWeight: "regular", fontSize: "34px" },
+    h5: { fontFamily: "Inria Sans", fontWeight: "regular", fontSize: "24px" },
+    h6: { fontFamily: "Inria Sans", fontWeight: "bold", fontSize: "20px" },
+    body1: { fontFamily: "Meiryo", fontWeight: "regular", fontSize: "16px" },
+    body2: { fontFamily: "Meiryo", fontWeight: "regular", fontSize: "14px" },
   },
   palette: {
+    primary: {
+      main: brown[500],
+    },
+    secondary: {
+      main: blueGrey[700],
+    },
     background: {
-      default: "#EBEBEB",
+      default: brown[100],
     },
     onSurfaceDisabled: "rgba(0, 0, 0, 0.38)",
     onSurfaceHighEmphasis: "rgba(0, 0, 0, 0.60)",
     onSurfaceMediumEmphasis: "rgba(0, 0, 0, 0.87)",
+    onPrimaryDisabled: "rgba(255, 255, 255, 0.38)",
+    onPrimaryHighEmphasis: "rgba(255, 255, 255, 0.60)",
+    onPrimaryMediumEmphasis: "rgba(255, 255, 255, 0.87)",
   },
   components: {
-    MuiLink: {
-      // styleOverrides: {
-      //   root: {
-      //     fontFamily: stylesheet.fonts.controls_2,
-      //     cursor: "pointer",
-      //     color: stylesheet.colors.paper_9,
-      //     textDecorationColor: stylesheet.colors.paper_9,
-      //     ":hover": {
-      //       color: stylesheet.colors.paper_7,
-      //       textDecorationColor: stylesheet.colors.paper_7,
-      //     },
-      //   },
-      // },
-    },
-    MuiOutlinedInput: {
-      // styleOverrides: {
-      //   root: {
-      //     color: stylesheet.colors.paper_9,
-      //     height: "100%",
-      //     borderRadius: "0px",
-      //   },
-      // },
-    },
-    MuiTextField: {
-      // styleOverrides: {
-      //   root: {
-      //     color: stylesheet.colors.paper_9,
-      //     padding: "0px",
-      //     backgroundColor: stylesheet.colors.paper_1_90,
-      //     borderBottom: `1px solid ${stylesheet.colors.paper_9}`,
-      //   },
-      // },
-    },
-    MuiDivider: {
-      // styleOverrides: {
-      //   root: {
-      //     backgroundColor: stylesheet.colors.paper_9,
-      //   },
-      // },
-    },
+    MuiPaper: {},
+    MuiOutlinedInput: {},
+    MuiTextField: {},
+    MuiDivider: {},
     MuiButton: {
-      // styleOverrides: {
-      //   root: {
-      //     color: stylesheet.colors.paper_3,
-      //     fontFamily: stylesheet.fonts.controls_2,
-      //     padding: "2px 6px 2px 6px",
-      //     borderRadius: "2px",
-      //     minWidth: "25px",
-      //   },
-      //   textPrimary: {
-      //     ":hover": {
-      //       border: "none",
-      //     },
-      //   },
-      //   outlinedPrimary: {
-      //     color: stylesheet.colors.paper_3,
-      //     border: `1px solid ${stylesheet.colors.paper_3}`,
-      //     boxShadow: "1px 1px 0px rgba(0, 0, 0, 0.5)",
-      //   },
-      //   outlinedSecondary: {
-      //     color: stylesheet.colors.paper_9,
-      //     border: `1px solid ${stylesheet.colors.paper_9}`,
-      //     boxShadow: "1px 1px 0px rgba(255, 255, 255, 0.5)",
-      //     ":hover": {
-      //       color: stylesheet.colors.paper_7,
-      //       border: `1px solid ${stylesheet.colors.paper_7}`,
-      //     },
-      //   },
-      // },
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        },
+      },
     },
-    MuiPopover: {
-      // styleOverrides: {
-      //   paper: {
-      //     boxShadow: "none",
-      //   },
-      // },
-    },
-    MuiToggleButton: {
-      // styleOverrides: {
-      //   root: {
-      //     backgroundColor: stylesheet.colors.foreground,
-      //     borderRadius: "0px",
-      //     ":hover": {
-      //       backgroundColor: stylesheet.colors.foreground,
-      //     },
-      //     "&.Mui-selected": {
-      //       backgroundColor: stylesheet.colors.foreground,
-      //       ":hover": {
-      //         backgroundColor: stylesheet.colors.foreground,
-      //       },
-      //     },
-      //   },
-      // },
-    },
+    MuiPopover: {},
+    MuiToggleButton: {},
   },
 });
