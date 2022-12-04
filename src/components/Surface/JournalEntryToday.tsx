@@ -7,6 +7,7 @@ import { useApiAction } from "state/api/use-api-action";
 import _ from "underscore";
 import { stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";
+import { placeholderForDate } from "util/placeholders";
 import { EditorWrapper } from "./EditorWrapper";
 import styles from "./JournalEntry.less";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
@@ -113,7 +114,10 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
       {editorState && (
         <>
           <EditorWrapper
-            placeholder="Tell a story to your future..."
+            enableControls
+            placeholder={placeholderForDate(
+              IpsumDateTime.fromString(entryKey, "entry-printed-date")
+            )}
             editorKey={entryKey}
             enableHighlights={true}
             onFocus={onFocus}

@@ -90,6 +90,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
       {editorState && (
         <>
           <EditorWrapper
+            enableControls={false}
             editorKey={entryKey}
             enableHighlights={true}
             editorState={editorState}

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./FormattingControls.less";
-import { RichUtils } from "draft-js";
+import { EditorState, RichUtils } from "draft-js";
 import { SurfaceEditorContext } from "../Surface/SurfaceEditorContext";
 import { ToggleButton } from "@mui/material";
 
@@ -12,6 +12,11 @@ export const FormattingControls: React.FunctionComponent = () => {
     () => entryEditorStates.get(focusedEditorKey),
     [entryEditorStates, focusedEditorKey]
   );
+  const focusedEditorSelection = focusedEditorState?.getSelection();
+  const blockType = focusedEditorState
+    ?.getCurrentContent()
+    .getBlockForKey(focusedEditorSelection?.getStartKey())
+    .getType();
 
   const boldEnabled = !!focusedEditorState?.getCurrentInlineStyle().has("BOLD");
 
@@ -19,27 +24,38 @@ export const FormattingControls: React.FunctionComponent = () => {
     ?.getCurrentInlineStyle()
     .has("ITALIC");
 
-  const headerOneEnabled = !!focusedEditorState
-    ?.getCurrentContent()
-    .has("header-one");
-
   const onBoldClick = useCallback(() => {
     setEntryEditorState(focusedEditorKey, (previousEditorState) =>
-      RichUtils.toggleInlineStyle(previousEditorState, "BOLD")
+      RichUtils.toggleInlineStyle(
+        EditorState.forceSelection(previousEditorState, focusedEditorSelection),
+        "BOLD"
+      )
     );
-  }, [focusedEditorKey, setEntryEditorState]);
+  }, [focusedEditorKey, focusedEditorSelection, setEntryEditorState]);
 
   const onItalicClick = useCallback(() => {
     setEntryEditorState(focusedEditorKey, (previousEditorState) =>
-      RichUtils.toggleInlineStyle(previousEditorState, "ITALIC")
+      RichUtils.toggleInlineStyle(
+        EditorState.forceSelection(previousEditorState, focusedEditorSelection),
+        "ITALIC"
+      )
     );
-  }, [focusedEditorKey, setEntryEditorState]);
+  }, [focusedEditorKey, focusedEditorSelection, setEntryEditorState]);
 
-  const onHeaderClick = useCallback(() => {
-    setEntryEditorState(focusedEditorKey, (previousEditorState) =>
-      RichUtils.toggleBlockType(previousEditorState, "header-one")
-    );
-  }, [focusedEditorKey, setEntryEditorState]);
+  const toggleBlockStyle = useCallback(
+    (type: string) => {
+      setEntryEditorState(focusedEditorKey, (previousEditorState) =>
+        RichUtils.toggleBlockType(
+          EditorState.forceSelection(
+            previousEditorState,
+            focusedEditorSelection
+          ),
+          type
+        )
+      );
+    },
+    [focusedEditorKey, focusedEditorSelection, setEntryEditorState]
+  );
 
   const onSurfaceControlsClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -72,10 +88,37 @@ export const FormattingControls: React.FunctionComponent = () => {
         value="check"
         className={styles["toggle-button"]}
         disabled={!focusedEditorKey}
-        selected={headerOneEnabled}
-        onChange={onHeaderClick}
+        selected={blockType === "header-one"}
+        onChange={() => toggleBlockStyle("header-one")}
       >
         <b>h1</b>
+      </ToggleButton>
+      <ToggleButton
+        value="check"
+        className={styles["toggle-button"]}
+        disabled={!focusedEditorKey}
+        selected={blockType === "unordered-list-item"}
+        onChange={() => toggleBlockStyle("unordered-list-item")}
+      >
+        <b>ul</b>
+      </ToggleButton>
+      <ToggleButton
+        value="check"
+        className={styles["toggle-button"]}
+        disabled={!focusedEditorKey}
+        selected={blockType === "ordered-list-item"}
+        onChange={() => toggleBlockStyle("ordered-list-item")}
+      >
+        <b>ol</b>
+      </ToggleButton>
+      <ToggleButton
+        value="check"
+        className={styles["toggle-button"]}
+        disabled={!focusedEditorKey}
+        selected={blockType === "blockquote"}
+        onChange={() => toggleBlockStyle("blockquote")}
+      >
+        <b>qu</b>
       </ToggleButton>
     </div>
   );

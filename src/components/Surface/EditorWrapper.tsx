@@ -2,8 +2,11 @@ import { Editor, EditorProps } from "draft-js";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { TextRangeHighlight } from "components/EditorSelection/TextRangeHighlight";
 import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
+import { FormattingControls } from "components/FormattingControls/FormattingControls";
+import styles from "./EditorWrapper.less";
 
 interface EditorWrapperProps {
+  enableControls: boolean;
   enableHighlights: boolean;
 }
 
@@ -36,7 +39,8 @@ export const EditorWrapper: React.FC<EditorWrapperPropsCombined> =
     }, [editorSelection]);
 
     return (
-      <div style={{ position: "relative" }}>
+      <div className={styles["editor-wrapper-container"]}>
+        {props.enableControls && <FormattingControls />}
         <Editor {...props} ref={ref}></Editor>
         <TextRangeHighlight
           editorKey={props.editorKey}

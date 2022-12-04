@@ -48,9 +48,8 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
       <div className={styles["digest-for-entry"]}>
         {assignments.map((assgn, i) => {
           return (
-            <>
+            <React.Fragment key={i}>
               <ArcToken
-                key={i}
                 className={styles["digest-token"]}
                 arcForToken={{ type: "from id", id: assgn.arcId }}
                 highlighted={tokenHighlighted(assgn.arcId)}
@@ -93,7 +92,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
                   </Button>
                 </div>
               )}
-            </>
+            </React.Fragment>
           );
         })}
       </div>

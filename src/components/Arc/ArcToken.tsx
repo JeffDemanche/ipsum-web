@@ -72,8 +72,8 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
         };
 
   return (
-    <Typography variant="body2">
-      <p className={cx(className, styles["arc-token-p"])}>
+    <Typography variant="body2" sx={{ margin: "2px" }}>
+      <span className={cx(className, styles["arc-token-container"])}>
         <Link
           href={"#"}
           onMouseEnter={() => {
@@ -92,7 +92,7 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
             {arc?.name ?? "null"}
           </span>
         </Link>
-      </p>
+      </span>
     </Typography>
   );
 };
