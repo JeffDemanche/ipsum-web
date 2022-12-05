@@ -46,9 +46,8 @@ export const EditorWrapper: React.FC<EditorWrapperPropsCombined> =
           editorKey={props.editorKey}
           selection={persistentSelection}
           onClickAway={() => {
-            setPersistentState(editorSelection.clone());
+            setPersistentState(editorSelection?.clone());
           }}
-          color={"blue"}
         ></TextRangeHighlight>
       </div>
     );

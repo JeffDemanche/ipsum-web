@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material";
-import { blueGrey, brown } from "@mui/material/colors";
+import { brown, red } from "@mui/material/colors";
 
 export const stylesheet = {
   colors: {
@@ -61,7 +61,7 @@ export const theme = createTheme({
       main: brown[500],
     },
     secondary: {
-      main: blueGrey[700],
+      main: red[500],
     },
     background: {
       default: brown[100],

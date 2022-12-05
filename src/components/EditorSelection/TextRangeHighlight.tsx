@@ -44,6 +44,9 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
             height: `${rect.height}px`,
             opacity: 0.4,
             backgroundColor: color,
+
+            border: "2px solid black",
+            borderRadius: "4px",
           }}
         ></div>
       );

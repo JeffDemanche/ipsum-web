@@ -113,19 +113,12 @@ export const ArcAssignmentPopper: React.FunctionComponent<
       <ClickAwayListener onClickAway={onClose ?? noop}>
         <div className={styles["arc-assignment"]}>
           <TextField
+            variant="standard"
             autoCorrect="off"
             autoComplete="off"
             onKeyUp={onInputKeyUp}
             inputRef={inputRef}
             placeholder="Arc name..."
-            inputProps={{
-              style: {
-                paddingTop: "0px",
-                paddingBottom: "0px",
-                paddingLeft: "3px",
-                paddingRight: "3px",
-              },
-            }}
           ></TextField>
           <div className={styles["arcs-list"]}>{tokens}</div>
         </div>

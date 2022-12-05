@@ -10,13 +10,8 @@ export const Popper: React.FC<PopperProps> = ({
   ...muiPopperProps
 }) => {
   return (
-    <MuiPopper style={{ zIndex: 1 }} {...muiPopperProps}>
-      <Paper
-        elevation={1}
-        sx={(theme) => ({ backgroundColor: theme.palette.secondary.dark })}
-      >
-        {children}
-      </Paper>
+    <MuiPopper style={{ zIndex: 2 }} {...muiPopperProps}>
+      <Paper elevation={2}>{children}</Paper>
     </MuiPopper>
   );
 };

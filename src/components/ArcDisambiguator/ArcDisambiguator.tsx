@@ -25,7 +25,6 @@ export const ArcDisambiguator: React.FunctionComponent<
       disablePortal
       open={open}
       anchorEl={anchorEl}
-      popperOptions={{ strategy: "absolute" }}
     >
       <ClickAwayListener onClickAway={onClickAway ?? noop}>
         <div className={styles["disambiguator"]}>
