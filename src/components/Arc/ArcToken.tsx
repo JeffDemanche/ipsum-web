@@ -1,7 +1,7 @@
 import React, { CSSProperties, useContext, useState } from "react";
 import styles from "./ArcToken.less";
 import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
-import { Link, Typography } from "@mui/material";
+import { Paper, Link, Typography } from "@mui/material";
 import { IpsumArcColor, IpsumColor } from "util/colors";
 import cx from "classnames";
 
@@ -73,7 +73,10 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
 
   return (
     <Typography variant="body2" sx={{ margin: "2px" }}>
-      <span className={cx(className, styles["arc-token-container"])}>
+      <Paper
+        className={cx(className, styles["arc-token-container"])}
+        sx={style}
+      >
         <Link
           href={"#"}
           onMouseEnter={() => {
@@ -92,7 +95,7 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
             {arc?.name ?? "null"}
           </span>
         </Link>
-      </span>
+      </Paper>
     </Typography>
   );
 };
