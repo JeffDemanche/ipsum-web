@@ -26,6 +26,8 @@ function createWindow() {
       : `file://${path.join(__dirname, "../dist/index.html")}`
   );
 
+  win.webContents.setZoomFactor(2);
+
   // Open the DevTools.
   if (isDev) {
     win.webContents.openDevTools({ mode: "detach" });

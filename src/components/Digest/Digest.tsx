@@ -66,7 +66,8 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
               {tokenSelected(assgn.arcId) && (
                 <div className={styles["selected-arc-functions"]}>
                   <Button
-                    variant="text"
+                    variant="outlined"
+                    size="small"
                     className={styles["function-button"]}
                     onClick={() => {
                       unassignArc({
@@ -85,7 +86,12 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
                       <BookmarkRemoveOutlined fontSize="small"></BookmarkRemoveOutlined>
                     </Tooltip>
                   </Button>
-                  <Button variant="text" className={styles["function-button"]}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{ width: "40px" }}
+                    className={styles["function-button"]}
+                  >
                     <Tooltip title="Open arc details">
                       <OpenInNewOutlined fontSize="small"></OpenInNewOutlined>
                     </Tooltip>
