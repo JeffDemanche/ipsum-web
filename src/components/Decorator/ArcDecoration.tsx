@@ -1,8 +1,8 @@
 import React, { useContext, useMemo, useRef } from "react";
 import styles from "./ArcDecoration.less";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import { ContentState } from "draft-js";
-import { ArcSelectionContext } from "components/ArcSelection/ArcSelectionContext";
+import { ArcSelectionContext } from "components/SelectionContext/ArcSelectionContext";
 import { isSubset } from "util/set";
 import { JournalHotkeysContext } from "components/JournalHotkeys/JournalHotkeysContext";
 import { ArcDisambiguator } from "components/ArcDisambiguator/ArcDisambiguator";

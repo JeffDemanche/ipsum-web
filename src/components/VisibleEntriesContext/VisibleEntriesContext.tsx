@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from "react";
 import { useParams } from "react-router";
 import { useSearchParams } from "react-router-dom";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import { IpsumDateTime, sortDates } from "util/dates";
 
 export interface VisibleEntries {

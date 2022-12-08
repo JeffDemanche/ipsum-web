@@ -1,6 +1,6 @@
 import { Button } from "components/Button/Button";
 import React, { useCallback, useContext } from "react";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import styles from "./JournalInfoBox.less";
 import { JournalTitle } from "./JournalTitle";
 

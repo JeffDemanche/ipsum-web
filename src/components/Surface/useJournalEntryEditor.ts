@@ -3,7 +3,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./JournalEntry.less";
 import { parseContentState } from "util/content-state";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import cx from "classnames";
 import { decorator } from "components/Decorator/decorator";
 

@@ -5,8 +5,8 @@ import React from "react";
 import { Surface } from "../components/Surface/Surface";
 import { SurfaceEditorContextProvider } from "../components/Surface/SurfaceEditorContext";
 import styles from "./ViewJournal.less";
-import { VisibleEntriesProvider } from "./VisibleEntriesContext";
-import { ArcSelectionProvider } from "components/ArcSelection/ArcSelectionContext";
+import { VisibleEntriesProvider } from "../components/VisibleEntriesContext/VisibleEntriesContext";
+import { ArcSelectionProvider } from "components/SelectionContext/ArcSelectionContext";
 import { JournalHotkeysProvider } from "components/JournalHotkeys/JournalHotkeysContext";
 
 export const ViewJournal: React.FC = () => {

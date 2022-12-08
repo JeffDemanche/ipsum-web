@@ -11,12 +11,12 @@ import {
   writeInMemoryStateToFile,
 } from "util/file/serializer";
 import { IpsumIndexedDBClient, useIpsumIDBWrapper } from "util/indexed-db";
-import { InMemoryAction } from "./in-memory-actions";
+import { InMemoryAction } from "../../state/in-memory/in-memory-actions";
 import {
   initialInMemoryState,
   InMemoryState,
   reducer,
-} from "./in-memory-state";
+} from "../../state/in-memory/in-memory-state";
 
 export interface InMemoryStateContextType {
   state: InMemoryState;

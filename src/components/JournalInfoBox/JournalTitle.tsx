@@ -1,9 +1,4 @@
-import {
-  Button,
-  ClickAwayListener,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, ClickAwayListener, TextField } from "@mui/material";
 import React, {
   useCallback,
   useContext,
@@ -13,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useApiAction } from "state/api/use-api-action";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import styles from "./JournalTitle.less";
 
 export const JournalTitle: React.FunctionComponent = () => {

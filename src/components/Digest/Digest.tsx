@@ -1,12 +1,12 @@
 import { BookmarkRemoveOutlined, OpenInNewOutlined } from "@mui/icons-material";
 import { Button, Tooltip } from "@mui/material";
 import { ArcToken } from "components/Arc/ArcToken";
-import { ArcSelectionContext } from "components/ArcSelection/ArcSelectionContext";
+import { ArcSelectionContext } from "components/SelectionContext/ArcSelectionContext";
 import React, { useCallback, useContext, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
 import { useApiAction } from "state/api/use-api-action";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import styles from "./Digest.less";
 
 interface DigestProps {

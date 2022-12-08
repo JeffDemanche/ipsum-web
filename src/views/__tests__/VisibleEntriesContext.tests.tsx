@@ -8,7 +8,7 @@ import {
   VisibleEntries,
   VisibleEntriesContext,
   VisibleEntriesProvider,
-} from "views/VisibleEntriesContext";
+} from "components/VisibleEntriesContext/VisibleEntriesContext";
 import { useSearchParams } from "react-router-dom";
 
 jest.mock("react-router-dom");

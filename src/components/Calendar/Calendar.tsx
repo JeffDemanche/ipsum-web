@@ -2,7 +2,7 @@ import { Box, Button, Link, Paper, Typography } from "@mui/material";
 import { Info, DateTime } from "luxon";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import { getDaysBetween, IpsumDateTime, useDate } from "util/dates";
 import styles from "./Calendar.less";
 import { CalendarDayTile } from "./CalendarDayTile";

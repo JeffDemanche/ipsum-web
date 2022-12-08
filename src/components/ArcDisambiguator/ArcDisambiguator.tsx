@@ -3,7 +3,7 @@ import styles from "./ArcDisambiguator.less";
 import { ClickAwayListener } from "@mui/material";
 import { ArcToken } from "components/Arc/ArcToken";
 import { Popper } from "components/Popper/Popper";
-import { ArcSelectionContext } from "components/ArcSelection/ArcSelectionContext";
+import { ArcSelectionContext } from "components/SelectionContext/ArcSelectionContext";
 import { noop } from "underscore";
 
 interface ArcDisambiguatorProps {

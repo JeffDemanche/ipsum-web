@@ -1,7 +1,7 @@
 import React from "react";
 import { InMemoryAction } from "../in-memory-actions";
 import { initialInMemoryState, InMemoryState } from "../in-memory-state";
-import { InMemoryStateContext } from "../InMemoryStateProvider";
+import { InMemoryStateContext } from "../../../components/InMemoryStateContext/InMemoryStateContext";
 
 interface MockInMemoryStateProviderProps {
   state?: Partial<InMemoryState>;

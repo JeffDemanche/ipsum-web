@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { InMemoryArc } from "state/in-memory/in-memory-state";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 
 interface UseSearchArcsParams {
   query: string;

@@ -12,7 +12,7 @@ import styles from "./ArcAssignmentPopper.less";
 import { useSearchArcs } from "util/hooks/useSearchArcs";
 import { ArcToken } from "components/Arc/ArcToken";
 import { nextHue } from "util/colors";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import { useApiAction } from "state/api/use-api-action";
 import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
 import { noop } from "underscore";

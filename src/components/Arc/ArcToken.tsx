@@ -1,6 +1,6 @@
 import React, { CSSProperties, useContext, useState } from "react";
 import styles from "./ArcToken.less";
-import { InMemoryStateContext } from "state/in-memory/InMemoryStateProvider";
+import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import { Paper, Link, Typography } from "@mui/material";
 import { IpsumArcColor, IpsumColor } from "util/colors";
 import cx from "classnames";
