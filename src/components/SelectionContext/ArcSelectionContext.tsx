@@ -13,6 +13,9 @@ interface ArcSelectionContextValue {
 
   selectedArcIds: string[] | undefined;
   setSelectedArcIds: (arcId: string[]) => void;
+
+  openArcId: string | undefined;
+  setOpenArcId: (arcId: string) => void;
 }
 
 const defaultArcSelectionContext: ArcSelectionContextValue = {
@@ -20,6 +23,8 @@ const defaultArcSelectionContext: ArcSelectionContextValue = {
   setHoveredArcIds: () => {},
   selectedArcIds: undefined,
   setSelectedArcIds: () => {},
+  openArcId: undefined,
+  setOpenArcId: () => {},
 };
 
 export const ArcSelectionContext =
@@ -49,6 +54,23 @@ export const ArcSelectionProvider: React.FC<ArcSelectionProviderProps> = ({
     [navigate, searchParams]
   );
 
+  const openArcId = searchParams.has("open_arc")
+    ? searchParams.get("open_arc")
+    : undefined;
+
+  const setOpenArcId = useCallback(
+    (openArcId: string) => {
+      const newParams = new URLSearchParams(searchParams);
+      if (!openArcId) {
+        newParams.delete("open_arc");
+      } else {
+        newParams.set("open_arc", openArcId);
+      }
+      navigate({ search: newParams.toString() }, { replace: false });
+    },
+    [navigate, searchParams]
+  );
+
   const [hoveredArcIds, setHoveredArcIds] = useState<string[]>(undefined);
 
   return (
@@ -58,6 +80,8 @@ export const ArcSelectionProvider: React.FC<ArcSelectionProviderProps> = ({
         setHoveredArcIds,
         selectedArcIds,
         setSelectedArcIds,
+        openArcId,
+        setOpenArcId,
       }}
     >
       {children}

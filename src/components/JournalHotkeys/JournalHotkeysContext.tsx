@@ -38,10 +38,8 @@ export const JournalHotkeysProvider: React.FunctionComponent<
   }, []);
 
   return (
-    <div className={styles["hotkeys-container"]}>
-      <JournalHotkeysContext.Provider value={{ ctrlKey: ctrlKey }}>
-        {children}
-      </JournalHotkeysContext.Provider>
-    </div>
+    <JournalHotkeysContext.Provider value={{ ctrlKey: ctrlKey }}>
+      {children}
+    </JournalHotkeysContext.Provider>
   );
 };

@@ -17,8 +17,13 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
   const {
     state: { arcAssignments },
   } = useContext(InMemoryStateContext);
-  const { selectedArcIds, hoveredArcIds, setHoveredArcIds, setSelectedArcIds } =
-    useContext(ArcSelectionContext);
+  const {
+    selectedArcIds,
+    hoveredArcIds,
+    setHoveredArcIds,
+    setSelectedArcIds,
+    setOpenArcId,
+  } = useContext(ArcSelectionContext);
 
   const arcAssignmentValues = Object.values(arcAssignments);
   const assignments = useMemo(() => {
@@ -91,6 +96,9 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
                     size="small"
                     sx={{ width: "40px" }}
                     className={styles["function-button"]}
+                    onClick={() => {
+                      setOpenArcId(assgn.arcId);
+                    }}
                   >
                     <Tooltip title="Open arc details">
                       <OpenInNewOutlined fontSize="small"></OpenInNewOutlined>

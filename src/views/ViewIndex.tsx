@@ -9,7 +9,6 @@ export const ViewIndex: React.FC = () => {
       sx={{ backgroundColor: "background.default" }}
       className={styles["index-wrapper"]}
     >
-      <div>TODO Index screen</div>
       <Outlet />
     </Box>
   );

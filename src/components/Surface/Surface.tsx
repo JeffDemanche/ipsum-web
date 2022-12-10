@@ -6,7 +6,11 @@ import { SurfaceEditor } from "./SurfaceEditor";
 export const Surface = () => {
   return (
     <Paper className={styles["surface"]}>
-      <SurfaceEditor />
+      <div className={styles["surface-scroller-rtl"]}>
+        <div>
+          <SurfaceEditor />
+        </div>
+      </div>
     </Paper>
   );
 };

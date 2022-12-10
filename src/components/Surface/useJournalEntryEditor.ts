@@ -1,6 +1,7 @@
 import { ContentBlock, ContentState, Editor, EditorState } from "draft-js";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./JournalEntry.less";
+import editorStyes from "./EditorStyles.less";
 import { parseContentState } from "util/content-state";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
@@ -19,9 +20,14 @@ interface UseJournalEntryEditorResult {
 }
 
 const blockStyleFn = (block: ContentBlock) => {
-  return cx(styles["editor-block"], {
-    [styles["editor-paragraph"]]: block.getType() === "unstyled",
-    [styles["editor-header-one"]]: block.getType() === "header-one",
+  return cx(editorStyes["editor-block"], {
+    [editorStyes["editor-paragraph"]]: block.getType() === "unstyled",
+    [editorStyes["editor-header-one"]]: block.getType() === "header-one",
+    [editorStyes["editor-unordered-list-item"]]:
+      block.getType() === "unordered-list-item",
+    [editorStyes["editor-ordered-list-item"]]:
+      block.getType() === "ordered-list-item",
+    [editorStyes["editor-blockquote"]]: block.getType() === "blockquote",
   });
 };
 

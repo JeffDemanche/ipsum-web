@@ -20,10 +20,6 @@ export const FormattingControls: React.FunctionComponent = () => {
 
   const boldEnabled = !!focusedEditorState?.getCurrentInlineStyle().has("BOLD");
 
-  const italicEnabled = !!focusedEditorState
-    ?.getCurrentInlineStyle()
-    .has("ITALIC");
-
   const onBoldClick = useCallback(() => {
     setEntryEditorState(focusedEditorKey, (previousEditorState) =>
       RichUtils.toggleInlineStyle(
@@ -32,6 +28,10 @@ export const FormattingControls: React.FunctionComponent = () => {
       )
     );
   }, [focusedEditorKey, focusedEditorSelection, setEntryEditorState]);
+
+  const italicEnabled = !!focusedEditorState
+    ?.getCurrentInlineStyle()
+    .has("ITALIC");
 
   const onItalicClick = useCallback(() => {
     setEntryEditorState(focusedEditorKey, (previousEditorState) =>
@@ -80,7 +80,7 @@ export const FormattingControls: React.FunctionComponent = () => {
         className={styles["toggle-button"]}
         disabled={!focusedEditorKey}
         selected={italicEnabled}
-        onMouseDown={onItalicClick}
+        onChange={onItalicClick}
       >
         <b>i</b>
       </ToggleButton>
