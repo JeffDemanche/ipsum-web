@@ -17,7 +17,7 @@ export const ArcNavigator: React.FC = () => {
       <Button onClick={() => setOpenArcId(undefined)}>
         <Close></Close>
       </Button>
-      <ArcDetail arc={arc}></ArcDetail>
+      <ArcDetail></ArcDetail>
     </div>
   );
 };

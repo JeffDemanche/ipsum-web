@@ -79,16 +79,16 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
 
   return (
     <div className={styles["journal-entry"]}>
-      <Typography
-        variant="h4"
-        color={(theme) => theme.palette.onSurfaceHighEmphasis}
-      >
-        {IpsumDateTime.fromString(entryKey, "entry-printed-date").toString(
-          "entry-printed-date-nice"
-        )}
-      </Typography>
-      {editorState && (
-        <>
+      <div className={styles["entry-text-vertical"]}>
+        <Typography
+          variant="h4"
+          color={(theme) => theme.palette.onSurfaceHighEmphasis}
+        >
+          {IpsumDateTime.fromString(entryKey, "entry-printed-date").toString(
+            "entry-printed-date-nice"
+          )}
+        </Typography>
+        {editorState && (
           <EditorWrapper
             enableControls={false}
             editorKey={entryKey}
@@ -101,14 +101,16 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
             blockStyleFn={blockStyleFn}
             ref={editorRef}
           ></EditorWrapper>
-          <div className={styles["digest-wrapper"]}>
-            <Digest entryKey={entryKey} />
+        )}
+        {showDivider && (
+          <div className={styles["divider-container"]}>
+            <Divider></Divider>
           </div>
-        </>
-      )}
-      {showDivider && (
-        <div className={styles["divider-container"]}>
-          <Divider></Divider>
+        )}
+      </div>
+      {editorState && (
+        <div className={styles["digest-wrapper"]}>
+          <Digest entryKey={entryKey} />
         </div>
       )}
     </div>

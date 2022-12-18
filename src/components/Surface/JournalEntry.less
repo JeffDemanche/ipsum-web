@@ -1,15 +1,24 @@
 .journal-entry {
+  display: flex;
+  gap: 15px;
+  flex-direction: row;
   font-family: "Source Serif Pro", serif;
   font-size: 12pt;
   position: relative;
-  margin-bottom: 24px;
+  margin-top: 24px;
 
-  h4 {
-    margin-bottom: 10px;
-    font-weight: normal;
+  .entry-text-vertical {
+    display: flex;
+    flex-direction: column;
+    width: 512px;
 
-    &:not(.editor-header-one) {
-      cursor: pointer;
+    h4 {
+      margin-bottom: 10px;
+      font-weight: normal;
+
+      &:not(.editor-header-one) {
+        cursor: pointer;
+      }
     }
   }
 
@@ -18,8 +27,5 @@
   }
 
   .digest-wrapper {
-    position: absolute;
-    top: 0;
-    right: 0;
   }
 }

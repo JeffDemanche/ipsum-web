@@ -1,6 +1,5 @@
 import { ContentBlock, ContentState, Editor, EditorState } from "draft-js";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import styles from "./JournalEntry.less";
 import editorStyes from "./EditorStyles.less";
 import { parseContentState } from "util/content-state";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";

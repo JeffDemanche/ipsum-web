@@ -9,7 +9,12 @@ import { useContext, useState } from "react";
 import { InMemoryAction } from "state/in-memory/in-memory-actions";
 import { InMemoryState } from "state/in-memory/in-memory-state";
 import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
-import { apiAssignArc, apiCreateAndAssignArc, apiUnassignArc } from "./arc";
+import {
+  apiAssignArc,
+  apiCreateAndAssignArc,
+  apiUnassignArc,
+  apiUpdateArc,
+} from "./arc";
 import { apiCreateOrUpdateEntry, apiDeleteEntry } from "./entry";
 import { apiUpdateJournalTitle } from "./journalTitle";
 
@@ -26,6 +31,7 @@ const APIFunctions = {
   createAndAssignArc: apiCreateAndAssignArc,
   assignArc: apiAssignArc,
   unassignArc: apiUnassignArc,
+  updateArc: apiUpdateArc,
 
   updateJournalTitle: apiUpdateJournalTitle,
 };

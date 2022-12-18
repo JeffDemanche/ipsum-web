@@ -36,6 +36,10 @@ export type InMemoryAction =
   | {
       type: "UNASSIGN-ARC";
       payload: Parameters<typeof dispatchers["UNASSIGN-ARC"]>["1"];
+    }
+  | {
+      type: "UPDATE-ARC";
+      payload: Parameters<typeof dispatchers["UPDATE-ARC"]>["1"];
     };
 
 export type InMemoryActionType = InMemoryAction["type"];
@@ -192,6 +196,20 @@ const dispatchers = {
     }
     return copy;
   },
+  "UPDATE-ARC": (
+    state: InMemoryState,
+    payload: { arcId: string } & Partial<{ color: number }>
+  ): InMemoryState => {
+    const arcCopy = { ...state.arcs[payload.arcId], ...payload };
+
+    if (!arcCopy) throw new Error("Arc ID to update could not be found");
+
+    const stateCopy = { ...state };
+
+    stateCopy.arcs[arcCopy.id] = arcCopy;
+
+    return stateCopy;
+  },
 };
 
 export const dispatch = (
@@ -214,6 +232,8 @@ export const dispatch = (
     case "UPDATE-JOURNAL-TITLE":
       return dispatchers[action.type](state, action.payload);
     case "UNASSIGN-ARC":
+      return dispatchers[action.type](state, action.payload);
+    case "UPDATE-ARC":
       return dispatchers[action.type](state, action.payload);
     default:
       return { ...state };

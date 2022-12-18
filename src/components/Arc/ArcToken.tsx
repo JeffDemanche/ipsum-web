@@ -11,6 +11,7 @@ type ArcForToken =
 
 interface ArcToken {
   arcForToken: ArcForToken;
+  type?: "span" | "header";
   highlighted?: boolean;
   className?: string;
   onClick?: () => void;
@@ -20,6 +21,7 @@ interface ArcToken {
 
 export const ArcToken: React.FunctionComponent<ArcToken> = ({
   arcForToken,
+  type = "span",
   highlighted,
   className,
   onClick,
@@ -71,6 +73,13 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
           backgroundColor: ipsumColorL30.toRgbaCSS(),
         };
 
+  const innerTag =
+    type === "span" ? (
+      <span className={styles["arc-token-inner"]}>{arc?.name ?? "null"}</span>
+    ) : (
+      <h3 className={styles["arc-token-inner"]}>{arc?.name ?? "null"}</h3>
+    );
+
   return (
     <Typography variant="body2" sx={{ margin: "2px" }}>
       <Paper
@@ -91,9 +100,7 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
           onClick={onClick}
           style={style}
         >
-          <span className={styles["arc-token-span"]}>
-            {arc?.name ?? "null"}
-          </span>
+          {innerTag}
         </Link>
       </Paper>
     </Typography>

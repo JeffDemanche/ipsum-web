@@ -116,6 +116,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
     navigate,
     searchParams,
     setHoveredArcIds,
+    setOpenArcId,
     setSelectedArcIds,
     tokenHighlighted,
     tokenSelected,

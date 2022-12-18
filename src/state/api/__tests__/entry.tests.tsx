@@ -24,18 +24,20 @@ describe("Entry API", () => {
       const { unmount } = render(
         <APIDispatcher
           beforeState={initialInMemoryState}
-          action={(context) => {
-            apiCreateOrUpdateEntry(
-              {
-                entryKey: "8/9/1998",
-                date,
-                contentState: stringifyContentState(
-                  editorState.getCurrentContent()
-                ),
-              },
-              context
-            );
-          }}
+          action={[
+            (context) => {
+              apiCreateOrUpdateEntry(
+                {
+                  entryKey: "8/9/1998",
+                  date,
+                  contentState: stringifyContentState(
+                    editorState.getCurrentContent()
+                  ),
+                },
+                context
+              );
+            },
+          ]}
           onStateChange={newStateFn}
         ></APIDispatcher>
       );
@@ -109,16 +111,18 @@ describe("Entry API", () => {
               },
             },
           }}
-          action={(context) => {
-            apiCreateOrUpdateEntry(
-              {
-                entryKey: "entry_key_1",
-                date,
-                contentState: stringifyContentState(contentStateWithHello),
-              },
-              context
-            );
-          }}
+          action={[
+            (context) => {
+              apiCreateOrUpdateEntry(
+                {
+                  entryKey: "entry_key_1",
+                  date,
+                  contentState: stringifyContentState(contentStateWithHello),
+                },
+                context
+              );
+            },
+          ]}
           onStateChange={newStateFn}
         ></APIDispatcher>
       );
@@ -152,9 +156,11 @@ describe("Entry API", () => {
               },
             },
           }}
-          action={(context) => {
-            apiDeleteEntry({ entryKey: "entry_key_1" }, context);
-          }}
+          action={[
+            (context) => {
+              apiDeleteEntry({ entryKey: "entry_key_1" }, context);
+            },
+          ]}
           onStateChange={newStateFn}
         ></APIDispatcher>
       );
@@ -202,9 +208,11 @@ describe("Entry API", () => {
               },
             },
           }}
-          action={(context) => {
-            apiDeleteEntry({ entryKey: "entry_key_1" }, context);
-          }}
+          action={[
+            (context) => {
+              apiDeleteEntry({ entryKey: "entry_key_1" }, context);
+            },
+          ]}
           onStateChange={newStateFn}
         ></APIDispatcher>
       );

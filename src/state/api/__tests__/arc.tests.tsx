@@ -4,7 +4,7 @@ import {
   initialInMemoryState,
   InMemoryState,
 } from "state/in-memory/in-memory-state";
-import { apiAssignArc, apiCreateAndAssignArc } from "../arc";
+import { apiAssignArc, apiCreateAndAssignArc, apiUpdateArc } from "../arc";
 import {
   createEditorState,
   createEditorStateFromFormat,
@@ -17,37 +17,65 @@ import { IpsumDateTime } from "util/dates";
 import { DateTime } from "luxon";
 import { APIDispatcher } from "./api-test-utils";
 import { nextHue } from "util/colors";
+import { APIContext } from "../use-api-action";
 
 describe("Arc API", () => {
   describe("createAndAssignArc", () => {
+    it("creates a single arc without an assignment if no entryKey or selectionState is provided", () => {
+      const newStateFn = jest.fn();
+      const { unmount } = render(
+        <APIDispatcher
+          beforeState={initialInMemoryState}
+          action={[
+            (context) => {
+              apiCreateAndAssignArc(
+                {
+                  name: "new arc",
+                },
+                context
+              );
+            },
+          ]}
+          onStateChange={newStateFn}
+        />
+      );
+
+      const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
+      expect(Object.values(updatedState.arcs)[0].name).toEqual("new arc");
+
+      unmount();
+    });
+
     it("creates a single arc assignment on an entry and includes entities in editor content state", () => {
       const newStateFn = jest.fn();
       const { unmount } = render(
         <APIDispatcher
           beforeState={initialInMemoryState}
-          action={(context) => {
-            const editorState = createEditorState("Hello World!", 0, 2);
+          action={[
+            (context) => {
+              const editorState = createEditorState("Hello World!", 0, 2);
 
-            apiCreateOrUpdateEntry(
-              {
-                entryKey: "entry_key",
-                contentState: stringifyContentState(
-                  editorState.getCurrentContent()
-                ),
-                date: new IpsumDateTime(DateTime.now()),
-              },
-              context
-            );
+              apiCreateOrUpdateEntry(
+                {
+                  entryKey: "entry_key",
+                  contentState: stringifyContentState(
+                    editorState.getCurrentContent()
+                  ),
+                  date: new IpsumDateTime(DateTime.now()),
+                },
+                context
+              );
 
-            apiCreateAndAssignArc(
-              {
-                name: "new arc",
-                entryKey: "entry_key",
-                selectionState: editorState.getSelection(),
-              },
-              context
-            );
-          }}
+              apiCreateAndAssignArc(
+                {
+                  name: "new arc",
+                  entryKey: "entry_key",
+                  selectionState: editorState.getSelection(),
+                },
+                context
+              );
+            },
+          ]}
           onStateChange={newStateFn}
         />
       );
@@ -82,44 +110,46 @@ describe("Arc API", () => {
       const { unmount } = render(
         <APIDispatcher
           beforeState={initialInMemoryState}
-          action={(context) => {
-            const editorState1 = createEditorState("Hello World!", 6, 11);
+          action={[
+            (context) => {
+              const editorState1 = createEditorState("Hello World!", 6, 11);
 
-            apiCreateOrUpdateEntry(
-              {
-                entryKey: "entry_key",
-                contentState: stringifyContentState(
-                  editorState1.getCurrentContent()
-                ),
-                date: new IpsumDateTime(DateTime.now()),
-              },
-              context
-            );
+              apiCreateOrUpdateEntry(
+                {
+                  entryKey: "entry_key",
+                  contentState: stringifyContentState(
+                    editorState1.getCurrentContent()
+                  ),
+                  date: new IpsumDateTime(DateTime.now()),
+                },
+                context
+              );
 
-            apiCreateAndAssignArc(
-              {
-                name: "new arc 1",
-                entryKey: "entry_key",
-                selectionState: editorState1.getSelection(),
-              },
-              context
-            );
+              apiCreateAndAssignArc(
+                {
+                  name: "new arc 1",
+                  entryKey: "entry_key",
+                  selectionState: editorState1.getSelection(),
+                },
+                context
+              );
 
-            const editorState2 = moveEditorSelection({
-              editorState: editorState1,
-              anchorOffset: 0,
-              focusOffset: 5,
-            });
+              const editorState2 = moveEditorSelection({
+                editorState: editorState1,
+                anchorOffset: 0,
+                focusOffset: 5,
+              });
 
-            apiCreateAndAssignArc(
-              {
-                name: "new arc 2",
-                entryKey: "entry_key",
-                selectionState: editorState2.getSelection(),
-              },
-              context
-            );
-          }}
+              apiCreateAndAssignArc(
+                {
+                  name: "new arc 2",
+                  entryKey: "entry_key",
+                  selectionState: editorState2.getSelection(),
+                },
+                context
+              );
+            },
+          ]}
           onStateChange={newStateFn}
         />
       );
@@ -165,29 +195,31 @@ describe("Arc API", () => {
       const { unmount } = render(
         <APIDispatcher
           beforeState={initialInMemoryState}
-          action={(context) => {
-            const editorState = createEditorState("Hello World!", 0, 2);
+          action={[
+            (context) => {
+              const editorState = createEditorState("Hello World!", 0, 2);
 
-            apiCreateOrUpdateEntry(
-              {
-                entryKey: "entry_key",
-                contentState: stringifyContentState(
-                  editorState.getCurrentContent()
-                ),
-                date: new IpsumDateTime(DateTime.now()),
-              },
-              context
-            );
+              apiCreateOrUpdateEntry(
+                {
+                  entryKey: "entry_key",
+                  contentState: stringifyContentState(
+                    editorState.getCurrentContent()
+                  ),
+                  date: new IpsumDateTime(DateTime.now()),
+                },
+                context
+              );
 
-            apiCreateAndAssignArc(
-              {
-                name: "new arc",
-                entryKey: "entry_key",
-                selectionState: editorState.getSelection(),
-              },
-              context
-            );
-          }}
+              apiCreateAndAssignArc(
+                {
+                  name: "new arc",
+                  entryKey: "entry_key",
+                  selectionState: editorState.getSelection(),
+                },
+                context
+              );
+            },
+          ]}
           onStateChange={newStateFn}
         />
       );
@@ -222,19 +254,21 @@ describe("Arc API", () => {
               },
             },
           }}
-          action={(context) => {
-            apiAssignArc(
-              {
-                arcId: "arc_id",
-                entryKey: "entry_key",
-                selectionState: moveEditorSelectionFromFormat(
-                  editorState,
-                  "<p>hello [world]<p>"
-                ).getSelection(),
-              },
-              context
-            );
-          }}
+          action={[
+            (context) => {
+              apiAssignArc(
+                {
+                  arcId: "arc_id",
+                  entryKey: "entry_key",
+                  selectionState: moveEditorSelectionFromFormat(
+                    editorState,
+                    "<p>hello [world]<p>"
+                  ).getSelection(),
+                },
+                context
+              );
+            },
+          ]}
           onStateChange={newStateFn}
         />
       );
@@ -287,23 +321,62 @@ describe("Arc API", () => {
                 },
               },
             }}
-            action={(context) => {
-              apiAssignArc(
-                {
-                  arcId: "wrong_arc_id",
-                  entryKey: "entry_key",
-                  selectionState: moveEditorSelectionFromFormat(
-                    editorState,
-                    "<p>hello [world]<p>"
-                  ).getSelection(),
-                },
-                context
-              );
-            }}
+            action={[
+              (context) => {
+                apiAssignArc(
+                  {
+                    arcId: "wrong_arc_id",
+                    entryKey: "entry_key",
+                    selectionState: moveEditorSelectionFromFormat(
+                      editorState,
+                      "<p>hello [world]<p>"
+                    ).getSelection(),
+                  },
+                  context
+                );
+              },
+            ]}
             onStateChange={newStateFn}
           />
         )
       ).toThrow();
+    });
+  });
+
+  describe("updateArc", () => {
+    it("can update an arc's color", () => {
+      const newStateFn = jest.fn();
+      const { unmount } = render(
+        <APIDispatcher
+          beforeState={initialInMemoryState}
+          action={[
+            (context: APIContext) => {
+              apiCreateAndAssignArc(
+                {
+                  name: "new arc",
+                },
+                context
+              );
+            },
+            (context: APIContext) => {
+              apiUpdateArc(
+                {
+                  arcId: Object.keys(context.state.arcs)[0],
+                  color: 200,
+                },
+                context
+              );
+            },
+          ]}
+          onStateChange={newStateFn}
+        />
+      );
+
+      expect(newStateFn.mock.calls.length).toBe(3);
+      const updatedState: InMemoryState = newStateFn.mock.calls[2][0];
+      expect(Object.values(updatedState.arcs)[0].color).toBe(200);
+
+      unmount();
     });
   });
 });

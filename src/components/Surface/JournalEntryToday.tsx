@@ -95,24 +95,24 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
 
   return (
     <div className={styles["journal-entry"]}>
-      <Typography
-        variant="h4"
-        color={(theme) =>
-          empty
-            ? theme.palette.onSurfaceDisabled
-            : theme.palette.onSurfaceHighEmphasis
-        }
-        className={cx(styles["entry-heading"], {
-          [styles["empty-entry"]]: empty,
-        })}
-        onClick={onHeaderClick}
-      >
-        {IpsumDateTime.fromString(entryKey, "entry-printed-date").toString(
-          "entry-printed-date-nice"
-        )}
-      </Typography>
-      {editorState && (
-        <>
+      <div className={styles["entry-text-vertical"]}>
+        <Typography
+          variant="h4"
+          color={(theme) =>
+            empty
+              ? theme.palette.onSurfaceDisabled
+              : theme.palette.onSurfaceHighEmphasis
+          }
+          className={cx(styles["entry-heading"], {
+            [styles["empty-entry"]]: empty,
+          })}
+          onClick={onHeaderClick}
+        >
+          {IpsumDateTime.fromString(entryKey, "entry-printed-date").toString(
+            "entry-printed-date-nice"
+          )}
+        </Typography>
+        {editorState && (
           <EditorWrapper
             enableControls
             placeholder={placeholderForDate(
@@ -128,14 +128,16 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
             onChange={onEditorChange}
             ref={editorRef}
           ></EditorWrapper>
-          <div className={styles["digest-wrapper"]}>
-            <Digest entryKey={entryKey} />
+        )}
+        {showDivider && (
+          <div className={styles["divider-container"]}>
+            <Divider></Divider>
           </div>
-        </>
-      )}
-      {showDivider && (
-        <div className={styles["divider-container"]}>
-          <Divider></Divider>
+        )}
+      </div>
+      {editorState && (
+        <div className={styles["digest-wrapper"]}>
+          <Digest entryKey={entryKey} />
         </div>
       )}
     </div>
