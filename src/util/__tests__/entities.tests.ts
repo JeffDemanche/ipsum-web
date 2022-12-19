@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Modifier as ModifierImport, SelectionState } from "draft-js";
 import {
+  IpsumEntityData,
   IpsumEntityTransformer,
   IpsumEntityTransformer as IpsumEntityTransformerImport,
 } from "util/entities";
@@ -9,11 +10,11 @@ import {
   moveEditorSelectionFromFormat as moveEditorSelectionFromFormatImport,
 } from "./editor-utils";
 
-const arcIdsForChar = (
+const entityDataForChar = (
   char: number,
   transformer: IpsumEntityTransformer,
   selection: SelectionState
-): unknown => {
+): IpsumEntityData => {
   const charMeta = transformer.getCharacters(selection)[char];
   if (charMeta.entityId === null) return null;
   return transformer.contentState.getEntity(charMeta.entityId).getData();
@@ -197,7 +198,7 @@ describe("entities", () => {
       const withRemovedArcs = withArc.clearEntities();
 
       const arcIds = (n: number) =>
-        arcIdsForChar(n, withRemovedArcs, editorAllSelected.getSelection());
+        entityDataForChar(n, withRemovedArcs, editorAllSelected.getSelection());
 
       expect(arcIds(2)).toBeNull();
 
@@ -209,7 +210,105 @@ describe("entities", () => {
     });
   });
 
-  describe("applyArc", () => {
+  describe("applyEntityData", () => {
+    it("does nothing when empty object is supplied", () => {
+      const initialEditor = createEditorStateFromFormat("he[ll]o world!");
+      const transformer = new IpsumEntityTransformer(
+        initialEditor.getCurrentContent()
+      );
+      const newContent = transformer.applyEntityData(
+        initialEditor.getSelection(),
+        {}
+      ).contentState;
+
+      expect(initialEditor.getCurrentContent()).toEqual(newContent);
+    });
+
+    it("can apply two arcAssignments to a selection with not existing entities", () => {
+      const initialEditor = createEditorStateFromFormat("he[ll]o world!");
+      const transformer = new IpsumEntityTransformer(
+        initialEditor.getCurrentContent()
+      );
+      const newContent = transformer.applyEntityData(
+        initialEditor.getSelection(),
+        { arcAssignmentIds: ["new assignment 1", "new assignment 2"] }
+      ).contentState;
+
+      const entity = newContent.getLastCreatedEntityKey();
+      expect(newContent.getEntity(entity).getData()).toEqual({
+        arcAssignmentIds: ["new assignment 1", "new assignment 2"],
+      });
+      expect(newContent.getBlocksAsArray()[0].getEntityAt(1)).toBe(null);
+      expect(newContent.getBlocksAsArray()[0].getEntityAt(2)).toBe(entity);
+      expect(newContent.getBlocksAsArray()[0].getEntityAt(3)).toBe(entity);
+      expect(newContent.getBlocksAsArray()[0].getEntityAt(4)).toBe(null);
+    });
+
+    it("does nothing when supplied data is already present for same selection", () => {
+      const initialEditor = createEditorStateFromFormat("he[ll]o world!");
+      const transformer = new IpsumEntityTransformer(
+        initialEditor.getCurrentContent()
+      );
+      const transformerWithTwoAssgns = transformer.applyEntityData(
+        initialEditor.getSelection(),
+        { arcAssignmentIds: ["new assignment 1", "new assignment 2"] }
+      );
+
+      const newContent = transformerWithTwoAssgns.applyEntityData(
+        initialEditor.getSelection(),
+        { arcAssignmentIds: ["new assignment 2"] }
+      ).contentState;
+
+      expect(transformerWithTwoAssgns.contentState).toEqual(newContent);
+    });
+
+    it("applies correct entities for arcAssignment and comment which partially overlap", () => {
+      const initialEditor = createEditorStateFromFormat("he[ll]o world!");
+      const transformer = new IpsumEntityTransformer(
+        initialEditor.getCurrentContent()
+      );
+      const transformerWithArcAssignment = transformer.applyEntityData(
+        initialEditor.getSelection(),
+        { arcAssignmentIds: ["new assignment 1"] }
+      );
+      const editorNewSelection = moveEditorSelectionFromFormat(
+        initialEditor,
+        "hel[lo] world!"
+      );
+      const transformerWithComment =
+        transformerWithArcAssignment.applyEntityData(
+          editorNewSelection.getSelection(),
+          { commentIds: ["new comment 1"] }
+        );
+
+      const editorAllSelected = moveEditorSelectionFromFormat(
+        initialEditor,
+        "[hello world!]"
+      );
+
+      const entityData = (n: number) =>
+        entityDataForChar(
+          n,
+          transformerWithComment,
+          editorAllSelected.getSelection()
+        );
+
+      expect(entityData(1)).toBe(null);
+      expect(entityData(2)).toEqual({
+        arcAssignmentIds: ["new assignment 1"],
+      });
+      expect(entityData(3)).toEqual({
+        arcAssignmentIds: ["new assignment 1"],
+        commentIds: ["new comment 1"],
+      });
+      expect(entityData(4)).toEqual({
+        commentIds: ["new comment 1"],
+      });
+      expect(entityData(5)).toBe(null);
+    });
+  });
+
+  describe("applyArc (wrapper for applyEntityData)", () => {
     it("can apply an entity for a single arc", () => {
       const initialEditor = createEditorStateFromFormat("he[ll]o world!");
       const transformer = new IpsumEntityTransformer(
@@ -305,7 +404,7 @@ describe("entities", () => {
       );
 
       const arcIds = (n: number) =>
-        arcIdsForChar(n, withTwoArcs, editorAllSelected.getSelection());
+        entityDataForChar(n, withTwoArcs, editorAllSelected.getSelection());
 
       expect(withTwoArcs.contentState.getAllEntities().count()).toBe(3);
       // h[e(l]l)o world!
@@ -338,7 +437,7 @@ describe("entities", () => {
       );
 
       const arcIds = (n: number) =>
-        arcIdsForChar(n, withTwoArcs, editorAllSelected.getSelection());
+        entityDataForChar(n, withTwoArcs, editorAllSelected.getSelection());
 
       expect(withTwoArcs.contentState.getAllEntities().count()).toBe(3);
       expect(arcIds(0)).toBeNull();
@@ -374,7 +473,7 @@ describe("entities", () => {
       );
 
       const arcIds = (n: number) =>
-        arcIdsForChar(n, withTwoArcs, editorAllSelected.getSelection());
+        entityDataForChar(n, withTwoArcs, editorAllSelected.getSelection());
 
       expect(withTwoArcs.contentState.getAllEntities().count()).toBe(2);
       expect(arcIds(0)).toBeNull();
@@ -409,7 +508,11 @@ describe("entities", () => {
       );
 
       const arcIds = (n: number) =>
-        arcIdsForChar(n, withConsolidatedArc, editorAllSelected.getSelection());
+        entityDataForChar(
+          n,
+          withConsolidatedArc,
+          editorAllSelected.getSelection()
+        );
 
       // Should not include "arc_1" twice
       expect(arcIds(3)).toEqual({ arcIds: ["arc_1"] });
@@ -428,7 +531,7 @@ describe("entities", () => {
       const withArcRemoved = withArc.removeArc("arc_1");
 
       const arcIds = (n: number) =>
-        arcIdsForChar(n, withArcRemoved, editorArc1.getSelection());
+        entityDataForChar(n, withArcRemoved, editorArc1.getSelection());
 
       expect(arcIds(0)).toEqual(null);
     });
@@ -451,7 +554,7 @@ describe("entities", () => {
       const withArc1Removed = with2Arcs.removeArc("arc_1");
 
       const arcIds = (n: number) =>
-        arcIdsForChar(n, withArc1Removed, editorArc1.getSelection());
+        entityDataForChar(n, withArc1Removed, editorArc1.getSelection());
 
       expect(arcIds(0)).toEqual(null);
       expect(arcIds(1)).toEqual({ arcIds: ["arc_2"] });

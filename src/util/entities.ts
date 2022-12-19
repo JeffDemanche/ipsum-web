@@ -13,8 +13,14 @@ interface CharacterMetadata {
   entityId: string;
 }
 
-interface IpsumEntityData {
+/**
+ * This should be a map of string arrays. Adding non-array fields will break
+ * `applyEntityData` and possibly other methods.
+ */
+export interface IpsumEntityData {
   arcIds?: string[];
+  arcAssignmentIds?: string[];
+  commentIds?: string[];
 }
 
 export class IpsumEntityTransformer {
@@ -96,13 +102,24 @@ export class IpsumEntityTransformer {
     return charData;
   };
 
+  /**
+   * Compares two entity data, useful for determining where an entity range
+   * starts or stops.
+   */
   entityDataEquals = (
     entityData1: IpsumEntityData,
     entityData2: IpsumEntityData
   ) => {
-    return setEquals(
-      new Set(entityData1?.arcIds ?? []),
-      new Set(entityData2?.arcIds ?? [])
+    const fieldEquality = (arr1: string[], arr2: string[]) =>
+      setEquals(new Set(arr1 ?? []), new Set(arr2 ?? []));
+
+    return (
+      fieldEquality(entityData1?.arcIds, entityData2?.arcIds) &&
+      fieldEquality(
+        entityData1?.arcAssignmentIds,
+        entityData2?.arcAssignmentIds
+      ) &&
+      fieldEquality(entityData1?.commentIds, entityData2?.commentIds)
     );
   };
 
@@ -190,6 +207,78 @@ export class IpsumEntityTransformer {
   };
 
   /**
+   * Applies new DraftJS entity data to a selection state. "Applies" here means
+   * that for each array subfield of `data`, the `IpsumEntityData` array
+   * subfields for the selected text will be updated to include any *new* values
+   * present in the arrays provided as subfields of `data`.
+   *
+   * @param data A partial of `IpsumEntityState`, where any values present in
+   * the subfields will be added as entities to the selected text if they aren't
+   * already present.
+   */
+  applyEntityData = (
+    selectionState: SelectionState,
+    data: Partial<IpsumEntityData>
+  ) => {
+    if (selectionState.isEmpty()) return this;
+
+    // 1. Get an array that contains data on every character in the
+    //    SelectionState.
+    const selectedCharacters = this.getCharacters(selectionState);
+
+    // 2. Iterate through the characters, building an array for which every
+    //    entry contains a SelectionState range for an entity we will create,
+    //    and the IpsumEntityData that already exist on that range.
+    const newEntityRanges = this.getEntityRanges(selectedCharacters);
+
+    // 3. Loop through the array of text ranges... for each, create and assign a
+    //    new DraftJS entity which appends the data provided as a parameter.
+    let contentStateWithAppliedEntities: ContentState = this.contentState;
+    newEntityRanges.forEach(({ entityRangeSelState, entityData }) => {
+      // Copy of existing entity data for range.
+      const newEntityData = { ...entityData };
+
+      // Loop through each array subfield of IpsumEntityData and append the
+      // corresponding subfield of the data provided to apply.
+      ["arcIds", "arcAssignmentIds", "commentIds"].forEach((d) => {
+        const dataType = d as keyof IpsumEntityData;
+        const existingValueSet = new Set(entityData?.[dataType]);
+        const newValueArray = [...(Array.from(existingValueSet) ?? [])];
+        const dataOfTypeToAdd = data?.[dataType] ?? [];
+
+        dataOfTypeToAdd.forEach((newData) => {
+          if (!existingValueSet.has(newData)) newValueArray.push(newData);
+        });
+
+        // Subfields should be undefined rather than an empty array by
+        // convention.
+        if (newValueArray.length > 0) newEntityData[dataType] = newValueArray;
+        else delete newEntityData[dataType];
+      });
+
+      // Only add an entity if the entity data has changed.
+      if (!this.entityDataEquals(entityData, newEntityData)) {
+        const contentStateWithEntity =
+          contentStateWithAppliedEntities.createEntity(
+            "ARC",
+            "MUTABLE",
+            newEntityData
+          );
+
+        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+
+        contentStateWithAppliedEntities = Modifier.applyEntity(
+          contentStateWithEntity,
+          entityRangeSelState,
+          entityKey
+        );
+      }
+    });
+
+    return new IpsumEntityTransformer(contentStateWithAppliedEntities);
+  };
+
+  /**
    * Creates a new DraftJS `ContentState` where the given `arcId` has been
    * appended to entity data for the range specified by `selectionState`.
    * DraftJS doesn't support multiple entities per character on a
@@ -203,41 +292,43 @@ export class IpsumEntityTransformer {
     selectionState: SelectionState,
     arcId: string
   ): IpsumEntityTransformer => {
-    if (selectionState.isEmpty()) return this;
+    return this.applyEntityData(selectionState, { arcIds: [arcId] });
 
-    // 1. Get an array that contains data on every character in the
-    //    SelectionState.
-    const selectedCharacters = this.getCharacters(selectionState);
+    // if (selectionState.isEmpty()) return this;
 
-    // 2. Iterate through the characters, building an array for which every
-    //    entry contains a SelectionState range for an entity we will create,
-    //    and an array of the arc IDs which already exist for it.
-    const newEntityRanges = this.getEntityRanges(selectedCharacters);
+    // // 1. Get an array that contains data on every character in the
+    // //    SelectionState.
+    // const selectedCharacters = this.getCharacters(selectionState);
 
-    // 3. Loop through the array of text ranges... for each, create and assign a
-    //    new DraftJS entity which includes the new arc ID as well as existing
-    //    ones.
-    let contentStateWithAppliedEntities: ContentState = this.contentState;
-    newEntityRanges.forEach(({ entityRangeSelState, entityData }) => {
-      const existingArcIds = new Set(entityData?.arcIds as string[]);
+    // // 2. Iterate through the characters, building an array for which every
+    // //    entry contains a SelectionState range for an entity we will create,
+    // //    and an array of the arc IDs which already exist for it.
+    // const newEntityRanges = this.getEntityRanges(selectedCharacters);
 
-      const newArcIds = [...(Array.from(existingArcIds) ?? [])];
-      if (!existingArcIds.has(arcId)) newArcIds.push(arcId);
+    // // 3. Loop through the array of text ranges... for each, create and assign a
+    // //    new DraftJS entity which includes the new arc ID as well as existing
+    // //    ones.
+    // let contentStateWithAppliedEntities: ContentState = this.contentState;
+    // newEntityRanges.forEach(({ entityRangeSelState, entityData }) => {
+    //   const existingArcIds = new Set(entityData?.arcIds as string[]);
 
-      const contentStateWithEntity =
-        contentStateWithAppliedEntities.createEntity("ARC", "MUTABLE", {
-          arcIds: newArcIds,
-        });
-      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    //   const newArcIds = [...(Array.from(existingArcIds) ?? [])];
+    //   if (!existingArcIds.has(arcId)) newArcIds.push(arcId);
 
-      contentStateWithAppliedEntities = Modifier.applyEntity(
-        contentStateWithEntity,
-        entityRangeSelState,
-        entityKey
-      );
-    });
+    //   const contentStateWithEntity =
+    //     contentStateWithAppliedEntities.createEntity("ARC", "MUTABLE", {
+    //       arcIds: newArcIds,
+    //     });
+    //   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
 
-    return new IpsumEntityTransformer(contentStateWithAppliedEntities);
+    //   contentStateWithAppliedEntities = Modifier.applyEntity(
+    //     contentStateWithEntity,
+    //     entityRangeSelState,
+    //     entityKey
+    //   );
+    // });
+
+    // return new IpsumEntityTransformer(contentStateWithAppliedEntities);
   };
 
   removeArc = (arcId: string): IpsumEntityTransformer => {

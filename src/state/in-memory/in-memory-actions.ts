@@ -56,6 +56,7 @@ const dispatchers = {
       parseContentState(payload.contentState)
     ).getAppliedArcs();
 
+    // We should handle parsing assignments from the content state at the API level.
     const arcAssignmentsToDelete = Object.values(state.arcAssignments).filter(
       (assgn) =>
         assgn.entryKey === payload.entryKey &&
