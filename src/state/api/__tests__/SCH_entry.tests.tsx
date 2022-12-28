@@ -1,18 +1,16 @@
-import { render } from "@testing-library/react";
-import { DateTime } from "luxon";
 import React from "react";
-import {
-  initialInMemoryState,
-  InMemoryState,
-} from "state/in-memory/in-memory-state";
-import { parseContentState, stringifyContentState } from "util/content-state";
+import { render } from "@testing-library/react";
+import { initializeDefaultInMemoryState } from "state/in-memory/SCH_in-memory-state";
 import { IpsumDateTime } from "util/dates";
-import { IpsumEntityTransformer } from "util/entities";
 import {
   createEditorState,
   moveEditorSelection,
 } from "util/__tests__/editor-utils";
-import { APIDispatcher } from "./api-test-utils";
+import { APIDispatcher } from "./SCH_api-test-utils";
+import { InMemoryState } from "state/in-memory/SCH_in-memory-schema";
+import { IpsumEntityTransformer } from "util/entities";
+import { DateTime } from "luxon";
+import { parseContentState, stringifyContentState } from "util/content-state";
 
 describe("Entry API", () => {
   describe("createOrUpdateEntry", () => {
@@ -22,34 +20,33 @@ describe("Entry API", () => {
       const date = IpsumDateTime.fromString("8/9/1998", "entry-printed-date");
       const { unmount } = render(
         <APIDispatcher
-          beforeState={initialInMemoryState}
+          beforeState={initializeDefaultInMemoryState()}
           calls={[
-            () => ({
-              name: "createOrUpdateEntry",
-              actParams: {
-                entryKey: "8/9/1998",
-                date,
-                contentState: stringifyContentState(
-                  editorState.getCurrentContent()
-                ),
-              },
-            }),
+            () => {
+              return {
+                name: "createOrUpdateEntry",
+                actParams: {
+                  entryKey: "8/9/1998",
+                  date,
+                  contentState: editorState.getCurrentContent(),
+                },
+              };
+            },
           ]}
           onStateChange={newStateFn}
         ></APIDispatcher>
       );
 
-      const updatedState: InMemoryState =
-        newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
+      const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
 
-      expect(Object.values(updatedState.entries).length).toEqual(1);
-      expect(Object.values(updatedState.entries)[0].entryKey).toEqual(
-        "8/9/1998"
+      expect(Object.values(updatedState.entry).length).toEqual(1);
+      expect(Object.values(updatedState.entry)[0].entryKey).toEqual("8/9/1998");
+      expect(Object.values(updatedState.entry)[0].date).toEqual(
+        date.dateTime.toISO()
       );
-      expect(Object.values(updatedState.entries)[0].date).toEqual(date);
       expect(
         parseContentState(
-          Object.values(updatedState.entries)[0].contentState
+          Object.values(updatedState.entry)[0].contentState
         ).getPlainText()
       ).toEqual("Hello World!");
 
@@ -76,8 +73,8 @@ describe("Entry API", () => {
       const { unmount } = render(
         <APIDispatcher
           beforeState={{
-            ...initialInMemoryState,
-            arcs: {
+            ...initializeDefaultInMemoryState(),
+            arc: {
               arc_hello: {
                 color: 0,
                 id: "arc_hello",
@@ -89,14 +86,14 @@ describe("Entry API", () => {
                 name: "world",
               },
             },
-            entries: {
+            entry: {
               entry_key_1: {
                 contentState: stringifyContentState(contentStateWithHelloWorld),
-                date: new IpsumDateTime(DateTime.now()),
+                date: new IpsumDateTime(DateTime.now()).dateTime.toISO(),
                 entryKey: "entry_key_1",
               },
             },
-            arcAssignments: {
+            arc_assignment: {
               assgn_hello: {
                 id: "assgn_hello",
                 arcId: "arc_hello",
@@ -110,24 +107,25 @@ describe("Entry API", () => {
             },
           }}
           calls={[
-            () => ({
-              name: "createOrUpdateEntry",
-              actParams: {
-                entryKey: "entry_key_1",
-                date,
-                contentState: stringifyContentState(contentStateWithHello),
-              },
-            }),
+            (state) => {
+              return {
+                name: "createOrUpdateEntry",
+                actParams: {
+                  entryKey: "entry_key_1",
+                  date,
+                  contentState: contentStateWithHello,
+                },
+              };
+            },
           ]}
           onStateChange={newStateFn}
         ></APIDispatcher>
       );
 
-      const updatedState: InMemoryState =
-        newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
+      const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
 
-      expect(Object.values(updatedState.arcAssignments).length).toEqual(1);
-      expect(Object.values(updatedState.arcAssignments)[0].arcId).toEqual(
+      expect(Object.values(updatedState.arc_assignment).length).toEqual(1);
+      expect(Object.values(updatedState.arc_assignment)[0].arcId).toEqual(
         "arc_hello"
       );
 
@@ -142,31 +140,34 @@ describe("Entry API", () => {
       const { unmount } = render(
         <APIDispatcher
           beforeState={{
-            ...initialInMemoryState,
-            entries: {
+            ...initializeDefaultInMemoryState(),
+            entry: {
               entry_key_1: {
                 entryKey: "entry_key_1",
                 contentState: stringifyContentState(
                   editorState.getCurrentContent()
                 ),
-                date: new IpsumDateTime(DateTime.now()),
+                date: new IpsumDateTime(DateTime.now()).dateTime.toISO(),
               },
             },
           }}
           calls={[
-            () => ({
-              name: "deleteEntry",
-              actParams: { entryKey: "entry_key_1" },
-            }),
+            (state) => {
+              return {
+                name: "deleteEntry",
+                actParams: {
+                  entryKey: "entry_key_1",
+                },
+              };
+            },
           ]}
           onStateChange={newStateFn}
         ></APIDispatcher>
       );
 
-      const updatedState: InMemoryState =
-        newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
+      const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
 
-      expect(Object.values(updatedState.entries).length).toEqual(0);
+      expect(Object.values(updatedState.entry).length).toEqual(0);
 
       unmount();
     });
@@ -177,24 +178,24 @@ describe("Entry API", () => {
       const { unmount } = render(
         <APIDispatcher
           beforeState={{
-            ...initialInMemoryState,
-            entries: {
+            ...initializeDefaultInMemoryState(),
+            entry: {
               entry_key_1: {
                 entryKey: "entry_key_1",
                 contentState: stringifyContentState(
                   editorState.getCurrentContent()
                 ),
-                date: new IpsumDateTime(DateTime.now()),
+                date: new IpsumDateTime(DateTime.now()).dateTime.toISO(),
               },
             },
-            arcs: {
+            arc: {
               arc_1: {
                 color: 0,
                 id: "arc_1",
                 name: "arc one",
               },
             },
-            arcAssignments: {
+            arc_assignment: {
               assgn_1: {
                 id: "assgn_1",
                 entryKey: "entry_key_1",
@@ -208,20 +209,23 @@ describe("Entry API", () => {
             },
           }}
           calls={[
-            () => ({
-              name: "deleteEntry",
-              actParams: { entryKey: "entry_key_1" },
-            }),
+            (state) => {
+              return {
+                name: "deleteEntry",
+                actParams: {
+                  entryKey: "entry_key_1",
+                },
+              };
+            },
           ]}
           onStateChange={newStateFn}
         ></APIDispatcher>
       );
 
-      const updatedState: InMemoryState =
-        newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
+      const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
 
-      expect(Object.values(updatedState.arcAssignments).length).toEqual(1);
-      expect(Object.values(updatedState.arcAssignments)[0].entryKey).toEqual(
+      expect(Object.values(updatedState.arc_assignment).length).toEqual(1);
+      expect(Object.values(updatedState.arc_assignment)[0].entryKey).toEqual(
         "another_entry"
       );
 

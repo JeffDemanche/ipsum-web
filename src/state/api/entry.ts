@@ -14,24 +14,52 @@ export const apiCreateOrUpdateEntry = (
   context: APIContext
 ) => {
   // TODO self-heal make sure ContentState -> correct arc assignments for this entry.
-  context.dispatch({
-    type: "CREATE-OR-UPDATE-ENTRY",
-    payload: {
-      entryKey,
-      date,
-      contentState,
+  // const updatedTextArcAssignmentIds = new IpsumEntityTransformer(
+  //   parseContentState(contentState)
+  // ).getAppliedTextArcAssignments();
+
+  return [
+    // (context: APIContext) => {
+    //   updatedTextArcAssignmentIds.forEach((taa) => {
+    //     // If a textArcAssignment in the content state doesn't exist in state, add
+    //     // it.
+    //     if (
+    //       !Object.values(context.state.arcAssignments).find(
+    //         (assgn) =>
+    //           assgn.entryKey === entryKey &&
+    //           assgn.id === taa.arcAssignmentId &&
+    //           assgn.arcId === taa.arcId
+    //       )
+    //     ) {
+    //       ///
+    //     }
+    //   });
+    // },
+    (context: APIContext, previousReturn: any) => {
+      context.dispatch({
+        type: "CREATE-OR-UPDATE-ENTRY",
+        payload: {
+          entryKey,
+          date,
+          contentState,
+        },
+      });
     },
-  });
+  ];
 };
 
 export const apiDeleteEntry = (
   { entryKey }: { entryKey: string },
   context: APIContext
 ) => {
-  context.dispatch({
-    type: "DELETE-ENTRY",
-    payload: {
-      entryKey,
+  return [
+    (context: APIContext, previousReturn: any) => {
+      context.dispatch({
+        type: "DELETE-ENTRY",
+        payload: {
+          entryKey,
+        },
+      });
     },
-  });
+  ];
 };

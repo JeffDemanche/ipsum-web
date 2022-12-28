@@ -5,6 +5,35 @@ export const serializeState = (state: InMemoryState) => JSON.stringify(state);
 export const deserializeState = (stringData: string) =>
   JSON.parse(stringData, stateReviver) as InMemoryState;
 
+export const writeToFile = async (
+  content: string,
+  options: SaveFilePickerOptions
+): Promise<void> => {
+  if (window.electronAPI) {
+    await window.electronAPI.saveFile(content);
+  } else {
+    const newHandle = await window.showSaveFilePicker(options);
+    const writableStream = await newHandle.createWritable();
+    await writableStream.write(content);
+    await writableStream.close();
+  }
+};
+
+export const readFromFile = async (
+  options: OpenFilePickerOptions
+): Promise<string> => {
+  if (window.electronAPI) {
+    return await window.electronAPI.openFile();
+  } else {
+    const [fileHandle] = await window.showOpenFilePicker(options);
+
+    if (fileHandle.kind === "file") {
+      const file = await fileHandle.getFile();
+      return await file.text();
+    }
+  }
+};
+
 /**
  * Shows save dialog if the electron API is present or downloads the project
  * through the browser if not.

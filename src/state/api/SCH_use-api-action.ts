@@ -5,23 +5,30 @@
  * functions between it and the UI.
  */
 
-import { useContext, useEffect, useState } from "react";
-import { InMemoryAction } from "state/in-memory/in-memory-actions";
-import { InMemoryState } from "state/in-memory/in-memory-state";
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
+import { useCallback, useContext, useState } from "react";
+import { InMemoryAction } from "state/in-memory/SCH_in-memory-actions";
+import { InMemoryStateContext } from "state/in-memory/SCH_in-memory-context";
+import { InMemoryState } from "state/in-memory/SCH_in-memory-schema";
 import {
   apiAssignArc,
   apiCreateAndAssignArc,
   apiUnassignArc,
   apiUpdateArc,
-} from "./arc";
-import { apiCreateOrUpdateEntry, apiDeleteEntry } from "./entry";
-import { apiUpdateJournalTitle } from "./journalTitle";
+} from "./SCH_arc";
+import { apiCreateOrUpdateEntry, apiDeleteEntry } from "./SCH_entry";
+import { apiUpdateJournalTitle } from "./SCH_journalTitle";
 
 export interface APIContext {
   state: InMemoryState;
-  dispatch: React.Dispatch<InMemoryAction>;
+  optimisticStateDispatch: (
+    state: InMemoryState,
+    action: InMemoryAction
+  ) => APIContext;
   reloadEditor: () => void;
+}
+
+export interface APIReturn {
+  state: InMemoryState;
 }
 
 const APIFunctions = {
@@ -57,30 +64,24 @@ export const useApiAction = <T extends APIFunctionName>(
   apiCall: UseApiActionArgs<T>,
   skip?: boolean
 ): UseApiActionResult<T> => {
-  const { state, dispatch, reloadEditor } = useContext(InMemoryStateContext);
+  const { state, dispatch, optimisticDispatch, reloadEditor } =
+    useContext(InMemoryStateContext);
 
   const [isLoadingPromise, setIsLoadingPromise] = useState(false);
   const [data, setData] = useState<ReturnType<typeof APIFunctions[T]>>();
   const [error, setError] = useState<Error>();
 
-  const [remainingDispatchers, setRemainingDispatchers] = useState<
-    ((context: APIContext, previousReturn: any) => unknown)[]
-  >([]);
-  const [lastReturn, setLastReturn] = useState<any>(undefined);
-
-  useEffect(() => {
-    if (remainingDispatchers.length > 0) {
-      setLastReturn(
-        remainingDispatchers[0]({ state, dispatch, reloadEditor }, lastReturn)
-      );
-      const poppedActions = [...remainingDispatchers];
-      poppedActions.shift();
-      setRemainingDispatchers(poppedActions);
-    } else {
-      setData(lastReturn);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [remainingDispatchers]);
+  const optimisticStateDispatch = useCallback(
+    (state: InMemoryState, action: InMemoryAction): APIContext => {
+      const newState = optimisticDispatch(state, action);
+      return {
+        state: newState,
+        optimisticStateDispatch,
+        reloadEditor,
+      };
+    },
+    [optimisticDispatch, reloadEditor]
+  );
 
   if (skip) {
     return {
@@ -100,15 +101,20 @@ export const useApiAction = <T extends APIFunctionName>(
     error,
     act: (params) => {
       try {
-        const fn = APIFunctions[apiCall.name];
-        setRemainingDispatchers(
-          // @ts-ignore sue me
-          fn(params, {
-            dispatch,
-            state,
-            reloadEditor,
-          }) as ReturnType<typeof APIFunctions[T]>
-        );
+        // @ts-ignore
+        const data = APIFunctions[apiCall.name](params, {
+          state,
+          dispatch,
+          optimisticStateDispatch,
+          reloadEditor,
+        });
+        if (data) {
+          dispatch({
+            type: "OVERWRITE",
+            payload: { newState: data.state },
+          });
+        }
+        // setData(data);
       } catch (err) {
         console.error(err);
         setError(err);

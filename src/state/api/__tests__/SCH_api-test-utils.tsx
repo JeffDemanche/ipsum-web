@@ -1,13 +1,24 @@
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
-import React, { useContext, useMemo, useReducer, useState } from "react";
-import { useEffect } from "react";
-import { InMemoryState, reducer } from "state/in-memory/in-memory-state";
-import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useReducer } from "react";
+import { InMemoryAction } from "state/in-memory/SCH_in-memory-actions";
+import {
+  InMemoryStateContext,
+  reducer,
+} from "state/in-memory/SCH_in-memory-context";
+import { InMemoryState } from "state/in-memory/SCH_in-memory-schema";
+import { MockInMemoryStateProvider } from "state/in-memory/__tests__/SCH_MockInMemoryStateProvider";
 import {
   APIFunctionActParams,
   APIFunctionName,
   useApiAction,
-} from "../use-api-action";
+} from "../SCH_use-api-action";
+import { APIContext } from "../SCH_use-api-action";
 
 /**
  * A component that will dispatch API calls for unit testing.
@@ -34,14 +45,23 @@ export const APIDispatcher = <T extends APIFunctionName>({
 }) => {
   const [state, dispatch] = useReducer(reducer, beforeState);
 
+  const optimisticDispatch = useCallback(
+    (state: InMemoryState, action: InMemoryAction) => {
+      return reducer(state, action);
+    },
+    []
+  );
+
   return (
     <MockInMemoryStateProvider
       state={state}
       dispatch={dispatch}
+      optimisticDispatch={optimisticDispatch}
       reloadEditor={() => {}}
     >
       <APIDispatcherWithState
         calls={calls}
+        state={state}
         onStateChange={onStateChange}
         onData={onData}
       ></APIDispatcherWithState>
@@ -51,6 +71,7 @@ export const APIDispatcher = <T extends APIFunctionName>({
 
 const APIDispatcherWithState = <T extends APIFunctionName>({
   calls,
+  state,
   onStateChange,
   onData,
   onError,
@@ -59,35 +80,30 @@ const APIDispatcherWithState = <T extends APIFunctionName>({
     name: T;
     actParams: APIFunctionActParams<T>;
   })[];
+  state: InMemoryState;
   onStateChange?: (state: InMemoryState) => void;
   onData?: (data: ReturnType<typeof useApiAction>["data"]) => void;
   onError?: (data: ReturnType<typeof useApiAction>["error"]) => void;
 }) => {
   const [remainingActions, setRemainingActions] = useState(calls);
 
-  const { state } = useContext(InMemoryStateContext);
-
-  const currentAction = useMemo(
-    () => remainingActions[0]?.(state),
-    [remainingActions, state]
-  );
+  const currentAction = useMemo(() => remainingActions[0], [remainingActions]);
 
   const { data, loading, error, act } = useApiAction(
     {
-      name: currentAction?.name,
+      name: currentAction?.(state).name,
     },
     !currentAction
   );
 
   useEffect(() => {
     if (currentAction) {
-      act(currentAction.actParams);
+      act(currentAction?.(state).actParams);
       const poppedActions = [...remainingActions];
       poppedActions.shift();
       setRemainingActions(poppedActions);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [act, currentAction, remainingActions]);
+  }, [act, currentAction, remainingActions, state]);
 
   useEffect(() => {
     onStateChange?.(state);

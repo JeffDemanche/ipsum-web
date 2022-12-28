@@ -4,6 +4,7 @@
  */
 
 import { ContentState, Modifier, SelectionState } from "draft-js";
+import _ from "underscore";
 import { setEquals } from "./set";
 
 interface CharacterMetadata {
@@ -13,14 +14,22 @@ interface CharacterMetadata {
   entityId: string;
 }
 
+type EntityField = "arcIds" | "textArcAssignments" | "commentIds";
+
+type EntityFieldDataType<T extends EntityField> = T extends "arcIds"
+  ? string
+  : T extends "textArcAssignments"
+  ? { arcId: string; arcAssignmentId: string }
+  : string;
+
 /**
- * This should be a map of string arrays. Adding non-array fields will break
+ * This should be a map of arrays. Adding non-array fields will break
  * `applyEntityData` and possibly other methods.
  */
 export interface IpsumEntityData {
-  arcIds?: string[];
-  arcAssignmentIds?: string[];
-  commentIds?: string[];
+  arcIds?: EntityFieldDataType<"arcIds">[];
+  textArcAssignments?: EntityFieldDataType<"textArcAssignments">[];
+  commentIds?: EntityFieldDataType<"commentIds">[];
 }
 
 export class IpsumEntityTransformer {
@@ -115,9 +124,9 @@ export class IpsumEntityTransformer {
 
     return (
       fieldEquality(entityData1?.arcIds, entityData2?.arcIds) &&
-      fieldEquality(
-        entityData1?.arcAssignmentIds,
-        entityData2?.arcAssignmentIds
+      _.isEqual(
+        entityData1?.textArcAssignments,
+        entityData2?.textArcAssignments
       ) &&
       fieldEquality(entityData1?.commentIds, entityData2?.commentIds)
     );
@@ -216,9 +225,10 @@ export class IpsumEntityTransformer {
    * the subfields will be added as entities to the selected text if they aren't
    * already present.
    */
-  applyEntityData = (
+  applyEntityData = <T extends EntityField>(
     selectionState: SelectionState,
-    data: Partial<IpsumEntityData>
+    type: T,
+    data: EntityFieldDataType<T>
   ) => {
     if (selectionState.isEmpty()) return this;
 
@@ -236,25 +246,25 @@ export class IpsumEntityTransformer {
     let contentStateWithAppliedEntities: ContentState = this.contentState;
     newEntityRanges.forEach(({ entityRangeSelState, entityData }) => {
       // Copy of existing entity data for range.
-      const newEntityData = { ...entityData };
+      const newEntityData = { ...entityData } as IpsumEntityData;
 
-      // Loop through each array subfield of IpsumEntityData and append the
-      // corresponding subfield of the data provided to apply.
-      ["arcIds", "arcAssignmentIds", "commentIds"].forEach((d) => {
-        const dataType = d as keyof IpsumEntityData;
-        const existingValueSet = new Set(entityData?.[dataType]);
-        const newValueArray = [...(Array.from(existingValueSet) ?? [])];
-        const dataOfTypeToAdd = data?.[dataType] ?? [];
+      const existingValueArray: IpsumEntityData[T] = entityData?.[type] ?? [];
+      const newValueArray = [...existingValueArray] as EntityFieldDataType<T>[];
 
-        dataOfTypeToAdd.forEach((newData) => {
-          if (!existingValueSet.has(newData)) newValueArray.push(newData);
-        });
+      if (
+        Array.isArray(existingValueArray) &&
+        !(existingValueArray as unknown[]).find((value) =>
+          _.isEqual(value, data)
+        )
+      ) {
+        newValueArray.push(data);
+      }
 
-        // Subfields should be undefined rather than an empty array by
-        // convention.
-        if (newValueArray.length > 0) newEntityData[dataType] = newValueArray;
-        else delete newEntityData[dataType];
-      });
+      // Subfields should be undefined rather than an empty array by
+      // convention.
+      if (newValueArray.length > 0)
+        (newEntityData[type] as EntityFieldDataType<T>[]) = newValueArray;
+      else delete newEntityData[type];
 
       // Only add an entity if the entity data has changed.
       if (!this.entityDataEquals(entityData, newEntityData)) {
@@ -278,75 +288,42 @@ export class IpsumEntityTransformer {
     return new IpsumEntityTransformer(contentStateWithAppliedEntities);
   };
 
+  removeEntityData = <T extends EntityField>(
+    type: T,
+    data: EntityFieldDataType<T>
+  ) => {
+    const entityKeys = this.contentState.getAllEntities().keySeq().toArray();
+
+    const newContentState = entityKeys.reduce((acc, cur) => {
+      const currentEntityData: IpsumEntityData = {
+        ...this.contentState.getEntity(cur).getData(),
+      };
+
+      const newFieldData = (
+        currentEntityData[type] as EntityFieldDataType<T>[]
+      ).filter((existingData) => !_.isEqual(data, existingData));
+
+      return acc.mergeEntityData(cur, { [type]: newFieldData });
+    }, this.contentState);
+
+    return new IpsumEntityTransformer(newContentState).removeEmptyEntities();
+  };
+
   /**
-   * Creates a new DraftJS `ContentState` where the given `arcId` has been
-   * appended to entity data for the range specified by `selectionState`.
-   * DraftJS doesn't support multiple entities per character on a
-   * `ContentState`. To get around that limitation, a new entity is created for
-   * each span of text for which the set of arcs in that span are equal.
-   *
-   * @returns A new transformer, with a new `ContentState` in which the entities
-   * have been updated with the arc ID.
+   * @deprecated Use `applyEntityData`
    */
   applyArc = (
     selectionState: SelectionState,
     arcId: string
   ): IpsumEntityTransformer => {
-    return this.applyEntityData(selectionState, { arcIds: [arcId] });
-
-    // if (selectionState.isEmpty()) return this;
-
-    // // 1. Get an array that contains data on every character in the
-    // //    SelectionState.
-    // const selectedCharacters = this.getCharacters(selectionState);
-
-    // // 2. Iterate through the characters, building an array for which every
-    // //    entry contains a SelectionState range for an entity we will create,
-    // //    and an array of the arc IDs which already exist for it.
-    // const newEntityRanges = this.getEntityRanges(selectedCharacters);
-
-    // // 3. Loop through the array of text ranges... for each, create and assign a
-    // //    new DraftJS entity which includes the new arc ID as well as existing
-    // //    ones.
-    // let contentStateWithAppliedEntities: ContentState = this.contentState;
-    // newEntityRanges.forEach(({ entityRangeSelState, entityData }) => {
-    //   const existingArcIds = new Set(entityData?.arcIds as string[]);
-
-    //   const newArcIds = [...(Array.from(existingArcIds) ?? [])];
-    //   if (!existingArcIds.has(arcId)) newArcIds.push(arcId);
-
-    //   const contentStateWithEntity =
-    //     contentStateWithAppliedEntities.createEntity("ARC", "MUTABLE", {
-    //       arcIds: newArcIds,
-    //     });
-    //   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-
-    //   contentStateWithAppliedEntities = Modifier.applyEntity(
-    //     contentStateWithEntity,
-    //     entityRangeSelState,
-    //     entityKey
-    //   );
-    // });
-
-    // return new IpsumEntityTransformer(contentStateWithAppliedEntities);
+    return this.applyEntityData(selectionState, "arcIds", arcId);
   };
 
+  /**
+   * @deprecated Use `removeEntityData`
+   */
   removeArc = (arcId: string): IpsumEntityTransformer => {
-    const entityKeys = this.contentState.getAllEntities().keySeq().toArray();
-
-    const newContentState = entityKeys.reduce((acc, cur) => {
-      const currentEntityData = {
-        ...this.contentState.getEntity(cur).getData(),
-      };
-
-      const newArcIds = (currentEntityData.arcIds as string[]).filter(
-        (id) => id !== arcId
-      );
-
-      return acc.mergeEntityData(cur, { arcIds: newArcIds });
-    }, this.contentState);
-
-    return new IpsumEntityTransformer(newContentState).removeEmptyEntities();
+    return this.removeEntityData("arcIds", arcId);
   };
 
   /**
@@ -385,5 +362,16 @@ export class IpsumEntityTransformer {
       entityRange.entityData?.arcIds?.forEach((arcId) => arcIds.add(arcId));
     });
     return Array.from(arcIds);
+  };
+
+  getAppliedTextArcAssignments = () => {
+    const allCharacters = this.getCharacters();
+    const textArcAssignments: EntityFieldDataType<"textArcAssignments">[] = [];
+    this.getEntityRanges(allCharacters).forEach((entityRange) => {
+      entityRange.entityData?.textArcAssignments.forEach((taa) =>
+        textArcAssignments.push(taa)
+      );
+    });
+    return textArcAssignments;
   };
 }

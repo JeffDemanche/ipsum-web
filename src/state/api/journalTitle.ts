@@ -4,5 +4,9 @@ export const apiUpdateJournalTitle = (
   { title }: { title: string },
   context: APIContext
 ) => {
-  context.dispatch({ type: "UPDATE-JOURNAL-TITLE", payload: { title } });
+  return [
+    (context: APIContext, previousReturn: any) => {
+      context.dispatch({ type: "UPDATE-JOURNAL-TITLE", payload: { title } });
+    },
+  ];
 };

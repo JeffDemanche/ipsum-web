@@ -211,32 +211,28 @@ describe("entities", () => {
   });
 
   describe("applyEntityData", () => {
-    it("does nothing when empty object is supplied", () => {
+    it("can apply two textArcAssignment to a selection with no existing entities", () => {
       const initialEditor = createEditorStateFromFormat("he[ll]o world!");
       const transformer = new IpsumEntityTransformer(
         initialEditor.getCurrentContent()
       );
-      const newContent = transformer.applyEntityData(
+      const transformWithOneEntity = transformer.applyEntityData(
         initialEditor.getSelection(),
-        {}
-      ).contentState;
-
-      expect(initialEditor.getCurrentContent()).toEqual(newContent);
-    });
-
-    it("can apply two arcAssignments to a selection with not existing entities", () => {
-      const initialEditor = createEditorStateFromFormat("he[ll]o world!");
-      const transformer = new IpsumEntityTransformer(
-        initialEditor.getCurrentContent()
+        "textArcAssignments",
+        { arcAssignmentId: "new assignment 1", arcId: "arc" }
       );
-      const newContent = transformer.applyEntityData(
+      const newContent = transformWithOneEntity.applyEntityData(
         initialEditor.getSelection(),
-        { arcAssignmentIds: ["new assignment 1", "new assignment 2"] }
+        "textArcAssignments",
+        { arcAssignmentId: "new assignment 2", arcId: "arc" }
       ).contentState;
 
       const entity = newContent.getLastCreatedEntityKey();
       expect(newContent.getEntity(entity).getData()).toEqual({
-        arcAssignmentIds: ["new assignment 1", "new assignment 2"],
+        textArcAssignments: [
+          { arcAssignmentId: "new assignment 1", arcId: "arc" },
+          { arcAssignmentId: "new assignment 2", arcId: "arc" },
+        ],
       });
       expect(newContent.getBlocksAsArray()[0].getEntityAt(1)).toBe(null);
       expect(newContent.getBlocksAsArray()[0].getEntityAt(2)).toBe(entity);
@@ -249,27 +245,35 @@ describe("entities", () => {
       const transformer = new IpsumEntityTransformer(
         initialEditor.getCurrentContent()
       );
-      const transformerWithTwoAssgns = transformer.applyEntityData(
+      let transformerWithTwoAssgns = transformer.applyEntityData(
         initialEditor.getSelection(),
-        { arcAssignmentIds: ["new assignment 1", "new assignment 2"] }
+        "textArcAssignments",
+        { arcAssignmentId: "new assignment 1", arcId: "arc" }
+      );
+      transformerWithTwoAssgns = transformer.applyEntityData(
+        initialEditor.getSelection(),
+        "textArcAssignments",
+        { arcAssignmentId: "new assignment 2", arcId: "arc" }
       );
 
       const newContent = transformerWithTwoAssgns.applyEntityData(
         initialEditor.getSelection(),
-        { arcAssignmentIds: ["new assignment 2"] }
+        "textArcAssignments",
+        { arcAssignmentId: "new assignment 2", arcId: "arc" }
       ).contentState;
 
       expect(transformerWithTwoAssgns.contentState).toEqual(newContent);
     });
 
-    it("applies correct entities for arcAssignment and comment which partially overlap", () => {
+    it("applies correct entities for textArcAssignment and comment which partially overlap", () => {
       const initialEditor = createEditorStateFromFormat("he[ll]o world!");
       const transformer = new IpsumEntityTransformer(
         initialEditor.getCurrentContent()
       );
       const transformerWithArcAssignment = transformer.applyEntityData(
         initialEditor.getSelection(),
-        { arcAssignmentIds: ["new assignment 1"] }
+        "textArcAssignments",
+        { arcAssignmentId: "new assignment 1", arcId: "arc id" }
       );
       const editorNewSelection = moveEditorSelectionFromFormat(
         initialEditor,
@@ -278,7 +282,8 @@ describe("entities", () => {
       const transformerWithComment =
         transformerWithArcAssignment.applyEntityData(
           editorNewSelection.getSelection(),
-          { commentIds: ["new comment 1"] }
+          "commentIds",
+          "new comment 1"
         );
 
       const editorAllSelected = moveEditorSelectionFromFormat(
@@ -295,14 +300,71 @@ describe("entities", () => {
 
       expect(entityData(1)).toBe(null);
       expect(entityData(2)).toEqual({
-        arcAssignmentIds: ["new assignment 1"],
+        textArcAssignments: [
+          { arcAssignmentId: "new assignment 1", arcId: "arc id" },
+        ],
       });
       expect(entityData(3)).toEqual({
-        arcAssignmentIds: ["new assignment 1"],
+        textArcAssignments: [
+          { arcAssignmentId: "new assignment 1", arcId: "arc id" },
+        ],
         commentIds: ["new comment 1"],
       });
       expect(entityData(4)).toEqual({
         commentIds: ["new comment 1"],
+      });
+      expect(entityData(5)).toBe(null);
+    });
+
+    it("applies correct entities for textArcAssignments which partially overlap", () => {
+      const initialEditor = createEditorStateFromFormat("he[ll]o world!");
+      const transformer = new IpsumEntityTransformer(
+        initialEditor.getCurrentContent()
+      );
+      const transformerWithArcAssignment = transformer.applyEntityData(
+        initialEditor.getSelection(),
+        "textArcAssignments",
+        { arcAssignmentId: "new assignment 1", arcId: "arc id" }
+      );
+      const editorNewSelection = moveEditorSelectionFromFormat(
+        initialEditor,
+        "hel[lo] world!"
+      );
+      const transformerWithTwoArcAssignments =
+        transformerWithArcAssignment.applyEntityData(
+          editorNewSelection.getSelection(),
+          "textArcAssignments",
+          { arcAssignmentId: "new assignment 2", arcId: "arc 2 id" }
+        );
+
+      const editorAllSelected = moveEditorSelectionFromFormat(
+        initialEditor,
+        "[hello world!]"
+      );
+
+      const entityData = (n: number) =>
+        entityDataForChar(
+          n,
+          transformerWithTwoArcAssignments,
+          editorAllSelected.getSelection()
+        );
+
+      expect(entityData(1)).toBe(null);
+      expect(entityData(2)).toEqual({
+        textArcAssignments: [
+          { arcAssignmentId: "new assignment 1", arcId: "arc id" },
+        ],
+      });
+      expect(entityData(3)).toEqual({
+        textArcAssignments: [
+          { arcAssignmentId: "new assignment 1", arcId: "arc id" },
+          { arcAssignmentId: "new assignment 2", arcId: "arc 2 id" },
+        ],
+      });
+      expect(entityData(4)).toEqual({
+        textArcAssignments: [
+          { arcAssignmentId: "new assignment 2", arcId: "arc 2 id" },
+        ],
       });
       expect(entityData(5)).toBe(null);
     });

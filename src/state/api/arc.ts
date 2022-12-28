@@ -18,31 +18,30 @@ export const apiCreateAndAssignArc = (
   }
 
   const arcId = uuidv4();
-  const assignmentId = uuidv4();
   const color = nextHue(context.state.journalMetadata?.lastArcHue ?? 0);
 
-  context.dispatch({
-    type: "CREATE-ARC",
-    payload: { id: arcId, name, color },
-  });
-  if (entryKey) {
-    context.dispatch({
-      type: "ASSIGN-ARC",
-      payload: {
-        assignmentId,
-        arcId,
-        entryKey,
-        selectionState,
-      },
-    });
-  }
-  context.dispatch({
-    type: "UPDATE-JOURNAL-METADATA",
-    payload: { journalMetadata: { lastArcHue: color } },
-  });
-  if (entryKey) {
-    context.reloadEditor();
-  }
+  return [
+    (context: APIContext, previousReturn: any) => {
+      context.dispatch({
+        type: "CREATE-ARC",
+        payload: { id: arcId, name, color },
+      });
+    },
+    (context: APIContext, previousReturn: any) => {
+      if (entryKey) {
+        apiAssignArc({ arcId, entryKey, selectionState }, context);
+      }
+    },
+    (context: APIContext, previousReturn: any) => {
+      context.dispatch({
+        type: "UPDATE-JOURNAL-METADATA",
+        payload: { journalMetadata: { lastArcHue: color } },
+      });
+      if (entryKey) {
+        context.reloadEditor();
+      }
+    },
+  ];
 };
 
 export const apiAssignArc = (
@@ -61,16 +60,32 @@ export const apiAssignArc = (
 
   const assignmentId = uuidv4();
 
-  context.dispatch({
-    type: "ASSIGN-ARC",
-    payload: {
-      assignmentId,
-      arcId,
-      entryKey,
-      selectionState,
+  const existingArcAssignment = Object.values(
+    context.state.arcAssignments
+  ).find((a) => a.arcId === arcId && a.entryKey === entryKey);
+
+  return [
+    (context: APIContext, previousReturn: any) => {
+      if (!existingArcAssignment) {
+        context.dispatch({
+          type: "CREATE-ARC-ASSIGNMENT",
+          payload: { id: assignmentId, entryKey, arcId },
+        });
+      }
     },
-  });
-  context.reloadEditor();
+    (context: APIContext, previousReturn: any) => {
+      context.dispatch({
+        type: "ASSIGN-ARC",
+        payload: {
+          assignmentId: existingArcAssignment?.id ?? assignmentId,
+          arcId,
+          entryKey,
+          selectionState,
+        },
+      });
+      context.reloadEditor();
+    },
+  ];
 };
 
 export const apiUnassignArc = (
@@ -83,8 +98,12 @@ export const apiUnassignArc = (
   if (!Object.keys(context.state.entries).includes(entryKey))
     throw new Error("unassignArc: entry not found");
 
-  context.dispatch({ type: "UNASSIGN-ARC", payload: { arcId, entryKey } });
-  context.reloadEditor();
+  return [
+    (context: APIContext, previousReturn: any) => {
+      context.dispatch({ type: "UNASSIGN-ARC", payload: { arcId, entryKey } });
+      context.reloadEditor();
+    },
+  ];
 };
 
 export const apiUpdateArc = (
@@ -94,5 +113,9 @@ export const apiUpdateArc = (
   if (!Object.keys(context.state.arcs).includes(arcId))
     throw new Error("updateArc: arc not found");
 
-  context.dispatch({ type: "UPDATE-ARC", payload: { arcId, color } });
+  return [
+    (context: APIContext, previousReturn: any) => {
+      context.dispatch({ type: "UPDATE-ARC", payload: { arcId, color } });
+    },
+  ];
 };
