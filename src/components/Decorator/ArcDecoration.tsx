@@ -1,12 +1,13 @@
 import React, { useContext, useMemo, useRef } from "react";
 import styles from "./ArcDecoration.less";
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import { ContentState } from "draft-js";
 import { ArcSelectionContext } from "components/SelectionContext/ArcSelectionContext";
 import { isSubset } from "util/set";
 import { JournalHotkeysContext } from "components/JournalHotkeys/JournalHotkeysContext";
 import { ArcDisambiguator } from "components/ArcDisambiguator/ArcDisambiguator";
 import { IpsumArcColor, IpsumColor, multiplyIpsumArcColors } from "util/colors";
+import { useStateDocumentQuery } from "state/in-memory";
+import { IpsumEntityData } from "util/entities";
 
 // Draft doesn't provide this type, this is inferred from logging the props
 // value.
@@ -26,22 +27,23 @@ interface DecoratorProps {
  * the "ARC" entity applied to it.
  */
 export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
-  const arcIds = props.contentState.getEntity(props.entityKey).getData()
-    .arcIds as string[] | undefined;
+  const entityData = props.contentState
+    .getEntity(props.entityKey)
+    .getData() as IpsumEntityData;
+  const arcIds = useMemo(() => entityData.arcIds ?? [], [entityData.arcIds]);
 
   const { ctrlKey } = useContext(JournalHotkeysContext);
   const { hoveredArcIds, setHoveredArcIds, selectedArcIds, setSelectedArcIds } =
     useContext(ArcSelectionContext);
-  const { state } = useContext(InMemoryStateContext);
+  const { data: arcs } = useStateDocumentQuery({ collection: "arc", keys: [] });
 
-  const entityArcs =
-    arcIds?.map((id) => state.arcs[id]).filter((arc) => !!arc) ?? [];
+  const entityArcs = arcIds?.map((id) => arcs[id]).filter((arc) => !!arc) ?? [];
   const hoveredArcs =
-    hoveredArcIds?.map((id) => state.arcs[id]).filter((arc) => !!arc) ?? [];
+    hoveredArcIds?.map((id) => arcs[id]).filter((arc) => !!arc) ?? [];
   const selectedArcs =
     selectedArcIds
       ?.filter((selectedArcId) => arcIds.includes(selectedArcId))
-      .map((id) => state.arcs[id])
+      .map((id) => arcs[id])
       .filter((arc) => !!arc) ?? [];
 
   const isHovered = useMemo(

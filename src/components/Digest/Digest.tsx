@@ -5,18 +5,19 @@ import { ArcSelectionContext } from "components/SelectionContext/ArcSelectionCon
 import React, { useCallback, useContext, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
-import { useApiAction } from "state/api/use-api-action";
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
+import { useApiAction } from "state/api/SCH_use-api-action";
 import styles from "./Digest.less";
+import { useStateDocumentQuery } from "state/in-memory";
 
 interface DigestProps {
   entryKey: string;
 }
 
 export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
-  const {
-    state: { arcAssignments },
-  } = useContext(InMemoryStateContext);
+  const { data: arcAssignments } = useStateDocumentQuery({
+    collection: "arc_assignment",
+    keys: [],
+  });
   const {
     selectedArcIds,
     hoveredArcIds,

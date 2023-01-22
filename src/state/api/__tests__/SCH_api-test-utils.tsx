@@ -1,16 +1,7 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useReducer } from "react";
 import { InMemoryAction } from "state/in-memory/SCH_in-memory-actions";
-import {
-  InMemoryStateContext,
-  reducer,
-} from "state/in-memory/SCH_in-memory-context";
+import { reducer } from "state/in-memory/SCH_in-memory-context";
 import { InMemoryState } from "state/in-memory/SCH_in-memory-schema";
 import { MockInMemoryStateProvider } from "state/in-memory/__tests__/SCH_MockInMemoryStateProvider";
 import {
@@ -18,7 +9,6 @@ import {
   APIFunctionName,
   useApiAction,
 } from "../SCH_use-api-action";
-import { APIContext } from "../SCH_use-api-action";
 
 /**
  * A component that will dispatch API calls for unit testing.

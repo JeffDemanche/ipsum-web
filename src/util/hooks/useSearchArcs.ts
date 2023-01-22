@@ -1,6 +1,5 @@
-import { useContext } from "react";
+import { useStateDocumentQuery } from "state/in-memory";
 import { InMemoryArc } from "state/in-memory/in-memory-state";
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 
 interface UseSearchArcsParams {
   query: string;
@@ -15,9 +14,7 @@ export const useSearchArcs = ({
   query,
   maxResults = 10,
 }: UseSearchArcsParams): UseSearchArcsReturn => {
-  const {
-    state: { arcs },
-  } = useContext(InMemoryStateContext);
+  const { data: arcs } = useStateDocumentQuery({ collection: "arc", keys: [] });
 
   const allArcs = Object.values(arcs).filter((arc) => {
     return arc.name.toLowerCase().includes(query.toLowerCase());

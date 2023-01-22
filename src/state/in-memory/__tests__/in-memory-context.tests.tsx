@@ -7,8 +7,6 @@ import {
 import {
   initializeDefaultDocument,
   initializeDefaultInMemoryState,
-  useStateDocumentQuery,
-  useStateFieldQuery,
 } from "../SCH_in-memory-state";
 import { IpsumIndexedDBClient } from "util/indexed-db";
 import {
@@ -16,6 +14,8 @@ import {
   InMemoryState,
   TopLevelField,
 } from "../SCH_in-memory-schema";
+import { useStateDocumentQuery } from "../useStateDocumentQuery";
+import { useStateFieldQuery } from "../useStateFieldQuery";
 
 jest.mock("util/indexed-db");
 
@@ -86,6 +86,35 @@ describe("InMemoryContext", () => {
 
   describe("queries", () => {
     describe("collection queries", () => {
+      it("query returns nothing when state isn't defined", () => {
+        const UserComponent: FunctionComponent<{
+          onDataChange: (data: { [k: string]: object }) => void;
+        }> = ({ onDataChange }) => {
+          const { data } = useStateDocumentQuery({
+            collection: "entry",
+            keys: [],
+          });
+
+          useEffect(() => {
+            onDataChange(data);
+          }, [data, onDataChange]);
+
+          return <></>;
+        };
+
+        const onDataChange = jest.fn();
+
+        render(
+          <InMemoryStateProviderWithAutosave
+            idbWrapper={new IpsumIndexedDBClient(null)}
+            stateFromAutosave={undefined}
+          >
+            <UserComponent onDataChange={onDataChange}></UserComponent>
+          </InMemoryStateProviderWithAutosave>
+        );
+        expect(onDataChange.mock.calls).toHaveLength(0);
+      });
+
       it("query for an entry gets updated when the entry is created", () => {
         const StatefulComponent = ({
           children,

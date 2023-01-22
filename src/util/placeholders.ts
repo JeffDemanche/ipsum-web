@@ -6,6 +6,7 @@ export const placeholders = [
   "Know thyself...",
   "Send yourself a message...",
   "What do you need yourself to say?",
+  "Where do you go from here?",
 ];
 
 export const placeholderForDate = (date: IpsumDateTime) => {

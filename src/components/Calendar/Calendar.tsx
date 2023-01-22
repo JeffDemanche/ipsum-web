@@ -1,20 +1,28 @@
-import { Box, Button, Link, Paper, Typography } from "@mui/material";
+import { Button, Link, Paper, Typography } from "@mui/material";
 import { Info, DateTime } from "luxon";
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
-import { getDaysBetween, IpsumDateTime, useDate } from "util/dates";
+import {
+  getDaysBetween,
+  IpsumDateTime,
+  parseIpsumDateTime,
+  useDate,
+} from "util/dates";
 import styles from "./Calendar.less";
 import { CalendarDayTile } from "./CalendarDayTile";
+import { useStateDocumentQuery } from "state/in-memory";
 
 export const Calendar: React.FC = () => {
   const date = useDate(3000);
 
-  const { state } = useContext(InMemoryStateContext);
+  const { data: entries } = useStateDocumentQuery({
+    collection: "entry",
+    keys: [],
+  });
 
   const allEntryDates = useMemo(
-    () => Object.values(state.entries).map((entry) => entry.date),
-    [state]
+    () => Object.values(entries).map((entry) => parseIpsumDateTime(entry.date)),
+    [entries]
   );
 
   const [monthYear, setMonthYear] = useState(

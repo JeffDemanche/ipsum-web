@@ -3,9 +3,8 @@ import cx from "classnames";
 import { Digest } from "components/Digest/Digest";
 import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
-import { useApiAction } from "state/api/use-api-action";
+import { useApiAction } from "state/api/SCH_use-api-action";
 import _ from "underscore";
-import { stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";
 import { placeholderForDate } from "util/placeholders";
 import { EditorWrapper } from "./EditorWrapper";
@@ -32,10 +31,10 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   const { setEntryEditorState, onEditorFocus, onEditorBlur } =
     useContext(SurfaceEditorContext);
 
-  const { act: deleteEntry } = useApiAction<"deleteEntry">({
+  const { act: deleteEntry } = useApiAction({
     name: "deleteEntry",
   });
-  const { act: createOrUpdateEntry } = useApiAction<"createOrUpdateEntry">({
+  const { act: createOrUpdateEntry } = useApiAction({
     name: "createOrUpdateEntry",
   });
 
@@ -47,9 +46,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
         createOrUpdateEntry({
           entryKey,
           date: IpsumDateTime.fromString(entryKey, "entry-printed-date"),
-          contentState: stringifyContentState(
-            newEditorState.getCurrentContent()
-          ),
+          contentState: newEditorState.getCurrentContent(),
         });
       }
     }

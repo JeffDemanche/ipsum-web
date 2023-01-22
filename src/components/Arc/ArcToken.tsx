@@ -1,9 +1,9 @@
-import React, { CSSProperties, useContext, useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import styles from "./ArcToken.less";
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import { Paper, Link, Typography } from "@mui/material";
 import { IpsumArcColor, IpsumColor } from "util/colors";
 import cx from "classnames";
+import { useStateDocumentQuery } from "state/in-memory";
 
 type ArcForToken =
   | { type: "from id"; id: string }
@@ -28,10 +28,10 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
-  const { state } = useContext(InMemoryStateContext);
+  const { data: arcs } = useStateDocumentQuery({ collection: "arc", keys: [] });
 
   const arc: { color: number; name: string } =
-    arcForToken.type === "from id" ? state.arcs[arcForToken.id] : arcForToken;
+    arcForToken.type === "from id" ? arcs[arcForToken.id] : arcForToken;
 
   const [hover, setHover] = useState(false);
 

@@ -3,9 +3,9 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import editorStyes from "./EditorStyles.less";
 import { parseContentState } from "util/content-state";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import cx from "classnames";
 import { decorator } from "components/Decorator/decorator";
+import { useShouldReloadEditor, useStateDocumentQuery } from "state/in-memory";
 
 interface UseJournalEntryEditorArgs {
   entryKey: string;
@@ -37,14 +37,19 @@ const blockStyleFn = (block: ContentBlock) => {
 export const useJournalEntryEditor = ({
   entryKey,
 }: UseJournalEntryEditorArgs): UseJournalEntryEditorResult => {
-  const { state, shouldReloadEditor } = useContext(InMemoryStateContext);
+  const { data: entries } = useStateDocumentQuery({
+    collection: "entry",
+    keys: [],
+  });
+
+  const { shouldReloadEditor } = useShouldReloadEditor();
 
   const contentStateFromState = useMemo(
     () =>
-      state && state.entries[entryKey]
-        ? parseContentState(state.entries[entryKey].contentState)
+      entries[entryKey]
+        ? parseContentState(entries[entryKey].contentState)
         : ContentState.createFromText(""),
-    [state, entryKey]
+    [entries, entryKey]
   );
 
   const {

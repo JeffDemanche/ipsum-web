@@ -12,10 +12,10 @@ import styles from "./ArcAssignmentPopper.less";
 import { useSearchArcs } from "util/hooks/useSearchArcs";
 import { ArcToken } from "components/Arc/ArcToken";
 import { nextHue } from "util/colors";
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
-import { useApiAction } from "state/api/use-api-action";
+import { useApiAction } from "state/api/SCH_use-api-action";
 import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
 import { noop } from "underscore";
+import { useStateFieldQuery } from "state/in-memory";
 
 interface ArcAssignmentPopoverProps {
   open: boolean;
@@ -37,13 +37,16 @@ export const ArcAssignmentPopper: React.FunctionComponent<
     setInputVal("");
   }, [open]);
 
-  const { state } = useContext(InMemoryStateContext);
+  const { data: journalMetadata } = useStateFieldQuery({
+    field: "journalMetadata",
+  });
+
   const { act: addArcAction } = useApiAction({
     name: "createAndAssignArc",
   });
   const { act: assignArcAction } = useApiAction({ name: "assignArc" });
 
-  const lastArcHue = state.journalMetadata?.lastArcHue;
+  const lastArcHue = journalMetadata?.lastArcHue;
 
   const arcs = useSearchArcs({ query: inputVal });
 

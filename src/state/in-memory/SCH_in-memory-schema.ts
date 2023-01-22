@@ -1,7 +1,7 @@
 import { ContentState, EditorState } from "draft-js";
 import { DateTime } from "luxon";
 import { parseContentState, stringifyContentState } from "util/content-state";
-import { IpsumDateTime } from "util/dates";
+import { IpsumDateTime, stringifyIpsumDateTime } from "util/dates";
 import { v4 as uuidv4 } from "uuid";
 
 export interface InMemoryCollection<
@@ -38,10 +38,9 @@ export const InMemoryCollections = {
         __type: "field",
         name: "date",
         default: () =>
-          IpsumDateTime.fromString(
-            "1/1/2000",
-            "entry-printed-date"
-          ).dateTime.toISO(),
+          stringifyIpsumDateTime(
+            IpsumDateTime.fromString("1/1/2000", "entry-printed-date")
+          ),
         serializable: true,
       },
       contentState: {

@@ -30,14 +30,14 @@ export const InMemoryStateProvider: React.FC<{
     InMemoryState | undefined
   >();
   useEffect(() => {
-    if (idbWrapper !== undefined && stateFromAutosave === undefined)
+    if (idbWrapper !== undefined && stateFromAutosave === undefined) {
       idbWrapper.getNewInMemoryState().then((state) => {
         setStateFromAutosave(state);
       });
+    }
   }, [idbWrapper, stateFromAutosave]);
 
   if (idbWrapper === undefined || stateFromAutosave === undefined) {
-    console.log(idbWrapper, stateFromAutosave);
     return <div>Loading...</div>;
   } else {
     return (
@@ -128,6 +128,8 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
     []
   );
 
+  // Every query a component makes for documents is stored in state so we know
+  // where to send updates when those document objects are updated.
   const [documentBroadcasters, setDocumentBroadcasters] = useState<
     DocumentBroadcaster<CollectionName>[]
   >([]);
@@ -148,6 +150,7 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
     [documentBroadcasters]
   );
 
+  // See above, but with fields instead of documents.
   const [fieldBroadcasters, setFieldBroadcasters] = useState<
     FieldBroadcaster<TopLevelFieldName>[]
   >([]);
@@ -171,6 +174,7 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
   // that query when the state changes.
   const prevState = usePrevious(state);
   useEffect(() => {
+    if (!state) return;
     Object.keys(InMemorySchema).forEach((key: keyof typeof InMemorySchema) => {
       // If a top-level field or collection called key has changed.
       if (!_.isEqual(prevState?.[key], state[key])) {
@@ -206,7 +210,10 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
               const primaryKey = getPrimaryKey(db.collection);
               const mappedFilteredDocuments = filteredDocuments.reduce(
                 (acc, cur) => {
-                  return { ...acc, [cur[primaryKey as keyof typeof cur]]: cur };
+                  return {
+                    ...acc,
+                    [cur[primaryKey as keyof typeof cur]]: cur,
+                  };
                 },
                 {}
               );

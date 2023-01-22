@@ -1,5 +1,3 @@
-import { useContext, useEffect, useState } from "react";
-import { InMemoryStateContext } from "./SCH_in-memory-context";
 import {
   InMemoryState,
   InMemorySchema,
@@ -9,9 +7,7 @@ import {
   TopLevelFieldName,
   InMemoryField,
   InMemoryCollection,
-  CollectionSchema,
 } from "./SCH_in-memory-schema";
-import { v4 as uuidv4 } from "uuid";
 
 export const initializeDefaultDocument = <C extends CollectionName>(
   type: C
@@ -158,100 +154,4 @@ export const deserializeInMemoryState = (
   );
 
   return loadedState as InMemoryState;
-};
-
-interface UseInMemoryStateDocumentQueryArgs<T extends CollectionName> {
-  collection: T;
-  keys: CollectionSchema[T]["primaryKey"][];
-}
-
-interface UseInMemoryStateDocumentQueryResult<F extends CollectionName> {
-  data: {
-    [k: string]: Document<F>;
-  };
-}
-
-export const useStateDocumentQuery = <F extends CollectionName>(
-  args: UseInMemoryStateDocumentQueryArgs<F>
-): UseInMemoryStateDocumentQueryResult<F> => {
-  const { state, addDocumentBroadcaster, removeDocumentBroadcaster } =
-    useContext(InMemoryStateContext);
-
-  const [id] = useState(uuidv4());
-
-  const initialStateKeys =
-    args.keys.length > 0
-      ? Object.keys(state[args.collection]).filter((docKey) =>
-          args.keys.includes(docKey)
-        )
-      : Object.keys(state[args.collection]);
-  const initialStateEntries = initialStateKeys.reduce(
-    (acc, docKey) => ({ ...acc, [docKey]: state[args.collection][docKey] }),
-    {}
-  );
-
-  const [data, setData] = useState<{
-    [k: string]: Document<F>;
-  }>(initialStateEntries);
-
-  useEffect(() => {
-    addDocumentBroadcaster({
-      id,
-      type: "documents",
-      collection: args.collection,
-      broadcast: (docs) => {
-        setData(docs);
-      },
-      keys: args.keys,
-    });
-    return () => {
-      removeDocumentBroadcaster(id);
-    };
-  }, [
-    addDocumentBroadcaster,
-    args.collection,
-    args.keys,
-    id,
-    removeDocumentBroadcaster,
-  ]);
-
-  return { data };
-};
-
-interface UseInMemoryStateFieldQueryArgs<T extends TopLevelFieldName> {
-  field: T;
-}
-
-interface UseInMemoryStateFieldQueryResult<F extends TopLevelFieldName> {
-  data: TopLevelField<F>;
-}
-
-export const useStateFieldQuery = <F extends TopLevelFieldName>(
-  args: UseInMemoryStateFieldQueryArgs<F>
-): UseInMemoryStateFieldQueryResult<F> => {
-  const { state, addFieldBroadcaster, removeFieldBroadcaster } =
-    useContext(InMemoryStateContext);
-
-  const [id] = useState(uuidv4);
-
-  const [data, setData] = useState<TopLevelField<F>>(
-    state[args.field] as TopLevelField<F>
-  );
-
-  useEffect(() => {
-    addFieldBroadcaster({
-      id,
-      type: "field",
-      field: args.field,
-      broadcast: (field) => {
-        setData(field);
-      },
-    });
-
-    return () => {
-      removeFieldBroadcaster(id);
-    };
-  }, [addFieldBroadcaster, args, id, removeFieldBroadcaster]);
-
-  return { data };
 };

@@ -335,7 +335,6 @@ describe("Arc API", () => {
               },
             }),
             (state) => {
-              console.log(Object.keys(state.arcs));
               return {
                 name: "updateArc",
                 actParams: {

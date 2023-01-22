@@ -1,6 +1,6 @@
 import { ContentState } from "draft-js";
 import { stringifyContentState } from "util/content-state";
-import { IpsumDateTime } from "util/dates";
+import { IpsumDateTime, stringifyIpsumDateTime } from "util/dates";
 import { APIContext, APIReturn } from "./SCH_use-api-action";
 
 export const apiCreateOrUpdateEntry = (
@@ -29,7 +29,7 @@ export const apiCreateOrUpdateEntry = (
         type: "entry",
         document: {
           entryKey,
-          date: date.dateTime.toISO(),
+          date: stringifyIpsumDateTime(date),
           contentState: stringifyContentState(contentState),
         },
       },
@@ -41,7 +41,7 @@ export const apiCreateOrUpdateEntry = (
         type: "entry",
         key: entryKey,
         update: {
-          date: date.dateTime.toISO(),
+          date: stringifyIpsumDateTime(date),
           contentState: stringifyContentState(contentState),
         },
       },
