@@ -62,11 +62,19 @@ describe("Entry API", () => {
       });
       const contentStateWithHello = new IpsumEntityTransformer(
         editorStateSelHello.getCurrentContent()
-      ).applyArc(editorStateSelHello.getSelection(), "arc_hello").contentState;
+      ).applyEntityData(
+        editorStateSelHello.getSelection(),
+        "textArcAssignments",
+        { arcAssignmentId: "assgn_hello", arcId: "arc_hello" }
+      ).contentState;
 
       const contentStateWithHelloWorld = new IpsumEntityTransformer(
         contentStateWithHello
-      ).applyArc(editorStateSelWorld.getSelection(), "arc_world").contentState;
+      ).applyEntityData(
+        editorStateSelWorld.getSelection(),
+        "textArcAssignments",
+        { arcAssignmentId: "assgn_world", arcId: "arc_world" }
+      ).contentState;
 
       const newStateFn = jest.fn();
       const date = IpsumDateTime.fromString("8/9/1998", "entry-printed-date");
@@ -107,7 +115,7 @@ describe("Entry API", () => {
             },
           }}
           calls={[
-            (state) => {
+            () => {
               return {
                 name: "createOrUpdateEntry",
                 actParams: {
@@ -122,7 +130,8 @@ describe("Entry API", () => {
         ></APIDispatcher>
       );
 
-      const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
+      const updatedState: InMemoryState =
+        newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
 
       expect(Object.values(updatedState.arc_assignment).length).toEqual(1);
       expect(Object.values(updatedState.arc_assignment)[0].arcId).toEqual(

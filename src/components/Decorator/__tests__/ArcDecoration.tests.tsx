@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import React from "react";
-import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
+import { MockInMemoryStateProvider } from "state/in-memory/__tests__/SCH_MockInMemoryStateProvider";
 import { IpsumEntityTransformer } from "util/entities";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
 import { ArcDecoration } from "../ArcDecoration";
@@ -13,12 +13,15 @@ describe("ArcDecoration", () => {
 
     const contentStateWithArc = new IpsumEntityTransformer(
       editorState.getCurrentContent()
-    ).applyArc(editorState.getSelection(), "arc_id").contentState;
+    ).applyEntityData(editorState.getSelection(), "textArcAssignments", {
+      arcId: "arc_id",
+      arcAssignmentId: "assgn_id",
+    }).contentState;
 
     const { unmount } = render(
       <MockInMemoryStateProvider
         state={{
-          arcs: { arc_id: { color: 0, id: "arc_id", name: "foxes" } },
+          arc: { arc_id: { color: 0, id: "arc_id", name: "foxes" } },
         }}
       >
         <ArcDecoration

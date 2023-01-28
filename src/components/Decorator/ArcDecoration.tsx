@@ -30,7 +30,13 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
   const entityData = props.contentState
     .getEntity(props.entityKey)
     .getData() as IpsumEntityData;
-  const arcIds = useMemo(() => entityData.arcIds ?? [], [entityData.arcIds]);
+  const arcIds = useMemo(
+    () =>
+      entityData.textArcAssignments?.map((a) => a.arcId) ??
+      entityData.arcIds ??
+      [],
+    [entityData.arcIds, entityData.textArcAssignments]
+  );
 
   const { ctrlKey } = useContext(JournalHotkeysContext);
   const { hoveredArcIds, setHoveredArcIds, selectedArcIds, setSelectedArcIds } =

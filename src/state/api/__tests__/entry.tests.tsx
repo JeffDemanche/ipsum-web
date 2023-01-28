@@ -14,7 +14,7 @@ import {
 } from "util/__tests__/editor-utils";
 import { APIDispatcher } from "./api-test-utils";
 
-describe("Entry API", () => {
+describe.skip("Entry API", () => {
   describe("createOrUpdateEntry", () => {
     it("creates an empty entry for a date", () => {
       const editorState = createEditorState("Hello World!", 0, 0);

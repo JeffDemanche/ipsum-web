@@ -1,7 +1,9 @@
 import { ContentState } from "draft-js";
-import { stringifyContentState } from "util/content-state";
+import { parseContentState, stringifyContentState } from "util/content-state";
 import { IpsumDateTime, stringifyIpsumDateTime } from "util/dates";
+import { IpsumEntityTransformer } from "util/entities";
 import { APIContext, APIReturn } from "./SCH_use-api-action";
+import { Document } from "../in-memory/SCH_in-memory-schema";
 
 export const apiCreateOrUpdateEntry = (
   {
@@ -17,11 +19,6 @@ export const apiCreateOrUpdateEntry = (
 ): APIReturn => {
   const create = !context.state.entry[entryKey];
 
-  // TODO self-heal make sure ContentState -> correct arc assignments for this entry.
-  // const updatedTextArcAssignmentIds = new IpsumEntityTransformer(
-  //   contentState
-  // ).getAppliedTextArcAssignments();
-
   if (create)
     context = context.optimisticStateDispatch(context.state, {
       type: "CREATE_DOCUMENT",
@@ -34,7 +31,47 @@ export const apiCreateOrUpdateEntry = (
         },
       },
     });
-  else
+  else {
+    const oldTextArcAssignmentIds = new IpsumEntityTransformer(
+      parseContentState(context.state.entry[entryKey].contentState)
+    )
+      .getAppliedTextArcAssignments()
+      .map((a) => a.arcAssignmentId);
+    const newTextArcAssignments = new IpsumEntityTransformer(
+      contentState
+    ).getAppliedTextArcAssignments();
+
+    const newTextArcAssignmentIds = newTextArcAssignments.map(
+      (a) => a.arcAssignmentId
+    );
+
+    const addedAssignments: Partial<Document<"arc_assignment">>[] =
+      newTextArcAssignments
+        .filter(
+          (newAssignment) =>
+            !oldTextArcAssignmentIds.includes(newAssignment.arcAssignmentId)
+        )
+        .map((a) => ({ id: a.arcAssignmentId, arcId: a.arcId, entryKey }));
+    const removedAssignments = oldTextArcAssignmentIds.filter(
+      (oldAssignment) => !newTextArcAssignmentIds.includes(oldAssignment)
+    );
+
+    addedAssignments.forEach((assignment) => {
+      context = context.optimisticStateDispatch(context.state, {
+        type: "CREATE_DOCUMENT",
+        payload: {
+          type: "arc_assignment",
+          document: assignment,
+        },
+      });
+    });
+    context = context.optimisticStateDispatch(context.state, {
+      type: "REMOVE_DOCUMENTS",
+      payload: {
+        type: "arc_assignment",
+        keys: removedAssignments,
+      },
+    });
     context = context.optimisticStateDispatch(context.state, {
       type: "UPDATE_DOCUMENT",
       payload: {
@@ -46,7 +83,7 @@ export const apiCreateOrUpdateEntry = (
         },
       },
     });
-
+  }
   return { state: context.state };
 };
 
@@ -59,6 +96,16 @@ export const apiDeleteEntry = (
     payload: {
       type: "entry",
       key: entryKey,
+    },
+  });
+  const arcAssignmentsForEntry = Object.values(context.state.arc_assignment)
+    .filter((a) => a.entryKey === entryKey)
+    .map((a) => a.id);
+  context = context.optimisticStateDispatch(context.state, {
+    type: "REMOVE_DOCUMENTS",
+    payload: {
+      type: "arc_assignment",
+      keys: arcAssignmentsForEntry,
     },
   });
 

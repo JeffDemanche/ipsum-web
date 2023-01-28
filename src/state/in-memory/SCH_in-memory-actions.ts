@@ -32,6 +32,10 @@ export type InMemoryAction =
   | {
       type: "REMOVE_DOCUMENT";
       payload: Parameters<typeof dispatchers["REMOVE_DOCUMENT"]>[1];
+    }
+  | {
+      type: "REMOVE_DOCUMENTS";
+      payload: Parameters<typeof dispatchers["REMOVE_DOCUMENTS"]>[1];
     };
 
 const dispatchers = {
@@ -132,6 +136,21 @@ const dispatchers = {
     delete stateCopy[payload.type][payload.key];
     return stateCopy;
   },
+  REMOVE_DOCUMENTS: (
+    state: InMemoryState,
+    payload: {
+      [C in CollectionName]: {
+        type: C;
+        keys: typeof InMemorySchema[C]["primaryKey"][];
+      };
+    }[CollectionName]
+  ): InMemoryState => {
+    const stateCopy: WritableInMemoryState = { ...state };
+    payload.keys.forEach((key) => {
+      delete stateCopy[payload.type][key];
+    });
+    return stateCopy;
+  },
 };
 
 export const dispatch = (
@@ -148,6 +167,8 @@ export const dispatch = (
     case "UPDATE_DOCUMENT":
       return dispatchers[action.type](state, action.payload);
     case "REMOVE_DOCUMENT":
+      return dispatchers[action.type](state, action.payload);
+    case "REMOVE_DOCUMENTS":
       return dispatchers[action.type](state, action.payload);
     default:
       return { ...state };

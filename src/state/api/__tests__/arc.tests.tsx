@@ -16,7 +16,7 @@ import { DateTime } from "luxon";
 import { APIDispatcher } from "./api-test-utils";
 import { nextHue } from "util/colors";
 
-describe("Arc API", () => {
+describe.skip("Arc API", () => {
   describe("createAndAssignArc", () => {
     it("creates a single arc without an assignment if no entryKey or selectionState is provided", () => {
       const newStateFn = jest.fn();

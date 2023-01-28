@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ArcDisambiguator } from "../ArcDisambiguator";
-import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
+import { MockInMemoryStateProvider } from "state/in-memory/__tests__/SCH_MockInMemoryStateProvider";
 
 const TestDisambiguator: React.FunctionComponent<{
   open: boolean;
@@ -11,7 +11,7 @@ const TestDisambiguator: React.FunctionComponent<{
   return (
     <MockInMemoryStateProvider
       state={{
-        arcs: {
+        arc: {
           arc_1: { id: "arc_1", color: 0, name: "Arc one" },
           arc_2: { id: "arc_2", color: 100, name: "Arc two" },
         },

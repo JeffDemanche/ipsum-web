@@ -187,7 +187,6 @@ export class IpsumEntityTransformer {
         currStartBlock = selectedCharacters[i].block;
       }
     }
-
     return newEntityRanges;
   };
 
@@ -368,7 +367,7 @@ export class IpsumEntityTransformer {
     const allCharacters = this.getCharacters();
     const textArcAssignments: EntityFieldDataType<"textArcAssignments">[] = [];
     this.getEntityRanges(allCharacters).forEach((entityRange) => {
-      entityRange.entityData?.textArcAssignments.forEach((taa) =>
+      entityRange.entityData?.textArcAssignments?.forEach((taa) =>
         textArcAssignments.push(taa)
       );
     });
