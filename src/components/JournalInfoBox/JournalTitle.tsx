@@ -1,18 +1,17 @@
 import { Button, ClickAwayListener, TextField } from "@mui/material";
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
 import { useApiAction } from "state/api/use-api-action";
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
 import styles from "./JournalTitle.less";
+import { useStateFieldQuery } from "state/in-memory";
 
 export const JournalTitle: React.FunctionComponent = () => {
-  const { state } = useContext(InMemoryStateContext);
+  const { data: journalTitle } = useStateFieldQuery({ field: "journalTitle" });
   const { act } = useApiAction({ name: "updateJournalTitle" });
   const inputRef = useRef<HTMLInputElement>(null);
   const [editing, setEditing] = useState(false);
@@ -57,7 +56,7 @@ export const JournalTitle: React.FunctionComponent = () => {
           }}
           onKeyUp={onInputKeyUp}
           inputRef={inputRef}
-          defaultValue={state.journalTitle}
+          defaultValue={journalTitle}
         ></TextField>
       );
     } else {
@@ -75,11 +74,11 @@ export const JournalTitle: React.FunctionComponent = () => {
             setEditing(true);
           }}
         >
-          {state.journalTitle}
+          {journalTitle}
         </Button>
       );
     }
-  }, [editing, state.journalTitle, update]);
+  }, [editing, journalTitle, update]);
 
   return (
     <div className={styles["title-container"]}>

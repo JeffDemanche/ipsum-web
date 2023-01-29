@@ -1,4 +1,4 @@
-import { fireEvent, getByRole, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import React, { useState } from "react";
 import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
 import { useSearchArcs } from "util/hooks/useSearchArcs";
@@ -17,7 +17,7 @@ const TestPopper = ({
   return (
     <MockInMemoryStateProvider
       state={{
-        arcs: {
+        arc: {
           red_arc_id: {
             id: "red_arc_id",
             name: "red_arc",

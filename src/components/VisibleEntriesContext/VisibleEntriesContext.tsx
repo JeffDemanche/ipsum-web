@@ -1,7 +1,7 @@
-import React, { useContext, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useParams } from "react-router";
 import { useSearchParams } from "react-router-dom";
-import { InMemoryStateContext } from "components/InMemoryStateContext/InMemoryStateContext";
+import { useStateDocumentQuery } from "state/in-memory";
 import { IpsumDateTime, sortDates } from "util/dates";
 
 export interface VisibleEntries {
@@ -24,9 +24,10 @@ const DEFAULT_NUM_VISIBLE_ENTRIES = 20;
 export const VisibleEntriesProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }: { children: React.ReactElement }) => {
-  const {
-    state: { entries = undefined },
-  } = useContext(InMemoryStateContext);
+  const { data: entries } = useStateDocumentQuery({
+    collection: "entry",
+    keys: [],
+  });
 
   const [searchParams] = useSearchParams();
 

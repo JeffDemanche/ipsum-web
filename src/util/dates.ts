@@ -84,6 +84,12 @@ export const sortDates = (
   });
 };
 
+export const stringifyIpsumDateTime = (dt: IpsumDateTime) =>
+  dt.dateTime.toISO();
+
+export const parseIpsumDateTime = (dt: string) =>
+  new IpsumDateTime(DateTime.fromISO(dt));
+
 export class IpsumDateTime {
   private _luxonDateTime: DateTime;
 

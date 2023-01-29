@@ -1,93 +1,157 @@
-import { IpsumDateTime } from "util/dates";
-import { dispatch, InMemoryAction } from "./in-memory-actions";
-import { v4 as uuidv4 } from "uuid";
+import {
+  InMemoryState,
+  InMemorySchema,
+  CollectionName,
+  Document,
+  TopLevelField,
+  TopLevelFieldName,
+  InMemoryField,
+  InMemoryCollection,
+} from "./in-memory-schema";
 
-export interface InMemoryEntry {
-  entryKey: string;
-  date: IpsumDateTime;
-  contentState: string;
-}
-
-export interface InMemoryArc {
-  id: string;
-  name: string;
-  color: number;
-}
-
-const ArcDefaults: InMemoryArc = {
-  id: "null",
-  name: "",
-  color: 0,
+export const initializeDefaultDocument = <C extends CollectionName>(
+  type: C
+): Document<C> => {
+  const schemaDocFields = InMemorySchema[type].fields;
+  const document = {} as Document<C>;
+  Object.keys(schemaDocFields).forEach((key) => {
+    const field = (schemaDocFields as { [key: string]: { default: any } })[key];
+    document[key as keyof Document<C>] = field.default();
+  });
+  return document as Document<C>;
 };
 
-export interface InMemoryArcAssignment {
-  id: string;
-  arcId: string;
-  entryKey: string;
-}
+export const initializeDefaultInMemoryState = (): InMemoryState => {
+  const inMemoryState = {} as InMemoryState;
 
-export interface InMemoryJournalMetadata {
-  lastArcHue: number;
-}
-
-const JournalMetadataDefaults: InMemoryJournalMetadata = {
-  lastArcHue: 0,
+  Object.keys(InMemorySchema).forEach((key: keyof typeof InMemorySchema) => {
+    const thisElement = InMemorySchema[key];
+    if (thisElement.__type === "document") {
+      (inMemoryState[key] as Document<CollectionName>) = {};
+    } else if (thisElement.__type === "field") {
+      (inMemoryState[key] as TopLevelField<TopLevelFieldName>) =
+        thisElement.default();
+    }
+  });
+  return inMemoryState;
 };
 
-export interface InMemoryState {
-  journalId: string;
-  journalTitle: string;
-  journalMetadata: InMemoryJournalMetadata;
-  entries: { [entryKey: string]: InMemoryEntry };
-  arcs: { [id: string]: InMemoryArc };
-  arcAssignments: { [id: string]: InMemoryArcAssignment };
-}
+export const serializeInMemoryState = (state: InMemoryState): string => {
+  const toStringify: any = {};
 
-export const stateReviver: Parameters<typeof JSON.parse>[1] = (key, value) => {
-  switch (key as keyof InMemoryState) {
-    case "entries": {
-      const revivedEntries: { [id: string]: InMemoryEntry } = {};
-      Object.keys(value as { [id: string]: InMemoryEntry }).forEach(
-        (entryKey) => {
-          // Revives the date from the entry key if it gets lost for some reason
-          const defaultedDate = value.date?._luxonDateTime
-            ? new IpsumDateTime(value.date?._luxonDateTime)
-            : IpsumDateTime.fromString(entryKey, "entry-printed-date");
+  Object.keys(InMemorySchema).forEach(
+    (collectionOrFieldKey: keyof typeof InMemorySchema) => {
+      const collectionOrField = InMemorySchema[collectionOrFieldKey];
+      if (collectionOrField.__type === "document") {
+        const collection = collectionOrField as InMemoryCollection<
+          Record<string, InMemoryField<unknown>>
+        >;
+        const collectionInState =
+          state[collectionOrFieldKey as keyof typeof state];
+        const serializedCollection: any = {};
 
-          revivedEntries[entryKey] = {
-            ...value[entryKey],
-            date: defaultedDate,
-          };
+        if (collectionInState) {
+          Object.keys(collectionInState).forEach((documentKey: string) => {
+            const serializedDocument: any = {};
+            const documentInState = collectionInState[
+              documentKey as keyof typeof collectionInState
+            ] as Document<CollectionName>;
+
+            Object.keys(collection["fields"]).forEach((field) => {
+              const fieldValue =
+                documentInState[field as keyof typeof documentInState];
+              const fieldSchema =
+                collection.fields[field as keyof typeof collection.fields];
+
+              if (fieldSchema.serializable) {
+                serializedDocument[field] = fieldSchema.customSerializer
+                  ? fieldSchema.customSerializer(fieldValue)
+                  : fieldValue;
+              }
+            });
+
+            serializedCollection[documentKey] = serializedDocument;
+          });
         }
-      );
-      return revivedEntries;
+        toStringify[collectionOrFieldKey] = serializedCollection;
+      } else if (collectionOrField.__type === "field") {
+        const fieldValue = state[collectionOrFieldKey as keyof typeof state];
+        const fieldSchema = collectionOrField as InMemoryField<unknown>;
+
+        if (fieldSchema.serializable) {
+          toStringify[collectionOrField.name] = fieldSchema.customSerializer
+            ? fieldSchema.customSerializer(fieldValue)
+            : fieldValue;
+        }
+      }
     }
-    case "arcs": {
-      const revivedArcs: { [id: string]: InMemoryArc } = {};
-      Object.keys(value as { [id: string]: InMemoryArc }).forEach((arcKey) => {
-        revivedArcs[arcKey] = { ...ArcDefaults, ...value[arcKey] };
-      });
-      return revivedArcs;
-    }
-    case "journalMetadata": {
-      return { ...JournalMetadataDefaults, ...value };
-    }
-  }
-  return value;
+  );
+
+  return JSON.stringify(toStringify);
 };
 
-export const initialInMemoryState: InMemoryState = {
-  journalId: uuidv4(),
-  journalTitle: "new journal",
-  journalMetadata: { lastArcHue: 0 },
-  entries: {},
-  arcs: {},
-  arcAssignments: {},
-};
-
-export const reducer = (
-  state: InMemoryState,
-  action: InMemoryAction
+export const deserializeInMemoryState = (
+  serializedState: string
 ): InMemoryState => {
-  return dispatch(state, action);
+  const rawState = JSON.parse(serializedState);
+
+  const loadedState: any = {};
+
+  Object.keys(InMemorySchema).forEach(
+    (collectionOrFieldKey: keyof typeof InMemorySchema) => {
+      const collectionOrField = InMemorySchema[collectionOrFieldKey];
+      if (!Object.keys(rawState).includes(collectionOrFieldKey)) {
+        console.warn(
+          `Validation: Loaded text didn't have field or collection ${collectionOrField.name}`
+        );
+        if (collectionOrField.__type === "document") {
+          loadedState[collectionOrFieldKey] = {};
+        } else {
+          loadedState[collectionOrFieldKey] = collectionOrField.default();
+        }
+      } else {
+        if (collectionOrField.__type === "document") {
+          const collectionSchema = collectionOrField as InMemoryCollection<
+            Record<string, InMemoryField<unknown>>
+          >;
+          const loadedCollection: any = {};
+
+          Object.keys(rawState[collectionSchema.name]).forEach(
+            (documentKey: CollectionName) => {
+              const rawDocument = rawState[collectionSchema.name][documentKey];
+              const loadedDocument: any = {};
+
+              Object.keys(collectionOrField["fields"]).forEach((field) => {
+                const rawFieldValue = rawDocument[field];
+                const rawFieldSchema =
+                  collectionSchema.fields[
+                    field as keyof typeof collectionSchema.fields
+                  ];
+
+                if (rawFieldSchema.serializable) {
+                  loadedDocument[field] = rawFieldSchema.customDeserializer
+                    ? rawFieldSchema.customDeserializer(rawFieldValue)
+                    : rawFieldValue;
+                }
+              });
+
+              loadedCollection[documentKey] = loadedDocument;
+            }
+          );
+          loadedState[collectionOrFieldKey] = loadedCollection;
+        } else if (collectionOrField.__type === "field") {
+          const rawValue = rawState[collectionOrFieldKey];
+          const schemaField = collectionOrField as InMemoryField<unknown>;
+
+          if (collectionOrField.serializable) {
+            loadedState[schemaField.name] = schemaField.customSerializer
+              ? schemaField.customDeserializer(rawValue)
+              : rawValue;
+          }
+        }
+      }
+    }
+  );
+
+  return loadedState as InMemoryState;
 };

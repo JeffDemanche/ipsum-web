@@ -7,7 +7,8 @@
     "webpack": "webpack --watch",
     "electron": "wait-on tcp:9000 && electron .",
     "devserver": "npx webpack serve",
-    "test": "jest"
+    "test": "jest",
+    "project-tools": "npx ts-node scripts/project-tools/index.ts"
   },
   "repository": {
     "type": "git",
@@ -77,7 +78,7 @@
     "@typescript-eslint/parser": "^5.22.0",
     "eslint": "^8.15.0",
     "eslint-import-resolver-webpack": "^0.13.2",
-    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-import": "^2.27.4",
     "eslint-plugin-react": "^7.29.4",
     "fake-indexeddb": "^3.1.7",
     "jest": "^28.1.0",

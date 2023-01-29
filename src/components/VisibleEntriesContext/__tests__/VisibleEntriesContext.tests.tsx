@@ -39,7 +39,7 @@ describe("VisibleEntriesContext", () => {
     render(
       <MockInMemoryStateProvider
         state={{
-          entries: {
+          entry: {
             "10/01/2022": {
               entryKey: "10/01/2022",
               contentState: stringifyContentState(
@@ -48,7 +48,7 @@ describe("VisibleEntriesContext", () => {
               date: IpsumDateTime.fromString(
                 "10/01/2022",
                 "entry-printed-date"
-              ),
+              ).dateTime.toISO(),
             },
             "10/03/2022": {
               entryKey: "10/03/2022",
@@ -58,7 +58,7 @@ describe("VisibleEntriesContext", () => {
               date: IpsumDateTime.fromString(
                 "10/03/2022",
                 "entry-printed-date"
-              ),
+              ).dateTime.toISO(),
             },
           },
         }}

@@ -13,12 +13,15 @@ describe("ArcDecoration", () => {
 
     const contentStateWithArc = new IpsumEntityTransformer(
       editorState.getCurrentContent()
-    ).applyArc(editorState.getSelection(), "arc_id").contentState;
+    ).applyEntityData(editorState.getSelection(), "textArcAssignments", {
+      arcId: "arc_id",
+      arcAssignmentId: "assgn_id",
+    }).contentState;
 
     const { unmount } = render(
       <MockInMemoryStateProvider
         state={{
-          arcs: { arc_id: { color: 0, id: "arc_id", name: "foxes" } },
+          arc: { arc_id: { color: 0, id: "arc_id", name: "foxes" } },
         }}
       >
         <ArcDecoration

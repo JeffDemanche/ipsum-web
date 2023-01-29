@@ -1,214 +1,154 @@
-import { IpsumDateTime } from "util/dates";
-import { InMemoryJournalMetadata, InMemoryState } from "./in-memory-state";
-import { SelectionState } from "draft-js";
-import { parseContentState, stringifyContentState } from "util/content-state";
-import { IpsumEntityTransformer } from "util/entities";
+import { deepClone } from "util/deep-clone";
+import {
+  Document,
+  CollectionName,
+  InMemorySchema,
+  InMemoryState,
+  Collection,
+  getPrimaryKey,
+  WritableInMemoryState,
+  TopLevelFieldName,
+  TopLevelField,
+} from "./in-memory-schema";
+import { initializeDefaultDocument } from "./in-memory-state";
 
 export type InMemoryAction =
   | {
-      type: "OVERRIDE";
-      payload: Parameters<typeof dispatchers["OVERRIDE"]>["1"];
+      type: "OVERWRITE";
+      payload: Parameters<typeof dispatchers["OVERWRITE"]>[1];
     }
   | {
-      type: "CREATE-OR-UPDATE-ENTRY";
-      payload: Parameters<typeof dispatchers["CREATE-OR-UPDATE-ENTRY"]>["1"];
+      type: "CREATE_DOCUMENT";
+      payload: Parameters<typeof dispatchers["CREATE_DOCUMENT"]>[1];
     }
   | {
-      type: "CREATE-ARC";
-      payload: Parameters<typeof dispatchers["CREATE-ARC"]>["1"];
+      type: "UPDATE_FIELD";
+      payload: Parameters<typeof dispatchers["UPDATE_FIELD"]>[1];
     }
   | {
-      type: "ASSIGN-ARC";
-      payload: Parameters<typeof dispatchers["ASSIGN-ARC"]>["1"];
+      type: "UPDATE_DOCUMENT";
+      payload: Parameters<typeof dispatchers["UPDATE_DOCUMENT"]>[1];
     }
   | {
-      type: "DELETE-ENTRY";
-      payload: Parameters<typeof dispatchers["DELETE-ENTRY"]>["1"];
+      type: "REMOVE_DOCUMENT";
+      payload: Parameters<typeof dispatchers["REMOVE_DOCUMENT"]>[1];
     }
   | {
-      type: "UPDATE-JOURNAL-METADATA";
-      payload: Parameters<typeof dispatchers["UPDATE-JOURNAL-METADATA"]>["1"];
-    }
-  | {
-      type: "UPDATE-JOURNAL-TITLE";
-      payload: Parameters<typeof dispatchers["UPDATE-JOURNAL-TITLE"]>["1"];
-    }
-  | {
-      type: "UNASSIGN-ARC";
-      payload: Parameters<typeof dispatchers["UNASSIGN-ARC"]>["1"];
-    }
-  | {
-      type: "UPDATE-ARC";
-      payload: Parameters<typeof dispatchers["UPDATE-ARC"]>["1"];
+      type: "REMOVE_DOCUMENTS";
+      payload: Parameters<typeof dispatchers["REMOVE_DOCUMENTS"]>[1];
     };
-
-export type InMemoryActionType = InMemoryAction["type"];
 
 const dispatchers = {
-  OVERRIDE: (state: InMemoryState, payload: { state: InMemoryState }) => {
-    return payload.state;
-  },
-  "CREATE-OR-UPDATE-ENTRY": (
-    state: InMemoryState,
-    payload: { entryKey: string; date: IpsumDateTime; contentState: string }
-  ): InMemoryState => {
-    const arcsInContent = new IpsumEntityTransformer(
-      parseContentState(payload.contentState)
-    ).getAppliedArcs();
-
-    // We should handle parsing assignments from the content state at the API level.
-    const arcAssignmentsToDelete = Object.values(state.arcAssignments).filter(
-      (assgn) =>
-        assgn.entryKey === payload.entryKey &&
-        !arcsInContent.includes(assgn.arcId)
-    );
-
-    const newArcAssignments = { ...state.arcAssignments };
-    arcAssignmentsToDelete.forEach((assgn) => {
-      delete newArcAssignments[assgn.id];
-    });
-
-    return {
-      ...state,
-      entries: {
-        ...state.entries,
-        [payload.entryKey]: {
-          ...payload,
-        },
-      },
-      arcAssignments: newArcAssignments,
-    };
-  },
-  "CREATE-ARC": (
-    state: InMemoryState,
-    payload: { id: string; name: string; color: number }
-  ): InMemoryState => {
-    if (payload.name === "") {
-      throw new Error("Arc name cannot be empty");
-    }
-    return {
-      ...state,
-      arcs: {
-        ...state.arcs,
-        [payload.id]: {
-          id: payload.id,
-          name: payload.name,
-          color: payload.color,
-        },
-      },
-    };
-  },
-  "ASSIGN-ARC": (
+  OVERWRITE: (
     state: InMemoryState,
     payload: {
-      assignmentId: string;
-      arcId: string;
-      entryKey: string;
-      selectionState: SelectionState;
+      newState: InMemoryState;
     }
   ): InMemoryState => {
-    const entry = state.entries[payload.entryKey];
-
-    const contentStateWithArc = new IpsumEntityTransformer(
-      parseContentState(entry.contentState)
-    ).applyArc(payload.selectionState, payload.arcId).contentState;
-
-    const assignmentAlreadyExists = !!Object.values(state.arcAssignments).find(
-      (assignment) =>
-        assignment.arcId === payload.arcId &&
-        assignment.entryKey === payload.entryKey
-    );
-
-    const arcAssignments = assignmentAlreadyExists
-      ? state.arcAssignments
-      : {
-          ...state.arcAssignments,
-          [payload.assignmentId]: {
-            id: payload.assignmentId,
-            arcId: payload.arcId,
-            entryKey: payload.entryKey,
-          },
-        };
-
-    return {
-      ...state,
-      entries: {
-        ...state.entries,
-        [payload.entryKey]: {
-          ...state.entries[payload.entryKey],
-          contentState: stringifyContentState(contentStateWithArc),
-        },
-      },
-      arcAssignments,
-    };
+    return payload.newState;
   },
-  "DELETE-ENTRY": (
+  CREATE_DOCUMENT: (
     state: InMemoryState,
-    payload: { entryKey: string }
+    payload: {
+      [C in CollectionName]: {
+        type: C;
+        document: Partial<Document<C>>;
+      };
+    }[CollectionName]
   ): InMemoryState => {
-    const copy = { ...state };
-    delete copy.entries[payload.entryKey];
-    const arcAssignmentsCopy = { ...state.arcAssignments };
-    Object.keys(state.arcAssignments).forEach((arcAssignment) => {
-      if (arcAssignmentsCopy[arcAssignment].entryKey === payload.entryKey) {
-        delete arcAssignmentsCopy[arcAssignment];
-      }
+    const stateCopy = deepClone(state);
+    const collection = stateCopy[payload.type] as Collection<
+      typeof payload["type"]
+    >;
+    const primaryKey = getPrimaryKey(
+      payload.type
+    ) as typeof InMemorySchema[typeof payload["type"]]["primaryKey"];
+
+    if (
+      Object.keys(collection).includes(
+        (payload.document as { [primaryKey: string]: any })[primaryKey]
+      )
+    )
+      throw new Error(
+        `CREATE_DOCUMENT: ${payload.type} with key ${primaryKey} already exists`
+      );
+
+    const defaultDocument = initializeDefaultDocument(payload.type);
+    const newDocumentKey =
+      payload.document[primaryKey as keyof typeof payload.document] ??
+      defaultDocument[primaryKey as keyof typeof defaultDocument];
+    (stateCopy[payload.type] as Collection<typeof payload["type"]>)[
+      newDocumentKey
+    ] = {
+      ...defaultDocument,
+      ...payload.document,
+    };
+    return stateCopy;
+  },
+  UPDATE_FIELD: (
+    state: InMemoryState,
+    payload: {
+      [F in TopLevelFieldName]: { field: F; update: TopLevelField<F> };
+    }[TopLevelFieldName]
+  ) => {
+    const stateCopy: WritableInMemoryState = deepClone(state);
+    (stateCopy[payload.field] as TopLevelField<TopLevelFieldName>) =
+      payload.update;
+    return stateCopy;
+  },
+  UPDATE_DOCUMENT: (
+    state: InMemoryState,
+    payload: {
+      [C in CollectionName]: {
+        type: C;
+        key: typeof InMemorySchema[C]["primaryKey"];
+        update: Partial<Document<C>>;
+      };
+    }[CollectionName]
+  ): InMemoryState => {
+    const stateCopy: WritableInMemoryState = deepClone(state);
+    if (!stateCopy[payload.type][payload.key]) {
+      throw new Error(
+        `UPDATE_DOCUMENT: couldn't find ${payload.type} with key ${payload.key}`
+      );
+    }
+    if (Object.keys(payload.update).includes(getPrimaryKey(payload.type))) {
+      throw new Error(
+        `UPDATE_DOCUMENT: can't set primary key value in document update for ${payload.type}`
+      );
+    }
+    stateCopy[payload.type][payload.key] = {
+      ...stateCopy[payload.type][payload.key],
+      ...payload.update,
+    };
+    return stateCopy;
+  },
+  REMOVE_DOCUMENT: (
+    state: InMemoryState,
+    payload: {
+      [C in CollectionName]: {
+        type: C;
+        key: typeof InMemorySchema[C]["primaryKey"];
+      };
+    }[CollectionName]
+  ): InMemoryState => {
+    const stateCopy: WritableInMemoryState = { ...state };
+    delete stateCopy[payload.type][payload.key];
+    return stateCopy;
+  },
+  REMOVE_DOCUMENTS: (
+    state: InMemoryState,
+    payload: {
+      [C in CollectionName]: {
+        type: C;
+        keys: typeof InMemorySchema[C]["primaryKey"][];
+      };
+    }[CollectionName]
+  ): InMemoryState => {
+    const stateCopy: WritableInMemoryState = { ...state };
+    payload.keys.forEach((key) => {
+      delete stateCopy[payload.type][key];
     });
-    copy.arcAssignments = arcAssignmentsCopy;
-    return copy;
-  },
-  "UPDATE-JOURNAL-METADATA": (
-    state: InMemoryState,
-    payload: { journalMetadata: Partial<InMemoryJournalMetadata> }
-  ): InMemoryState => {
-    const copy = { ...state };
-    copy.journalMetadata = {
-      ...copy.journalMetadata,
-      ...payload.journalMetadata,
-    };
-    return copy;
-  },
-  "UPDATE-JOURNAL-TITLE": (
-    state: InMemoryState,
-    payload: { title: string }
-  ): InMemoryState => {
-    return { ...state, journalTitle: payload.title };
-  },
-  "UNASSIGN-ARC": (
-    state: InMemoryState,
-    payload: { arcId: string; entryKey: string }
-  ): InMemoryState => {
-    const entry = state.entries[payload.entryKey];
-
-    const contentStateWithoutArc = new IpsumEntityTransformer(
-      parseContentState(entry.contentState)
-    ).removeArc(payload.arcId).contentState;
-
-    const copy = { ...state };
-    const assignment = Object.values(copy.arcAssignments).find(
-      (assgn) =>
-        assgn.arcId === payload.arcId && assgn.entryKey === payload.entryKey
-    );
-    copy.entries[payload.entryKey].contentState = stringifyContentState(
-      contentStateWithoutArc
-    );
-    if (assignment) {
-      delete copy.arcAssignments[assignment.id];
-    }
-    return copy;
-  },
-  "UPDATE-ARC": (
-    state: InMemoryState,
-    payload: { arcId: string } & Partial<{ color: number }>
-  ): InMemoryState => {
-    const arcCopy = { ...state.arcs[payload.arcId], ...payload };
-
-    if (!arcCopy) throw new Error("Arc ID to update could not be found");
-
-    const stateCopy = { ...state };
-
-    stateCopy.arcs[arcCopy.id] = arcCopy;
-
     return stateCopy;
   },
 };
@@ -218,23 +158,17 @@ export const dispatch = (
   action: InMemoryAction
 ): InMemoryState => {
   switch (action.type) {
-    case "ASSIGN-ARC":
+    case "OVERWRITE":
       return dispatchers[action.type](state, action.payload);
-    case "CREATE-ARC":
+    case "CREATE_DOCUMENT":
       return dispatchers[action.type](state, action.payload);
-    case "OVERRIDE":
+    case "UPDATE_FIELD":
       return dispatchers[action.type](state, action.payload);
-    case "CREATE-OR-UPDATE-ENTRY":
+    case "UPDATE_DOCUMENT":
       return dispatchers[action.type](state, action.payload);
-    case "DELETE-ENTRY":
+    case "REMOVE_DOCUMENT":
       return dispatchers[action.type](state, action.payload);
-    case "UPDATE-JOURNAL-METADATA":
-      return dispatchers[action.type](state, action.payload);
-    case "UPDATE-JOURNAL-TITLE":
-      return dispatchers[action.type](state, action.payload);
-    case "UNASSIGN-ARC":
-      return dispatchers[action.type](state, action.payload);
-    case "UPDATE-ARC":
+    case "REMOVE_DOCUMENTS":
       return dispatchers[action.type](state, action.payload);
     default:
       return { ...state };
