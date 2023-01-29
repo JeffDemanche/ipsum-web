@@ -10,14 +10,14 @@ import {
   TopLevelField,
   Collection,
   getPrimaryKey,
-} from "./SCH_in-memory-schema";
+} from "./in-memory-schema";
 import {
   deserializeInMemoryState,
   initializeDefaultInMemoryState,
   serializeInMemoryState,
-} from "./SCH_in-memory-state";
+} from "./in-memory-state";
 import _, { intersection } from "underscore";
-import { dispatch, InMemoryAction } from "./SCH_in-memory-actions";
+import { dispatch, InMemoryAction } from "./in-memory-actions";
 import { readFromFile, writeToFile } from "util/file/serializer";
 import { usePrevious } from "util/hooks/usePrevious";
 

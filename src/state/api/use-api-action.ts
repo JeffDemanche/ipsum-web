@@ -6,17 +6,17 @@
  */
 
 import { useCallback, useContext, useState } from "react";
-import { InMemoryAction } from "state/in-memory/SCH_in-memory-actions";
-import { InMemoryStateContext } from "state/in-memory/SCH_in-memory-context";
-import { InMemoryState } from "state/in-memory/SCH_in-memory-schema";
+import { InMemoryAction } from "state/in-memory/in-memory-actions";
+import { InMemoryStateContext } from "state/in-memory/in-memory-context";
+import { InMemoryState } from "state/in-memory/in-memory-schema";
 import {
   apiAssignArc,
   apiCreateAndAssignArc,
   apiUnassignArc,
   apiUpdateArc,
-} from "./SCH_arc";
-import { apiCreateOrUpdateEntry, apiDeleteEntry } from "./SCH_entry";
-import { apiUpdateJournalTitle } from "./SCH_journalTitle";
+} from "./arc";
+import { apiCreateOrUpdateEntry, apiDeleteEntry } from "./entry";
+import { apiUpdateJournalTitle } from "./journalTitle";
 
 export interface APIContext {
   state: InMemoryState;

@@ -5,7 +5,7 @@ import { ArcSelectionContext } from "components/SelectionContext/ArcSelectionCon
 import React, { useCallback, useContext, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
-import { useApiAction } from "state/api/SCH_use-api-action";
+import { useApiAction } from "state/api/use-api-action";
 import styles from "./Digest.less";
 import { useStateDocumentQuery } from "state/in-memory";
 

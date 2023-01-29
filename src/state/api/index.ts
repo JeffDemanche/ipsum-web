@@ -1,1 +1,1 @@
-export { useApiAction } from "./SCH_use-api-action";
+export { useApiAction } from "./use-api-action";

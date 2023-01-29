@@ -2,8 +2,8 @@ import { ContentState } from "draft-js";
 import { parseContentState, stringifyContentState } from "util/content-state";
 import { IpsumDateTime, stringifyIpsumDateTime } from "util/dates";
 import { IpsumEntityTransformer } from "util/entities";
-import { APIContext, APIReturn } from "./SCH_use-api-action";
-import { Document } from "../in-memory/SCH_in-memory-schema";
+import { APIContext, APIReturn } from "./use-api-action";
+import { Document } from "../in-memory/in-memory-schema";
 
 export const apiCreateOrUpdateEntry = (
   {

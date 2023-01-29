@@ -1,5 +1,5 @@
 import { SelectionState } from "draft-js";
-import { APIContext, APIReturn } from "./SCH_use-api-action";
+import { APIContext, APIReturn } from "./use-api-action";
 import { v4 as uuidv4 } from "uuid";
 import { nextHue } from "util/colors";
 import { IpsumEntityTransformer } from "util/entities";

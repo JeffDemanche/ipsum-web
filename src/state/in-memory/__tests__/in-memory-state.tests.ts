@@ -1,12 +1,12 @@
 import { ContentState } from "draft-js";
 import { parseContentState, stringifyContentState } from "util/content-state";
-import { WritableInMemoryState } from "../SCH_in-memory-schema";
+import { WritableInMemoryState } from "../in-memory-schema";
 import {
   deserializeInMemoryState,
   initializeDefaultDocument,
   initializeDefaultInMemoryState,
   serializeInMemoryState,
-} from "../SCH_in-memory-state";
+} from "../in-memory-state";
 
 describe("InMemoryState", () => {
   describe("initializeDefaultInMemoryState", () => {

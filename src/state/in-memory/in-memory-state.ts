@@ -7,7 +7,7 @@ import {
   TopLevelFieldName,
   InMemoryField,
   InMemoryCollection,
-} from "./SCH_in-memory-schema";
+} from "./in-memory-schema";
 
 export const initializeDefaultDocument = <C extends CollectionName>(
   type: C

@@ -1,4 +1,4 @@
-import { APIContext, APIReturn } from "./SCH_use-api-action";
+import { APIContext, APIReturn } from "./use-api-action";
 
 export const apiUpdateJournalTitle = (
   { title }: { title: string },

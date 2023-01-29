@@ -1,11 +1,11 @@
 import { IDBPDatabase, openDB } from "idb";
 import { useEffect, useState } from "react";
-import { InMemoryState as NewInMemoryState } from "state/in-memory/SCH_in-memory-schema";
+import { InMemoryState as NewInMemoryState } from "state/in-memory/in-memory-schema";
 import {
   deserializeInMemoryState,
   initializeDefaultInMemoryState,
   serializeInMemoryState,
-} from "state/in-memory/SCH_in-memory-state";
+} from "state/in-memory/in-memory-state";
 
 /**
  * Module for Ipsum interfacing with IndexedDB.

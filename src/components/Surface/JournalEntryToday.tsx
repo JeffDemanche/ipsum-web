@@ -3,7 +3,7 @@ import cx from "classnames";
 import { Digest } from "components/Digest/Digest";
 import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
-import { useApiAction } from "state/api/SCH_use-api-action";
+import { useApiAction } from "state/api/use-api-action";
 import _ from "underscore";
 import { IpsumDateTime } from "util/dates";
 import { placeholderForDate } from "util/placeholders";

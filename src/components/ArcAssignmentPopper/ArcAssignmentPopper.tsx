@@ -12,7 +12,7 @@ import styles from "./ArcAssignmentPopper.less";
 import { useSearchArcs } from "util/hooks/useSearchArcs";
 import { ArcToken } from "components/Arc/ArcToken";
 import { nextHue } from "util/colors";
-import { useApiAction } from "state/api/SCH_use-api-action";
+import { useApiAction } from "state/api/use-api-action";
 import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
 import { noop } from "underscore";
 import { useStateFieldQuery } from "state/in-memory";

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { InMemoryStateContext } from "./SCH_in-memory-context";
+import { InMemoryStateContext } from "./in-memory-context";
 
 export const useShouldReloadEditor = () => {
   const { shouldReloadEditor } = useContext(InMemoryStateContext);

@@ -4,7 +4,7 @@ import { useOpenArc } from "components/SelectionContext/useOpenArc";
 import styles from "./ArcDetailPrefsBox.less";
 import { IpsumArcColor } from "util/colors";
 import { ArcToken } from "components/Arc/ArcToken";
-import { useApiAction } from "state/api/SCH_use-api-action";
+import { useApiAction } from "state/api/use-api-action";
 
 export const ArcDetailPrefsBox: React.FC = () => {
   const { arc } = useOpenArc();

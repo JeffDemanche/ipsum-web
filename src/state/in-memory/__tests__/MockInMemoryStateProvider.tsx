@@ -1,8 +1,8 @@
 import React from "react";
-import { InMemoryAction } from "../SCH_in-memory-actions";
-import { InMemoryStateContext } from "../SCH_in-memory-context";
-import { InMemoryState } from "../SCH_in-memory-schema";
-import { initializeDefaultInMemoryState } from "../SCH_in-memory-state";
+import { InMemoryAction } from "../in-memory-actions";
+import { InMemoryStateContext } from "../in-memory-context";
+import { InMemoryState } from "../in-memory-schema";
+import { initializeDefaultInMemoryState } from "../in-memory-state";
 
 interface MockInMemoryStateProviderProps {
   state?: Partial<InMemoryState>;

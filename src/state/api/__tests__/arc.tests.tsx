@@ -1,8 +1,8 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import { APIDispatcher } from "./SCH_api-test-utils";
-import { initializeDefaultInMemoryState } from "state/in-memory/SCH_in-memory-state";
-import { InMemoryState } from "state/in-memory/SCH_in-memory-schema";
+import { APIDispatcher } from "./api-test-utils";
+import { initializeDefaultInMemoryState } from "state/in-memory/in-memory-state";
+import { InMemoryState } from "state/in-memory/in-memory-schema";
 import {
   createEditorState,
   createEditorStateFromFormat,

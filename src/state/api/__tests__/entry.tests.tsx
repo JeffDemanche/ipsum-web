@@ -1,13 +1,13 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import { initializeDefaultInMemoryState } from "state/in-memory/SCH_in-memory-state";
+import { initializeDefaultInMemoryState } from "state/in-memory/in-memory-state";
 import { IpsumDateTime } from "util/dates";
 import {
   createEditorState,
   moveEditorSelection,
 } from "util/__tests__/editor-utils";
-import { APIDispatcher } from "./SCH_api-test-utils";
-import { InMemoryState } from "state/in-memory/SCH_in-memory-schema";
+import { APIDispatcher } from "./api-test-utils";
+import { InMemoryState } from "state/in-memory/in-memory-schema";
 import { IpsumEntityTransformer } from "util/entities";
 import { DateTime } from "luxon";
 import { parseContentState, stringifyContentState } from "util/content-state";

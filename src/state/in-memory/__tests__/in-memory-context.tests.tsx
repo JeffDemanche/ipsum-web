@@ -3,17 +3,13 @@ import React, { FunctionComponent, useContext, useEffect } from "react";
 import {
   InMemoryStateContext,
   InMemoryStateProviderWithAutosave,
-} from "../SCH_in-memory-context";
+} from "../in-memory-context";
 import {
   initializeDefaultDocument,
   initializeDefaultInMemoryState,
-} from "../SCH_in-memory-state";
+} from "../in-memory-state";
 import { IpsumIndexedDBClient } from "util/indexed-db";
-import {
-  Document,
-  InMemoryState,
-  TopLevelField,
-} from "../SCH_in-memory-schema";
+import { Document, InMemoryState, TopLevelField } from "../in-memory-schema";
 import { useStateDocumentQuery } from "../useStateDocumentQuery";
 import { useStateFieldQuery } from "../useStateFieldQuery";
 

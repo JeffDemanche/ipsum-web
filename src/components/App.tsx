@@ -4,7 +4,7 @@ import { IpsumRouter } from "../views/IpsumRouter";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "styles/styles";
 import "draft-js/dist/Draft.css";
-import { InMemoryStateProvider } from "state/in-memory/SCH_in-memory-context";
+import { InMemoryStateProvider } from "state/in-memory/in-memory-context";
 
 export const App: React.FC = () => {
   return (

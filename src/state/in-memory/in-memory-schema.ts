@@ -1,6 +1,5 @@
-import { ContentState, EditorState } from "draft-js";
-import { DateTime } from "luxon";
-import { parseContentState, stringifyContentState } from "util/content-state";
+import { EditorState } from "draft-js";
+import { stringifyContentState } from "util/content-state";
 import { IpsumDateTime, stringifyIpsumDateTime } from "util/dates";
 import { v4 as uuidv4 } from "uuid";
 

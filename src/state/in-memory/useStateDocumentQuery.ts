@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { InMemoryStateContext } from "./SCH_in-memory-context";
-import { CollectionName, CollectionSchema } from "./SCH_in-memory-schema";
+import { InMemoryStateContext } from "./in-memory-context";
+import { CollectionName, CollectionSchema } from "./in-memory-schema";
 import { v4 as uuidv4 } from "uuid";
-import { Document } from "./SCH_in-memory-schema";
+import { Document } from "./in-memory-schema";
 
 interface UseStateDocumentQueryArgs<T extends CollectionName> {
   collection: T;

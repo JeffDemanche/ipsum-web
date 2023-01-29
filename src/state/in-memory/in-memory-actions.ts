@@ -9,8 +9,8 @@ import {
   WritableInMemoryState,
   TopLevelFieldName,
   TopLevelField,
-} from "./SCH_in-memory-schema";
-import { initializeDefaultDocument } from "./SCH_in-memory-state";
+} from "./in-memory-schema";
+import { initializeDefaultDocument } from "./in-memory-state";
 
 export type InMemoryAction =
   | {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ArcDisambiguator } from "../ArcDisambiguator";
-import { MockInMemoryStateProvider } from "state/in-memory/__tests__/SCH_MockInMemoryStateProvider";
+import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
 
 const TestDisambiguator: React.FunctionComponent<{
   open: boolean;

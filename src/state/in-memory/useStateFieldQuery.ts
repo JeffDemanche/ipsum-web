@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { InMemoryStateContext } from "./SCH_in-memory-context";
-import { TopLevelField, TopLevelFieldName } from "./SCH_in-memory-schema";
+import { InMemoryStateContext } from "./in-memory-context";
+import { TopLevelField, TopLevelFieldName } from "./in-memory-schema";
 import { v4 as uuidv4 } from "uuid";
 
 interface UseStateFieldQueryArgs<T extends TopLevelFieldName> {

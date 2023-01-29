@@ -1,5 +1,5 @@
 import { useStateDocumentQuery } from "state/in-memory";
-import { Document } from "state/in-memory/SCH_in-memory-schema";
+import { Document } from "state/in-memory/in-memory-schema";
 
 interface UseSearchArcsParams {
   query: string;

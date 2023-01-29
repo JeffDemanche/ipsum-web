@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import React, { useContext } from "react";
-import { MockInMemoryStateProvider } from "state/in-memory/__tests__/SCH_MockInMemoryStateProvider";
+import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
 import { stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";

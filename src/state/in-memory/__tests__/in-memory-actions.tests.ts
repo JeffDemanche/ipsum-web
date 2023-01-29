@@ -1,10 +1,10 @@
 import { IpsumDateTime } from "util/dates";
-import { dispatch, InMemoryAction } from "../SCH_in-memory-actions";
-import { InMemoryCollections, InMemoryState } from "../SCH_in-memory-schema";
+import { dispatch, InMemoryAction } from "../in-memory-actions";
+import { InMemoryCollections, InMemoryState } from "../in-memory-schema";
 import {
   initializeDefaultDocument,
   initializeDefaultInMemoryState,
-} from "../SCH_in-memory-state";
+} from "../in-memory-state";
 
 const reducer = (
   state: InMemoryState,
