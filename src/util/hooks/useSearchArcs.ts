@@ -1,5 +1,5 @@
 import { useStateDocumentQuery } from "state/in-memory";
-import { InMemoryArc } from "state/in-memory/in-memory-state";
+import { Document } from "state/in-memory/SCH_in-memory-schema";
 
 interface UseSearchArcsParams {
   query: string;
@@ -7,7 +7,7 @@ interface UseSearchArcsParams {
 }
 
 interface UseSearchArcsReturn {
-  returnedArcs: InMemoryArc[];
+  returnedArcs: Document<"arc">[];
 }
 
 export const useSearchArcs = ({
