@@ -17,7 +17,6 @@ export const Calendar: React.FC = () => {
 
   const { data: entries } = useStateDocumentQuery({
     collection: "entry",
-    keys: [],
   });
 
   const allEntryDates = useMemo(

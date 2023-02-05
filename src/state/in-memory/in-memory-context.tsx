@@ -109,6 +109,7 @@ export interface FieldBroadcaster<F extends TopLevelFieldName> {
 export interface DocumentBroadcaster<C extends CollectionName> {
   type: "documents";
   id: string;
+  name?: string;
   collection: C;
   keys?: CollectionSchema[C]["primaryKey"][];
   broadcast: (documents: { [k: string]: Document<C> }) => void;
@@ -135,17 +136,17 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
   >([]);
   const addDocumentBroadcaster = useCallback(
     <T extends CollectionName>(broadcaster: DocumentBroadcaster<T>) => {
-      if (!documentBroadcasters.find((fb) => fb.id === broadcaster.id))
-        setDocumentBroadcasters([...documentBroadcasters, broadcaster]);
+      if (!documentBroadcasters.find((db) => db.id === broadcaster.id)) {
+        setDocumentBroadcasters((dbs) => dbs.concat(broadcaster));
+      }
     },
-    [documentBroadcasters]
+    [documentBroadcasters, setDocumentBroadcasters]
   );
   const removeDocumentBroadcaster = useCallback(
     (id: string) => {
-      if (documentBroadcasters.find((fb) => fb.id === id))
-        setDocumentBroadcasters(
-          documentBroadcasters.filter((b) => b.id !== id)
-        );
+      if (documentBroadcasters.find((db) => db.id === id)) {
+        setDocumentBroadcasters((dbs) => dbs.filter((b) => b.id !== id));
+      }
     },
     [documentBroadcasters]
   );
@@ -205,7 +206,7 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
                 typeof key
               >;
               const filteredDocuments = Object.keys(selectedCollection)
-                .filter((docKey) => db.keys.includes(docKey))
+                .filter((docKey) => !db.keys || db.keys.includes(docKey))
                 .map((docKey) => selectedCollection[docKey]);
               const primaryKey = getPrimaryKey(db.collection);
               const mappedFilteredDocuments = filteredDocuments.reduce(

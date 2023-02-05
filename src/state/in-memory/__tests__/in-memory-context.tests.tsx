@@ -40,7 +40,12 @@ describe("InMemoryContext", () => {
             });
             onOptimisticDispatch(newState);
           }
-        }, [optimisticDispatch, hasLoadedAutosave, onOptimisticDispatch]);
+        }, [
+          optimisticDispatch,
+          hasLoadedAutosave,
+          onOptimisticDispatch,
+          state,
+        ]);
 
         return <div>{children}</div>;
       };
@@ -50,7 +55,6 @@ describe("InMemoryContext", () => {
       }> = ({ onDataChange }) => {
         const { data } = useStateDocumentQuery({
           collection: "arc",
-          keys: [],
         });
 
         useEffect(() => {
@@ -88,7 +92,6 @@ describe("InMemoryContext", () => {
         }> = ({ onDataChange }) => {
           const { data } = useStateDocumentQuery({
             collection: "entry",
-            keys: [],
           });
 
           useEffect(() => {
@@ -181,7 +184,6 @@ describe("InMemoryContext", () => {
         }> = ({ onDataChange }) => {
           const { data } = useStateDocumentQuery({
             collection: "arc",
-            keys: [],
           });
 
           useEffect(() => {
@@ -390,6 +392,7 @@ describe("InMemoryContext", () => {
           </InMemoryStateProviderWithAutosave>
         );
 
+        expect(onDataChange.mock.calls.length).toEqual(2);
         expect(onDataChange.mock.calls[0][0]).toEqual("old title");
         expect(onDataChange.mock.calls[1][0]).toEqual("new title");
       });

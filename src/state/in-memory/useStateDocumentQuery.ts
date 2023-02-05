@@ -6,7 +6,8 @@ import { Document } from "./in-memory-schema";
 
 interface UseStateDocumentQueryArgs<T extends CollectionName> {
   collection: T;
-  keys: CollectionSchema[T]["primaryKey"][];
+  keys?: CollectionSchema[T]["primaryKey"][];
+  name?: string;
 }
 
 interface UseStateDocumentQueryResult<F extends CollectionName> {
@@ -26,12 +27,9 @@ export const useStateDocumentQuery = <F extends CollectionName>(
   const collectionData =
     state[args.collection] ?? ({} as typeof state[CollectionName]);
 
-  const initialStateKeys =
-    args.keys.length > 0
-      ? Object.keys(collectionData).filter((docKey) =>
-          args.keys.includes(docKey)
-        )
-      : Object.keys(collectionData);
+  const initialStateKeys = args.keys
+    ? Object.keys(collectionData).filter((docKey) => args.keys.includes(docKey))
+    : Object.keys(collectionData);
 
   const initialStateEntries = initialStateKeys.reduce(
     (acc, docKey) => ({ ...acc, [docKey]: collectionData[docKey] }),
@@ -54,6 +52,7 @@ export const useStateDocumentQuery = <F extends CollectionName>(
         setData(docs);
       },
       keys: args.keys,
+      name: args.name,
     });
 
     return () => {

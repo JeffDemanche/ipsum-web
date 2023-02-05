@@ -28,7 +28,10 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
-  const { data: arcs } = useStateDocumentQuery({ collection: "arc", keys: [] });
+  const { data: arcs } = useStateDocumentQuery({
+    collection: "arc",
+    name: "arc token",
+  });
 
   const arc: { color: number; name: string } =
     arcForToken.type === "from id" ? arcs[arcForToken.id] : arcForToken;
@@ -81,11 +84,8 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
     );
 
   return (
-    <Typography variant="body2" sx={{ margin: "2px" }}>
-      <Paper
-        className={cx(className, styles["arc-token-container"])}
-        sx={style}
-      >
+    <Paper className={cx(className, styles["arc-token-container"])} sx={style}>
+      <Typography variant={type === "span" ? "body2" : "h3"}>
         <Link
           href={"#"}
           onMouseEnter={() => {
@@ -100,9 +100,9 @@ export const ArcToken: React.FunctionComponent<ArcToken> = ({
           onClick={onClick}
           style={style}
         >
-          {innerTag}
+          {arc?.name ?? "null"}
         </Link>
-      </Paper>
-    </Typography>
+      </Typography>
+    </Paper>
   );
 };

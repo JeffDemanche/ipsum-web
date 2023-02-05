@@ -41,7 +41,10 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
   const { ctrlKey } = useContext(JournalHotkeysContext);
   const { hoveredArcIds, setHoveredArcIds, selectedArcIds, setSelectedArcIds } =
     useContext(ArcSelectionContext);
-  const { data: arcs } = useStateDocumentQuery({ collection: "arc", keys: [] });
+  const { data: arcs } = useStateDocumentQuery({
+    collection: "arc",
+    name: "arc decoration",
+  });
 
   const entityArcs = arcIds?.map((id) => arcs[id]).filter((arc) => !!arc) ?? [];
   const hoveredArcs =

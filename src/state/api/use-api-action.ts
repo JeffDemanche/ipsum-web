@@ -83,23 +83,8 @@ export const useApiAction = <T extends APIFunctionName>(
     [optimisticDispatch, reloadEditor]
   );
 
-  if (skip) {
-    return {
-      loading: false,
-    };
-  }
-
-  if (!dispatch)
-    return {
-      loading: false,
-      error: new Error("Tried to use API outside of InMemoryStateContext"),
-    };
-
-  return {
-    loading: isLoadingPromise,
-    data,
-    error,
-    act: (params) => {
+  const act = useCallback(
+    (params: APIFunctionActParams<T>) => {
       try {
         // @ts-ignore
         const data = APIFunctions[apiCall.name](params, {
@@ -120,5 +105,25 @@ export const useApiAction = <T extends APIFunctionName>(
         setError(err);
       }
     },
+    [apiCall.name, dispatch, optimisticStateDispatch, reloadEditor, state]
+  );
+
+  if (skip) {
+    return {
+      loading: false,
+    };
+  }
+
+  if (!dispatch)
+    return {
+      loading: false,
+      error: new Error("Tried to use API outside of InMemoryStateContext"),
+    };
+
+  return {
+    loading: isLoadingPromise,
+    data,
+    error,
+    act,
   };
 };

@@ -14,7 +14,10 @@ export const useSearchArcs = ({
   query,
   maxResults = 10,
 }: UseSearchArcsParams): UseSearchArcsReturn => {
-  const { data: arcs } = useStateDocumentQuery({ collection: "arc", keys: [] });
+  const { data: arcs } = useStateDocumentQuery({
+    collection: "arc",
+    name: "arc search",
+  });
 
   const allArcs = Object.values(arcs).filter((arc) => {
     return arc.name.toLowerCase().includes(query.toLowerCase());

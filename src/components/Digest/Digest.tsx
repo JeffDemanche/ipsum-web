@@ -16,7 +16,6 @@ interface DigestProps {
 export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
   const { data: arcAssignments } = useStateDocumentQuery({
     collection: "arc_assignment",
-    keys: [],
   });
   const {
     selectedArcIds,

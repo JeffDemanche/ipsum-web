@@ -7,7 +7,7 @@
     "webpack": "webpack --watch",
     "electron": "wait-on tcp:9000 && electron .",
     "devserver": "npx webpack serve",
-    "test": "jest",
+    "test": "jest --maxWorkers=50%",
     "project-tools": "npx ts-node scripts/project-tools/index.ts"
   },
   "repository": {

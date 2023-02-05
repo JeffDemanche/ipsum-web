@@ -81,7 +81,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
     <div className={styles["journal-entry"]}>
       <div className={styles["entry-text-vertical"]}>
         <Typography
-          variant="h4"
+          variant="h3"
           color={(theme) => theme.palette.onSurfaceHighEmphasis}
         >
           {IpsumDateTime.fromString(entryKey, "entry-printed-date").toString(

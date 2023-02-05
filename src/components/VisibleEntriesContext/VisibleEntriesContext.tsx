@@ -26,7 +26,6 @@ export const VisibleEntriesProvider: React.FC<{
 }> = ({ children }: { children: React.ReactElement }) => {
   const { data: entries } = useStateDocumentQuery({
     collection: "entry",
-    keys: [],
   });
 
   const [searchParams] = useSearchParams();

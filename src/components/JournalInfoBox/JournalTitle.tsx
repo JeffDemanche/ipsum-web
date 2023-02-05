@@ -84,7 +84,7 @@ export const JournalTitle: React.FunctionComponent = () => {
     <div className={styles["title-container"]}>
       <ClickAwayListener
         onClickAway={() => {
-          update();
+          if (editing) update();
         }}
       >
         {content}

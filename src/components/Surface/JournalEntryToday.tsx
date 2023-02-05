@@ -4,8 +4,9 @@ import { Digest } from "components/Digest/Digest";
 import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
 import { useApiAction } from "state/api/use-api-action";
-import _ from "underscore";
+import { InMemoryStateContext } from "state/in-memory/in-memory-context";
 import { IpsumDateTime } from "util/dates";
+import { useDebouncedCallback } from "util/hooks/useDebouncedCallback";
 import { placeholderForDate } from "util/placeholders";
 import { EditorWrapper } from "./EditorWrapper";
 import styles from "./JournalEntry.less";
@@ -38,7 +39,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
     name: "createOrUpdateEntry",
   });
 
-  const onEditorUpdate = (newEditorState: EditorState) => {
+  const onEditorUpdate = useDebouncedCallback((newEditorState: EditorState) => {
     if (newEditorState) {
       if (empty) {
         deleteEntry({ entryKey });
@@ -50,21 +51,14 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
         });
       }
     }
-  };
-
-  // Ignore deps warning because eslint can't handle the debouncing.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const onEditorUpdateDebounced = useCallback(_.debounce(onEditorUpdate, 500), [
-    empty,
-    entryKey,
-  ]);
+  }, 500);
 
   const onEditorChange = useCallback(
     (newEditorState: EditorState) => {
       setEntryEditorState(entryKey, () => newEditorState);
-      onEditorUpdateDebounced(newEditorState);
+      onEditorUpdate(newEditorState);
     },
-    [entryKey, onEditorUpdateDebounced, setEntryEditorState]
+    [entryKey, onEditorUpdate, setEntryEditorState]
   );
 
   const handleKeyCommand = useCallback(
@@ -94,7 +88,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
     <div className={styles["journal-entry"]}>
       <div className={styles["entry-text-vertical"]}>
         <Typography
-          variant="h4"
+          variant="h3"
           color={(theme) =>
             empty
               ? theme.palette.onSurfaceDisabled

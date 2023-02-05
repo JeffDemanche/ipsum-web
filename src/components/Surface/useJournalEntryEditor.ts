@@ -39,7 +39,6 @@ export const useJournalEntryEditor = ({
 }: UseJournalEntryEditorArgs): UseJournalEntryEditorResult => {
   const { data: entries } = useStateDocumentQuery({
     collection: "entry",
-    keys: [],
   });
 
   const { shouldReloadEditor } = useShouldReloadEditor();
