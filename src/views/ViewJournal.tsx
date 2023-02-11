@@ -5,22 +5,26 @@ import styles from "./ViewJournal.less";
 import { VisibleEntriesProvider } from "../components/VisibleEntriesContext/VisibleEntriesContext";
 import { ArcSelectionProvider } from "components/SelectionContext/ArcSelectionContext";
 import { JournalHotkeysProvider } from "components/JournalHotkeys/JournalHotkeysContext";
-import { ArcNavigator } from "components/ArcNavigator/ArcNavigator";
-import { DailyJournal } from "components/DailyJournal/DailyJournal";
+import { Diptych } from "components/Diptych/Diptych";
+import { DiptychProvider } from "components/DiptychContext";
+import { JournalInfoBox } from "components/JournalInfoBox/JournalInfoBox";
+import { Calendar } from "components/Calendar/Calendar";
 
 const ProvidersWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <VisibleEntriesProvider>
-      <SurfaceEditorContextProvider>
-        <EditorSelectionProvider>
-          <JournalHotkeysProvider>
-            <ArcSelectionProvider>{children}</ArcSelectionProvider>
-          </JournalHotkeysProvider>
-        </EditorSelectionProvider>
-      </SurfaceEditorContextProvider>
-    </VisibleEntriesProvider>
+    <DiptychProvider>
+      <VisibleEntriesProvider>
+        <SurfaceEditorContextProvider>
+          <EditorSelectionProvider>
+            <JournalHotkeysProvider>
+              <ArcSelectionProvider>{children}</ArcSelectionProvider>
+            </JournalHotkeysProvider>
+          </EditorSelectionProvider>
+        </SurfaceEditorContextProvider>
+      </VisibleEntriesProvider>
+    </DiptychProvider>
   );
 };
 
@@ -28,8 +32,11 @@ export const ViewJournal: React.FC = () => {
   return (
     <ProvidersWrapper>
       <div className={styles["view-journal"]}>
-        <DailyJournal></DailyJournal>
-        <ArcNavigator></ArcNavigator>
+        <div className={styles["header-container"]}>
+          <JournalInfoBox></JournalInfoBox>
+          <Calendar></Calendar>
+        </div>
+        <Diptych></Diptych>
       </div>
     </ProvidersWrapper>
   );

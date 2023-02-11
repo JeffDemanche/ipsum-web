@@ -9,6 +9,7 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -24,6 +25,10 @@ module.exports = {
     quotes: ["error", "double", { avoidEscape: true }],
     semi: ["error", "always"],
     "@typescript-eslint/no-empty-function": "off",
+    "import/no-internal-modules": [
+      "warn",
+      { allow: ["components/*", "state/*", "util/*"] },
+    ],
   },
   settings: {
     "import/resolver": {

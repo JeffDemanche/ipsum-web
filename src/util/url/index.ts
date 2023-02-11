@@ -1,0 +1,1 @@
+export { IpsumURL } from "./urls";
