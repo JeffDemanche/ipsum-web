@@ -339,6 +339,72 @@ describe("InMemoryContext", () => {
         });
         expect(onDataChange.mock.calls.length).toBe(1);
       });
+
+      it("query data updates when keys change", () => {
+        const arc: { [id: string]: Document<"arc"> } = {
+          arc_1: { ...initializeDefaultDocument("arc"), id: "arc_1" },
+          arc_2: { ...initializeDefaultDocument("arc"), id: "arc_2" },
+          arc_3: { ...initializeDefaultDocument("arc"), id: "arc_3" },
+        };
+
+        const UserComponent: FunctionComponent<{
+          onDataChange: (data: { [k: string]: object }) => void;
+          keys: string[];
+        }> = ({ onDataChange, keys }) => {
+          const { data } = useStateDocumentQuery({
+            collection: "arc",
+            keys,
+          });
+
+          useEffect(() => {
+            onDataChange(data);
+          }, [data, onDataChange]);
+
+          return <></>;
+        };
+
+        const onDataChange = jest.fn();
+
+        const defaultState = initializeDefaultInMemoryState();
+
+        const Component: React.FunctionComponent<{ keys: string[] }> = ({
+          keys,
+        }) => {
+          return (
+            <InMemoryStateProviderWithAutosave
+              idbWrapper={new IpsumIndexedDBClient(null)}
+              stateFromAutosave={{ ...defaultState, arc }}
+            >
+              <UserComponent
+                onDataChange={onDataChange}
+                keys={keys}
+              ></UserComponent>
+            </InMemoryStateProviderWithAutosave>
+          );
+        };
+
+        const { rerender } = render(<Component keys={["arc_1"]}></Component>);
+
+        expect(onDataChange.mock.calls.length).toEqual(1);
+        expect(onDataChange.mock.calls[0][0]).toEqual({
+          arc_1: arc.arc_1,
+        });
+
+        rerender(<Component keys={["arc_1", "arc_2"]}></Component>);
+
+        expect(onDataChange.mock.calls.length).toEqual(2);
+        expect(onDataChange.mock.calls[1][0]).toEqual({
+          arc_1: arc.arc_1,
+          arc_2: arc.arc_2,
+        });
+
+        rerender(<Component keys={["arc_3"]}></Component>);
+
+        expect(onDataChange.mock.calls.length).toEqual(3);
+        expect(onDataChange.mock.calls[2][0]).toEqual({
+          arc_3: arc.arc_3,
+        });
+      });
     });
 
     describe("field queries", () => {

@@ -1,10 +1,11 @@
-import { ArcNavigator } from "components/ArcNavigator/ArcNavigator";
+import { ArcDetail } from "components/ArcDetail/ArcDetail";
+import { DiptychLayer } from "components/DiptychContext/types";
 import { Surface } from "components/Surface/Surface";
 import React from "react";
 import styles from "./DiptychColumn.less";
 
 interface DiptychColumnProps {
-  layers: Layer[];
+  layers: DiptychLayer[];
 }
 
 export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
@@ -17,7 +18,7 @@ export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
       {topMostLayer.type === "DailyJournal" ? (
         <Surface></Surface>
       ) : (
-        <ArcNavigator></ArcNavigator>
+        <ArcDetail assignmentId={topMostLayer.assignmentId}></ArcDetail>
       )}
     </div>
   );

@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router-dom";
 import { useApiAction } from "state/api/use-api-action";
 import styles from "./Digest.less";
 import { useStateDocumentQuery } from "state/in-memory";
+import { DiptychContext } from "components/DiptychContext/DiptychContext";
 
 interface DigestProps {
   entryKey: string;
@@ -17,13 +18,10 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
   const { data: arcAssignments } = useStateDocumentQuery({
     collection: "arc_assignment",
   });
-  const {
-    selectedArcIds,
-    hoveredArcIds,
-    setHoveredArcIds,
-    setSelectedArcIds,
-    setOpenArcId,
-  } = useContext(ArcSelectionContext);
+  const { selectedArcIds, hoveredArcIds, setHoveredArcIds, setSelectedArcIds } =
+    useContext(ArcSelectionContext);
+
+  const { setFirstLayer } = useContext(DiptychContext);
 
   const arcAssignmentValues = Object.values(arcAssignments);
   const assignments = useMemo(() => {
@@ -97,7 +95,11 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
                     sx={{ width: "40px" }}
                     className={styles["function-button"]}
                     onClick={() => {
-                      setOpenArcId(assgn.arcId);
+                      setFirstLayer({
+                        type: "arc_detail",
+                        connectionId: assgn.id,
+                        objectId: assgn.arcId,
+                      });
                     }}
                   >
                     <Tooltip title="Open arc details">
@@ -116,7 +118,6 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
     navigate,
     searchParams,
     setHoveredArcIds,
-    setOpenArcId,
     setSelectedArcIds,
     tokenHighlighted,
     tokenSelected,

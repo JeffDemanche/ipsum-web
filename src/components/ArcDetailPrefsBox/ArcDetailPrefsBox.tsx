@@ -1,13 +1,14 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { Paper, Slider } from "@mui/material";
-import { useOpenArc } from "components/SelectionContext/useOpenArc";
 import styles from "./ArcDetailPrefsBox.less";
 import { IpsumArcColor } from "util/colors";
 import { ArcToken } from "components/Arc/ArcToken";
 import { useApiAction } from "state/api/use-api-action";
+import { ArcDetailContext } from "components/ArcDetail/ArcDetailContext";
 
 export const ArcDetailPrefsBox: React.FC = () => {
-  const { arc } = useOpenArc();
+  const { arc } = useContext(ArcDetailContext);
+
   const { act: updateArc } = useApiAction({ name: "updateArc" });
 
   const [localColor, setLocalColor] = useState(arc.color);

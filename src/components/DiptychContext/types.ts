@@ -1,3 +1,5 @@
+import { URLLayer } from "util/url";
+
 /**
  * Item which connects two layers, such as an arc highlight.
  */
@@ -9,17 +11,22 @@ interface DailyJournalLayer {
 
 interface ArcDetailLayer {
   type: "ArcDetail";
+  assignmentId: string;
+  arcId: string;
 }
 
 /**
  * A layer of the diptych, such as the journal view or an arc detail view.
  */
-type Layer = { connectionFrom?: Connection } & (
+export type DiptychLayer = { connectionFrom?: Connection } & (
   | DailyJournalLayer
   | ArcDetailLayer
 );
 
-interface Diptych {
-  layers: Layer[];
-  layersBySide: { 0: Layer[]; 1: Layer[] };
+export interface Diptych {
+  layers: DiptychLayer[];
+  layersBySide: { 0: DiptychLayer[]; 1: DiptychLayer[] };
+  pushLayer: (layer: URLLayer) => void;
+  setFirstLayer: (layer: URLLayer) => void;
+  closeLayer: (index: number) => void;
 }

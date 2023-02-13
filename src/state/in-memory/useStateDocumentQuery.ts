@@ -43,6 +43,11 @@ export const useStateDocumentQuery = <F extends CollectionName>(
   // As an array, args.keys will cause the useEffect to run every render. If we
   // turn it into a string, it'll only update if the value of the array changes.
   const keysString = `${args.keys}`;
+
+  useEffect(() => {
+    setData(initialStateEntries);
+  }, [keysString]);
+
   useEffect(() => {
     addDocumentBroadcaster({
       id,
