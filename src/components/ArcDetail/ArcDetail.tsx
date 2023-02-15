@@ -1,10 +1,11 @@
 import { Close } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Button, Paper } from "@mui/material";
 import { ArcDetailPrefsBox } from "components/ArcDetailPrefsBox/ArcDetailPrefsBox";
 import { DiptychContext } from "components/DiptychContext/DiptychContext";
 import React, { useContext } from "react";
+import { IpsumColor } from "util/colors";
 import styles from "./ArcDetail.less";
-import { ArcDetailProvider } from "./ArcDetailContext";
+import { ArcDetailContext, ArcDetailProvider } from "./ArcDetailContext";
 
 interface ArcDetailProps {
   assignmentId: string;
@@ -13,20 +14,36 @@ interface ArcDetailProps {
 export const ArcDetail: React.FunctionComponent<ArcDetailProps> = ({
   assignmentId,
 }) => {
-  const { closeLayer } = useContext(DiptychContext);
-
   return (
     <ArcDetailProvider assignmentId={assignmentId}>
-      <div className={styles["arc-detail"]}>
-        <Button
-          onClick={() => {
-            closeLayer(1);
-          }}
-        >
-          <Close></Close>
-        </Button>
-        <ArcDetailPrefsBox></ArcDetailPrefsBox>
-      </div>
+      <ArcDetailWithProvider></ArcDetailWithProvider>
     </ArcDetailProvider>
+  );
+};
+
+const ArcDetailWithProvider = () => {
+  const { closeLayer } = useContext(DiptychContext);
+  const { arc } = useContext(ArcDetailContext);
+
+  return (
+    <Paper
+      className={styles["arc-detail"]}
+      style={{
+        border: `2px solid ${new IpsumColor("hsl", [
+          arc.color,
+          50,
+          50,
+        ]).toRgbaCSS()}`,
+      }}
+    >
+      <Button
+        onClick={() => {
+          closeLayer(1);
+        }}
+      >
+        <Close></Close>
+      </Button>
+      <ArcDetailPrefsBox></ArcDetailPrefsBox>
+    </Paper>
   );
 };
