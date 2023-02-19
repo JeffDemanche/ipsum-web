@@ -61,8 +61,6 @@ export interface InMemoryStateContextType {
   saveToFile: () => Promise<void>;
   loadFromFile: () => Promise<void>;
   resetToInitial: () => void;
-  shouldReloadEditor: boolean;
-  reloadEditor: () => void;
   hasLoadedAutosave: boolean;
   addDocumentBroadcaster: <T extends CollectionName>(
     broadcaster: DocumentBroadcaster<T>
@@ -82,8 +80,6 @@ export const InMemoryStateContext =
     saveToFile: async () => {},
     loadFromFile: async () => {},
     resetToInitial: () => {},
-    shouldReloadEditor: false,
-    reloadEditor: () => {},
     hasLoadedAutosave: false,
     addDocumentBroadcaster: () => {},
     removeDocumentBroadcaster: () => {},
@@ -176,56 +172,69 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
   const prevState = usePrevious(state);
   useEffect(() => {
     if (!state) return;
-    Object.keys(InMemorySchema).forEach((key: keyof typeof InMemorySchema) => {
-      // If a top-level field or collection called key has changed.
-      if (!_.isEqual(prevState?.[key], state[key])) {
-        // Broadcast field changes.
-        if (InMemorySchema[key].__type === "field") {
-          fieldBroadcasters.forEach((fb) => {
-            if (fb.type === "field" && fb.field === key) {
-              (fb as FieldBroadcaster<typeof key>).broadcast(state[key]);
-            }
-          });
-        }
-        // Broadcast collection changes.
-        if (InMemorySchema[key].__type === "document") {
-          const changedDocumentKeys = Object.keys(state[key]).filter(
-            (docKey: keyof typeof state[typeof key]) => {
-              return !_.isEqual(state[key][docKey], prevState?.[key][docKey]);
-            }
-          );
-          documentBroadcasters.forEach((db) => {
-            if (
-              db.type === "documents" &&
-              db.collection === key &&
-              // keys is undefined for whole collection query, otherwise only
-              // brodcast when at least one specified document is changed.
-              (!db.keys || intersection(db.keys, changedDocumentKeys).length)
-            ) {
-              const selectedCollection = state[db.collection] as Collection<
-                typeof key
-              >;
-              const filteredDocuments = Object.keys(selectedCollection)
-                .filter((docKey) => !db.keys || db.keys.includes(docKey))
-                .map((docKey) => selectedCollection[docKey]);
-              const primaryKey = getPrimaryKey(db.collection);
-              const mappedFilteredDocuments = filteredDocuments.reduce(
-                (acc, cur) => {
-                  return {
-                    ...acc,
-                    [cur[primaryKey as keyof typeof cur]]: cur,
-                  };
-                },
-                {}
-              );
-              (db as DocumentBroadcaster<typeof key>).broadcast(
-                mappedFilteredDocuments
-              );
-            }
-          });
+    Object.keys(InMemorySchema).forEach(
+      (colKey: keyof typeof InMemorySchema) => {
+        // If a top-level field or collection called key has changed.
+        if (!_.isEqual(prevState?.[colKey], state[colKey])) {
+          // Broadcast field changes.
+          if (InMemorySchema[colKey].__type === "field") {
+            fieldBroadcasters.forEach((fb) => {
+              if (fb.type === "field" && fb.field === colKey) {
+                (fb as FieldBroadcaster<typeof colKey>).broadcast(
+                  state[colKey]
+                );
+              }
+            });
+          }
+          // Broadcast collection changes.
+          if (InMemorySchema[colKey].__type === "document") {
+            const changedDocumentKeys = Object.keys(state[colKey]).filter(
+              (docKey: keyof typeof state[typeof colKey]) => {
+                return !_.isEqual(
+                  state[colKey][docKey],
+                  prevState?.[colKey][docKey]
+                );
+              }
+            );
+            const removedDocumentKeys = Object.keys(
+              prevState?.[colKey] ?? {}
+            ).filter((docKey) => !Object.keys(state[colKey]).includes(docKey));
+            const notifyDocKeys = Array.from(
+              new Set([...changedDocumentKeys, ...removedDocumentKeys])
+            );
+            documentBroadcasters.forEach((db) => {
+              if (
+                db.type === "documents" &&
+                db.collection === colKey &&
+                // keys is undefined for whole collection query, otherwise only
+                // brodcast when at least one specified document is changed.
+                (!db.keys || intersection(db.keys, notifyDocKeys).length)
+              ) {
+                const selectedCollection = state[db.collection] as Collection<
+                  typeof colKey
+                >;
+                const filteredDocuments = Object.keys(selectedCollection)
+                  .filter((docKey) => !db.keys || db.keys.includes(docKey))
+                  .map((docKey) => selectedCollection[docKey]);
+                const primaryKey = getPrimaryKey(db.collection);
+                const mappedFilteredDocuments = filteredDocuments.reduce(
+                  (acc, cur) => {
+                    return {
+                      ...acc,
+                      [cur[primaryKey as keyof typeof cur]]: cur,
+                    };
+                  },
+                  {}
+                );
+                (db as DocumentBroadcaster<typeof colKey>).broadcast(
+                  mappedFilteredDocuments
+                );
+              }
+            });
+          }
         }
       }
-    });
+    );
   }, [documentBroadcasters, fieldBroadcasters, prevState, state]);
 
   const [hasLoadedAutosave, setHasLoadedAutosave] = useState(false);
@@ -235,11 +244,6 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
       setHasLoadedAutosave(true);
     }
   }, [idbWrapper, hasLoadedAutosave, stateFromAutosave]);
-
-  const [shouldReloadEditor, setReloadEditor] = useState(false);
-  useEffect(() => {
-    if (shouldReloadEditor === true) setReloadEditor(false);
-  }, [shouldReloadEditor]);
 
   const autosave = useCallback(() => {
     localStorage.setItem("ipsum-autosave-id", state.journalId);
@@ -281,15 +285,14 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
         newState: deserializeInMemoryState(state),
       },
     });
-    setReloadEditor(true);
   }, []);
 
-  const resetToInitial = useCallback(() => {
+  const resetToInitial = useCallback(async () => {
+    const newState = initializeDefaultInMemoryState();
     dispatch({
       type: "OVERWRITE",
-      payload: { newState: initializeDefaultInMemoryState() },
+      payload: { newState },
     });
-    setReloadEditor(true);
   }, []);
 
   return (
@@ -301,10 +304,6 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
         saveToFile,
         loadFromFile,
         resetToInitial,
-        shouldReloadEditor,
-        reloadEditor: () => {
-          setReloadEditor(true);
-        },
         hasLoadedAutosave,
         addDocumentBroadcaster,
         removeDocumentBroadcaster,

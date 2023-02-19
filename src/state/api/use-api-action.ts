@@ -24,7 +24,6 @@ export interface APIContext {
     state: InMemoryState,
     action: InMemoryAction
   ) => APIContext;
-  reloadEditor: () => void;
 }
 
 export interface APIReturn {
@@ -64,7 +63,7 @@ export const useApiAction = <T extends APIFunctionName>(
   apiCall: UseApiActionArgs<T>,
   skip?: boolean
 ): UseApiActionResult<T> => {
-  const { state, dispatch, optimisticDispatch, reloadEditor } =
+  const { state, dispatch, optimisticDispatch } =
     useContext(InMemoryStateContext);
 
   const [isLoadingPromise, setIsLoadingPromise] = useState(false);
@@ -77,10 +76,9 @@ export const useApiAction = <T extends APIFunctionName>(
       return {
         state: newState,
         optimisticStateDispatch,
-        reloadEditor,
       };
     },
-    [optimisticDispatch, reloadEditor]
+    [optimisticDispatch]
   );
 
   const act = useCallback(
@@ -91,7 +89,6 @@ export const useApiAction = <T extends APIFunctionName>(
           state,
           dispatch,
           optimisticStateDispatch,
-          reloadEditor,
         });
         if (data) {
           dispatch({
@@ -105,7 +102,7 @@ export const useApiAction = <T extends APIFunctionName>(
         setError(err);
       }
     },
-    [apiCall.name, dispatch, optimisticStateDispatch, reloadEditor, state]
+    [apiCall.name, dispatch, optimisticStateDispatch, state]
   );
 
   if (skip) {

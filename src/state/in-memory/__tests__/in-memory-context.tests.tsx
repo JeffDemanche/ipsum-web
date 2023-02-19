@@ -1,5 +1,10 @@
 import { render } from "@testing-library/react";
-import React, { FunctionComponent, useContext, useEffect } from "react";
+import React, {
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   InMemoryStateContext,
   InMemoryStateProviderWithAutosave,
@@ -405,6 +410,70 @@ describe("InMemoryContext", () => {
           arc_3: arc.arc_3,
         });
       });
+
+      it("query for specific arc updates when arc is removed", () => {
+        const arc: { [id: string]: Document<"arc"> } = {
+          arc_1: { ...initializeDefaultDocument("arc"), id: "arc_1" },
+          arc_2: { ...initializeDefaultDocument("arc"), id: "arc_2" },
+        };
+
+        const StatefulComponent = ({
+          children,
+        }: {
+          children: React.ReactNode;
+        }) => {
+          const { dispatch, hasLoadedAutosave } =
+            useContext(InMemoryStateContext);
+
+          useEffect(() => {
+            if (hasLoadedAutosave) {
+              console.log("dispatch");
+              dispatch({
+                type: "REMOVE_DOCUMENT",
+                payload: { type: "arc", key: "arc_2" },
+              });
+            }
+          }, [dispatch, hasLoadedAutosave]);
+
+          return <div>{children}</div>;
+        };
+
+        const UserComponent: FunctionComponent<{
+          onDataChange: (data: { [k: string]: object }) => void;
+        }> = ({ onDataChange }) => {
+          const { data } = useStateDocumentQuery({
+            collection: "arc",
+            keys: ["arc_2"],
+          });
+
+          useEffect(() => {
+            onDataChange(data);
+          }, [data, onDataChange]);
+
+          return <></>;
+        };
+
+        const onDataChange = jest.fn();
+
+        const defaultState = initializeDefaultInMemoryState();
+
+        render(
+          <InMemoryStateProviderWithAutosave
+            idbWrapper={new IpsumIndexedDBClient(null)}
+            stateFromAutosave={{ ...defaultState, arc }}
+          >
+            <StatefulComponent>
+              <UserComponent onDataChange={onDataChange}></UserComponent>
+            </StatefulComponent>
+          </InMemoryStateProviderWithAutosave>
+        );
+
+        expect(onDataChange.mock.calls.length).toBe(2);
+        expect(onDataChange.mock.calls[0][0]).toEqual({
+          arc_2: arc.arc_2,
+        });
+        expect(onDataChange.mock.calls[1][0]).toEqual({});
+      });
     });
 
     describe("field queries", () => {
@@ -520,6 +589,141 @@ describe("InMemoryContext", () => {
         expect(onDataChange.mock.calls).toHaveLength(1);
         expect(onDataChange.mock.calls[0][0]).toEqual({ lastArcHue: 123 });
       });
+    });
+  });
+
+  describe("resetToInitial", () => {
+    it("overwrites state to default on query for all entries", () => {
+      const StatefulComponent = ({
+        children,
+      }: {
+        children: React.ReactNode;
+      }) => {
+        const { resetToInitial, hasLoadedAutosave } =
+          useContext(InMemoryStateContext);
+
+        const [hasReset, setHasReset] = useState(false);
+        useEffect(() => {
+          if (!hasReset && hasLoadedAutosave) {
+            resetToInitial();
+            setHasReset(true);
+          }
+        }, [hasReset, hasLoadedAutosave]);
+
+        return <div>{children}</div>;
+      };
+
+      const UserComponent: FunctionComponent<{
+        onData: (data: { [entryKey: string]: Document<"entry"> }) => void;
+      }> = ({ onData }) => {
+        const { data } = useStateDocumentQuery({
+          collection: "entry",
+        });
+
+        useEffect(() => {
+          onData(data);
+        }, [data]);
+
+        return <></>;
+      };
+
+      const defaultState = {
+        ...initializeDefaultInMemoryState(),
+        entry: {
+          entry_1: {
+            ...initializeDefaultDocument("entry"),
+            entryKey: "entry_1",
+          },
+        },
+      };
+
+      const onData = jest.fn();
+
+      const Component: React.FunctionComponent = () => {
+        return (
+          <InMemoryStateProviderWithAutosave
+            idbWrapper={new IpsumIndexedDBClient(null)}
+            stateFromAutosave={defaultState}
+          >
+            <StatefulComponent>
+              <UserComponent onData={onData}></UserComponent>
+            </StatefulComponent>
+          </InMemoryStateProviderWithAutosave>
+        );
+      };
+
+      render(<Component></Component>);
+
+      expect(onData).toHaveBeenCalledTimes(2);
+      expect(onData.mock.calls[0][0].entry_1).toBeDefined();
+      expect(onData.mock.calls[1][0]).toEqual({});
+    });
+
+    it("overwrites state to default on query for a single entryKey", () => {
+      const StatefulComponent = ({
+        children,
+      }: {
+        children: React.ReactNode;
+      }) => {
+        const { resetToInitial, hasLoadedAutosave } =
+          useContext(InMemoryStateContext);
+
+        const [hasReset, setHasReset] = useState(false);
+        useEffect(() => {
+          if (!hasReset && hasLoadedAutosave) {
+            resetToInitial();
+            setHasReset(true);
+          }
+        }, [hasReset, hasLoadedAutosave]);
+
+        return <div>{children}</div>;
+      };
+
+      const UserComponent: FunctionComponent<{
+        onData: (data: { [entryKey: string]: Document<"entry"> }) => void;
+      }> = ({ onData }) => {
+        const { data } = useStateDocumentQuery({
+          collection: "entry",
+          keys: ["entry_1"],
+        });
+
+        useEffect(() => {
+          onData(data);
+        }, [data]);
+
+        return <></>;
+      };
+
+      const defaultState = {
+        ...initializeDefaultInMemoryState(),
+        entry: {
+          entry_1: {
+            ...initializeDefaultDocument("entry"),
+            entryKey: "entry_1",
+          },
+        },
+      };
+
+      const onData = jest.fn();
+
+      const Component: React.FunctionComponent = () => {
+        return (
+          <InMemoryStateProviderWithAutosave
+            idbWrapper={new IpsumIndexedDBClient(null)}
+            stateFromAutosave={defaultState}
+          >
+            <StatefulComponent>
+              <UserComponent onData={onData}></UserComponent>
+            </StatefulComponent>
+          </InMemoryStateProviderWithAutosave>
+        );
+      };
+
+      render(<Component></Component>);
+
+      expect(onData).toHaveBeenCalledTimes(2);
+      expect(onData.mock.calls[0][0].entry_1).toBeDefined();
+      expect(onData.mock.calls[1][0]).toEqual({});
     });
   });
 });

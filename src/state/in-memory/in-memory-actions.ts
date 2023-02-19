@@ -45,7 +45,8 @@ const dispatchers = {
       newState: InMemoryState;
     }
   ): InMemoryState => {
-    return payload.newState;
+    const stateCopy = deepClone(payload.newState);
+    return stateCopy;
   },
   CREATE_DOCUMENT: (
     state: InMemoryState,
@@ -132,7 +133,7 @@ const dispatchers = {
       };
     }[CollectionName]
   ): InMemoryState => {
-    const stateCopy: WritableInMemoryState = { ...state };
+    const stateCopy: WritableInMemoryState = deepClone(state);
     delete stateCopy[payload.type][payload.key];
     return stateCopy;
   },
@@ -145,7 +146,7 @@ const dispatchers = {
       };
     }[CollectionName]
   ): InMemoryState => {
-    const stateCopy: WritableInMemoryState = { ...state };
+    const stateCopy: WritableInMemoryState = deepClone(state);
     payload.keys.forEach((key) => {
       delete stateCopy[payload.type][key];
     });

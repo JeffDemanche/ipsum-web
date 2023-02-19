@@ -68,5 +68,7 @@ export const useStateDocumentQuery = <F extends CollectionName>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, args.collection, keysString]);
 
-  return { data };
+  return {
+    data,
+  };
 };

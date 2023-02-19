@@ -1,11 +1,11 @@
 import { ContentBlock, ContentState, Editor, EditorState } from "draft-js";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import editorStyes from "./EditorStyles.less";
-import { parseContentState } from "util/content-state";
+import { parseContentState, stringifyContentState } from "util/content-state";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import cx from "classnames";
 import { decorator } from "components/Decorator/decorator";
-import { useShouldReloadEditor, useStateDocumentQuery } from "state/in-memory";
+import { useStateDocumentQuery } from "state/in-memory";
 
 interface UseJournalEntryEditorArgs {
   entryKey: string;
@@ -37,21 +37,22 @@ const blockStyleFn = (block: ContentBlock) => {
 export const useJournalEntryEditor = ({
   entryKey,
 }: UseJournalEntryEditorArgs): UseJournalEntryEditorResult => {
-  const { data: entries } = useStateDocumentQuery({
+  const { data: entryObj } = useStateDocumentQuery({
     collection: "entry",
+    keys: [entryKey],
   });
 
-  const { shouldReloadEditor } = useShouldReloadEditor();
+  const entry = entryObj[entryKey];
 
   const contentStateFromState = useMemo(
     () =>
-      entries[entryKey]
-        ? parseContentState(entries[entryKey].contentState)
+      entry
+        ? parseContentState(entry.contentState)
         : ContentState.createFromText(""),
-    [entries, entryKey]
+    [entry]
   );
-
   const {
+    focusedEditorKey,
     registerEditor,
     setEntryEditorState,
     setEntryEditorMetadata,
@@ -74,10 +75,12 @@ export const useJournalEntryEditor = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   useEffect(() => {
-    if (editorMetadata && (!hasLoadedOnce || shouldReloadEditor)) {
-      // Occurs when a syncedWithState is set to false, triggering a re-load.
+    if (
+      focusedEditorKey !== entryKey &&
+      stringifyContentState(contentStateFromState) !==
+        stringifyContentState(editorState?.getCurrentContent())
+    ) {
       setEntryEditorState(entryKey, () => {
         return EditorState.createWithContent(contentStateFromState, decorator);
       });
@@ -85,14 +88,13 @@ export const useJournalEntryEditor = ({
         ...editorMetadata,
         syncedWithState: true,
       });
-      setHasLoadedOnce(true);
     }
   }, [
     contentStateFromState,
     editorMetadata,
+    editorState,
     entryKey,
-    hasLoadedOnce,
-    shouldReloadEditor,
+    focusedEditorKey,
     setEntryEditorMetadata,
     setEntryEditorState,
   ]);

@@ -38,9 +38,6 @@ export const apiCreateAndAssignArc = (
     type: "UPDATE_FIELD",
     payload: { field: "journalMetadata", update: { lastArcHue: color } },
   });
-  if (entryKey) {
-    context.reloadEditor();
-  }
 
   return { state: context.state };
 };
@@ -91,7 +88,6 @@ export const apiAssignArc = (
       },
     },
   });
-  context.reloadEditor();
 
   return { state: context.state };
 };
@@ -120,7 +116,6 @@ export const apiUnassignArc = (
       },
     },
   });
-  context.reloadEditor();
 
   return { state: context.state };
 };

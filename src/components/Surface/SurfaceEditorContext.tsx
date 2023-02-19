@@ -92,7 +92,7 @@ export const SurfaceEditorContextProvider: React.FC<
   const onEditorBlur = useCallback(
     (editorKey: string) => {
       if (focusedEditorKey === editorKey) {
-        // setFocusedEditorKey(undefined);
+        setFocusedEditorKey(undefined);
       }
     },
     [focusedEditorKey]

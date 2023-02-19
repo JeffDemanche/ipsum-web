@@ -47,7 +47,6 @@ export const APIDispatcher = <T extends APIFunctionName>({
       state={state}
       dispatch={dispatch}
       optimisticDispatch={optimisticDispatch}
-      reloadEditor={() => {}}
     >
       <APIDispatcherWithState
         calls={calls}

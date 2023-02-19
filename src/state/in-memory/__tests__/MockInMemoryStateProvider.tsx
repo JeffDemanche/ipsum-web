@@ -15,8 +15,6 @@ interface MockInMemoryStateProviderProps {
   loadFromFile?: () => Promise<void>;
   resetToInitial?: () => void;
   hasLoadedAutosave?: boolean;
-  shouldReloadEditor?: boolean;
-  reloadEditor?: () => void;
   children: React.ReactNode;
 }
 
@@ -30,8 +28,6 @@ export const MockInMemoryStateProvider: React.FunctionComponent<
   loadFromFile,
   resetToInitial,
   hasLoadedAutosave,
-  shouldReloadEditor,
-  reloadEditor,
   children,
 }) => {
   const filledInState = { ...initializeDefaultInMemoryState(), ...state };
@@ -45,8 +41,6 @@ export const MockInMemoryStateProvider: React.FunctionComponent<
         saveToFile,
         loadFromFile,
         resetToInitial,
-        shouldReloadEditor,
-        reloadEditor,
         hasLoadedAutosave,
         addDocumentBroadcaster: () => {},
         removeDocumentBroadcaster: () => {},
