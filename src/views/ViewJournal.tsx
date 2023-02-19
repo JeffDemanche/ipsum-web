@@ -7,8 +7,7 @@ import { ArcSelectionProvider } from "components/SelectionContext";
 import { JournalHotkeysProvider } from "components/JournalHotkeys";
 import { Diptych } from "components/Diptych";
 import { DiptychProvider } from "components/DiptychContext";
-import { JournalInfoBox } from "components/JournalInfoBox";
-import { Calendar } from "components/Calendar";
+import { JournalInfoDrawer } from "components/JournalInfoDrawer";
 
 const ProvidersWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -32,10 +31,7 @@ export const ViewJournal: React.FC = () => {
   return (
     <ProvidersWrapper>
       <div className={styles["view-journal"]}>
-        <div className={styles["header-container"]}>
-          <JournalInfoBox></JournalInfoBox>
-          <Calendar></Calendar>
-        </div>
+        <JournalInfoDrawer></JournalInfoDrawer>
         <Diptych></Diptych>
       </div>
     </ProvidersWrapper>
