@@ -5,6 +5,7 @@ import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
 import { useApiAction } from "state/api/use-api-action";
 import { InMemoryStateContext } from "state/in-memory/in-memory-context";
+import { stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";
 import { useDebouncedCallback } from "util/hooks/useDebouncedCallback";
 import { placeholderForDate } from "util/placeholders";
@@ -25,9 +26,8 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   entryKey,
   showDivider,
 }: JournalEntryTodayProps) => {
-  const { editorRef, editorState, empty, blockStyleFn } = useJournalEntryEditor(
-    { entryKey }
-  );
+  const { editorRef, editorState, empty, blockStyleFn, entry } =
+    useJournalEntryEditor({ entryKey });
 
   const { setEntryEditorState, onEditorFocus, onEditorBlur } =
     useContext(SurfaceEditorContext);
@@ -39,8 +39,17 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
     name: "createOrUpdateEntry",
   });
 
+  /**
+   * Debounced so we only update the state once every so often while typing.
+   */
   const onEditorUpdate = useDebouncedCallback((newEditorState: EditorState) => {
-    if (newEditorState) {
+    // Check to see if anything changed. This happens to fix a bug where editors
+    // wouldn't clear after initializing a new journal due to the debounce
+    // delay.
+    const changed =
+      stringifyContentState(editorState.getCurrentContent()) !==
+      stringifyContentState(newEditorState.getCurrentContent());
+    if (newEditorState && changed) {
       if (empty) {
         deleteEntry({ entryKey });
       } else {

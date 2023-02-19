@@ -5,7 +5,7 @@ import { parseContentState, stringifyContentState } from "util/content-state";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import cx from "classnames";
 import { decorator } from "components/Decorator/decorator";
-import { useStateDocumentQuery } from "state/in-memory";
+import { useStateDocumentQuery, Document } from "state/in-memory";
 
 interface UseJournalEntryEditorArgs {
   entryKey: string;
@@ -16,6 +16,7 @@ interface UseJournalEntryEditorResult {
   editorState: EditorState;
   empty: boolean;
   blockStyleFn: (block: ContentBlock) => string;
+  entry: Document<"entry">;
 }
 
 const blockStyleFn = (block: ContentBlock) => {
@@ -51,6 +52,7 @@ export const useJournalEntryEditor = ({
         : ContentState.createFromText(""),
     [entry]
   );
+
   const {
     focusedEditorKey,
     registerEditor,
@@ -93,6 +95,7 @@ export const useJournalEntryEditor = ({
     contentStateFromState,
     editorMetadata,
     editorState,
+    entry,
     entryKey,
     focusedEditorKey,
     setEntryEditorMetadata,
@@ -104,5 +107,6 @@ export const useJournalEntryEditor = ({
     editorState,
     empty,
     blockStyleFn,
+    entry,
   };
 };

@@ -170,6 +170,7 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
   // this doesn't provide the initial result of a state query, just updates to
   // that query when the state changes.
   const prevState = usePrevious(state);
+
   useEffect(() => {
     if (!state) return;
     Object.keys(InMemorySchema).forEach(
