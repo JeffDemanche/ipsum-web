@@ -1,6 +1,6 @@
 import { Divider, Typography } from "@mui/material";
-import { decorator } from "components/Decorator/decorator";
-import { Digest } from "components/Digest/Digest";
+import { decorator } from "components/Decorator";
+import { Digest } from "components/Digest";
 import { EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
 import { IpsumDateTime } from "util/dates";

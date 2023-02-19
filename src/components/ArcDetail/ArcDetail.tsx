@@ -1,7 +1,7 @@
 import { Close } from "@mui/icons-material";
 import { Button, Paper } from "@mui/material";
-import { ArcDetailPrefsBox } from "components/ArcDetailPrefsBox/ArcDetailPrefsBox";
-import { DiptychContext } from "components/DiptychContext/DiptychContext";
+import { ArcDetailPrefsBox } from "components/ArcDetailPrefsBox";
+import { DiptychContext } from "components/DiptychContext";
 import React, { useContext } from "react";
 import { IpsumColor } from "util/colors";
 import styles from "./ArcDetail.less";

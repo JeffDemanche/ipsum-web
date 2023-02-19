@@ -1,8 +1,10 @@
 import { Editor, EditorProps } from "draft-js";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { TextRangeHighlight } from "components/EditorSelection/TextRangeHighlight";
-import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
-import { FormattingControls } from "components/FormattingControls/FormattingControls";
+import {
+  TextRangeHighlight,
+  EditorSelectionContext,
+} from "components/EditorSelection";
+import { FormattingControls } from "components/FormattingControls";
 import styles from "./EditorWrapper.less";
 
 interface EditorWrapperProps {

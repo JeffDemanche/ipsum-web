@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./FormattingControls.less";
 import { EditorState, RichUtils } from "draft-js";
-import { SurfaceEditorContext } from "../Surface/SurfaceEditorContext";
+import { SurfaceEditorContext } from "components/Surface";
 import { ToggleButton } from "@mui/material";
 
 export const FormattingControls: React.FunctionComponent = () => {

@@ -18,8 +18,8 @@ import {
 } from "./in-memory-state";
 import _, { intersection } from "underscore";
 import { dispatch, InMemoryAction } from "./in-memory-actions";
-import { readFromFile, writeToFile } from "util/file/serializer";
-import { usePrevious } from "util/hooks/usePrevious";
+import { readFromFile, writeToFile } from "util/file";
+import { usePrevious } from "util/hooks";
 
 export const InMemoryStateProvider: React.FC<{
   children: React.ReactElement;

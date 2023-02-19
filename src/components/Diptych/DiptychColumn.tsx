@@ -1,6 +1,6 @@
-import { ArcDetail } from "components/ArcDetail/ArcDetail";
-import { DiptychLayer } from "components/DiptychContext/types";
-import { Surface } from "components/Surface/Surface";
+import { ArcDetail } from "components/ArcDetail";
+import { DiptychLayer } from "components/DiptychContext";
+import { Surface } from "components/Surface";
 import React from "react";
 import styles from "./DiptychColumn.less";
 

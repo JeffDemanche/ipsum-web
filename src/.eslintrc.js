@@ -26,14 +26,24 @@ module.exports = {
     semi: ["error", "always"],
     "@typescript-eslint/no-empty-function": "off",
     "import/no-internal-modules": [
-      "warn",
-      { allow: ["components/*", "state/*", "util/*"] },
+      "error",
+      {
+        forbid: ["components/**/*", "state/**/*", "util/**/*"],
+      },
     ],
   },
+  overrides: [
+    {
+      files: ["**/__tests__/*"],
+      rules: {
+        "import/no-internal-modules": 0,
+      },
+    },
+  ],
   settings: {
     "import/resolver": {
       webpack: {
-        config: "webpack.config.js",
+        config: "./webpack.config.js",
       },
     },
   },

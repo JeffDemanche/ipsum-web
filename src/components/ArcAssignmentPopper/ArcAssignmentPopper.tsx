@@ -1,6 +1,5 @@
-import { ClickAwayListener } from "@mui/material";
-import { Popper } from "components/Popper/Popper";
-import { TextField } from "@mui/material";
+import { ClickAwayListener, TextField } from "@mui/material";
+import { Popper } from "components/Popper";
 import React, {
   useCallback,
   useContext,
@@ -9,11 +8,11 @@ import React, {
   useState,
 } from "react";
 import styles from "./ArcAssignmentPopper.less";
-import { useSearchArcs } from "util/hooks/useSearchArcs";
-import { ArcToken } from "components/Arc/ArcToken";
+import { useSearchArcs } from "util/hooks";
+import { ArcToken } from "components/Arc";
 import { nextHue } from "util/colors";
-import { useApiAction } from "state/api/use-api-action";
-import { EditorSelectionContext } from "components/EditorSelection/EditorSelectionContext";
+import { useApiAction } from "state/api";
+import { EditorSelectionContext } from "components/EditorSelection";
 import { noop } from "underscore";
 import { useStateFieldQuery } from "state/in-memory";
 

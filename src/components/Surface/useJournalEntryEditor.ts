@@ -4,7 +4,7 @@ import editorStyes from "./EditorStyles.less";
 import { parseContentState, stringifyContentState } from "util/content-state";
 import { SurfaceEditorContext } from "./SurfaceEditorContext";
 import cx from "classnames";
-import { decorator } from "components/Decorator/decorator";
+import { decorator } from "components/Decorator";
 import { useStateDocumentQuery, Document } from "state/in-memory";
 
 interface UseJournalEntryEditorArgs {

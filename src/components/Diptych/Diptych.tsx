@@ -1,5 +1,5 @@
-import { DiptychContext } from "components/DiptychContext/DiptychContext";
-import { Median } from "components/Median/Median";
+import { DiptychContext } from "components/DiptychContext";
+import { Median } from "components/Median";
 import React, { useContext } from "react";
 import styles from "./Diptych.less";
 import { DiptychColumn } from "./DiptychColumn";

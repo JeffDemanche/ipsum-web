@@ -2,9 +2,9 @@ import React, { useCallback, useContext, useState } from "react";
 import { Paper, Slider } from "@mui/material";
 import styles from "./ArcDetailPrefsBox.less";
 import { IpsumArcColor } from "util/colors";
-import { ArcToken } from "components/Arc/ArcToken";
-import { useApiAction } from "state/api/use-api-action";
-import { ArcDetailContext } from "components/ArcDetail/ArcDetailContext";
+import { ArcToken } from "components/Arc";
+import { useApiAction } from "state/api";
+import { ArcDetailContext } from "components/ArcDetail";
 
 export const ArcDetailPrefsBox: React.FC = () => {
   const { arc } = useContext(ArcDetailContext);

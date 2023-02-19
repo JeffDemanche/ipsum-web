@@ -1,0 +1,1 @@
+export { JournalInfoBox } from "./JournalInfoBox";

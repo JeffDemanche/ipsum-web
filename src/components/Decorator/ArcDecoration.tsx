@@ -1,10 +1,10 @@
 import React, { useContext, useMemo, useRef } from "react";
 import styles from "./ArcDecoration.less";
 import { ContentState } from "draft-js";
-import { ArcSelectionContext } from "components/SelectionContext/ArcSelectionContext";
+import { ArcSelectionContext } from "components/SelectionContext";
 import { isSubset } from "util/set";
-import { JournalHotkeysContext } from "components/JournalHotkeys/JournalHotkeysContext";
-import { ArcDisambiguator } from "components/ArcDisambiguator/ArcDisambiguator";
+import { JournalHotkeysContext } from "components/JournalHotkeys";
+import { ArcDisambiguator } from "components/ArcDisambiguator";
 import { IpsumArcColor, IpsumColor, multiplyIpsumArcColors } from "util/colors";
 import { useStateDocumentQuery } from "state/in-memory";
 import { IpsumEntityData } from "util/entities";

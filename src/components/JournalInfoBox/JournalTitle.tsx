@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useApiAction } from "state/api/use-api-action";
+import { useApiAction } from "state/api";
 import styles from "./JournalTitle.less";
 import { useStateFieldQuery } from "state/in-memory";
 

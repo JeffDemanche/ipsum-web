@@ -6,9 +6,11 @@
  */
 
 import { useCallback, useContext, useState } from "react";
-import { InMemoryAction } from "state/in-memory/in-memory-actions";
-import { InMemoryStateContext } from "state/in-memory/in-memory-context";
-import { InMemoryState } from "state/in-memory/in-memory-schema";
+import {
+  InMemoryAction,
+  InMemoryStateContext,
+  InMemoryState,
+} from "state/in-memory";
 import {
   apiAssignArc,
   apiCreateAndAssignArc,

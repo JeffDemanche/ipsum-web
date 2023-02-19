@@ -1,4 +1,4 @@
-import { decorator } from "components/Decorator/decorator";
+import { decorator } from "components/Decorator";
 import { ContentState, Editor, EditorState } from "draft-js";
 import React, { useCallback, useState } from "react";
 

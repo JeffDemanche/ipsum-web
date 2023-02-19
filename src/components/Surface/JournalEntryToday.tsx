@@ -1,13 +1,12 @@
 import { Divider, Typography } from "@mui/material";
 import cx from "classnames";
-import { Digest } from "components/Digest/Digest";
+import { Digest } from "components/Digest";
 import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
-import { useApiAction } from "state/api/use-api-action";
-import { InMemoryStateContext } from "state/in-memory/in-memory-context";
+import { useApiAction } from "state/api";
 import { stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";
-import { useDebouncedCallback } from "util/hooks/useDebouncedCallback";
+import { useDebouncedCallback } from "util/hooks";
 import { placeholderForDate } from "util/placeholders";
 import { EditorWrapper } from "./EditorWrapper";
 import styles from "./JournalEntry.less";
@@ -26,8 +25,9 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   entryKey,
   showDivider,
 }: JournalEntryTodayProps) => {
-  const { editorRef, editorState, empty, blockStyleFn, entry } =
-    useJournalEntryEditor({ entryKey });
+  const { editorRef, editorState, empty, blockStyleFn } = useJournalEntryEditor(
+    { entryKey }
+  );
 
   const { setEntryEditorState, onEditorFocus, onEditorBlur } =
     useContext(SurfaceEditorContext);

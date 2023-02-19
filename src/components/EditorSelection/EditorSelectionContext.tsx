@@ -1,4 +1,4 @@
-import { SurfaceEditorContext } from "components/Surface/SurfaceEditorContext";
+import { SurfaceEditorContext } from "components/Surface";
 import React, { useCallback, useContext, useMemo } from "react";
 import { IpsumSelectionState } from "util/selection";
 

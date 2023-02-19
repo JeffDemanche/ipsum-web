@@ -1,14 +1,14 @@
 import { BookmarkRemoveOutlined, OpenInNewOutlined } from "@mui/icons-material";
 import { Button, Tooltip } from "@mui/material";
-import { ArcToken } from "components/Arc/ArcToken";
-import { ArcSelectionContext } from "components/SelectionContext/ArcSelectionContext";
+import { ArcToken } from "components/Arc";
+import { ArcSelectionContext } from "components/SelectionContext";
 import React, { useCallback, useContext, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
-import { useApiAction } from "state/api/use-api-action";
+import { useApiAction } from "state/api";
 import styles from "./Digest.less";
 import { useStateDocumentQuery } from "state/in-memory";
-import { DiptychContext } from "components/DiptychContext/DiptychContext";
+import { DiptychContext } from "components/DiptychContext";
 
 interface DigestProps {
   entryKey: string;

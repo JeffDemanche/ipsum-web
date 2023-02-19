@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import styles from "./ArcDisambiguator.less";
 import { ClickAwayListener } from "@mui/material";
-import { ArcToken } from "components/Arc/ArcToken";
-import { Popper } from "components/Popper/Popper";
-import { ArcSelectionContext } from "components/SelectionContext/ArcSelectionContext";
+import { ArcToken } from "components/Arc";
+import { Popper } from "components/Popper";
+import { ArcSelectionContext } from "components/SelectionContext";
 import { noop } from "underscore";
 
 interface ArcDisambiguatorProps {

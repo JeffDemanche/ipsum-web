@@ -2,9 +2,9 @@ import React, { useContext } from "react";
 import cx from "classnames";
 import { Link, useSearchParams } from "react-router-dom";
 import { IpsumDateTime } from "util/dates";
-import { VisibleEntriesContext } from "components/VisibleEntriesContext/VisibleEntriesContext";
+import { VisibleEntriesContext } from "components/VisibleEntriesContext";
 import styles from "./CalendarDayTile.less";
-import { Card, Container, Paper, Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 
 interface CalendarDayTileProps {
   date: IpsumDateTime;

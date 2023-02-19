@@ -1,0 +1,1 @@
+export { Diptych } from "./Diptych";

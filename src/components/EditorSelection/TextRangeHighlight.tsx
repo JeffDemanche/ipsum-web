@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from "react";
 import styles from "./TextRangeHighlight.less";
 import { IpsumSelectionState } from "util/selection";
-import { ArcAssignmentPopper } from "components/ArcAssignmentPopper/ArcAssignmentPopper";
+import { ArcAssignmentPopper } from "components/ArcAssignmentPopper";
 
 interface TextRangeHighlightProps {
   editorKey: string;

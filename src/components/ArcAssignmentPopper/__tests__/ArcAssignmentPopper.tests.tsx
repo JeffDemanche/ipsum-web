@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import React, { useState } from "react";
 import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
-import { useSearchArcs } from "util/hooks/useSearchArcs";
+import { useSearchArcs } from "util/hooks";
 import { ArcAssignmentPopper } from "../ArcAssignmentPopper";
 
-jest.mock("util/hooks/useSearchArcs");
+jest.mock("util/hooks");
 
 const TestPopper = ({
   open = true,

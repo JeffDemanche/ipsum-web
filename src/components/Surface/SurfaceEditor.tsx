@@ -4,7 +4,7 @@ import { JournalEntryToday } from "./JournalEntryToday";
 import styles from "./SurfaceEditor.less";
 
 import { useDateString } from "util/dates";
-import { VisibleEntriesContext } from "components/VisibleEntriesContext/VisibleEntriesContext";
+import { VisibleEntriesContext } from "components/VisibleEntriesContext";
 
 /**
  * Component that renders all loaded entries, including today's.

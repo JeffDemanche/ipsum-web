@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { IpsumURL, URLLayer } from "util/url";
 import { Diptych, DiptychLayer } from "./types";
