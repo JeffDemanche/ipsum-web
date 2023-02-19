@@ -1,1 +1,4 @@
-export { ArcSelectionContext } from "./ArcSelectionContext";
+export {
+  ArcSelectionContext,
+  ArcSelectionProvider,
+} from "./ArcSelectionContext";

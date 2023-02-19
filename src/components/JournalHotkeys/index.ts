@@ -1,1 +1,4 @@
-export { JournalHotkeysContext } from "./JournalHotkeysContext";
+export {
+  JournalHotkeysContext,
+  JournalHotkeysProvider,
+} from "./JournalHotkeysContext";

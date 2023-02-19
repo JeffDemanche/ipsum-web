@@ -1,1 +1,4 @@
-export { VisibleEntriesContext } from "./VisibleEntriesContext";
+export {
+  VisibleEntriesContext,
+  VisibleEntriesProvider,
+} from "./VisibleEntriesContext";

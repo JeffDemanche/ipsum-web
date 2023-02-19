@@ -1,14 +1,14 @@
-import { EditorSelectionProvider } from "components/EditorSelection/EditorSelectionContext";
+import { EditorSelectionProvider } from "components/EditorSelection";
 import React from "react";
-import { SurfaceEditorContextProvider } from "../components/Surface/SurfaceEditorContext";
+import { SurfaceEditorContextProvider } from "../components/Surface";
 import styles from "./ViewJournal.less";
-import { VisibleEntriesProvider } from "../components/VisibleEntriesContext/VisibleEntriesContext";
-import { ArcSelectionProvider } from "components/SelectionContext/ArcSelectionContext";
-import { JournalHotkeysProvider } from "components/JournalHotkeys/JournalHotkeysContext";
-import { Diptych } from "components/Diptych/Diptych";
+import { VisibleEntriesProvider } from "../components/VisibleEntriesContext";
+import { ArcSelectionProvider } from "components/SelectionContext";
+import { JournalHotkeysProvider } from "components/JournalHotkeys";
+import { Diptych } from "components/Diptych";
 import { DiptychProvider } from "components/DiptychContext";
-import { JournalInfoBox } from "components/JournalInfoBox/JournalInfoBox";
-import { Calendar } from "components/Calendar/Calendar";
+import { JournalInfoBox } from "components/JournalInfoBox";
+import { Calendar } from "components/Calendar";
 
 const ProvidersWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,

@@ -1,2 +1,5 @@
-export { EditorSelectionContext } from "./EditorSelectionContext";
+export {
+  EditorSelectionContext,
+  EditorSelectionProvider,
+} from "./EditorSelectionContext";
 export { TextRangeHighlight } from "./TextRangeHighlight";
