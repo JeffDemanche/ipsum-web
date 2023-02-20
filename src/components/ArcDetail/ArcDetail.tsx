@@ -1,5 +1,5 @@
 import { Close } from "@mui/icons-material";
-import { Button, Paper } from "@mui/material";
+import { IconButton, Paper } from "@mui/material";
 import { ArcDetailPrefsBox } from "components/ArcDetailPrefsBox";
 import { DiptychContext } from "components/DiptychContext";
 import React, { useContext } from "react";
@@ -36,13 +36,13 @@ const ArcDetailWithProvider = () => {
         ]).toRgbaCSS()}`,
       }}
     >
-      <Button
+      <IconButton
         onClick={() => {
           closeLayer(1);
         }}
       >
         <Close></Close>
-      </Button>
+      </IconButton>
       <ArcDetailPrefsBox></ArcDetailPrefsBox>
     </Paper>
   );

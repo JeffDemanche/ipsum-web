@@ -1,15 +1,18 @@
-import { ChevronLeft } from "@mui/icons-material";
-import { Drawer, IconButton } from "@mui/material";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { Collapse, Drawer, IconButton } from "@mui/material";
 import { Calendar } from "components/Calendar";
 import { JournalInfoBox } from "components/JournalInfoBox";
-import React from "react";
+import React, { useState } from "react";
 import styles from "./JournalInfoDrawer.less";
+import cx from "classnames";
 
 export const JournalInfoDrawer: React.FunctionComponent = () => {
+  const [open, setOpen] = useState(true);
+
   return (
     <Drawer
-      open
-      variant="persistent"
+      open={open}
+      variant="permanent"
       sx={{ flex: "initial" }}
       className={styles["drawer-container"]}
       PaperProps={{
@@ -20,11 +23,27 @@ export const JournalInfoDrawer: React.FunctionComponent = () => {
       }}
     >
       <div className={styles["drawer-content-container"]}>
-        <IconButton>
-          <ChevronLeft></ChevronLeft>
-        </IconButton>
-        <JournalInfoBox></JournalInfoBox>
-        <Calendar></Calendar>
+        <div className={styles["drawer-right"]}>
+          <IconButton
+            onClick={() => {
+              setOpen(!open);
+            }}
+          >
+            {open ? <ChevronLeft></ChevronLeft> : <ChevronRight></ChevronRight>}
+          </IconButton>
+        </div>
+        <Collapse
+          in={open}
+          orientation="horizontal"
+          className={cx(styles["drawer-left"], {
+            [styles["collapsed"]]: !open,
+          })}
+        >
+          <div>
+            <JournalInfoBox></JournalInfoBox>
+            <Calendar></Calendar>
+          </div>
+        </Collapse>
       </div>
     </Drawer>
   );
