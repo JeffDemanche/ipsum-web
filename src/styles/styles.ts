@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material";
-import { brown, red } from "@mui/material/colors";
+import { brown, amber } from "@mui/material/colors";
 
 export const stylesheet = {
   colors: {
@@ -61,10 +61,10 @@ export const theme = createTheme({
       main: brown[500],
     },
     secondary: {
-      main: red[500],
+      main: amber[500],
     },
     background: {
-      default: brown[100],
+      default: brown[200],
     },
     onSurfaceDisabled: "rgba(0, 0, 0, 0.38)",
     onSurfaceHighEmphasis: "rgba(0, 0, 0, 0.60)",
@@ -74,6 +74,9 @@ export const theme = createTheme({
     onPrimaryMediumEmphasis: "rgba(255, 255, 255, 0.87)",
   },
   components: {
+    MuiDrawer: {
+      styleOverrides: { paper: { backgroundColor: brown[100] } },
+    },
     MuiPaper: {},
     MuiOutlinedInput: {},
     MuiTextField: {},

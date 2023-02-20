@@ -44,7 +44,12 @@ export const JournalTitle: React.FunctionComponent = () => {
           }}
           className={styles["title-text-field"]}
           inputProps={{
-            style: { fontSize: "20pt", height: "28px", textAlign: "center" },
+            style: {
+              fontSize: "20pt",
+              height: "28px",
+              textAlign: "center",
+              fontFamily: "Inria Sans",
+            },
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -64,7 +69,7 @@ export const JournalTitle: React.FunctionComponent = () => {
         <Button
           variant="text"
           className={styles["title-button"]}
-          sx={{ fontSize: "20pt" }}
+          sx={{ fontSize: "20pt", fontFamily: "Inria Sans" }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               setEditing(true);

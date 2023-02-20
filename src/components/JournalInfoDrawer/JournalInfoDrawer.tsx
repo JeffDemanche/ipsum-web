@@ -1,4 +1,5 @@
-import { Drawer } from "@mui/material";
+import { ChevronLeft } from "@mui/icons-material";
+import { Drawer, IconButton } from "@mui/material";
 import { Calendar } from "components/Calendar";
 import { JournalInfoBox } from "components/JournalInfoBox";
 import React from "react";
@@ -19,6 +20,9 @@ export const JournalInfoDrawer: React.FunctionComponent = () => {
       }}
     >
       <div className={styles["drawer-content-container"]}>
+        <IconButton>
+          <ChevronLeft></ChevronLeft>
+        </IconButton>
         <JournalInfoBox></JournalInfoBox>
         <Calendar></Calendar>
       </div>
