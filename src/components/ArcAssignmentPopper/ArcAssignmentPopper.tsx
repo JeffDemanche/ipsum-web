@@ -9,12 +9,12 @@ import React, {
 } from "react";
 import styles from "./ArcAssignmentPopper.less";
 import { useSearchArcs } from "util/hooks";
-import { ArcToken } from "components/Arc";
 import { nextHue } from "util/colors";
 import { useApiAction } from "state/api";
 import { EditorSelectionContext } from "components/EditorSelection";
 import { noop } from "underscore";
 import { useStateFieldQuery } from "state/in-memory";
+import { ArcTag } from "components/ArcTag";
 
 interface ArcAssignmentPopoverProps {
   open: boolean;
@@ -78,7 +78,7 @@ export const ArcAssignmentPopper: React.FunctionComponent<
   const tokens = [
     ...arcs.returnedArcs.map((arc, i) => (
       <div key={i} className={styles["token-wrapper"]}>
-        <ArcToken
+        <ArcTag
           arcForToken={{ type: "from id", id: arc.id }}
           onClick={() => {
             assignArc(arc.id);
@@ -91,7 +91,7 @@ export const ArcAssignmentPopper: React.FunctionComponent<
   if (inputVal.trim().length > 0) {
     tokens.unshift(
       <div key={inputVal} className={styles["token-wrapper"]}>
-        <ArcToken
+        <ArcTag
           key={inputVal}
           arcForToken={{
             type: "from data",
@@ -99,7 +99,7 @@ export const ArcAssignmentPopper: React.FunctionComponent<
             name: inputVal,
           }}
           onClick={addArc}
-        ></ArcToken>
+        ></ArcTag>
       </div>
     );
   }

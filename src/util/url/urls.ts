@@ -43,7 +43,7 @@ class JournalViewURL {
 
     newUrl.searchParams.append(
       `l${highestLayer + 1}`,
-      `${type},${objectId},${connectionId}`
+      `${type},${objectId ?? ""},${connectionId ?? ""}`
     );
     return new JournalViewURL(newUrl);
   }
@@ -89,14 +89,26 @@ class JournalViewURL {
     let layer = `l${i}`;
     while (searchParams.has(layer)) {
       const paramValue = searchParams.get(layer);
+
+      if (paramValue.split(",").length !== 3)
+        throw new Error("URL invariant: layer needs 3 params");
+
       const type = paramValue.split(",")[0] as LayerType;
       const objectId = paramValue.split(",")[1];
       const connectionId = paramValue.split(",")[2];
 
-      if (!type || !objectId || !connectionId)
-        throw new Error("URL invariant: bad layer");
+      if (!type) throw new Error("URL invariant: bad layer");
 
-      layers.push({ type, objectId, connectionId });
+      const urlLayer: URLLayer = { type };
+      if (objectId !== "") urlLayer.objectId = objectId;
+      if (connectionId !== "") urlLayer.connectionId = connectionId;
+
+      if (!urlLayer.objectId && !urlLayer.connectionId)
+        throw new Error(
+          "URL invariant: layer must have objectId or connectionId or both"
+        );
+
+      layers.push(urlLayer);
       i++;
       layer = `l${i}`;
     }

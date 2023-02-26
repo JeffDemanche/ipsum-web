@@ -1,2 +1,2 @@
 export { decorator } from "./decorator";
-export { ArcDecoration } from "./ArcDecoration";
+export { HighlightDecoration } from "./HighlightDecoration";

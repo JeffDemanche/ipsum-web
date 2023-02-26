@@ -1,16 +1,16 @@
 import React, { CSSProperties, useState } from "react";
-import styles from "./ArcToken.less";
+import styles from "./ArcTag.less";
 import { Paper, Link, Typography } from "@mui/material";
 import { IpsumArcColor, IpsumColor } from "util/colors";
 import cx from "classnames";
 import { useStateDocumentQuery } from "state/in-memory";
 
-type ArcForToken =
+type ArcForTag =
   | { type: "from id"; id: string }
   | { type: "from data"; color: number; name: string };
 
-interface ArcToken {
-  arcForToken: ArcForToken;
+interface ArcTag {
+  arcForToken: ArcForTag;
   type?: "span" | "header";
   highlighted?: boolean;
   className?: string;
@@ -19,7 +19,7 @@ interface ArcToken {
   onMouseLeave?: () => void;
 }
 
-export const ArcToken: React.FunctionComponent<ArcToken> = ({
+export const ArcTag: React.FunctionComponent<ArcTag> = ({
   arcForToken,
   type = "span",
   highlighted,

@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from "react";
 import { Paper, Slider } from "@mui/material";
 import styles from "./ArcDetailPrefsBox.less";
 import { IpsumArcColor } from "util/colors";
-import { ArcToken } from "components/Arc";
+import { HighlightTag } from "components/HighlightTag";
 import { useApiAction } from "state/api";
 import { ArcDetailContext } from "components/ArcDetail";
 
@@ -36,10 +36,7 @@ export const ArcDetailPrefsBox: React.FC = () => {
       }}
     >
       <Paper className={styles["foreground"]}>
-        <ArcToken
-          arcForToken={{ type: "from id", id: arc.id }}
-          type="header"
-        ></ArcToken>
+        <HighlightTag highlightId="" type="header"></HighlightTag>
         <Slider
           min={0}
           max={255}

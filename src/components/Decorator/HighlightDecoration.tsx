@@ -1,7 +1,7 @@
 import React, { useContext, useMemo, useRef } from "react";
-import styles from "./ArcDecoration.less";
+import styles from "./HighlightDecoration.less";
 import { ContentState } from "draft-js";
-import { ArcSelectionContext } from "components/SelectionContext";
+import { HighlightSelectionContext } from "components/SelectionContext";
 import { isSubset } from "util/set";
 import { JournalHotkeysContext } from "components/JournalHotkeys";
 import { ArcDisambiguator } from "components/ArcDisambiguator";
@@ -26,10 +26,15 @@ interface DecoratorProps {
  * Gets applied in place of any text that `decorator.ts` has determined to have
  * the "ARC" entity applied to it.
  */
-export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
+export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
   const entityData = props.contentState
     .getEntity(props.entityKey)
     .getData() as IpsumEntityData;
+
+  const entityHighlightIds = useMemo(
+    () => entityData.textArcAssignments?.map((a) => a.arcAssignmentId) ?? [],
+    [entityData.textArcAssignments]
+  );
   const arcIds = useMemo(
     () =>
       entityData.textArcAssignments?.map((a) => a.arcId) ??
@@ -39,45 +44,62 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
   );
 
   const { ctrlKey } = useContext(JournalHotkeysContext);
-  const { hoveredArcIds, setHoveredArcIds, selectedArcIds, setSelectedArcIds } =
-    useContext(ArcSelectionContext);
+  const {
+    hoveredHighlightIds,
+    setHoveredHighlightIds,
+    selectedHighlightIds,
+    setSelectedHighlightIds,
+  } = useContext(HighlightSelectionContext);
   const { data: arcs } = useStateDocumentQuery({
     collection: "arc",
     name: "arc decoration",
   });
+  const { data: highlights } = useStateDocumentQuery({
+    collection: "arc_assignment",
+    keys: entityHighlightIds,
+  });
 
   const entityArcs = arcIds?.map((id) => arcs[id]).filter((arc) => !!arc) ?? [];
-  const hoveredArcs =
-    hoveredArcIds?.map((id) => arcs[id]).filter((arc) => !!arc) ?? [];
-  const selectedArcs =
-    selectedArcIds
-      ?.filter((selectedArcId) => arcIds.includes(selectedArcId))
-      .map((id) => arcs[id])
-      .filter((arc) => !!arc) ?? [];
+  const hoveredHighlights =
+    hoveredHighlightIds?.map((id) => highlights[id]) ?? [];
+
+  const selectedHighlights =
+    selectedHighlightIds
+      ?.filter((selectedHighlightId) =>
+        entityHighlightIds.includes(selectedHighlightId)
+      )
+      ?.map((id) => highlights[id]) ?? [];
 
   const isHovered = useMemo(
     () =>
-      hoveredArcIds?.length &&
-      isSubset(new Set(hoveredArcIds), new Set(arcIds)),
-    [arcIds, hoveredArcIds]
+      hoveredHighlightIds?.length &&
+      isSubset(new Set(hoveredHighlightIds), new Set(entityHighlightIds)),
+    [entityHighlightIds, hoveredHighlightIds]
   );
 
-  const someArcsSelected = !!selectedArcs?.length;
+  const someHighlightsSelected = !!selectedHighlights?.length;
 
-  const multipleArcsSelected = selectedArcs && selectedArcs.length > 1;
+  const multipleHighlightsSelected =
+    selectedHighlights && selectedHighlights.length > 1;
 
-  const isHighlighted = isHovered || someArcsSelected;
+  const isHighlighted = isHovered || someHighlightsSelected;
 
   const allArcsIpsumColor = multiplyIpsumArcColors(
-    entityArcs.map((arc) => arc.color),
+    Object.values(highlights)
+      .filter((h) => !!h?.arcId)
+      .map((highlight) => arcs[highlight.arcId].color),
     { saturation: 100, lightness: 50 }
   );
   const hoveredArcsIpsumColor = multiplyIpsumArcColors(
-    hoveredArcs.map((arc) => arc.color),
+    hoveredHighlights
+      ?.filter((h) => !!h?.arcId)
+      .map((highlight) => arcs[highlight.arcId].color),
     { saturation: 100, lightness: 50 }
   );
   const selectedArcsIpsumColor = multiplyIpsumArcColors(
-    selectedArcs.map((arc) => arc.color),
+    selectedHighlights
+      ?.filter((h) => !!h?.arcId)
+      .map((highlight) => arcs[highlight.arcId].color),
     { saturation: 100, lightness: 50 }
   );
 
@@ -85,7 +107,7 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
   if (isHovered) {
     appliedIpsumColor = hoveredArcsIpsumColor;
   } else {
-    if (someArcsSelected) {
+    if (someHighlightsSelected) {
       appliedIpsumColor = selectedArcsIpsumColor;
     } else {
       appliedIpsumColor = allArcsIpsumColor;
@@ -110,7 +132,7 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
   const cursor = ctrlKey ? "pointer" : undefined;
 
   const ref = useRef<HTMLSpanElement>(null);
-  const disambiguatorOpen = !!(multipleArcsSelected && arcIds.length > 1);
+  const disambiguatorOpen = !!(multipleHighlightsSelected && arcIds.length > 1);
 
   return (
     <>
@@ -118,17 +140,17 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
         ref={ref}
         aria-details={entityArcs.map((arc) => `${arc.name}`).join(" ")}
         onMouseEnter={() => {
-          setHoveredArcIds(arcIds);
+          setHoveredHighlightIds(entityHighlightIds);
         }}
         onMouseLeave={() => {
-          setHoveredArcIds(undefined);
+          setHoveredHighlightIds(undefined);
         }}
         onClick={() => {
-          if (ctrlKey && arcIds) {
-            setSelectedArcIds(arcIds);
+          if (ctrlKey && entityHighlightIds) {
+            setSelectedHighlightIds(entityHighlightIds);
           }
         }}
-        className={styles.arc}
+        className={styles.highlight}
         style={{ cursor, boxShadow, backgroundColor }}
       >
         {props.children}
@@ -137,12 +159,12 @@ export const ArcDecoration: React.FC<DecoratorProps> = (props) => {
         <ArcDisambiguator
           arcIds={arcIds}
           onArcSelected={(arcId: string) => {
-            setSelectedArcIds([arcId]);
+            setSelectedHighlightIds([arcId]);
           }}
           open={disambiguatorOpen}
           anchorEl={ref.current}
           onClickAway={() => {
-            setSelectedArcIds(undefined);
+            setSelectedHighlightIds(undefined);
           }}
         ></ArcDisambiguator>
       )}

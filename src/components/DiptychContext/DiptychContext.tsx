@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo } from "react";
+import { HighlightSelectionContext } from "components/SelectionContext";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { IpsumURL, URLLayer } from "util/url";
 import { Diptych, DiptychLayer } from "./types";
@@ -48,26 +49,35 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
     };
   }, [layers]);
 
-  const pushLayer = useCallback((layer: URLLayer) => {
-    const url = new IpsumURL(new URL(window.location.href))
-      .getJournalUrl()
-      .pushLayer(layer);
-    navigate(url.url);
-  }, []);
+  const pushLayer = useCallback(
+    (layer: URLLayer) => {
+      const url = new IpsumURL(new URL(window.location.href))
+        .getJournalUrl()
+        .pushLayer(layer);
+      navigate(url.url);
+    },
+    [navigate]
+  );
 
-  const setFirstLayer = useCallback((layer: URLLayer) => {
-    const url = new IpsumURL(new URL(window.location.href))
-      .getJournalUrl()
-      .setTopLayer(1, layer);
-    navigate(url.url);
-  }, []);
+  const setFirstLayer = useCallback(
+    (layer: URLLayer) => {
+      const url = new IpsumURL(new URL(window.location.href))
+        .getJournalUrl()
+        .setTopLayer(1, layer);
+      navigate(url.url);
+    },
+    [navigate]
+  );
 
-  const closeLayer = useCallback((index: number) => {
-    const url = new IpsumURL(new URL(window.location.href))
-      .getJournalUrl()
-      .setTopLayer(index - 1);
-    navigate(url.url);
-  }, []);
+  const closeLayer = useCallback(
+    (index: number) => {
+      const url = new IpsumURL(new URL(window.location.href))
+        .getJournalUrl()
+        .setTopLayer(index - 1);
+      navigate(url.url);
+    },
+    [navigate]
+  );
 
   return (
     <DiptychContext.Provider

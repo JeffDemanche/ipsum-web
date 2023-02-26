@@ -61,6 +61,38 @@ describe("IpsumURL", () => {
         ]);
       });
 
+      it("pushes layer with only connection", () => {
+        const url = new IpsumURL(new URL("http://www.ipsumdomain.com/journal"))
+          .getJournalUrl()
+          .pushLayer({
+            type: "arc_detail",
+            connectionId: "efghefgh",
+          });
+
+        expect(url.getLayers()).toEqual([
+          {
+            type: "arc_detail",
+            connectionId: "efghefgh",
+          },
+        ]);
+      });
+
+      it("pushes layer with only object", () => {
+        const url = new IpsumURL(new URL("http://www.ipsumdomain.com/journal"))
+          .getJournalUrl()
+          .pushLayer({
+            type: "arc_detail",
+            objectId: "12341234",
+          });
+
+        expect(url.getLayers()).toEqual([
+          {
+            type: "arc_detail",
+            objectId: "12341234",
+          },
+        ]);
+      });
+
       it("pushes layer after greatest existing layer", () => {
         const url = new IpsumURL(
           new URL(

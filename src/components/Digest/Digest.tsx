@@ -1,7 +1,7 @@
 import { BookmarkRemoveOutlined, OpenInNewOutlined } from "@mui/icons-material";
 import { Button, Tooltip } from "@mui/material";
-import { ArcToken } from "components/Arc";
-import { ArcSelectionContext } from "components/SelectionContext";
+import { HighlightTag } from "components/HighlightTag";
+import { HighlightSelectionContext } from "components/SelectionContext";
 import React, { useCallback, useContext, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
@@ -18,8 +18,12 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
   const { data: arcAssignments } = useStateDocumentQuery({
     collection: "arc_assignment",
   });
-  const { selectedArcIds, hoveredArcIds, setHoveredArcIds, setSelectedArcIds } =
-    useContext(ArcSelectionContext);
+  const {
+    selectedHighlightIds,
+    setSelectedHighlightIds,
+    hoveredHighlightIds,
+    setHoveredHighlightIds,
+  } = useContext(HighlightSelectionContext);
 
   const { setFirstLayer } = useContext(DiptychContext);
 
@@ -31,14 +35,15 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
   }, [arcAssignmentValues, entryKey]);
 
   const tokenSelected = useCallback(
-    (arcId: string) => selectedArcIds?.includes(arcId),
-    [selectedArcIds]
+    (highlightId: string) => selectedHighlightIds?.includes(highlightId),
+    [selectedHighlightIds]
   );
 
   const tokenHighlighted = useCallback(
-    (arcId: string) =>
-      selectedArcIds?.includes(arcId) || hoveredArcIds?.includes(arcId),
-    [hoveredArcIds, selectedArcIds]
+    (highlightId: string) =>
+      selectedHighlightIds?.includes(highlightId) ||
+      hoveredHighlightIds?.includes(highlightId),
+    [hoveredHighlightIds, selectedHighlightIds]
   );
 
   const { act: unassignArc } = useApiAction({ name: "unassignArc" });
@@ -52,20 +57,24 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
         {assignments.map((assgn, i) => {
           return (
             <React.Fragment key={i}>
-              <ArcToken
+              <HighlightTag
                 className={styles["digest-token"]}
-                arcForToken={{ type: "from id", id: assgn.arcId }}
-                highlighted={tokenHighlighted(assgn.arcId)}
+                highlightId={assgn.id}
+                highlighted={tokenHighlighted(assgn.id)}
                 onMouseEnter={() => {
-                  setHoveredArcIds([assgn.arcId]);
+                  setHoveredHighlightIds([assgn.id]);
                 }}
                 onMouseLeave={() => {
-                  setHoveredArcIds([]);
+                  setHoveredHighlightIds(undefined);
                 }}
                 onClick={() => {
-                  setSelectedArcIds([assgn.arcId]);
+                  setSelectedHighlightIds([assgn.id]);
+                  setFirstLayer({
+                    type: "arc_detail",
+                    connectionId: assgn.id,
+                  });
                 }}
-              ></ArcToken>
+              ></HighlightTag>
               {tokenSelected(assgn.arcId) && (
                 <div className={styles["selected-arc-functions"]}>
                   <Button
@@ -117,8 +126,9 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
     assignments,
     navigate,
     searchParams,
-    setHoveredArcIds,
-    setSelectedArcIds,
+    setFirstLayer,
+    setHoveredHighlightIds,
+    setSelectedHighlightIds,
     tokenHighlighted,
     tokenSelected,
     unassignArc,

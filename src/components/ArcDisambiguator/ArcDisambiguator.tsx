@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import styles from "./ArcDisambiguator.less";
 import { ClickAwayListener } from "@mui/material";
-import { ArcToken } from "components/Arc";
+import { HighlightTag } from "components/HighlightTag";
 import { Popper } from "components/Popper";
-import { ArcSelectionContext } from "components/SelectionContext";
+import { HighlightSelectionContext } from "components/SelectionContext";
 import { noop } from "underscore";
 
 interface ArcDisambiguatorProps {
@@ -17,7 +17,9 @@ interface ArcDisambiguatorProps {
 export const ArcDisambiguator: React.FunctionComponent<
   ArcDisambiguatorProps
 > = ({ open, anchorEl, arcIds, onArcSelected, onClickAway }) => {
-  const { setHoveredArcIds } = useContext(ArcSelectionContext);
+  const { setHoveredHighlightIds: setHoveredHighlightId } = useContext(
+    HighlightSelectionContext
+  );
 
   return (
     <Popper
@@ -31,18 +33,18 @@ export const ArcDisambiguator: React.FunctionComponent<
           {arcIds.map((arcId, i) => {
             return (
               <div key={i}>
-                <ArcToken
-                  arcForToken={{ type: "from id", id: arcId }}
+                <HighlightTag
+                  highlightId=""
                   onClick={() => {
                     onArcSelected(arcId);
                   }}
                   onMouseEnter={() => {
-                    setHoveredArcIds([arcId]);
+                    setHoveredHighlightId([arcId]);
                   }}
                   onMouseLeave={() => {
-                    setHoveredArcIds(undefined);
+                    setHoveredHighlightId(undefined);
                   }}
-                ></ArcToken>
+                ></HighlightTag>
               </div>
             );
           })}

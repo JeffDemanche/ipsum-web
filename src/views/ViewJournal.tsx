@@ -3,7 +3,7 @@ import React from "react";
 import { SurfaceEditorContextProvider } from "../components/Surface";
 import styles from "./ViewJournal.less";
 import { VisibleEntriesProvider } from "../components/VisibleEntriesContext";
-import { ArcSelectionProvider } from "components/SelectionContext";
+import { HighlightSelectionProvider } from "components/SelectionContext";
 import { JournalHotkeysProvider } from "components/JournalHotkeys";
 import { Diptych } from "components/Diptych";
 import { DiptychProvider } from "components/DiptychContext";
@@ -18,7 +18,9 @@ const ProvidersWrapper: React.FC<{ children: React.ReactNode }> = ({
         <SurfaceEditorContextProvider>
           <EditorSelectionProvider>
             <JournalHotkeysProvider>
-              <ArcSelectionProvider>{children}</ArcSelectionProvider>
+              <HighlightSelectionProvider>
+                {children}
+              </HighlightSelectionProvider>
             </JournalHotkeysProvider>
           </EditorSelectionProvider>
         </SurfaceEditorContextProvider>

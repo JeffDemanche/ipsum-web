@@ -1,4 +1,4 @@
 export {
-  ArcSelectionContext,
-  ArcSelectionProvider,
-} from "./ArcSelectionContext";
+  HighlightSelectionContext,
+  HighlightSelectionProvider,
+} from "./HighlightSelectionContext";

@@ -1,5 +1,5 @@
 import { CompositeDecorator, ContentBlock, ContentState } from "draft-js";
-import { ArcDecoration } from "./ArcDecoration";
+import { HighlightDecoration } from "./HighlightDecoration";
 
 const strategy = (
   contentBlock: ContentBlock,
@@ -16,5 +16,5 @@ const strategy = (
 };
 
 export const decorator = new CompositeDecorator([
-  { strategy, component: ArcDecoration },
+  { strategy, component: HighlightDecoration },
 ]);

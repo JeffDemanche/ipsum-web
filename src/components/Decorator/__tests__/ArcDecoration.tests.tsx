@@ -3,7 +3,7 @@ import React from "react";
 import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
 import { IpsumEntityTransformer } from "util/entities";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
-import { ArcDecoration } from "../ArcDecoration";
+import { HighlightDecoration } from "../HighlightDecoration";
 
 describe("ArcDecoration", () => {
   it("renders a highlighted span with underline for an entity which contains one arc", async () => {
@@ -24,7 +24,7 @@ describe("ArcDecoration", () => {
           arc: { arc_id: { color: 0, id: "arc_id", name: "foxes" } },
         }}
       >
-        <ArcDecoration
+        <HighlightDecoration
           blockKey={contentStateWithArc.getFirstBlock().getKey()}
           contentState={contentStateWithArc}
           decoratedText="brown fox"
@@ -34,7 +34,7 @@ describe("ArcDecoration", () => {
           offsetKey=""
         >
           brown fox
-        </ArcDecoration>
+        </HighlightDecoration>
       </MockInMemoryStateProvider>
     );
     const decorationSpan = await screen.findByText("brown fox");

@@ -14,13 +14,13 @@ export const Diptych: React.FC = () => {
           <DiptychColumn layers={layersBySide[0]}></DiptychColumn>
         </div>
       )}
-      {layers.length >= 2 && (
-        <>
-          <Median></Median>
-          <div className={styles["column-2"]}>
-            <DiptychColumn layers={layersBySide[1]}></DiptychColumn>
-          </div>
-        </>
+      {layers[1]?.type === "ArcDetail" && layers[1]?.assignmentId && (
+        <Median></Median>
+      )}
+      {layers[1]?.type === "ArcDetail" && layers[1]?.arcId && (
+        <div className={styles["column-2"]}>
+          <DiptychColumn layers={layersBySide[1]}></DiptychColumn>
+        </div>
       )}
     </div>
   );
