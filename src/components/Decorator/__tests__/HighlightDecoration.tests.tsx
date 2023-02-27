@@ -5,7 +5,7 @@ import { IpsumEntityTransformer } from "util/entities";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
 import { HighlightDecoration } from "../HighlightDecoration";
 
-describe("ArcDecoration", () => {
+describe("HighlightDecoration", () => {
   it("renders a highlighted span with underline for an entity which contains one arc", async () => {
     const editorState = createEditorStateFromFormat(
       "<p>the quick [brown fox] jumped over the lazy dog</p>"
@@ -15,13 +15,16 @@ describe("ArcDecoration", () => {
       editorState.getCurrentContent()
     ).applyEntityData(editorState.getSelection(), "textArcAssignments", {
       arcId: "arc_id",
-      arcAssignmentId: "assgn_id",
+      arcAssignmentId: "highlight_id",
     }).contentState;
 
     const { unmount } = render(
       <MockInMemoryStateProvider
         state={{
           arc: { arc_id: { color: 0, id: "arc_id", name: "foxes" } },
+          arc_assignment: {
+            highlight_id: { id: "highlight_id", arcId: "arc_id", entryKey: "" },
+          },
         }}
       >
         <HighlightDecoration

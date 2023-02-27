@@ -4,7 +4,7 @@ import { ContentState } from "draft-js";
 import { HighlightSelectionContext } from "components/SelectionContext";
 import { isSubset } from "util/set";
 import { JournalHotkeysContext } from "components/JournalHotkeys";
-import { ArcDisambiguator } from "components/ArcDisambiguator";
+import { HighlightDisambiguator } from "components/HighlightDisambiguator";
 import { IpsumArcColor, IpsumColor, multiplyIpsumArcColors } from "util/colors";
 import { useStateDocumentQuery } from "state/in-memory";
 import { IpsumEntityData } from "util/entities";
@@ -156,17 +156,17 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
         {props.children}
       </span>
       {ref?.current && arcIds && (
-        <ArcDisambiguator
-          arcIds={arcIds}
-          onArcSelected={(arcId: string) => {
-            setSelectedHighlightIds([arcId]);
+        <HighlightDisambiguator
+          highlightIds={entityHighlightIds}
+          onHighlightSelected={(highlightId: string) => {
+            setSelectedHighlightIds([highlightId]);
           }}
           open={disambiguatorOpen}
           anchorEl={ref.current}
           onClickAway={() => {
             setSelectedHighlightIds(undefined);
           }}
-        ></ArcDisambiguator>
+        ></HighlightDisambiguator>
       )}
     </>
   );
