@@ -3,7 +3,7 @@ import styles from "./HighlightDisambiguator.less";
 import { ClickAwayListener } from "@mui/material";
 import { HighlightTag } from "components/HighlightTag";
 import { Popper } from "components/Popper";
-import { HighlightSelectionContext } from "components/SelectionContext";
+import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import { noop } from "underscore";
 
 interface HighlightDisambiguatorProps {

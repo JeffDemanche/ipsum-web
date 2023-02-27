@@ -1,4 +1,4 @@
-import { HighlightSelectionContext } from "components/SelectionContext";
+import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { IpsumURL, URLLayer } from "util/url";

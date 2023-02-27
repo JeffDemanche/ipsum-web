@@ -3,7 +3,7 @@ import React from "react";
 import { SurfaceEditorContextProvider } from "../components/Surface";
 import styles from "./ViewJournal.less";
 import { VisibleEntriesProvider } from "../components/VisibleEntriesContext";
-import { HighlightSelectionProvider } from "components/SelectionContext";
+import { HighlightSelectionProvider } from "components/HighlightSelectionContext";
 import { JournalHotkeysProvider } from "components/JournalHotkeys";
 import { Diptych } from "components/Diptych";
 import { DiptychProvider } from "components/DiptychContext";

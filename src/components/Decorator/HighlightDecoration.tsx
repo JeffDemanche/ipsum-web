@@ -1,7 +1,7 @@
 import React, { useContext, useMemo, useRef } from "react";
 import styles from "./HighlightDecoration.less";
 import { ContentState } from "draft-js";
-import { HighlightSelectionContext } from "components/SelectionContext";
+import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import { isSubset } from "util/set";
 import { JournalHotkeysContext } from "components/JournalHotkeys";
 import { HighlightDisambiguator } from "components/HighlightDisambiguator";

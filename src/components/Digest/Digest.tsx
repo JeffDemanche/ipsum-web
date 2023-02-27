@@ -1,7 +1,7 @@
 import { BookmarkRemoveOutlined, OpenInNewOutlined } from "@mui/icons-material";
 import { Button, Tooltip } from "@mui/material";
 import { HighlightTag } from "components/HighlightTag";
-import { HighlightSelectionContext } from "components/SelectionContext";
+import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import React, { useCallback, useContext, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
