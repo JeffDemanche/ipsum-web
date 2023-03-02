@@ -58,9 +58,9 @@ export const apiAssignArc = (
 
   const assignmentId = uuidv4();
 
-  const existingArcAssignment = Object.values(
-    context.state.arc_assignment
-  ).find((a) => a.arcId === arcId && a.entryKey === entryKey);
+  const existingArcAssignment = Object.values(context.state.highlight).find(
+    (a) => a.arcId === arcId && a.entryKey === entryKey
+  );
 
   const contentStateWithAssignment = new IpsumEntityTransformer(
     parseContentState(context.state.entry[entryKey].contentState)
@@ -73,7 +73,7 @@ export const apiAssignArc = (
     context = context.optimisticStateDispatch(context.state, {
       type: "CREATE_DOCUMENT",
       payload: {
-        type: "arc_assignment",
+        type: "highlight",
         document: { id: assignmentId, entryKey, arcId },
       },
     });

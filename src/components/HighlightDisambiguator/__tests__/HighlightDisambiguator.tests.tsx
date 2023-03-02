@@ -15,7 +15,7 @@ const TestDisambiguator: React.FunctionComponent<{
           arc_1: { id: "arc_1", color: 0, name: "Arc one" },
           arc_2: { id: "arc_2", color: 100, name: "Arc two" },
         },
-        arc_assignment: {
+        highlight: {
           highlight_1: { arcId: "arc_1", entryKey: "", id: "highlight_1" },
           highlight_2: { arcId: "arc_2", entryKey: "", id: "highlight_2" },
         },

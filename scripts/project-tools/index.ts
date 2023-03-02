@@ -14,8 +14,11 @@ import { write } from "./write";
 const inputFileArg = process.env.npm_config_input_file;
 const outputFileArg = process.env.npm_config_output_file;
 
-if (!existsSync(inputFileArg) || !outputFileArg) {
-  throw new Error("specify input_file and output_file");
+if (!existsSync(inputFileArg)) {
+  throw new Error(`Input file doesn't exist: ${inputFileArg}`);
+}
+if (!outputFileArg) {
+  throw new Error("No output_file");
 }
 
 let data = "";
@@ -61,7 +64,7 @@ replServer.defineCommand("write", {
   },
 });
 replServer.defineCommand("rename_field", {
-  help: "Write modified data to the output file",
+  help: "Rename a field in the file JSON, format: [path] [to] [field] ... [rename_to]",
   action(arg) {
     try {
       const renamed = { ...modifiedData };

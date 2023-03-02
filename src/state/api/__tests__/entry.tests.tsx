@@ -101,7 +101,7 @@ describe("Entry API", () => {
                 entryKey: "entry_key_1",
               },
             },
-            arc_assignment: {
+            highlight: {
               assgn_hello: {
                 id: "assgn_hello",
                 arcId: "arc_hello",
@@ -133,8 +133,8 @@ describe("Entry API", () => {
       const updatedState: InMemoryState =
         newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
 
-      expect(Object.values(updatedState.arc_assignment).length).toEqual(1);
-      expect(Object.values(updatedState.arc_assignment)[0].arcId).toEqual(
+      expect(Object.values(updatedState.highlight).length).toEqual(1);
+      expect(Object.values(updatedState.highlight)[0].arcId).toEqual(
         "arc_hello"
       );
 
@@ -204,7 +204,7 @@ describe("Entry API", () => {
                 name: "arc one",
               },
             },
-            arc_assignment: {
+            highlight: {
               assgn_1: {
                 id: "assgn_1",
                 entryKey: "entry_key_1",
@@ -233,8 +233,8 @@ describe("Entry API", () => {
 
       const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
 
-      expect(Object.values(updatedState.arc_assignment).length).toEqual(1);
-      expect(Object.values(updatedState.arc_assignment)[0].entryKey).toEqual(
+      expect(Object.values(updatedState.highlight).length).toEqual(1);
+      expect(Object.values(updatedState.highlight)[0].entryKey).toEqual(
         "another_entry"
       );
 

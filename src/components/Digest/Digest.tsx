@@ -15,8 +15,8 @@ interface DigestProps {
 }
 
 export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
-  const { data: arcAssignments } = useStateDocumentQuery({
-    collection: "arc_assignment",
+  const { data: highlights } = useStateDocumentQuery({
+    collection: "highlight",
   });
   const {
     selectedHighlightIds,
@@ -27,7 +27,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
 
   const { setFirstLayer } = useContext(DiptychContext);
 
-  const arcAssignmentValues = Object.values(arcAssignments);
+  const arcAssignmentValues = Object.values(highlights);
   const assignments = useMemo(() => {
     return arcAssignmentValues.filter(
       (assignment) => assignment.entryKey === entryKey

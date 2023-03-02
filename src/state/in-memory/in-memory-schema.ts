@@ -76,9 +76,9 @@ export const InMemoryCollections = {
       },
     },
   },
-  arc_assignment: {
+  highlight: {
     __type: "document" as const,
-    name: "arc_assignment",
+    name: "highlight",
     primaryKey: "id",
     fields: {
       id: {

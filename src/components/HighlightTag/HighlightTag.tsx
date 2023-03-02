@@ -25,7 +25,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   onMouseLeave,
 }) => {
   const { data: highlights } = useStateDocumentQuery({
-    collection: "arc_assignment",
+    collection: "highlight",
     keys: [highlightId],
   });
   const { data: arcs } = useStateDocumentQuery({

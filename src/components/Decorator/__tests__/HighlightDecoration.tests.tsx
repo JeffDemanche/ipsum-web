@@ -22,7 +22,7 @@ describe("HighlightDecoration", () => {
       <MockInMemoryStateProvider
         state={{
           arc: { arc_id: { color: 0, id: "arc_id", name: "foxes" } },
-          arc_assignment: {
+          highlight: {
             highlight_id: { id: "highlight_id", arcId: "arc_id", entryKey: "" },
           },
         }}

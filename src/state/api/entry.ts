@@ -45,7 +45,7 @@ export const apiCreateOrUpdateEntry = (
       (a) => a.arcAssignmentId
     );
 
-    const addedAssignments: Partial<Document<"arc_assignment">>[] =
+    const addedAssignments: Partial<Document<"highlight">>[] =
       newTextArcAssignments
         .filter(
           (newAssignment) =>
@@ -60,7 +60,7 @@ export const apiCreateOrUpdateEntry = (
       context = context.optimisticStateDispatch(context.state, {
         type: "CREATE_DOCUMENT",
         payload: {
-          type: "arc_assignment",
+          type: "highlight",
           document: assignment,
         },
       });
@@ -68,7 +68,7 @@ export const apiCreateOrUpdateEntry = (
     context = context.optimisticStateDispatch(context.state, {
       type: "REMOVE_DOCUMENTS",
       payload: {
-        type: "arc_assignment",
+        type: "highlight",
         keys: removedAssignments,
       },
     });
@@ -98,13 +98,13 @@ export const apiDeleteEntry = (
       key: entryKey,
     },
   });
-  const arcAssignmentsForEntry = Object.values(context.state.arc_assignment)
+  const arcAssignmentsForEntry = Object.values(context.state.highlight)
     .filter((a) => a.entryKey === entryKey)
     .map((a) => a.id);
   context = context.optimisticStateDispatch(context.state, {
     type: "REMOVE_DOCUMENTS",
     payload: {
-      type: "arc_assignment",
+      type: "highlight",
       keys: arcAssignmentsForEntry,
     },
   });

@@ -15,7 +15,7 @@ describe("InMemoryState", () => {
 
       expect(state.entry).toEqual({});
       expect(state.arc).toEqual({});
-      expect(state.arc_assignment).toEqual({});
+      expect(state.highlight).toEqual({});
       expect(state.journalMetadata).toEqual({
         lastArcHue: 0,
       });
@@ -65,11 +65,11 @@ describe("InMemoryState", () => {
     it("adds default value for when a collection doesn't exist in file", () => {
       const state: WritableInMemoryState = initializeDefaultInMemoryState();
       delete state.arc;
-      delete state.arc_assignment;
+      delete state.highlight;
       const serialized = serializeInMemoryState(state);
       const deserialized = deserializeInMemoryState(serialized);
       expect(deserialized.arc).toEqual({});
-      expect(deserialized.arc_assignment).toEqual({});
+      expect(deserialized.highlight).toEqual({});
     });
 
     it("serializes state with multiple settings", () => {
@@ -89,12 +89,12 @@ describe("InMemoryState", () => {
         ...initializeDefaultDocument("arc"),
       };
       const arcAssignment1 = {
-        ...initializeDefaultDocument("arc_assignment"),
+        ...initializeDefaultDocument("highlight"),
         arcId: arc.id,
         entryKey: entry1.entryKey,
       };
       const arcAssignment2 = {
-        ...initializeDefaultDocument("arc_assignment"),
+        ...initializeDefaultDocument("highlight"),
         arcId: arc.id,
         entryKey: entry2.entryKey,
       };
@@ -102,7 +102,7 @@ describe("InMemoryState", () => {
         ...initializeDefaultInMemoryState(),
         entry: { [entry1.entryKey]: entry1, [entry2.entryKey]: entry2 },
         arc: { [arc.id]: arc },
-        arc_assignment: {
+        highlight: {
           [arcAssignment1.id]: arcAssignment1,
           [arcAssignment2.id]: arcAssignment2,
         },
@@ -113,7 +113,7 @@ describe("InMemoryState", () => {
       expect(deserialized.journalTitle).toEqual(state.journalTitle);
       expect(deserialized.journalId).toEqual(state.journalId);
       expect(deserialized.arc).toEqual(state.arc);
-      expect(deserialized.arc_assignment).toEqual(state.arc_assignment);
+      expect(deserialized.highlight).toEqual(state.highlight);
       expect(
         parseContentState(
           deserialized.entry[entry1.entryKey].contentState

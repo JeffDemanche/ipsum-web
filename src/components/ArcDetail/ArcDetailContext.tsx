@@ -4,7 +4,7 @@ import { ArcDetailContextValue } from "./types";
 
 export const ArcDetailContext = React.createContext<ArcDetailContextValue>({
   arc: undefined,
-  assignment: undefined,
+  highlight: undefined,
 });
 
 interface ArcDetailProviderProps {
@@ -15,25 +15,25 @@ interface ArcDetailProviderProps {
 export const ArcDetailProvider: React.FunctionComponent<
   ArcDetailProviderProps
 > = ({ assignmentId, children }) => {
-  const { data: arcAssignmentData } = useStateDocumentQuery({
-    collection: "arc_assignment",
+  const { data: highlightData } = useStateDocumentQuery({
+    collection: "highlight",
     keys: [assignmentId],
   });
 
-  const arcId = arcAssignmentData[assignmentId]?.arcId;
+  const arcId = highlightData[assignmentId]?.arcId;
 
   const { data: arcData } = useStateDocumentQuery({
     collection: "arc",
     keys: [arcId],
   });
 
-  const assignment = arcAssignmentData[assignmentId];
+  const highlight = highlightData[assignmentId];
   const arc = arcData[arcId];
 
-  const loading = !assignment || !arc;
+  const loading = !highlight || !arc;
 
   return (
-    <ArcDetailContext.Provider value={{ arc, assignment }}>
+    <ArcDetailContext.Provider value={{ arc, highlight }}>
       {loading ? "Loading..." : children}
     </ArcDetailContext.Provider>
   );

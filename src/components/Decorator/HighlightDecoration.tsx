@@ -55,7 +55,7 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     name: "arc decoration",
   });
   const { data: highlights } = useStateDocumentQuery({
-    collection: "arc_assignment",
+    collection: "highlight",
     keys: entityHighlightIds,
   });
 

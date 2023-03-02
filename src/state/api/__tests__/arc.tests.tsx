@@ -71,7 +71,7 @@ describe("Arc API", () => {
         newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
 
       expect(Object.keys(updatedState.entry).length).toBe(1);
-      expect(Object.keys(updatedState.arc_assignment).length).toBe(1);
+      expect(Object.keys(updatedState.highlight).length).toBe(1);
       expect(Object.keys(updatedState.arc).length).toBe(1);
 
       const arcId = Object.keys(updatedState.arc)[0];
@@ -79,11 +79,9 @@ describe("Arc API", () => {
       expect(updatedState.arc[arcId].name).toBe("new arc");
       expect(updatedState.arc[arcId].id).toBe(arcId);
 
-      const assignmentId = Object.keys(updatedState.arc_assignment)[0];
-      expect(updatedState.arc_assignment[assignmentId].arcId).toBe(arcId);
-      expect(updatedState.arc_assignment[assignmentId].entryKey).toBe(
-        "entry_key"
-      );
+      const assignmentId = Object.keys(updatedState.highlight)[0];
+      expect(updatedState.highlight[assignmentId].arcId).toBe(arcId);
+      expect(updatedState.highlight[assignmentId].entryKey).toBe("entry_key");
 
       const contentState = parseContentState(
         updatedState.entry["entry_key"].contentState
@@ -138,7 +136,7 @@ describe("Arc API", () => {
         newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
 
       expect(Object.keys(updatedState.entry).length).toBe(1);
-      expect(Object.keys(updatedState.arc_assignment).length).toBe(2);
+      expect(Object.keys(updatedState.highlight).length).toBe(2);
       expect(Object.keys(updatedState.arc).length).toBe(2);
 
       const arcId1 = Object.keys(updatedState.arc)[0];
@@ -150,23 +148,17 @@ describe("Arc API", () => {
       expect(updatedState.arc[arcId2].name).toBe("new arc 2");
       expect(updatedState.arc[arcId2].id).toBe(arcId2);
 
-      const assignmentId1 = Object.keys(updatedState.arc_assignment).find(
-        (assignmentId) =>
-          updatedState.arc_assignment[assignmentId].arcId === arcId1
+      const assignmentId1 = Object.keys(updatedState.highlight).find(
+        (assignmentId) => updatedState.highlight[assignmentId].arcId === arcId1
       );
-      expect(updatedState.arc_assignment[assignmentId1].arcId).toBe(arcId1);
-      expect(updatedState.arc_assignment[assignmentId1].entryKey).toBe(
-        "entry_key"
-      );
+      expect(updatedState.highlight[assignmentId1].arcId).toBe(arcId1);
+      expect(updatedState.highlight[assignmentId1].entryKey).toBe("entry_key");
 
-      const assignmentId2 = Object.keys(updatedState.arc_assignment).find(
-        (assignmentId) =>
-          updatedState.arc_assignment[assignmentId].arcId === arcId2
+      const assignmentId2 = Object.keys(updatedState.highlight).find(
+        (assignmentId) => updatedState.highlight[assignmentId].arcId === arcId2
       );
-      expect(updatedState.arc_assignment[assignmentId2].arcId).toBe(arcId2);
-      expect(updatedState.arc_assignment[assignmentId2].entryKey).toBe(
-        "entry_key"
-      );
+      expect(updatedState.highlight[assignmentId2].arcId).toBe(arcId2);
+      expect(updatedState.highlight[assignmentId2].entryKey).toBe("entry_key");
 
       unmount();
     });
@@ -252,11 +244,9 @@ describe("Arc API", () => {
       const updatedState: InMemoryState =
         newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
 
-      expect(Object.values(updatedState.arc_assignment).length).toEqual(1);
-      expect(Object.values(updatedState.arc_assignment)[0].arcId).toEqual(
-        "arc_id"
-      );
-      expect(Object.values(updatedState.arc_assignment)[0].entryKey).toEqual(
+      expect(Object.values(updatedState.highlight).length).toEqual(1);
+      expect(Object.values(updatedState.highlight)[0].arcId).toEqual("arc_id");
+      expect(Object.values(updatedState.highlight)[0].entryKey).toEqual(
         "entry_key"
       );
 

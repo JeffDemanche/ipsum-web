@@ -92,18 +92,18 @@ describe("InMemoryState Reducer", () => {
 
   describe("REMOVE_DOCUMENT", () => {
     it("removes an arc assignment by id", () => {
-      const arcAssignment = initializeDefaultDocument("arc_assignment");
+      const highlight = initializeDefaultDocument("highlight");
       const defaultState: InMemoryState = {
         ...initializeDefaultInMemoryState(),
-        arc_assignment: {
-          [arcAssignment.id]: arcAssignment,
+        highlight: {
+          [highlight.id]: highlight,
         },
       };
       const afterState = reducer(defaultState, {
         type: "REMOVE_DOCUMENT",
-        payload: { type: "arc_assignment", key: arcAssignment.id },
+        payload: { type: "highlight", key: highlight.id },
       });
-      expect(Object.entries(afterState.arc_assignment)).toHaveLength(0);
+      expect(Object.entries(afterState.highlight)).toHaveLength(0);
     });
   });
 });
