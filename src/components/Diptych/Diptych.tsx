@@ -14,7 +14,7 @@ export const Diptych: React.FC = () => {
           <DiptychColumn layers={layersBySide[0]}></DiptychColumn>
         </div>
       )}
-      {layers[1]?.type === "ArcDetail" && layers[1]?.assignmentId && (
+      {layers[1]?.type === "ArcDetail" && layers[1]?.highlightId && (
         <Median></Median>
       )}
       {layers[1]?.type === "ArcDetail" && layers[1]?.arcId && (

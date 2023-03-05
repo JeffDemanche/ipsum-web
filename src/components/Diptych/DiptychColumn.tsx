@@ -18,7 +18,7 @@ export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
       {topMostLayer.type === "DailyJournal" ? (
         <Surface></Surface>
       ) : (
-        <ArcDetail assignmentId={topMostLayer.assignmentId}></ArcDetail>
+        <ArcDetail assignmentId={topMostLayer.highlightId}></ArcDetail>
       )}
     </div>
   );

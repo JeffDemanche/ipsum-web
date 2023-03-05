@@ -1,6 +1,6 @@
 /**
- * Provides functionality for keeping track of Arc selection, hovering, and
- * other abilities across components.
+ * Provides functionality for keeping track of Highlight selection, hovering,
+ * and other abilities across components.
  */
 
 import React, { useCallback, useState } from "react";

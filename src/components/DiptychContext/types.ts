@@ -3,7 +3,9 @@ import { URLLayer } from "util/url";
 /**
  * Item which connects two layers, such as an arc highlight.
  */
-interface Connection {}
+interface Connection {
+  layerIndex: number;
+}
 
 interface DailyJournalLayer {
   type: "DailyJournal";
@@ -11,7 +13,7 @@ interface DailyJournalLayer {
 
 interface ArcDetailLayer {
   type: "ArcDetail";
-  assignmentId: string;
+  highlightId: string;
   arcId: string;
 }
 

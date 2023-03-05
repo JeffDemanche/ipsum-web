@@ -1,5 +1,4 @@
-import { HighlightSelectionContext } from "components/HighlightSelectionContext";
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { IpsumURL, URLLayer } from "util/url";
 import { Diptych, DiptychLayer } from "./types";
@@ -34,9 +33,9 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
       ...urlLayers.map(
         (urlLayer): DiptychLayer => ({
           type: "ArcDetail",
-          connectionFrom: {},
+          connectionFrom: undefined,
           arcId: urlLayer.objectId,
-          assignmentId: urlLayer.connectionId,
+          highlightId: urlLayer.connectionId,
         })
       ),
     ];

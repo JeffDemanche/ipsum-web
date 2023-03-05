@@ -1,11 +1,18 @@
 import { Card } from "@mui/material";
+import { HighlightExcerpt } from "components/HighlightExcerpt";
 import React from "react";
 import styles from "./MedianHighlightBox.less";
 
-interface MedianHighlightBoxProps {}
+interface MedianHighlightBoxProps {
+  highlightId: string;
+}
 
 export const MedianHighlightBox: React.FunctionComponent<
   MedianHighlightBoxProps
-> = () => {
-  return <Card></Card>;
+> = ({ highlightId }) => {
+  return (
+    <Card>
+      <HighlightExcerpt highlightId={highlightId} />
+    </Card>
+  );
 };
