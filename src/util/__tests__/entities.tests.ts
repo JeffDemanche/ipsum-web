@@ -689,5 +689,102 @@ describe("entities", () => {
     });
   });
 
-  describe("consolidateEntities", () => {});
+  describe("getHighlightSelectionState", () => {
+    it("returns undefined when no higlight entity exists", () => {
+      const initialEditor = createEditorStateFromFormat("hello world!");
+      const highlightSelectionState = new IpsumEntityTransformer(
+        initialEditor.getCurrentContent()
+      ).getHighlightSelectionState("highlight_1");
+      expect(highlightSelectionState).toBeUndefined();
+    });
+
+    it("returns correct selection state for single highlight in single block", () => {
+      const initialEditor = createEditorStateFromFormat("[hello] world!");
+      const transformer = new IpsumEntityTransformer(
+        initialEditor.getCurrentContent()
+      );
+      const withEntity = transformer.applyEntityData(
+        initialEditor.getSelection(),
+        "textArcAssignments",
+        { arcId: "", arcAssignmentId: "highlight_1" }
+      );
+      const highlightSelectionState =
+        withEntity.getHighlightSelectionState("highlight_1");
+
+      expect(highlightSelectionState.getAnchorKey()).toEqual(
+        highlightSelectionState.getFocusKey()
+      );
+      expect(highlightSelectionState.getAnchorOffset()).toEqual(0);
+      expect(highlightSelectionState.getFocusOffset()).toEqual(5);
+    });
+
+    it("returns correct selection state for a highlight when it overlaps another highlight", () => {
+      const initialEditor = createEditorStateFromFormat("[hello] world!");
+      const transformer = new IpsumEntityTransformer(
+        initialEditor.getCurrentContent()
+      );
+      const withEntityOne = transformer.applyEntityData(
+        initialEditor.getSelection(),
+        "textArcAssignments",
+        { arcId: "", arcAssignmentId: "highlight_1" }
+      );
+      const withEntityTwo = withEntityOne.applyEntityData(
+        moveEditorSelectionFromFormat(
+          initialEditor,
+          "he[llo world!]"
+        ).getSelection(),
+        "textArcAssignments",
+        { arcId: "", arcAssignmentId: "highlight_2" }
+      );
+
+      const highlightSelectionStateOne =
+        withEntityTwo.getHighlightSelectionState("highlight_1");
+      const highlightSelectionStateTwo =
+        withEntityTwo.getHighlightSelectionState("highlight_2");
+
+      expect(highlightSelectionStateOne.getAnchorKey()).toEqual(
+        highlightSelectionStateOne.getFocusKey()
+      );
+      expect(highlightSelectionStateOne.getAnchorOffset()).toEqual(0);
+      expect(highlightSelectionStateOne.getFocusOffset()).toEqual(5);
+
+      expect(highlightSelectionStateTwo.getAnchorKey()).toEqual(
+        highlightSelectionStateTwo.getFocusKey()
+      );
+      expect(highlightSelectionStateTwo.getAnchorOffset()).toEqual(2);
+      expect(highlightSelectionStateTwo.getFocusOffset()).toEqual(12);
+    });
+
+    it("returns correct selection state for a highlight when it spans multiple blocks", () => {
+      const initialEditor = createEditorStateFromFormat(
+        "<p>block [one</p><p>block] two</p>"
+      );
+      const transformer = new IpsumEntityTransformer(
+        initialEditor.getCurrentContent()
+      );
+      const withEntityOne = transformer.applyEntityData(
+        initialEditor.getSelection(),
+        "textArcAssignments",
+        { arcId: "", arcAssignmentId: "highlight_1" }
+      );
+      const withEntityTwo = withEntityOne.applyEntityData(
+        moveEditorSelectionFromFormat(
+          initialEditor,
+          "<p>[block one]</p><p>block two</p>"
+        ).getSelection(),
+        "textArcAssignments",
+        { arcId: "", arcAssignmentId: "highlight_2" }
+      );
+
+      const highlightSelectionState =
+        withEntityTwo.getHighlightSelectionState("highlight_1");
+
+      expect(highlightSelectionState.getStartKey()).toEqual(
+        initialEditor.getCurrentContent().getFirstBlock().getKey()
+      );
+      expect(highlightSelectionState.getEndKey()).toEqual(
+        initialEditor.getCurrentContent().getLastBlock().getKey()
+      );
+    });
+  });
 });

@@ -373,4 +373,43 @@ export class IpsumEntityTransformer {
     });
     return textArcAssignments;
   };
+
+  /**
+   * Returns a SelectionState for the entity that matches the provided
+   * highlightId (currently this matches textArcAssignment.arcAssignmentId,
+   * though that nomenclature should change).
+   */
+  getHighlightSelectionState = (highlightId: string) => {
+    const allCharacters = this.getCharacters();
+    let startBlock: string;
+    let startOffset: number;
+    let endBlock: string;
+    let endOffset: number;
+
+    this.getEntityRanges(allCharacters).forEach((entityRange) => {
+      if (!entityRange.entityData) return;
+      if (
+        entityRange.entityData.textArcAssignments.find(
+          (assgn) => assgn.arcAssignmentId === highlightId
+        )
+      ) {
+        if (!startBlock) {
+          startBlock = entityRange.entityRangeSelState.getStartKey();
+          startOffset = entityRange.entityRangeSelState.getStartOffset();
+        }
+
+        endBlock = entityRange.entityRangeSelState.getEndKey();
+        endOffset = entityRange.entityRangeSelState.getEndOffset();
+      }
+    });
+
+    if (!startBlock) return undefined;
+
+    return SelectionState.createEmpty(startBlock).merge({
+      anchorKey: startBlock,
+      focusKey: endBlock,
+      anchorOffset: startOffset,
+      focusOffset: endOffset,
+    });
+  };
 }
