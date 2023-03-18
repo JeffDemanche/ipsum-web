@@ -1,6 +1,6 @@
 import { EditorSelectionProvider } from "components/EditorSelection";
 import React from "react";
-import { SurfaceEditorContextProvider } from "../components/Surface";
+import { DailyJournalEditorContextProvider } from "../components/DailyJournal";
 import styles from "./ViewJournal.less";
 import { VisibleEntriesProvider } from "../components/VisibleEntriesContext";
 import { HighlightSelectionProvider } from "components/HighlightSelectionContext";
@@ -15,7 +15,7 @@ const ProvidersWrapper: React.FC<{ children: React.ReactNode }> = ({
   return (
     <DiptychProvider>
       <VisibleEntriesProvider>
-        <SurfaceEditorContextProvider>
+        <DailyJournalEditorContextProvider>
           <EditorSelectionProvider>
             <JournalHotkeysProvider>
               <HighlightSelectionProvider>
@@ -23,7 +23,7 @@ const ProvidersWrapper: React.FC<{ children: React.ReactNode }> = ({
               </HighlightSelectionProvider>
             </JournalHotkeysProvider>
           </EditorSelectionProvider>
-        </SurfaceEditorContextProvider>
+        </DailyJournalEditorContextProvider>
       </VisibleEntriesProvider>
     </DiptychProvider>
   );

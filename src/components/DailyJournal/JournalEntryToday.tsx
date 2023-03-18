@@ -10,7 +10,7 @@ import { useDebouncedCallback } from "util/hooks";
 import { placeholderForDate } from "util/placeholders";
 import { EditorWrapper } from "./EditorWrapper";
 import styles from "./JournalEntry.less";
-import { SurfaceEditorContext } from "./SurfaceEditorContext";
+import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
 
 interface JournalEntryTodayProps {
@@ -29,8 +29,9 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
     { entryKey }
   );
 
-  const { setEntryEditorState, onEditorFocus, onEditorBlur } =
-    useContext(SurfaceEditorContext);
+  const { setEntryEditorState, onEditorFocus, onEditorBlur } = useContext(
+    DailyJournalEditorContext
+  );
 
   const { act: deleteEntry } = useApiAction({
     name: "deleteEntry",

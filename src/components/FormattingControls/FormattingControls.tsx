@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./FormattingControls.less";
 import { EditorState, RichUtils } from "draft-js";
-import { SurfaceEditorContext } from "components/Surface";
+import { DailyJournalEditorContext } from "components/DailyJournal";
 import { ToggleButton } from "@mui/material";
 
 export const FormattingControls: React.FunctionComponent = () => {
   const { focusedEditorKey, setEntryEditorState, entryEditorStates } =
-    useContext(SurfaceEditorContext);
+    useContext(DailyJournalEditorContext);
 
   const focusedEditorState = useMemo(
     () => entryEditorStates.get(focusedEditorKey),
@@ -57,14 +57,14 @@ export const FormattingControls: React.FunctionComponent = () => {
     [focusedEditorKey, focusedEditorSelection, setEntryEditorState]
   );
 
-  const onSurfaceControlsClick = useCallback((e: React.MouseEvent) => {
+  const onDailyJournalControlsClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
   }, []);
 
   return (
     <div
-      className={styles["surface-controls"]}
-      onClick={onSurfaceControlsClick}
+      className={styles["daily-journal-controls"]}
+      onClick={onDailyJournalControlsClick}
     >
       <ToggleButton
         value="check"

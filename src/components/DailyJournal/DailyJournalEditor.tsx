@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { JournalEntryPast } from "./JournalEntryPast";
 import { JournalEntryToday } from "./JournalEntryToday";
-import styles from "./SurfaceEditor.less";
 
 import { useDateString } from "util/dates";
 import { VisibleEntriesContext } from "components/VisibleEntriesContext";
@@ -9,7 +8,7 @@ import { VisibleEntriesContext } from "components/VisibleEntriesContext";
 /**
  * Component that renders all loaded entries, including today's.
  */
-export const SurfaceEditor = () => {
+export const DailyJournalEditor = () => {
   const { visibleEntryKeys } = useContext(VisibleEntriesContext);
 
   const today = useDateString(30000, "entry-printed-date");

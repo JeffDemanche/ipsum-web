@@ -1,6 +1,6 @@
 import { ArcDetail } from "components/ArcDetail";
 import { DiptychContext, DiptychLayer } from "components/DiptychContext";
-import { Surface } from "components/Surface";
+import { DailyJournal } from "components/DailyJournal";
 import React, { useCallback, useContext } from "react";
 import styles from "./DiptychColumn.less";
 
@@ -24,7 +24,7 @@ export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
   return (
     <div className={styles["diptych-layer"]}>
       {topMostLayer.type === "DailyJournal" ? (
-        <Surface></Surface>
+        <DailyJournal></DailyJournal>
       ) : (
         <ArcDetail
           arcId={topMostLayer.arcId}

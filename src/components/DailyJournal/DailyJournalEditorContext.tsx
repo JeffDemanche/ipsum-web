@@ -14,7 +14,7 @@ interface EditorMetadata {}
 
 type EditorMetadataMap = ReadonlyMap<string, EditorMetadata>;
 
-interface SurfaceEditorContextValue {
+interface DailyJournalEditorContextValue {
   focusedEditorKey: string | undefined;
   onEditorFocus: (editorKey: string) => void;
   onEditorBlur: (editorKey: string) => void;
@@ -56,33 +56,34 @@ interface SurfaceEditorContextValue {
   ) => void;
 }
 
-export const emptySurfaceEditorContextValue: SurfaceEditorContextValue = {
-  focusedEditorKey: undefined,
-  onEditorFocus: noop,
-  onEditorBlur: noop,
+export const emptyDailyJournalEditorContextValue: DailyJournalEditorContextValue =
+  {
+    focusedEditorKey: undefined,
+    onEditorFocus: noop,
+    onEditorBlur: noop,
 
-  registerEditor: noop,
-  unregisterEditor: noop,
+    registerEditor: noop,
+    unregisterEditor: noop,
 
-  entryEditorStates: new Map<string, EditorState>(),
-  setEntryEditorState: noop,
-  entryEditorMetadatas: new Map<string, EditorMetadata>(),
-  setEntryEditorMetadata: noop,
-  entryEditorRefs: new Map<string, React.MutableRefObject<Editor>>(),
-  setEntryEditorRef: noop,
-};
+    entryEditorStates: new Map<string, EditorState>(),
+    setEntryEditorState: noop,
+    entryEditorMetadatas: new Map<string, EditorMetadata>(),
+    setEntryEditorMetadata: noop,
+    entryEditorRefs: new Map<string, React.MutableRefObject<Editor>>(),
+    setEntryEditorRef: noop,
+  };
 
-export const SurfaceEditorContext = React.createContext(
-  emptySurfaceEditorContextValue
+export const DailyJournalEditorContext = React.createContext(
+  emptyDailyJournalEditorContextValue
 );
 
-interface SurfaceEditorContextProviderProps {
+interface DailyJournalEditorContextProviderProps {
   children: React.ReactNode;
 }
 
-export const SurfaceEditorContextProvider: React.FC<
-  SurfaceEditorContextProviderProps
-> = ({ children }: SurfaceEditorContextProviderProps) => {
+export const DailyJournalEditorContextProvider: React.FunctionComponent<
+  DailyJournalEditorContextProviderProps
+> = ({ children }: DailyJournalEditorContextProviderProps) => {
   const [focusedEditorKey, setFocusedEditorKey] = useState(undefined);
 
   const onEditorFocus = useCallback((editorKey: string) => {
@@ -196,7 +197,7 @@ export const SurfaceEditorContextProvider: React.FC<
   }, []);
 
   return (
-    <SurfaceEditorContext.Provider
+    <DailyJournalEditorContext.Provider
       value={{
         focusedEditorKey,
         onEditorFocus,
@@ -214,6 +215,6 @@ export const SurfaceEditorContextProvider: React.FC<
       }}
     >
       {children}
-    </SurfaceEditorContext.Provider>
+    </DailyJournalEditorContext.Provider>
   );
 };

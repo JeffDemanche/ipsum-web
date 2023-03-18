@@ -2,7 +2,7 @@ import { ContentBlock, ContentState, Editor, EditorState } from "draft-js";
 import { useContext, useEffect, useMemo, useRef } from "react";
 import editorStyes from "./EditorStyles.less";
 import { parseContentState, stringifyContentState } from "util/content-state";
-import { SurfaceEditorContext } from "./SurfaceEditorContext";
+import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
 import cx from "classnames";
 import { decorator } from "components/Decorator";
 import { useStateDocumentQuery, Document } from "state/in-memory";
@@ -61,7 +61,7 @@ export const useJournalEntryEditor = ({
     unregisterEditor,
     entryEditorStates,
     entryEditorMetadatas,
-  } = useContext(SurfaceEditorContext);
+  } = useContext(DailyJournalEditorContext);
 
   const editorState = entryEditorStates.get(entryKey);
   const editorMetadata = entryEditorMetadatas.get(entryKey);

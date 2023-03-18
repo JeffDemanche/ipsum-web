@@ -6,7 +6,7 @@ import React, { useCallback, useContext } from "react";
 import { IpsumDateTime } from "util/dates";
 import { EditorWrapper } from "./EditorWrapper";
 import styles from "./JournalEntry.less";
-import { SurfaceEditorContext } from "./SurfaceEditorContext";
+import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
 
 interface JournalEntryProps {
@@ -22,8 +22,9 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
     entryKey,
   });
 
-  const { setEntryEditorState, onEditorFocus, onEditorBlur } =
-    useContext(SurfaceEditorContext);
+  const { setEntryEditorState, onEditorFocus, onEditorBlur } = useContext(
+    DailyJournalEditorContext
+  );
 
   // We listen for clicks on Surface to move the focus to the end of the Editor,
   // this is a hacky way of overriding that if the click is on the Editor
