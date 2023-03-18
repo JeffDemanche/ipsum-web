@@ -112,21 +112,24 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
           )}
         </Typography>
         {editorState && (
-          <EditorWrapper
-            enableControls
-            placeholder={placeholderForDate(
-              IpsumDateTime.fromString(entryKey, "entry-printed-date")
-            )}
-            editorKey={entryKey}
-            enableHighlights={true}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            editorState={editorState}
-            handleKeyCommand={handleKeyCommand}
-            blockStyleFn={blockStyleFn}
-            onChange={onEditorChange}
-            ref={editorRef}
-          ></EditorWrapper>
+          <>
+            <Digest entryKey={entryKey} />
+            <EditorWrapper
+              enableControls
+              placeholder={placeholderForDate(
+                IpsumDateTime.fromString(entryKey, "entry-printed-date")
+              )}
+              editorKey={entryKey}
+              enableHighlights={true}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              editorState={editorState}
+              handleKeyCommand={handleKeyCommand}
+              blockStyleFn={blockStyleFn}
+              onChange={onEditorChange}
+              ref={editorRef}
+            ></EditorWrapper>
+          </>
         )}
         {showDivider && (
           <div className={styles["divider-container"]}>
@@ -134,11 +137,6 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
           </div>
         )}
       </div>
-      {editorState && (
-        <div className={styles["digest-wrapper"]}>
-          <Digest entryKey={entryKey} />
-        </div>
-      )}
     </div>
   );
 };

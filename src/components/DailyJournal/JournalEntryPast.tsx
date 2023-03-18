@@ -90,18 +90,21 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
           )}
         </Typography>
         {editorState && (
-          <EditorWrapper
-            enableControls={false}
-            editorKey={entryKey}
-            enableHighlights={true}
-            editorState={editorState}
-            onChange={onEditorChange}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            handleKeyCommand={handleKeyCommand}
-            blockStyleFn={blockStyleFn}
-            ref={editorRef}
-          ></EditorWrapper>
+          <>
+            <Digest entryKey={entryKey} />
+            <EditorWrapper
+              enableControls={false}
+              editorKey={entryKey}
+              enableHighlights={true}
+              editorState={editorState}
+              onChange={onEditorChange}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              handleKeyCommand={handleKeyCommand}
+              blockStyleFn={blockStyleFn}
+              ref={editorRef}
+            ></EditorWrapper>
+          </>
         )}
         {showDivider && (
           <div className={styles["divider-container"]}>
@@ -109,11 +112,6 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
           </div>
         )}
       </div>
-      {editorState && (
-        <div className={styles["digest-wrapper"]}>
-          <Digest entryKey={entryKey} />
-        </div>
-      )}
     </div>
   );
 };
