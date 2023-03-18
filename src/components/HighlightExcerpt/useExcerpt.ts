@@ -1,4 +1,4 @@
-import { ContentState, Modifier, SelectionState } from "draft-js";
+import { ContentBlock, ContentState, SelectionState } from "draft-js";
 import { useMemo } from "react";
 import { IpsumEntityTransformer } from "util/entities";
 
@@ -6,18 +6,20 @@ const contentStateFromSelection = (
   contentState: ContentState,
   selectionState: SelectionState
 ) => {
-  const firstBlock = contentState.getFirstBlock();
-  const lastBlock = contentState.getLastBlock();
-  const entireSelection = SelectionState.createEmpty(firstBlock.getKey()).merge(
-    {
-      anchorKey: firstBlock.getKey(),
-      anchorOffset: 0,
-      focusKey: lastBlock.getKey(),
-      focusOffset: lastBlock.getText().length,
+  const newBlockArray: ContentBlock[] = [];
+  let copy = false;
+  for (const block of contentState.getBlocksAsArray()) {
+    if (block.getKey() === selectionState.getStartKey()) {
+      copy = true;
     }
-  );
-
-  return Modifier.moveText(contentState, selectionState, entireSelection);
+    if (copy) {
+      newBlockArray.push(block);
+    }
+    if (block.getKey() === selectionState.getEndKey()) {
+      break;
+    }
+  }
+  return ContentState.createFromBlockArray(newBlockArray);
 };
 
 export const useExcerptContentState = ({
