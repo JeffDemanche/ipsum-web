@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from "react";
+import React, { CSSProperties, useCallback, useState } from "react";
 import styles from "./ArcTag.less";
 import { Paper, Link, Typography } from "@mui/material";
 import { IpsumArcColor, IpsumColor } from "util/colors";
@@ -14,7 +14,7 @@ interface ArcTag {
   type?: "span" | "header";
   highlighted?: boolean;
   className?: string;
-  onClick?: () => void;
+  onClick?: (arcId?: string) => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }
@@ -83,6 +83,11 @@ export const ArcTag: React.FunctionComponent<ArcTag> = ({
       <h3 className={styles["arc-token-inner"]}>{arc?.name ?? "null"}</h3>
     );
 
+  const onLinkClick = useCallback(() => {
+    if (arcForToken.type === "from data") onClick?.(undefined);
+    else if (arcForToken.type === "from id") onClick?.(arcForToken.id);
+  }, [arcForToken, onClick]);
+
   return (
     <Paper className={cx(className, styles["arc-token-container"])} sx={style}>
       <Typography variant={type === "span" ? "body2" : "h3"}>
@@ -97,7 +102,7 @@ export const ArcTag: React.FunctionComponent<ArcTag> = ({
             onMouseLeave?.();
           }}
           className={styles["arc-token-a"]}
-          onClick={onClick}
+          onClick={onLinkClick}
           style={style}
         >
           {arc?.name ?? "null"}

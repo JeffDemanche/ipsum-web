@@ -1,2 +1,2 @@
-export { IpsumURL } from "./urls";
+export { dataToSearchParams, urlToData, IpsumURL } from "./urls";
 export { URLLayer } from "./types";

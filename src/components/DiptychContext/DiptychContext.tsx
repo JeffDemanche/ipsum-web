@@ -1,14 +1,16 @@
 import React, { useCallback, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router";
-import { IpsumURL, URLLayer } from "util/url";
+import { useNavigate } from "react-router";
+import { dataToSearchParams, URLLayer, urlToData } from "util/url";
 import { Diptych, DiptychLayer } from "./types";
 
 export const DiptychContext = React.createContext<Diptych>({
   layers: [{ type: "DailyJournal" }],
   layersBySide: { 0: [], 1: [] },
+  topLayerIndex: 0,
   pushLayer: () => {},
   setFirstLayer: () => {},
   closeLayer: () => {},
+  openArcDetail: () => {},
 });
 
 interface DiptychProviderProps {
@@ -18,14 +20,11 @@ interface DiptychProviderProps {
 export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   children,
 }) => {
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const urlLayers = useMemo(
-    () =>
-      new IpsumURL(new URL(window.location.href)).getJournalUrl().getLayers(),
-    [location]
-  );
+  const urlData = urlToData<"journal">(window.location.href);
+
+  const urlLayers = useMemo(() => urlData.layers ?? [], [urlData.layers]);
 
   const layers: DiptychLayer[] = useMemo(() => {
     return [
@@ -33,9 +32,10 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
       ...urlLayers.map(
         (urlLayer): DiptychLayer => ({
           type: "ArcDetail",
-          connectionFrom: undefined,
           arcId: urlLayer.objectId,
-          highlightId: urlLayer.connectionId,
+          diptychMedian: {
+            connectionId: urlLayer.connectionId,
+          },
         })
       ),
     ];
@@ -48,32 +48,64 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
     };
   }, [layers]);
 
+  const topLayerIndex = layers.length - 1;
+
   const pushLayer = useCallback(
     (layer: URLLayer) => {
-      const url = new IpsumURL(new URL(window.location.href))
-        .getJournalUrl()
-        .pushLayer(layer);
-      navigate(url.url);
+      const currParams = urlToData<"journal">(window.location.href);
+      const newSearchParams = dataToSearchParams<"journal">({
+        ...currParams,
+        layers: [...currParams.layers, layer],
+      });
+      navigate({ search: newSearchParams });
     },
     [navigate]
   );
 
   const setFirstLayer = useCallback(
     (layer: URLLayer) => {
-      const url = new IpsumURL(new URL(window.location.href))
-        .getJournalUrl()
-        .setTopLayer(1, layer);
-      navigate(url.url);
+      const currParams = urlToData<"journal">(window.location.href);
+      const newSearchParams = dataToSearchParams<"journal">({
+        ...currParams,
+        layers: [layer],
+      });
+      navigate({ search: newSearchParams });
     },
     [navigate]
   );
 
   const closeLayer = useCallback(
-    (index: number) => {
-      const url = new IpsumURL(new URL(window.location.href))
-        .getJournalUrl()
-        .setTopLayer(index - 1);
-      navigate(url.url);
+    (index: number, keepConnection?: boolean) => {
+      const currParams = urlToData<"journal">(window.location.href);
+
+      const newLayers = currParams.layers.slice(0, index - 1);
+
+      if (keepConnection) {
+        const closedLayer = { ...currParams.layers[index - 1] };
+        delete closedLayer.objectId;
+        newLayers.push(closedLayer);
+      }
+
+      const newSearchParams = dataToSearchParams<"journal">({
+        ...currParams,
+        layers: newLayers,
+      });
+      navigate({ search: newSearchParams });
+    },
+    [navigate]
+  );
+
+  const openArcDetail = useCallback(
+    (index: number, arcId: string) => {
+      const currParams = urlToData<"journal">(window.location.href);
+      const newSearchParams = dataToSearchParams<"journal">({
+        ...currParams,
+        layers: [
+          ...currParams.layers.slice(0, index - 1),
+          { type: "arc_detail", objectId: arcId },
+        ],
+      });
+      navigate({ search: newSearchParams });
     },
     [navigate]
   );
@@ -83,9 +115,11 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
       value={{
         layers,
         layersBySide,
+        topLayerIndex,
         pushLayer,
         setFirstLayer,
         closeLayer,
+        openArcDetail,
       }}
     >
       {children}

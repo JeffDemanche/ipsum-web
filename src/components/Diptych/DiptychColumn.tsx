@@ -1,24 +1,36 @@
 import { ArcDetail } from "components/ArcDetail";
-import { DiptychLayer } from "components/DiptychContext";
+import { DiptychContext, DiptychLayer } from "components/DiptychContext";
 import { Surface } from "components/Surface";
-import React from "react";
+import React, { useCallback, useContext } from "react";
 import styles from "./DiptychColumn.less";
 
 interface DiptychColumnProps {
+  diptychIndex: number;
   layers: DiptychLayer[];
 }
 
 export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
+  diptychIndex,
   layers,
 }) => {
   const topMostLayer = layers[layers.length - 1];
+
+  const { closeLayer } = useContext(DiptychContext);
+
+  const closeColumn = useCallback(() => {
+    closeLayer(diptychIndex, true);
+  }, [closeLayer, diptychIndex]);
 
   return (
     <div className={styles["diptych-layer"]}>
       {topMostLayer.type === "DailyJournal" ? (
         <Surface></Surface>
       ) : (
-        <ArcDetail assignmentId={topMostLayer.highlightId}></ArcDetail>
+        <ArcDetail
+          arcId={topMostLayer.arcId}
+          incomingHighlightId={topMostLayer.diptychMedian.connectionId}
+          closeColumn={closeColumn}
+        ></ArcDetail>
       )}
     </div>
   );

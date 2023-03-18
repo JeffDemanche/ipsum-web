@@ -4,36 +4,35 @@ import { ArcDetailContextValue } from "./types";
 
 export const ArcDetailContext = React.createContext<ArcDetailContextValue>({
   arc: undefined,
-  highlight: undefined,
+  incomingHighlight: undefined,
 });
 
 interface ArcDetailProviderProps {
-  assignmentId: string;
+  arcId: string;
+  incomingHighlightId?: string;
   children: React.ReactNode;
 }
 
 export const ArcDetailProvider: React.FunctionComponent<
   ArcDetailProviderProps
-> = ({ assignmentId, children }) => {
-  const { data: highlightData } = useStateDocumentQuery({
-    collection: "highlight",
-    keys: [assignmentId],
-  });
-
-  const arcId = highlightData[assignmentId]?.arcId;
-
+> = ({ arcId, incomingHighlightId, children }) => {
   const { data: arcData } = useStateDocumentQuery({
     collection: "arc",
     keys: [arcId],
   });
 
-  const highlight = highlightData[assignmentId];
-  const arc = arcData[arcId];
+  const { data: incomingHighlightData } = useStateDocumentQuery({
+    collection: "highlight",
+    keys: [incomingHighlightId],
+  });
 
-  const loading = !highlight || !arc;
+  const arc = arcData[arcId];
+  const incomingHighlight = incomingHighlightData[incomingHighlightId];
+
+  const loading = !arc;
 
   return (
-    <ArcDetailContext.Provider value={{ arc, highlight }}>
+    <ArcDetailContext.Provider value={{ arc, incomingHighlight }}>
       {loading ? "Loading..." : children}
     </ArcDetailContext.Provider>
   );

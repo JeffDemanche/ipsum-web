@@ -1,28 +1,36 @@
 import { Close } from "@mui/icons-material";
 import { IconButton, Paper } from "@mui/material";
 import { ArcDetailPrefsBox } from "components/ArcDetailPrefsBox";
-import { DiptychContext } from "components/DiptychContext";
 import React, { useContext } from "react";
 import { IpsumColor } from "util/colors";
 import styles from "./ArcDetail.less";
 import { ArcDetailContext, ArcDetailProvider } from "./ArcDetailContext";
 
 interface ArcDetailProps {
-  assignmentId: string;
+  arcId: string;
+  incomingHighlightId?: string;
+  closeColumn: () => void;
 }
 
 export const ArcDetail: React.FunctionComponent<ArcDetailProps> = ({
-  assignmentId,
+  arcId,
+  incomingHighlightId,
+  closeColumn,
 }) => {
   return (
-    <ArcDetailProvider assignmentId={assignmentId}>
-      <ArcDetailWithProvider></ArcDetailWithProvider>
+    <ArcDetailProvider arcId={arcId} incomingHighlightId={incomingHighlightId}>
+      <ArcDetailWithProvider closeColumn={closeColumn}></ArcDetailWithProvider>
     </ArcDetailProvider>
   );
 };
 
-const ArcDetailWithProvider = () => {
-  const { closeLayer } = useContext(DiptychContext);
+interface ArcDetailWithProviderProps {
+  closeColumn: () => void;
+}
+
+const ArcDetailWithProvider: React.FunctionComponent<
+  ArcDetailWithProviderProps
+> = ({ closeColumn }) => {
   const { arc } = useContext(ArcDetailContext);
 
   return (
@@ -38,7 +46,7 @@ const ArcDetailWithProvider = () => {
     >
       <IconButton
         onClick={() => {
-          closeLayer(1);
+          closeColumn();
         }}
       >
         <Close></Close>

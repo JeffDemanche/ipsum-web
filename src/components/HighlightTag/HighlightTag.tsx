@@ -33,7 +33,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
     keys: Object.values(highlights).map((h) => h.arcId),
   });
 
-  const arc = arcs[highlights[highlightId].arcId];
+  const arc = arcs[highlights[highlightId]?.arcId];
 
   const [hover, setHover] = useState(false);
 
