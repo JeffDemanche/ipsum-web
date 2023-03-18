@@ -1,5 +1,6 @@
 import { Paper } from "@mui/material";
 import { decorator } from "components/Decorator";
+import { blockStyleFn } from "components/EditorWrapper";
 import { Editor, EditorState } from "draft-js";
 import React, { useCallback, useMemo } from "react";
 import { useStateDocumentQuery } from "state/in-memory";
@@ -43,7 +44,11 @@ export const HighlightExcerpt: React.FunctionComponent<
 
   return (
     <Paper sx={{ borderRadius: "0" }} className={styles["excerpt"]}>
-      <Editor editorState={editorState} onChange={onEditorChange}></Editor>
+      <Editor
+        editorState={editorState}
+        blockStyleFn={blockStyleFn}
+        onChange={onEditorChange}
+      ></Editor>
     </Paper>
   );
 };

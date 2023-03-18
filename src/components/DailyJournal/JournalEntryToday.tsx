@@ -8,7 +8,7 @@ import { stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";
 import { useDebouncedCallback } from "util/hooks";
 import { placeholderForDate } from "util/placeholders";
-import { EditorWrapper } from "./EditorWrapper";
+import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
 import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
@@ -25,9 +25,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   entryKey,
   showDivider,
 }: JournalEntryTodayProps) => {
-  const { editorRef, editorState, empty, blockStyleFn } = useJournalEntryEditor(
-    { entryKey }
-  );
+  const { editorRef, editorState, empty } = useJournalEntryEditor({ entryKey });
 
   const { setEntryEditorState, onEditorFocus, onEditorBlur } = useContext(
     DailyJournalEditorContext

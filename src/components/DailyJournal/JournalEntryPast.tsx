@@ -4,7 +4,7 @@ import { Digest } from "components/Digest";
 import { EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
 import { IpsumDateTime } from "util/dates";
-import { EditorWrapper } from "./EditorWrapper";
+import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
 import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
@@ -18,7 +18,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
   entryKey,
   showDivider,
 }: JournalEntryProps) => {
-  const { editorRef, editorState, blockStyleFn } = useJournalEntryEditor({
+  const { editorRef, editorState } = useJournalEntryEditor({
     entryKey,
   });
 

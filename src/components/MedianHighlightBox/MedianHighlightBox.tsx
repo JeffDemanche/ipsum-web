@@ -1,5 +1,5 @@
 import { Comment } from "@mui/icons-material";
-import { Card, IconButton } from "@mui/material";
+import { Card, IconButton, Typography } from "@mui/material";
 import { ArcTag } from "components/ArcTag";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightExcerpt } from "components/HighlightExcerpt";
@@ -52,7 +52,7 @@ export const MedianHighlightBox: React.FunctionComponent<
           </IconButton>
         </div>
         <div className={styles["details-right"]}>
-          relates to&nbsp;
+          <Typography>relates to&nbsp;</Typography>
           <ArcTag
             arcForToken={{
               type: "from id",
