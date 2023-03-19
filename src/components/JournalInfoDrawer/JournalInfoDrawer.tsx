@@ -18,6 +18,7 @@ export const JournalInfoDrawer: React.FunctionComponent = () => {
       PaperProps={{
         sx: {
           position: "relative",
+          background: "rgba(255, 255, 255, 0.6)",
         },
         className: styles["drawer-paper"],
       }}

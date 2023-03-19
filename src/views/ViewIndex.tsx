@@ -5,10 +5,7 @@ import { Box } from "@mui/material";
 
 export const ViewIndex: React.FC = () => {
   return (
-    <Box
-      sx={{ backgroundColor: "background.default" }}
-      className={styles["index-wrapper"]}
-    >
+    <Box sx={{}} className={styles["index-wrapper"]}>
       <Outlet />
     </Box>
   );
