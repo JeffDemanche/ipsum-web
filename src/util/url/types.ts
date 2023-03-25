@@ -9,6 +9,7 @@ export type URLLayer = {
 };
 
 interface JournalViewSearchData {
+  highlight?: string[];
   layers?: URLLayer[];
 }
 

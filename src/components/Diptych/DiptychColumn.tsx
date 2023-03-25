@@ -18,7 +18,7 @@ export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
   const { closeLayer } = useContext(DiptychContext);
 
   const closeColumn = useCallback(() => {
-    closeLayer(diptychIndex, true);
+    closeLayer(diptychIndex, false);
   }, [closeLayer, diptychIndex]);
 
   return (

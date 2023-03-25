@@ -3,9 +3,9 @@
  * and other abilities across components.
  */
 
-import React, { useCallback, useState } from "react";
-import { useNavigate } from "react-router";
-import { useSearchParams } from "react-router-dom";
+import React, { useCallback, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { dataToSearchParams, urlToData } from "util/url";
 
 interface HighlightSelectionContextValue {
   hoveredHighlightIds: string[] | undefined;
@@ -36,19 +36,21 @@ export const HighlightSelectionProvider: React.FC<
 > = ({ children }) => {
   const navigate = useNavigate();
 
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
-  const selectedHighlightIds = searchParams.has("highlight")
-    ? searchParams.get("highlight").split(",")
-    : undefined;
+  const selectedHighlightIds = useMemo(
+    () => urlToData<"journal">(window.location.href).highlight,
+    [location]
+  );
 
   const setSelectedHighlightIds = useCallback(
     (highlights: string[]) => {
-      const newParams = new URLSearchParams(searchParams);
-      newParams.set("highlight", highlights.join(","));
-      navigate({ search: newParams.toString() }, { replace: false });
+      const newParams = dataToSearchParams<"journal">({
+        highlight: highlights,
+      });
+      navigate({ search: newParams }, { replace: false });
     },
-    [navigate, searchParams]
+    [navigate]
   );
 
   const [hoveredHighlightIds, setHoveredHighlightIds] =

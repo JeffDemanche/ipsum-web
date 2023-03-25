@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo } from "react";
+import { HighlightSelectionContext } from "components/HighlightSelectionContext";
+import React, { useCallback, useContext, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { dataToSearchParams, URLLayer, urlToData } from "util/url";
 import { Diptych, DiptychLayer } from "./types";
@@ -21,6 +22,8 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   children,
 }) => {
   const navigate = useNavigate();
+
+  const { selectedHighlightIds } = useContext(HighlightSelectionContext);
 
   const urlData = urlToData<"journal">(window.location.href);
 
@@ -98,16 +101,25 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   const openArcDetail = useCallback(
     (index: number, arcId: string) => {
       const currParams = urlToData<"journal">(window.location.href);
+      const currentLayers = currParams.layers ?? [];
+      const selectedHighlight =
+        selectedHighlightIds?.length === 1
+          ? selectedHighlightIds[0]
+          : undefined;
       const newSearchParams = dataToSearchParams<"journal">({
         ...currParams,
         layers: [
-          ...currParams.layers.slice(0, index - 1),
-          { type: "arc_detail", objectId: arcId },
+          ...currentLayers.slice(0, index - 1),
+          {
+            type: "arc_detail",
+            connectionId: selectedHighlight,
+            objectId: arcId,
+          },
         ],
       });
       navigate({ search: newSearchParams });
     },
-    [navigate]
+    [navigate, selectedHighlightIds]
   );
 
   return (
