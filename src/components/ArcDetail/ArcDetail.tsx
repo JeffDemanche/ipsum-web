@@ -1,6 +1,8 @@
 import { Close } from "@mui/icons-material";
 import { IconButton, Paper } from "@mui/material";
+import { ArcDetailOntologySection } from "components/ArcDetailOntologySection";
 import { ArcDetailPrefsBox } from "components/ArcDetailPrefsBox";
+import { ArcDetailWikiSection } from "components/ArcDetailWikiSection";
 import React, { useContext } from "react";
 import { IpsumColor } from "util/colors";
 import styles from "./ArcDetail.less";
@@ -52,6 +54,8 @@ const ArcDetailWithProvider: React.FunctionComponent<
         <Close></Close>
       </IconButton>
       <ArcDetailPrefsBox></ArcDetailPrefsBox>
+      <ArcDetailOntologySection></ArcDetailOntologySection>
+      <ArcDetailWikiSection></ArcDetailWikiSection>
     </Paper>
   );
 };

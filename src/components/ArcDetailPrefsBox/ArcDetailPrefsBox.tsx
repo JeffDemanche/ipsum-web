@@ -3,7 +3,7 @@ import { Paper, Slider } from "@mui/material";
 import styles from "./ArcDetailPrefsBox.less";
 import { IpsumArcColor } from "util/colors";
 import { useApiAction } from "state/api";
-import { ArcDetailContext } from "components/ArcDetail";
+import { ArcDetailContext, ArcDetailSection } from "components/ArcDetail";
 import { ArcTag } from "components/ArcTag";
 
 export const ArcDetailPrefsBox: React.FC = () => {
@@ -27,33 +27,24 @@ export const ArcDetailPrefsBox: React.FC = () => {
   const color = new IpsumArcColor(localColor);
 
   return (
-    <Paper
-      className={styles["colorful-backdrop"]}
-      sx={{
-        backgroundColor: color
-          .toIpsumColor({ saturation: 50, lightness: 50 })
-          .toRgbaCSS(),
-      }}
-    >
-      <Paper className={styles["foreground"]}>
-        <ArcTag
-          arcForToken={{ type: "from id", id: arc.id }}
-          type="header"
-        ></ArcTag>
-        <Slider
-          min={0}
-          max={255}
-          onChange={onColorSliderChange}
-          onChangeCommitted={onColorSliderChangeCommitted}
-          value={localColor}
-          valueLabelDisplay="auto"
-          sx={{
-            color: color
-              .toIpsumColor({ saturation: 50, lightness: 30 })
-              .toRgbaCSS(),
-          }}
-        ></Slider>
-      </Paper>
-    </Paper>
+    <ArcDetailSection>
+      <ArcTag
+        arcForToken={{ type: "from id", id: arc.id }}
+        type="header"
+      ></ArcTag>
+      <Slider
+        min={0}
+        max={255}
+        onChange={onColorSliderChange}
+        onChangeCommitted={onColorSliderChangeCommitted}
+        value={localColor}
+        valueLabelDisplay="auto"
+        sx={{
+          color: color
+            .toIpsumColor({ saturation: 50, lightness: 30 })
+            .toRgbaCSS(),
+        }}
+      ></Slider>
+    </ArcDetailSection>
   );
 };
