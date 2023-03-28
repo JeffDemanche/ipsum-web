@@ -3,8 +3,6 @@ import styles from "./Median.less";
 import { MedianBreadcrumbsSection } from "./MedianBreadcrumbsSection";
 import { MedianSelectionSection } from "./MedianSelectionSection";
 
-interface MedianProps {}
-
 export const Median: React.FunctionComponent = () => {
   return (
     <div className={styles["median"]}>
