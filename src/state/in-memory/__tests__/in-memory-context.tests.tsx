@@ -427,7 +427,6 @@ describe("InMemoryContext", () => {
 
           useEffect(() => {
             if (hasLoadedAutosave) {
-              console.log("dispatch");
               dispatch({
                 type: "REMOVE_DOCUMENT",
                 payload: { type: "arc", key: "arc_2" },

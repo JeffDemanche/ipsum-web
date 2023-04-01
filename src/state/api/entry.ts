@@ -98,9 +98,8 @@ export const apiDeleteEntry = (
       key: entryKey,
     },
   });
-  const arcAssignmentsForEntry = Object.values(context.state.highlight)
-    .filter((a) => a.entryKey === entryKey)
-    .map((a) => a.id);
+  const arcAssignmentsForEntry =
+    context.state.__indices.highlight["entryKey"][entryKey];
   context = context.optimisticStateDispatch(context.state, {
     type: "REMOVE_DOCUMENTS",
     payload: {

@@ -26,6 +26,7 @@ export const InMemoryCollections = {
     __type: "document" as const,
     name: "entry",
     primaryKey: "entryKey",
+    indices: [] as [],
     fields: {
       entryKey: {
         __type: "field",
@@ -55,6 +56,7 @@ export const InMemoryCollections = {
     __type: "document" as const,
     name: "arc",
     primaryKey: "id",
+    indices: ["name"] as "name"[],
     fields: {
       id: {
         __type: "field",
@@ -80,6 +82,7 @@ export const InMemoryCollections = {
     __type: "document" as const,
     name: "highlight",
     primaryKey: "id",
+    indices: ["entryKey", "arcId"] as ("entryKey" | "arcId")[],
     fields: {
       id: {
         __type: "field",
@@ -165,6 +168,12 @@ export type Document<C extends CollectionName> = {
     : never;
 };
 
+export type CollectionIndices = {
+  [indexedFieldKey: string]: {
+    [indexedFieldValue: string]: string[];
+  };
+};
+
 export type Collection<C extends CollectionName> = {
   [key in CollectionSchema[C]["primaryKey"]]: Document<C>;
 };
@@ -175,7 +184,7 @@ export type WritableInMemoryState = {
     : key extends CollectionName
     ? Collection<key>
     : never;
-};
+} & { __indices?: { [key in CollectionName]?: CollectionIndices } };
 
 export type InMemoryState = Readonly<{
   [key in keyof typeof InMemorySchema]-?: key extends TopLevelFieldName
@@ -183,4 +192,5 @@ export type InMemoryState = Readonly<{
     : key extends CollectionName
     ? Readonly<Collection<key>>
     : never;
-}>;
+}> &
+  Readonly<{ __indices?: { [key in CollectionName]?: CollectionIndices } }>;

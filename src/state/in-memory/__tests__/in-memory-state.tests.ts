@@ -21,11 +21,21 @@ describe("InMemoryState", () => {
       });
       expect(state.journalTitle).toEqual("new journal");
     });
+
+    it("creates empty index objects", () => {
+      const state = initializeDefaultInMemoryState();
+
+      expect(state.__indices.highlight).toEqual({ entryKey: {}, arcId: {} });
+      expect(state.__indices.arc).toEqual({ name: {} });
+      expect(state.__indices.entry).toEqual({});
+    });
   });
 
   describe("serialization", () => {
     it("serializes and deserializes an empty state", () => {
-      const defaultState = initializeDefaultInMemoryState();
+      const defaultState: WritableInMemoryState =
+        initializeDefaultInMemoryState();
+      delete defaultState.__indices;
       const serialized = serializeInMemoryState(defaultState);
       const deserialized = deserializeInMemoryState(serialized);
       expect(deserialized).toEqual(defaultState);
@@ -37,6 +47,7 @@ describe("InMemoryState", () => {
         ...initializeDefaultInMemoryState(),
         entry: { [entry.entryKey]: entry },
       };
+      delete state.__indices;
       const serialized = serializeInMemoryState(state);
       const deserialized = deserializeInMemoryState(serialized);
       expect(deserialized).toEqual(state);
@@ -57,6 +68,7 @@ describe("InMemoryState", () => {
         ...initializeDefaultInMemoryState(),
         arc: { [arc1.id]: arc1, [arc2.id]: arc2 },
       };
+      delete state.__indices;
       const serialized = serializeInMemoryState(state);
       const deserialized = deserializeInMemoryState(serialized);
       expect(deserialized).toEqual(state);
@@ -66,6 +78,7 @@ describe("InMemoryState", () => {
       const state: WritableInMemoryState = initializeDefaultInMemoryState();
       delete state.arc;
       delete state.highlight;
+      delete state.__indices;
       const serialized = serializeInMemoryState(state);
       const deserialized = deserializeInMemoryState(serialized);
       expect(deserialized.arc).toEqual({});

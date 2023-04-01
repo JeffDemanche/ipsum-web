@@ -11,6 +11,12 @@ import {
   TopLevelField,
 } from "./in-memory-schema";
 import { initializeDefaultDocument } from "./in-memory-state";
+import {
+  createAllIndices,
+  indicesForCreatedDocuments,
+  indicesForRemovedDocuments,
+  indicesForUpdatedDocuments,
+} from "./indices";
 
 export type InMemoryAction =
   | {
@@ -45,7 +51,7 @@ const dispatchers = {
       newState: InMemoryState;
     }
   ): InMemoryState => {
-    const stateCopy = deepClone(payload.newState);
+    const stateCopy = createAllIndices(deepClone(payload.newState));
     return stateCopy;
   },
   CREATE_DOCUMENT: (
@@ -78,13 +84,23 @@ const dispatchers = {
     const newDocumentKey =
       payload.document[primaryKey as keyof typeof payload.document] ??
       defaultDocument[primaryKey as keyof typeof defaultDocument];
-    (stateCopy[payload.type] as Collection<typeof payload["type"]>)[
-      newDocumentKey
-    ] = {
+
+    const newDoc = {
       ...defaultDocument,
       ...payload.document,
     };
-    return stateCopy;
+
+    const newColIndices = indicesForCreatedDocuments(
+      payload.type,
+      state.__indices[payload.type],
+      [newDoc]
+    );
+
+    stateCopy[payload.type][newDocumentKey] = newDoc;
+    return {
+      ...stateCopy,
+      __indices: { ...stateCopy.__indices, [payload.type]: newColIndices },
+    };
   },
   UPDATE_FIELD: (
     state: InMemoryState,
@@ -118,11 +134,26 @@ const dispatchers = {
         `UPDATE_DOCUMENT: can't set primary key value in document update for ${payload.type}`
       );
     }
-    stateCopy[payload.type][payload.key] = {
+
+    const oldDoc = { ...stateCopy[payload.type][payload.key] };
+    const updatedDoc = {
       ...stateCopy[payload.type][payload.key],
       ...payload.update,
     };
-    return stateCopy;
+
+    const newColIndices = indicesForUpdatedDocuments(
+      payload.type,
+      state.__indices[payload.type],
+      [oldDoc],
+      [updatedDoc]
+    );
+
+    stateCopy[payload.type][payload.key] = updatedDoc;
+
+    return {
+      ...stateCopy,
+      __indices: { ...stateCopy.__indices, [payload.type]: newColIndices },
+    };
   },
   REMOVE_DOCUMENT: (
     state: InMemoryState,
@@ -134,8 +165,17 @@ const dispatchers = {
     }[CollectionName]
   ): InMemoryState => {
     const stateCopy: WritableInMemoryState = deepClone(state);
+    const removedDoc = state[payload.type][payload.key];
     delete stateCopy[payload.type][payload.key];
-    return stateCopy;
+    const newColIndices = indicesForRemovedDocuments(
+      payload.type,
+      state.__indices[payload.type],
+      [removedDoc]
+    );
+    return {
+      ...stateCopy,
+      __indices: { ...stateCopy.__indices, [payload.type]: newColIndices },
+    };
   },
   REMOVE_DOCUMENTS: (
     state: InMemoryState,
@@ -147,10 +187,19 @@ const dispatchers = {
     }[CollectionName]
   ): InMemoryState => {
     const stateCopy: WritableInMemoryState = deepClone(state);
+    const removedDocs = payload.keys.map((key) => state[payload.type][key]);
     payload.keys.forEach((key) => {
       delete stateCopy[payload.type][key];
     });
-    return stateCopy;
+    const newColIndices = indicesForRemovedDocuments(
+      payload.type,
+      stateCopy.__indices[payload.type],
+      removedDocs
+    );
+    return {
+      ...stateCopy,
+      __indices: { ...stateCopy.__indices, [payload.type]: newColIndices },
+    };
   },
 };
 

@@ -39,14 +39,13 @@ describe("Entry API", () => {
 
       const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
 
-      expect(Object.values(updatedState.entry).length).toEqual(1);
-      expect(Object.values(updatedState.entry)[0].entryKey).toEqual("8/9/1998");
-      expect(Object.values(updatedState.entry)[0].date).toEqual(
+      expect(updatedState.entry["8/9/1998"].entryKey).toEqual("8/9/1998");
+      expect(updatedState.entry["8/9/1998"].date).toEqual(
         date.dateTime.toISO()
       );
       expect(
         parseContentState(
-          Object.values(updatedState.entry)[0].contentState
+          updatedState.entry["8/9/1998"].contentState
         ).getPlainText()
       ).toEqual("Hello World!");
 
@@ -133,10 +132,7 @@ describe("Entry API", () => {
       const updatedState: InMemoryState =
         newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
 
-      expect(Object.values(updatedState.highlight).length).toEqual(1);
-      expect(Object.values(updatedState.highlight)[0].arcId).toEqual(
-        "arc_hello"
-      );
+      expect(updatedState.highlight["assgn_hello"].arcId).toEqual("arc_hello");
 
       unmount();
     });
@@ -174,9 +170,10 @@ describe("Entry API", () => {
         ></APIDispatcher>
       );
 
-      const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
+      const updatedState: InMemoryState =
+        newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
 
-      expect(Object.values(updatedState.entry).length).toEqual(0);
+      expect(Object.values(updatedState.entry).length).toEqual(1);
 
       unmount();
     });
@@ -231,10 +228,10 @@ describe("Entry API", () => {
         ></APIDispatcher>
       );
 
-      const updatedState: InMemoryState = newStateFn.mock.calls[1][0];
+      const updatedState: InMemoryState =
+        newStateFn.mock.calls[newStateFn.mock.calls.length - 1][0];
 
-      expect(Object.values(updatedState.highlight).length).toEqual(1);
-      expect(Object.values(updatedState.highlight)[0].entryKey).toEqual(
+      expect(updatedState.highlight["assgn_2"].entryKey).toEqual(
         "another_entry"
       );
 

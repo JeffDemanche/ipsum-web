@@ -6,6 +6,9 @@ import { v4 as uuidv4 } from "uuid";
 interface UseStateDocumentQueryArgs<T extends CollectionName> {
   collection: T;
   keys?: CollectionSchema[T]["primaryKey"][];
+  /** [] */
+  indices?: [string, string[]];
+  // For debugging
   name?: string;
 }
 

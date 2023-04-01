@@ -22,12 +22,19 @@ export const initializeDefaultDocument = <C extends CollectionName>(
 };
 
 export const initializeDefaultInMemoryState = (): InMemoryState => {
-  const inMemoryState = {} as InMemoryState;
+  const inMemoryState = { __indices: {} } as InMemoryState;
 
   Object.keys(InMemorySchema).forEach((key: keyof typeof InMemorySchema) => {
     const thisElement = InMemorySchema[key];
     if (thisElement.__type === "document") {
       (inMemoryState[key] as Document<CollectionName>) = {};
+
+      const schemaIndices = InMemorySchema[key as CollectionName].indices ?? [];
+
+      inMemoryState.__indices[key as CollectionName] = {};
+      schemaIndices.forEach((schemaIndex) => {
+        inMemoryState.__indices[key as CollectionName][schemaIndex] = {};
+      });
     } else if (thisElement.__type === "field") {
       (inMemoryState[key] as TopLevelField<TopLevelFieldName>) =
         thisElement.default();
