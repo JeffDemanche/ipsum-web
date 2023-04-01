@@ -13,8 +13,11 @@ export const MedianSelectionSection: React.FunctionComponent = () => {
 
   const highlightBoxes = useMemo(() => {
     if (selectedHighlightIds.length !== 1) return null;
-    else return <MedianHighlightBox highlightId={selectedHighlightIds[0]} />;
-  }, [selectedHighlightIds]);
+    else
+      return searchResults.map((highlight) => (
+        <MedianHighlightBox key={highlight.id} highlightId={highlight.id} />
+      ));
+  }, [searchResults, selectedHighlightIds]);
 
   return <div className={styles["selection-section"]}>{highlightBoxes}</div>;
 };
