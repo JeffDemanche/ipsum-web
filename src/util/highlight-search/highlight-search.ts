@@ -3,6 +3,7 @@ import {
   useStateDocumentQuery,
   useFindDocuments,
 } from "state/in-memory";
+import { compareDatesDesc, IpsumDateTime } from "util/dates";
 
 interface UseHighlightSearchArgs {
   highlightId: string;
@@ -32,9 +33,14 @@ export const useHighlightSearch = (
     keys: highlightsWithArc ?? [],
   });
 
+  const sortedResults = Object.values(searchResults).sort((a, b) =>
+    compareDatesDesc(
+      IpsumDateTime.fromString(a.entryKey, "entry-printed-date"),
+      IpsumDateTime.fromString(b.entryKey, "entry-printed-date")
+    )
+  );
+
   return {
-    searchResults: Object.keys(searchResults).map(
-      (result) => searchResults[result]
-    ),
+    searchResults: sortedResults,
   };
 };

@@ -74,14 +74,17 @@ export const getDaysBetween = (
   return daysBetween;
 };
 
+export const compareDatesAsc = (a: IpsumDateTime, b: IpsumDateTime) =>
+  a.dateTime.valueOf() > b.dateTime.valueOf() ? 1 : -1;
+
+export const compareDatesDesc = (a: IpsumDateTime, b: IpsumDateTime) =>
+  a.dateTime.valueOf() < b.dateTime.valueOf() ? 1 : -1;
+
 export const sortDates = (
   dates: IpsumDateTime[],
   ascending = false
 ): IpsumDateTime[] => {
-  return dates.sort((a, b) => {
-    if (ascending) return a.dateTime.valueOf() > b.dateTime.valueOf() ? 1 : -1;
-    else return a.dateTime.valueOf() < b.dateTime.valueOf() ? 1 : -1;
-  });
+  return dates.sort(ascending ? compareDatesAsc : compareDatesDesc);
 };
 
 export const stringifyIpsumDateTime = (dt: IpsumDateTime) =>
