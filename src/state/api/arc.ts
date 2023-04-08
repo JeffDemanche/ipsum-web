@@ -69,15 +69,13 @@ export const apiAssignArc = (
     arcAssignmentId: assignmentId,
   }).contentState;
 
-  if (!existingArcAssignment) {
-    context = context.optimisticStateDispatch(context.state, {
-      type: "CREATE_DOCUMENT",
-      payload: {
-        type: "highlight",
-        document: { id: assignmentId, entryKey, arcId },
-      },
-    });
-  }
+  context = context.optimisticStateDispatch(context.state, {
+    type: "CREATE_DOCUMENT",
+    payload: {
+      type: "highlight",
+      document: { id: assignmentId, entryKey, arcId },
+    },
+  });
   context = context.optimisticStateDispatch(context.state, {
     type: "UPDATE_DOCUMENT",
     payload: {

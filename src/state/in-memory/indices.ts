@@ -127,8 +127,12 @@ export const indicesForRemovedDocuments = <C extends CollectionName>(
 
   // Iterate indexed fields for the collection
   indexedKeysForCollection.forEach((indexedFieldKey) => {
+    if (!indexedFieldKey) return;
+
     // Iterate documents that have been created
     removedDocuments.forEach((removedDocument) => {
+      if (!removedDocument) return;
+
       const indexedFieldValue = removedDocument[indexedFieldKey];
 
       clonedCollectionIndices[indexedFieldKey][indexedFieldValue] =
