@@ -3,16 +3,17 @@
  * and other abilities across components.
  */
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import { InMemoryStateContext } from "state/in-memory";
 import { dataToSearchParams, urlToData } from "util/url";
 
 interface HighlightSelectionContextValue {
   hoveredHighlightIds: string[] | undefined;
-  setHoveredHighlightIds: (highlightId: string[]) => void;
+  setHoveredHighlightIds: React.Dispatch<React.SetStateAction<string[]>>;
 
   selectedHighlightIds: string[] | undefined;
-  setSelectedHighlightIds: (highlightIds: string[]) => void;
+  setSelectedHighlightIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const defaultHighlightSelectionContext: HighlightSelectionContextValue = {
@@ -38,9 +39,14 @@ export const HighlightSelectionProvider: React.FC<
 
   const location = useLocation();
 
+  const { state } = useContext(InMemoryStateContext);
+
   const selectedHighlightIds = useMemo(
-    () => urlToData<"journal">(window.location.href).highlight,
-    [location]
+    () =>
+      urlToData<"journal">(window.location.href).highlight?.filter(
+        (highlightId) => !!state.highlight[highlightId]
+      ),
+    [state, location]
   );
 
   const setSelectedHighlightIds = useCallback(

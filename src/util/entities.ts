@@ -133,7 +133,9 @@ export class IpsumEntityTransformer {
   };
 
   private entityDataDefined = (entityData: IpsumEntityData) => {
-    return !!entityData?.arcIds.length;
+    return (
+      !!entityData?.arcIds?.length || !!entityData?.textArcAssignments?.length
+    );
   };
 
   private getEntityRanges = (selectedCharacters: CharacterMetadata[]) => {
@@ -300,7 +302,9 @@ export class IpsumEntityTransformer {
 
       const newFieldData = (
         currentEntityData[type] as EntityFieldDataType<T>[]
-      ).filter((existingData) => !_.isEqual(data, existingData));
+      ).filter((existingData) => {
+        return !_.isEqual(data, existingData);
+      });
 
       return acc.mergeEntityData(cur, { [type]: newFieldData });
     }, this.contentState);

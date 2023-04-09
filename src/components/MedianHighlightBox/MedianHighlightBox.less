@@ -4,6 +4,10 @@
   padding: 5px;
   gap: 4px;
   margin-bottom: 5px;
+  cursor: pointer;
+
+  &.selected {
+  }
 }
 
 .details {
@@ -18,4 +22,16 @@
   flex-grow: 1;
   justify-content: right;
   align-items: center;
+}
+
+.top-controls-container {
+  display: none;
+
+  .delete-button {
+    float: right;
+  }
+
+  &.selected {
+    display: block;
+  }
 }

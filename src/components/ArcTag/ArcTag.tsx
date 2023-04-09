@@ -14,7 +14,7 @@ interface ArcTag {
   type?: "span" | "header";
   highlighted?: boolean;
   className?: string;
-  onClick?: (arcId?: string) => void;
+  onClick?: (arcId?: string, e?: React.MouseEvent) => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }
@@ -83,10 +83,13 @@ export const ArcTag: React.FunctionComponent<ArcTag> = ({
       <h3 className={styles["arc-token-inner"]}>{arc?.name ?? "null"}</h3>
     );
 
-  const onLinkClick = useCallback(() => {
-    if (arcForToken.type === "from data") onClick?.(undefined);
-    else if (arcForToken.type === "from id") onClick?.(arcForToken.id);
-  }, [arcForToken, onClick]);
+  const onLinkClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (arcForToken.type === "from data") onClick?.(undefined, e);
+      else if (arcForToken.type === "from id") onClick?.(arcForToken.id, e);
+    },
+    [arcForToken, onClick]
+  );
 
   return (
     <Paper className={cx(className, styles["arc-token-container"])} sx={style}>

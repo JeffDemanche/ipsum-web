@@ -19,6 +19,7 @@ import {
 } from "./arc";
 import { apiCreateOrUpdateEntry, apiDeleteEntry } from "./entry";
 import { apiUpdateJournalTitle } from "./journalTitle";
+import { apiDeleteHighlight } from "./highlight";
 
 export interface APIContext {
   state: InMemoryState;
@@ -40,6 +41,8 @@ const APIFunctions = {
   assignArc: apiAssignArc,
   unassignArc: apiUnassignArc,
   updateArc: apiUpdateArc,
+
+  deleteHighlight: apiDeleteHighlight,
 
   updateJournalTitle: apiUpdateJournalTitle,
 };

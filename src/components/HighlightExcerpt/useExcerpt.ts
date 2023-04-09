@@ -36,6 +36,9 @@ export const useExcerptContentState = ({
       entryContentState
     ).getHighlightSelectionState(highlightId);
 
+    if (!highlightSelectionState)
+      return ContentState.createFromText("(Empty highlight)");
+
     return contentStateFromSelection(
       entryContentState,
       highlightSelectionState
