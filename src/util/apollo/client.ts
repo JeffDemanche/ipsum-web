@@ -5,12 +5,20 @@ import {
   gql,
   makeVar,
 } from "@apollo/client";
+import { v4 as uuidv4 } from "uuid";
 
 const typeDefs = gql`
   type Query {
+    journalId: String!
+    journalTitle: String!
+    journalMetadata: JournalMetadata!
     entries: [Entry]
     arcs: [Arc]
     highlights: [Highlight]
+  }
+
+  type JournalMetadata {
+    lastArcHue: Int!
   }
 
   type Entry {
@@ -32,15 +40,29 @@ const typeDefs = gql`
   }
 `;
 
+const journalId = makeVar(uuidv4());
+const journalTitle = makeVar("new journal");
+const journalMetadata = makeVar({ lastArcHue: 0 });
 const entries = makeVar([
   { entryKey: "1/2/2020", date: "1/2/2020", contentState: "Hello, world!" },
 ]);
 const arcs = makeVar([]);
 const highlights = makeVar([]);
 
+export const addEntry = () => {};
+
 const typePolicies: TypePolicies = {
   Query: {
     fields: {
+      journalId() {
+        return journalId();
+      },
+      journalTitle() {
+        return journalTitle();
+      },
+      journalMetadata() {
+        return journalMetadata();
+      },
       entries(_, { variables }) {
         return entries();
       },
@@ -54,6 +76,12 @@ const typePolicies: TypePolicies = {
   },
   Entry: {
     keyFields: ["entryKey"],
+  },
+  Arc: {
+    keyFields: ["id"],
+  },
+  Highlight: {
+    keyFields: ["id"],
   },
 };
 
