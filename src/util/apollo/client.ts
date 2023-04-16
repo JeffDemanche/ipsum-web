@@ -1,20 +1,22 @@
 import {
   ApolloClient,
   InMemoryCache,
+  // eslint-disable-next-line import/named
   TypePolicies,
   gql,
   makeVar,
 } from "@apollo/client";
 import { v4 as uuidv4 } from "uuid";
+import { Arc, Entry } from ".";
 
 const typeDefs = gql`
   type Query {
     journalId: String!
     journalTitle: String!
     journalMetadata: JournalMetadata!
-    entries: [Entry]
-    arcs: [Arc]
-    highlights: [Highlight]
+    entries(ids: [ID!]): [Entry]
+    arcs(ids: [ID!]): [Arc]
+    highlights(ids: [ID!], entries: [ID!], arcs: [ID!]): [Highlight]
   }
 
   type JournalMetadata {
@@ -35,21 +37,37 @@ const typeDefs = gql`
 
   type Highlight {
     id: ID!
-    arcId: Arc!
-    entryKey: Entry!
+    arc: Arc!
+    entry: Entry!
   }
 `;
 
-const journalId = makeVar(uuidv4());
-const journalTitle = makeVar("new journal");
-const journalMetadata = makeVar({ lastArcHue: 0 });
-const entries = makeVar([
-  { entryKey: "1/2/2020", date: "1/2/2020", contentState: "Hello, world!" },
-]);
-const arcs = makeVar([]);
-const highlights = makeVar([]);
+export type UnhydratedType = {
+  Entry: Entry;
+  Arc: Arc;
+  Highlight: {
+    __typename: "Highlight";
+    id: string;
+    arc: string;
+    entry: string;
+  };
+};
 
-export const addEntry = () => {};
+export const journalId = makeVar(uuidv4());
+export const journalTitle = makeVar("new journal");
+export const journalMetadata = makeVar({ lastArcHue: 0 });
+export const entries = makeVar<UnhydratedType["Entry"][]>([]);
+export const arcs = makeVar<UnhydratedType["Arc"][]>([]);
+export const highlights = makeVar<UnhydratedType["Highlight"][]>([]);
+
+export const initializeState = () => {
+  journalId(uuidv4());
+  journalTitle("new journal");
+  journalMetadata({ lastArcHue: 0 });
+  entries([]);
+  arcs([]);
+  highlights([]);
+};
 
 const typePolicies: TypePolicies = {
   Query: {
@@ -64,12 +82,29 @@ const typePolicies: TypePolicies = {
         return journalMetadata();
       },
       entries(_, { variables }) {
+        if (variables.ids) {
+          return entries().filter((entry) =>
+            variables.ids.includes(entry.entryKey)
+          );
+        }
         return entries();
       },
       arcs(_, { variables }) {
+        if (variables.ids) {
+          return arcs().filter((arc) => variables.ids.includes(arc.id));
+        }
         return arcs();
       },
       highlights(_, { variables }) {
+        if (variables.ids || variables.entries || variables.arcs) {
+          return highlights().filter(
+            (highlight) =>
+              (!variables.ids || variables.ids.includes(highlight.id)) &&
+              (!variables.entries ||
+                variables.entries.includes(highlight.entry)) &&
+              (!variables.arcs || variables.arcs.includes(highlight.arc))
+          );
+        }
         return highlights();
       },
     },
@@ -82,6 +117,14 @@ const typePolicies: TypePolicies = {
   },
   Highlight: {
     keyFields: ["id"],
+    fields: {
+      arc(arcId) {
+        return arcs().find((arc) => arc.id === arcId);
+      },
+      entry(entryKey) {
+        return entries().find((entry) => entry.entryKey === entryKey);
+      },
+    },
   },
 };
 

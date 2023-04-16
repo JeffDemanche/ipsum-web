@@ -30,8 +30,8 @@ export type Entry = {
 
 export type Highlight = {
   __typename?: 'Highlight';
-  arcId: Arc;
-  entryKey: Entry;
+  arc: Arc;
+  entry: Entry;
   id: Scalars['ID'];
 };
 
@@ -48,6 +48,21 @@ export type Query = {
   journalId: Scalars['String'];
   journalMetadata: JournalMetadata;
   journalTitle: Scalars['String'];
+};
+
+
+export type QueryArcsArgs = {
+  ids?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryEntriesArgs = {
+  ids?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryHighlightsArgs = {
+  ids?: InputMaybe<Array<Scalars['ID']>>;
 };
 
 export type TestQueryQueryVariables = Exact<{
