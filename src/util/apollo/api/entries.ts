@@ -1,26 +1,28 @@
 import { Entry } from "../__generated__/graphql";
-import { entries } from "../client";
+import { vars } from "../client";
 
 export const createEntry = (entry: Entry) => {
-  if (entries().find((e) => e.entryKey === entry.entryKey)) return;
+  if (vars.entries().find((e) => e.entryKey === entry.entryKey)) return;
 
-  entries([...entries(), entry]);
+  vars.entries([...vars.entries(), entry]);
 };
 
 export const updateEntry = (entry: Partial<Entry>) => {
-  const entryIndex = entries().findIndex((e) => e.entryKey === entry.entryKey);
+  const entryIndex = vars
+    .entries()
+    .findIndex((e) => e.entryKey === entry.entryKey);
   if (entryIndex === -1) return;
 
-  const newEntries = [...entries()];
+  const newEntries = [...vars.entries()];
   newEntries[entryIndex] = { ...newEntries[entryIndex], ...entry };
-  entries(newEntries);
+  vars.entries(newEntries);
 };
 
 export const deleteEntry = (entryKey: string) => {
-  const entryIndex = entries().findIndex((e) => e.entryKey === entryKey);
+  const entryIndex = vars.entries().findIndex((e) => e.entryKey === entryKey);
   if (entryIndex === -1) return;
 
-  const newEntries = [...entries()];
+  const newEntries = [...vars.entries()];
   newEntries.splice(entryIndex, 1);
-  entries(newEntries);
+  vars.entries(newEntries);
 };

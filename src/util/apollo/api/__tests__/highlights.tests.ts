@@ -1,4 +1,4 @@
-import { highlights, initializeState } from "util/apollo/client";
+import { vars, initializeState } from "util/apollo/client";
 import {
   createHighlight,
   deleteHighlight,
@@ -23,9 +23,9 @@ describe("apollo highlights API", () => {
         entry: "1/2/2020",
       };
       createHighlight(highlight1);
-      expect(highlights()).toEqual([highlight1]);
+      expect(vars.highlights()).toEqual([highlight1]);
       createHighlight(highlight2);
-      expect(highlights()).toEqual([highlight1, highlight2]);
+      expect(vars.highlights()).toEqual([highlight1, highlight2]);
     });
   });
 
@@ -43,9 +43,12 @@ describe("apollo highlights API", () => {
       };
       createHighlight(highlight1);
       createHighlight(highlight2);
-      expect(highlights()).toEqual([highlight1, highlight2]);
+      expect(vars.highlights()).toEqual([highlight1, highlight2]);
       updateHighlight({ id: "1", arc: "3" });
-      expect(highlights()).toEqual([{ ...highlight1, arcId: "3" }, highlight2]);
+      expect(vars.highlights()).toEqual([
+        { ...highlight1, arcId: "3" },
+        highlight2,
+      ]);
     });
   });
 
@@ -63,9 +66,9 @@ describe("apollo highlights API", () => {
       };
       createHighlight(highlight1);
       createHighlight(highlight2);
-      expect(highlights()).toEqual([highlight1, highlight2]);
+      expect(vars.highlights()).toEqual([highlight1, highlight2]);
       deleteHighlight("1");
-      expect(highlights()).toEqual([highlight2]);
+      expect(vars.highlights()).toEqual([highlight2]);
     });
   });
 });

@@ -53,59 +53,72 @@ export type UnhydratedType = {
   };
 };
 
-export const journalId = makeVar(uuidv4());
-export const journalTitle = makeVar("new journal");
-export const journalMetadata = makeVar({ lastArcHue: 0 });
-export const entries = makeVar<UnhydratedType["Entry"][]>([]);
-export const arcs = makeVar<UnhydratedType["Arc"][]>([]);
-export const highlights = makeVar<UnhydratedType["Highlight"][]>([]);
+export const vars = {
+  journalId: makeVar(uuidv4()),
+  journalTitle: makeVar("new journal"),
+  journalMetadata: makeVar({ lastArcHue: 0 }),
+  entries: makeVar<UnhydratedType["Entry"][]>([]),
+  arcs: makeVar<UnhydratedType["Arc"][]>([]),
+  highlights: makeVar<UnhydratedType["Highlight"][]>([]),
+};
+
+export const serializeVars: (keyof typeof vars)[] = [
+  "journalId",
+  "journalTitle",
+  "journalMetadata",
+  "entries",
+  "arcs",
+  "highlights",
+];
 
 export const initializeState = () => {
-  journalId(uuidv4());
-  journalTitle("new journal");
-  journalMetadata({ lastArcHue: 0 });
-  entries([]);
-  arcs([]);
-  highlights([]);
+  vars.journalId(uuidv4());
+  vars.journalTitle("new journal");
+  vars.journalMetadata({ lastArcHue: 0 });
+  vars.entries([]);
+  vars.arcs([]);
+  vars.highlights([]);
 };
 
 const typePolicies: TypePolicies = {
   Query: {
     fields: {
       journalId() {
-        return journalId();
+        return vars.journalId();
       },
       journalTitle() {
-        return journalTitle();
+        return vars.journalTitle();
       },
       journalMetadata() {
-        return journalMetadata();
+        return vars.journalMetadata();
       },
       entries(_, { variables }) {
         if (variables.ids) {
-          return entries().filter((entry) =>
-            variables.ids.includes(entry.entryKey)
-          );
+          return vars
+            .entries()
+            .filter((entry) => variables.ids.includes(entry.entryKey));
         }
-        return entries();
+        return vars.entries();
       },
       arcs(_, { variables }) {
         if (variables.ids) {
-          return arcs().filter((arc) => variables.ids.includes(arc.id));
+          return vars.arcs().filter((arc) => variables.ids.includes(arc.id));
         }
-        return arcs();
+        return vars.arcs();
       },
       highlights(_, { variables }) {
         if (variables.ids || variables.entries || variables.arcs) {
-          return highlights().filter(
-            (highlight) =>
-              (!variables.ids || variables.ids.includes(highlight.id)) &&
-              (!variables.entries ||
-                variables.entries.includes(highlight.entry)) &&
-              (!variables.arcs || variables.arcs.includes(highlight.arc))
-          );
+          return vars
+            .highlights()
+            .filter(
+              (highlight) =>
+                (!variables.ids || variables.ids.includes(highlight.id)) &&
+                (!variables.entries ||
+                  variables.entries.includes(highlight.entry)) &&
+                (!variables.arcs || variables.arcs.includes(highlight.arc))
+            );
         }
-        return highlights();
+        return vars.highlights();
       },
     },
   },
@@ -119,10 +132,10 @@ const typePolicies: TypePolicies = {
     keyFields: ["id"],
     fields: {
       arc(arcId) {
-        return arcs().find((arc) => arc.id === arcId);
+        return vars.arcs().find((arc) => arc.id === arcId);
       },
       entry(entryKey) {
-        return entries().find((entry) => entry.entryKey === entryKey);
+        return vars.entries().find((entry) => entry.entryKey === entryKey);
       },
     },
   },

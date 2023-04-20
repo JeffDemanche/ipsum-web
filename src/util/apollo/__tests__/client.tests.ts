@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { createArc } from "../api/arcs";
 import { createEntry } from "../api/entries";
 import { createHighlight } from "../api/highlights";
-import { arcs, client, entries, initializeState } from "../client";
+import { vars, client, initializeState } from "../client";
 
 describe("apollo client", () => {
   beforeEach(() => {
@@ -51,12 +51,12 @@ describe("apollo client", () => {
       });
       createHighlight({
         id: "highlight 1",
-        arc: arcs()[0].id,
+        arc: vars.arcs()[0].id,
         entry: "1/2/2020",
       });
       createHighlight({
         id: "highlight 2",
-        arc: arcs()[1].id,
+        arc: vars.arcs()[1].id,
         entry: "1/2/2020",
       });
 
@@ -79,7 +79,7 @@ describe("apollo client", () => {
           }
         `),
         variables: {
-          arcs: [arcs()[0].id],
+          arcs: [vars.arcs()[0].id],
         },
       });
 
@@ -98,7 +98,7 @@ describe("apollo client", () => {
       });
       createHighlight({
         id: "highlight",
-        arc: arcs()[0].id,
+        arc: vars.arcs()[0].id,
         entry: "1/2/2020",
       });
 
@@ -122,8 +122,8 @@ describe("apollo client", () => {
         `),
       });
 
-      expect(result.highlights[0].arc).toEqual(arcs()[0]);
-      expect(result.highlights[0].entry).toEqual(entries()[0]);
+      expect(result.highlights[0].arc).toEqual(vars.arcs()[0]);
+      expect(result.highlights[0].entry).toEqual(vars.entries()[0]);
     });
   });
 });

@@ -1,5 +1,5 @@
-import { journalTitle } from "../client";
+import { vars } from "../client";
 
 export const updateJournalTitle = (title: string) => {
-  journalTitle(title);
+  vars.journalTitle(title);
 };

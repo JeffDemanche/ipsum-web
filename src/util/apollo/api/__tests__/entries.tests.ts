@@ -1,4 +1,4 @@
-import { entries, initializeState } from "util/apollo/client";
+import { vars, initializeState } from "util/apollo/client";
 import { createEntry, deleteEntry, updateEntry } from "../entries";
 
 describe("apollo entries API", () => {
@@ -19,9 +19,9 @@ describe("apollo entries API", () => {
         contentState: "Hello, world 2!",
       };
       createEntry(entry1);
-      expect(entries()).toEqual([entry1]);
+      expect(vars.entries()).toEqual([entry1]);
       createEntry(entry2);
-      expect(entries()).toEqual([entry1, entry2]);
+      expect(vars.entries()).toEqual([entry1, entry2]);
     });
   });
 
@@ -39,9 +39,9 @@ describe("apollo entries API", () => {
       };
       createEntry(entry1);
       createEntry(entry2);
-      expect(entries()).toEqual([entry1, entry2]);
+      expect(vars.entries()).toEqual([entry1, entry2]);
       updateEntry({ entryKey: "1/2/2020", contentState: "Hello, world 3!" });
-      expect(entries()).toEqual([
+      expect(vars.entries()).toEqual([
         { ...entry1, contentState: "Hello, world 3!" },
         entry2,
       ]);
@@ -62,9 +62,9 @@ describe("apollo entries API", () => {
       };
       createEntry(entry1);
       createEntry(entry2);
-      expect(entries()).toEqual([entry1, entry2]);
+      expect(vars.entries()).toEqual([entry1, entry2]);
       deleteEntry("1/2/2020");
-      expect(entries()).toEqual([entry2]);
+      expect(vars.entries()).toEqual([entry2]);
     });
   });
 });
