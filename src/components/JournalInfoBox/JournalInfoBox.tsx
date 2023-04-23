@@ -1,13 +1,13 @@
 import { Button } from "components/Button";
 import React, { useCallback, useContext } from "react";
-import { InMemoryStateContext } from "state/in-memory";
 import styles from "./JournalInfoBox.less";
 import { JournalTitle } from "./JournalTitle";
-import { TestButton } from "util/apollo/TestButton";
+import { ApolloSerializationContext } from "util/apollo";
 
 export const JournalInfoBox: React.FC = () => {
-  const { saveToFile, loadFromFile, resetToInitial } =
-    useContext(InMemoryStateContext);
+  const { resetToInitial, saveToFile, loadFromFile } = useContext(
+    ApolloSerializationContext
+  );
 
   const onClickNew = useCallback(() => {
     resetToInitial();
@@ -40,7 +40,6 @@ export const JournalInfoBox: React.FC = () => {
         >
           L
         </Button>
-        <TestButton></TestButton>
       </div>
     </div>
   );

@@ -8,27 +8,23 @@ export const createArc = ({ name }: { name: string }) => {
 
   vars.journalMetadata({ ...vars.journalMetadata(), lastArcHue: color });
 
-  vars.arcs([...vars.arcs(), { id: arcId, name, color }]);
+  vars.arcs({ ...vars.arcs(), [arcId]: { id: arcId, name, color } });
 };
 
 export const updateArc = (arc: Partial<UnhydratedType["Arc"]>) => {
   if (!arc.id) throw new Error("updateArc: arc.id is required");
 
-  if (!vars.arcs().find((a) => a.id === arc.id))
-    throw new Error(`updateArc: arc not found: ${arc.id}`);
+  if (!vars.arcs()[arc.id]) return;
 
-  const arcIndex = vars.arcs().findIndex((a) => a.id === arc.id);
-
-  const newArcs = [...vars.arcs()];
-  newArcs[arcIndex] = { ...newArcs[arcIndex], ...arc };
+  const newArcs = { ...vars.arcs() };
+  newArcs[arc.id] = { ...newArcs[arc.id], ...arc };
   vars.arcs(newArcs);
 };
 
 export const deleteArc = (id: string) => {
-  const arcIndex = vars.arcs().findIndex((a) => a.id === id);
-  if (arcIndex === -1) return;
+  if (!vars.arcs()[id]) return;
 
-  const newArcs = [...vars.arcs()];
-  newArcs.splice(arcIndex, 1);
+  const newArcs = { ...vars.arcs() };
+  delete newArcs[id];
   vars.arcs(newArcs);
 };

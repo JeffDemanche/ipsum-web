@@ -2,27 +2,26 @@ import { Entry } from "../__generated__/graphql";
 import { vars } from "../client";
 
 export const createEntry = (entry: Entry) => {
-  if (vars.entries().find((e) => e.entryKey === entry.entryKey)) return;
+  if (vars.entries()[entry.entryKey]) return;
 
-  vars.entries([...vars.entries(), entry]);
+  vars.entries({ ...vars.entries(), [entry.entryKey]: entry });
 };
 
 export const updateEntry = (entry: Partial<Entry>) => {
-  const entryIndex = vars
-    .entries()
-    .findIndex((e) => e.entryKey === entry.entryKey);
-  if (entryIndex === -1) return;
+  if (!entry.entryKey)
+    throw new Error("updateEntry: entry.entryKey is required");
 
-  const newEntries = [...vars.entries()];
-  newEntries[entryIndex] = { ...newEntries[entryIndex], ...entry };
+  if (!vars.entries()[entry.entryKey]) return;
+
+  const newEntries = { ...vars.entries() };
+  newEntries[entry.entryKey] = { ...newEntries[entry.entryKey], ...entry };
   vars.entries(newEntries);
 };
 
 export const deleteEntry = (entryKey: string) => {
-  const entryIndex = vars.entries().findIndex((e) => e.entryKey === entryKey);
-  if (entryIndex === -1) return;
+  if (!vars.entries()[entryKey]) return;
 
-  const newEntries = [...vars.entries()];
-  newEntries.splice(entryIndex, 1);
+  const newEntries = { ...vars.entries() };
+  delete newEntries[entryKey];
   vars.entries(newEntries);
 };

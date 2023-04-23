@@ -19,9 +19,12 @@ describe("apollo entries API", () => {
         contentState: "Hello, world 2!",
       };
       createEntry(entry1);
-      expect(vars.entries()).toEqual([entry1]);
+      expect(vars.entries()).toEqual({ "1/2/2020": entry1 });
       createEntry(entry2);
-      expect(vars.entries()).toEqual([entry1, entry2]);
+      expect(vars.entries()).toEqual({
+        "1/2/2020": entry1,
+        "4/2/2020": entry2,
+      });
     });
   });
 
@@ -39,12 +42,15 @@ describe("apollo entries API", () => {
       };
       createEntry(entry1);
       createEntry(entry2);
-      expect(vars.entries()).toEqual([entry1, entry2]);
+      expect(vars.entries()).toEqual({
+        "1/2/2020": entry1,
+        "4/2/2020": entry2,
+      });
       updateEntry({ entryKey: "1/2/2020", contentState: "Hello, world 3!" });
-      expect(vars.entries()).toEqual([
-        { ...entry1, contentState: "Hello, world 3!" },
-        entry2,
-      ]);
+      expect(vars.entries()).toEqual({
+        "1/2/2020": { ...entry1, contentState: "Hello, world 3!" },
+        "4/2/2020": entry2,
+      });
     });
   });
 
@@ -62,9 +68,12 @@ describe("apollo entries API", () => {
       };
       createEntry(entry1);
       createEntry(entry2);
-      expect(vars.entries()).toEqual([entry1, entry2]);
+      expect(vars.entries()).toEqual({
+        "1/2/2020": entry1,
+        "4/2/2020": entry2,
+      });
       deleteEntry("1/2/2020");
-      expect(vars.entries()).toEqual([entry2]);
+      expect(vars.entries()).toEqual({ "4/2/2020": entry2 });
     });
   });
 });

@@ -1,6 +1,7 @@
 import { serializeVars, vars } from "./client";
 
 import * as t from "io-ts";
+import { PathReporter } from "io-ts/PathReporter";
 
 const SerializedSchema = t.type({
   journalId: t.string,
@@ -8,21 +9,24 @@ const SerializedSchema = t.type({
   journalMetadata: t.type({
     lastArcHue: t.number,
   }),
-  entries: t.array(
+  entries: t.record(
+    t.string,
     t.type({
       entryKey: t.string,
       date: t.string,
       contentState: t.string,
     })
   ),
-  arcs: t.array(
+  arcs: t.record(
+    t.string,
     t.type({
       id: t.string,
       name: t.string,
       color: t.number,
     })
   ),
-  highlights: t.array(
+  highlights: t.record(
+    t.string,
     t.type({
       id: t.string,
       arc: t.string,
@@ -34,24 +38,27 @@ const SerializedSchema = t.type({
 /**
  * Converts Apollo state into a string to be written to disk.
  */
-export const writeApolloState = (): object => {
-  return serializeVars.reduce((prev, curr) => {
-    return {
-      ...prev,
-      [curr]: vars[curr](),
-    };
-  }, {});
+export const writeApolloState = (): string => {
+  return JSON.stringify(
+    serializeVars.reduce((prev, curr) => {
+      return {
+        ...prev,
+        [curr]: vars[curr](),
+      };
+    }, {})
+  );
 };
 
 /**
- * Load a string from disk into Apollo state.
+ * Load a string from disk into Apollo state. Returns an array of validation
+ * errors, if they occurred.
  */
-export const loadApolloState = (serialized: string): void => {
-  const parsed = SerializedSchema.decode(JSON.parse(serialized));
+export const loadApolloState = (serialized: string): string[] | undefined => {
+  const raw = JSON.parse(serialized);
+  const parsed = SerializedSchema.decode(raw);
 
   if (parsed._tag === "Left") {
-    parsed.left;
-    throw new Error("Failed to parse serialized Apollo state");
+    return PathReporter.report(parsed);
   } else {
     serializeVars.forEach((varName) => {
       const reactiveVarMap = {

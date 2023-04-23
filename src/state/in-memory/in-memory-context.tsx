@@ -31,9 +31,9 @@ export const InMemoryStateProvider: React.FC<{
   >();
   useEffect(() => {
     if (idbWrapper !== undefined && stateFromAutosave === undefined) {
-      idbWrapper.getNewInMemoryState().then((state) => {
-        setStateFromAutosave(state);
-      });
+      // idbWrapper.getNewInMemoryState().then((state) => {
+      //   setStateFromAutosave(state);
+      // });
     }
   }, [idbWrapper, stateFromAutosave]);
 
@@ -248,7 +248,7 @@ export const InMemoryStateProviderWithAutosave: React.FC<{
 
   const autosave = useCallback(() => {
     localStorage.setItem("ipsum-autosave-id", state.journalId);
-    idbWrapper.putNewInMemoryState(state);
+    // idbWrapper.putNewInMemoryState(state);
   }, [idbWrapper, state]);
 
   const autosaveDebounced = useCallback(_.debounce(autosave, 1500), [state]);

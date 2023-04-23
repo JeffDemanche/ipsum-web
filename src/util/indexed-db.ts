@@ -1,11 +1,5 @@
 import { IDBPDatabase, openDB } from "idb";
 import { useEffect, useState } from "react";
-import { InMemoryState as NewInMemoryState } from "state/in-memory/in-memory-schema";
-import {
-  deserializeInMemoryState,
-  initializeDefaultInMemoryState,
-  serializeInMemoryState,
-} from "state/in-memory/in-memory-state";
 
 /**
  * Module for Ipsum interfacing with IndexedDB.
@@ -53,26 +47,22 @@ export class IpsumIndexedDBClient {
     return id;
   }
 
-  public async putNewInMemoryState(state: NewInMemoryState) {
+  public async putAutosaveValue(state: object) {
     const result = await this.putValue("autosavedStates", {
-      id: state.journalId,
-      state: serializeInMemoryState(state),
+      state,
     });
     return result;
   }
 
-  public async getNewInMemoryState() {
+  public async getAutosaveValue() {
     const autosaveId = localStorage.getItem("ipsum-autosave-id");
     if (autosaveId) {
       const result = await this.getValue("autosavedStates", autosaveId);
       if (result) {
-        return deserializeInMemoryState(result.state) as NewInMemoryState;
-      } else {
-        return initializeDefaultInMemoryState();
+        return result.state as string;
       }
-    } else {
-      return initializeDefaultInMemoryState();
     }
+    return undefined;
   }
 }
 

@@ -57,13 +57,20 @@ export type QueryArcsArgs = {
 
 
 export type QueryEntriesArgs = {
-  ids?: InputMaybe<Array<Scalars['ID']>>;
+  entryKeys?: InputMaybe<Array<Scalars['ID']>>;
 };
 
 
 export type QueryHighlightsArgs = {
+  arcs?: InputMaybe<Array<Scalars['ID']>>;
+  entries?: InputMaybe<Array<Scalars['ID']>>;
   ids?: InputMaybe<Array<Scalars['ID']>>;
 };
+
+export type JournalTitleQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type JournalTitleQuery = { __typename?: 'Query', journalTitle: string };
 
 export type TestQueryQueryVariables = Exact<{
   entryKey: Scalars['String'];
@@ -73,4 +80,5 @@ export type TestQueryQueryVariables = Exact<{
 export type TestQueryQuery = { __typename?: 'Query', entries?: Array<{ __typename?: 'Entry', entryKey: string } | null> | null };
 
 
+export const JournalTitleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"JournalTitle"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"journalTitle"}}]}}]} as unknown as DocumentNode<JournalTitleQuery, JournalTitleQueryVariables>;
 export const TestQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TestQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"entryKey"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entries"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entryKey"}}]}}]}}]} as unknown as DocumentNode<TestQueryQuery, TestQueryQueryVariables>;

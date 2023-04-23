@@ -1,4 +1,7 @@
 /**
+ * Ex usage: `npm run project-tools --input_file=./projects/[...].ipsum
+ * --output_file=./projects/[...].ipsum`
+ *
  * Gives us a REPL to make changes to a project file that might be useful for
  * when the schema for project files changes during development.
  */
@@ -79,6 +82,36 @@ replServer.defineCommand("fix_entities", {
   action(arg) {
     try {
       migrateEntityTextArcAssignments(modifiedData, "arc_assignment", "entry");
+    } catch (e) {
+      console.error(e);
+    }
+  },
+});
+replServer.defineCommand("fix_apollo_migration_fields", {
+  action(arg) {
+    try {
+      const highlightsCopy = { ...modifiedData.highlights };
+      Object.keys(highlightsCopy).forEach((key) => {
+        const arc = highlightsCopy[key].arcId ?? highlightsCopy[key].arc;
+        const entry = highlightsCopy[key].entryKey ?? highlightsCopy[key].entry;
+        highlightsCopy[key].arc = arc;
+        highlightsCopy[key].entry = entry;
+        delete highlightsCopy[key].arcId;
+        delete highlightsCopy[key].entryKey;
+      });
+      modifiedData.highlights = highlightsCopy;
+
+      const entriesCopy = { ...modifiedData.entries };
+      Object.keys(entriesCopy).forEach((key) => {
+        if (entriesCopy[key].date?.["_luxonDateTime"]) {
+          console.log(entriesCopy[key].date["_luxonDateTime"]);
+          const date =
+            entriesCopy[key].date["_luxonDateTime"] ?? entriesCopy[key].date;
+          delete entriesCopy[key].date;
+          entriesCopy[key].date = date;
+        }
+      });
+      modifiedData.entries = entriesCopy;
     } catch (e) {
       console.error(e);
     }
