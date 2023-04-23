@@ -1,5 +1,4 @@
 export { client } from "./client";
-export { TestComponent } from "./TestComponent";
 export * from "./__generated__";
 export * from "./__generated__/graphql";
 export * from "./api/arcs";
