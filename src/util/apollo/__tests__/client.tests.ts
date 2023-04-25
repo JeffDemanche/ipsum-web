@@ -49,13 +49,11 @@ describe("apollo client", () => {
         date: "1/2/2020",
         contentState: "Hello, world!",
       });
-      createHighlight({
-        id: "highlight 1",
+      const highlight1 = createHighlight({
         arc: vars.arcs()[0].id,
         entry: "1/2/2020",
       });
       createHighlight({
-        id: "highlight 2",
         arc: vars.arcs()[1].id,
         entry: "1/2/2020",
       });
@@ -84,7 +82,7 @@ describe("apollo client", () => {
       });
 
       expect(result.highlights).toHaveLength(1);
-      expect(result.highlights[0].id).toEqual("highlight 1");
+      expect(result.highlights[0].id).toEqual(highlight1.id);
     });
   });
 
@@ -97,7 +95,6 @@ describe("apollo client", () => {
         contentState: "Hello, world!",
       });
       createHighlight({
-        id: "highlight",
         arc: vars.arcs()[0].id,
         entry: "1/2/2020",
       });

@@ -13,8 +13,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\n  query ArcAssignmentPopper {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n": types.ArcAssignmentPopperDocument,
     "\n  query JournalTitle {\n    journalTitle\n  }\n": types.JournalTitleDocument,
-    "\n  query TestQuery($entryKey: String!) {\n    entries {\n      entryKey\n    }\n  }\n": types.TestQueryDocument,
+    "\n  query MedianHighlightBox($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      arc {\n        id\n        color\n      }\n      entry {\n        entryKey\n      }\n    }\n  }\n": types.MedianHighlightBoxDocument,
 };
 
 /**
@@ -34,11 +35,15 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  query ArcAssignmentPopper {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n"): (typeof documents)["\n  query ArcAssignmentPopper {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  query JournalTitle {\n    journalTitle\n  }\n"): (typeof documents)["\n  query JournalTitle {\n    journalTitle\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query TestQuery($entryKey: String!) {\n    entries {\n      entryKey\n    }\n  }\n"): (typeof documents)["\n  query TestQuery($entryKey: String!) {\n    entries {\n      entryKey\n    }\n  }\n"];
+export function gql(source: "\n  query MedianHighlightBox($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      arc {\n        id\n        color\n      }\n      entry {\n        entryKey\n      }\n    }\n  }\n"): (typeof documents)["\n  query MedianHighlightBox($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      arc {\n        id\n        color\n      }\n      entry {\n        entryKey\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

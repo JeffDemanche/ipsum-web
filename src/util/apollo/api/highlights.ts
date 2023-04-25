@@ -1,14 +1,21 @@
 import { UnhydratedType, vars } from "../client";
+import { v4 as uuidv4 } from "uuid";
 
 export const createHighlight = (
-  highlight: Omit<UnhydratedType["Highlight"], "__typename">
-) => {
-  if (vars.highlights()[highlight.id]) return;
+  highlight: Omit<UnhydratedType["Highlight"], "__typename" | "id">
+): UnhydratedType["Highlight"] => {
+  const highlightId = uuidv4();
 
+  const result: UnhydratedType["Highlight"] = {
+    __typename: "Highlight",
+    id: highlightId,
+    ...highlight,
+  };
   vars.highlights({
     ...vars.highlights(),
-    [highlight.id]: { __typename: "Highlight", ...highlight },
+    [highlightId]: { __typename: "Highlight", id: highlightId, ...result },
   });
+  return result;
 };
 
 export const updateHighlight = (

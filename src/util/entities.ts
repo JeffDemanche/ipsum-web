@@ -19,7 +19,7 @@ type EntityField = "arcIds" | "textArcAssignments" | "commentIds";
 type EntityFieldDataType<T extends EntityField> = T extends "arcIds"
   ? string
   : T extends "textArcAssignments"
-  ? { arcId: string; arcAssignmentId: string }
+  ? { arcId?: string; arcAssignmentId: string }
   : string;
 
 /**
@@ -291,7 +291,8 @@ export class IpsumEntityTransformer {
 
   removeEntityData = <T extends EntityField>(
     type: T,
-    data: EntityFieldDataType<T>
+    data: EntityFieldDataType<T>,
+    filterFn?: (existingData: EntityFieldDataType<T>) => boolean
   ) => {
     const entityKeys = this.contentState.getAllEntities().keySeq().toArray();
 
@@ -303,7 +304,9 @@ export class IpsumEntityTransformer {
       const newFieldData = (
         currentEntityData[type] as EntityFieldDataType<T>[]
       ).filter((existingData) => {
-        return !_.isEqual(data, existingData);
+        return filterFn
+          ? filterFn(existingData)
+          : !_.isEqual(data, existingData);
       });
 
       return acc.mergeEntityData(cur, { [type]: newFieldData });

@@ -1,14 +1,17 @@
 import { nextHue } from "util/colors";
 import { v4 as uuidv4 } from "uuid";
 import { UnhydratedType, vars } from "../client";
+import { Arc } from "../__generated__/graphql";
 
-export const createArc = ({ name }: { name: string }) => {
+export const createArc = ({ name }: { name: string }): Arc => {
   const arcId = uuidv4();
   const color = nextHue(vars.journalMetadata().lastArcHue ?? 0);
 
   vars.journalMetadata({ ...vars.journalMetadata(), lastArcHue: color });
 
-  vars.arcs({ ...vars.arcs(), [arcId]: { id: arcId, name, color } });
+  const arc: Arc = { id: arcId, name, color };
+  vars.arcs({ ...vars.arcs(), [arcId]: arc });
+  return arc;
 };
 
 export const updateArc = (arc: Partial<UnhydratedType["Arc"]>) => {
