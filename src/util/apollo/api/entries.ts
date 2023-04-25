@@ -1,17 +1,22 @@
-import { Entry } from "../__generated__/graphql";
 import { UnhydratedType, vars } from "../client";
 import { IpsumEntityTransformer } from "util/entities";
 import { SelectionState } from "draft-js";
 import { parseContentState, stringifyContentState } from "util/content-state";
 
-export const createEntry = (entry: Entry): UnhydratedType["Entry"] => {
+export const createEntry = (
+  entry: Omit<UnhydratedType["Entry"], "__typename">
+): UnhydratedType["Entry"] => {
   if (vars.entries()[entry.entryKey]) return;
 
-  vars.entries({ ...vars.entries(), [entry.entryKey]: entry });
-  return entry;
+  const newEntry: UnhydratedType["Entry"] = { __typename: "Entry", ...entry };
+  vars.entries({
+    ...vars.entries(),
+    [entry.entryKey]: newEntry,
+  });
+  return newEntry;
 };
 
-export const updateEntry = (entry: Partial<Entry>) => {
+export const updateEntry = (entry: Partial<UnhydratedType["Entry"]>) => {
   if (!entry.entryKey)
     throw new Error("updateEntry: entry.entryKey is required");
 

@@ -122,5 +122,47 @@ describe("apollo client", () => {
       expect(result.highlights[0].arc).toEqual(vars.arcs()[0]);
       expect(result.highlights[0].entry).toEqual(vars.entries()[0]);
     });
+
+    it("should hydrate entry highlights", () => {
+      createEntry({
+        entryKey: "1/2/2020",
+        date: "1/2/2020",
+        contentState: "Hello, world!",
+      });
+      createEntry({
+        entryKey: "1/4/2020",
+        date: "1/4/2020",
+        contentState: "Hello, world!",
+      });
+      const highlight1 = createHighlight({
+        arc: "",
+        entry: "1/2/2020",
+      });
+      const highlight2 = createHighlight({
+        arc: "",
+        entry: "1/2/2020",
+      });
+
+      const result = client.readQuery({
+        query: gql(`
+          query ReadEntry($entryKeys: [ID!]!) {
+            entries(entryKeys: $entryKeys) {
+              entryKey
+              highlights {
+                id
+              }
+            } 
+          }
+        `),
+        variables: {
+          entryKeys: ["1/2/2020", "1/4/2020"],
+        },
+      });
+
+      expect(result.entries[0].highlights).toHaveLength(2);
+      expect(result.entries[0].highlights[0].id).toEqual(highlight1.id);
+      expect(result.entries[0].highlights[1].id).toEqual(highlight2.id);
+      expect(result.entries[1].highlights).toHaveLength(0);
+    });
   });
 });

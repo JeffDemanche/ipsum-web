@@ -6,8 +6,9 @@ import { isSubset } from "util/set";
 import { JournalHotkeysContext } from "components/JournalHotkeys";
 import { HighlightDisambiguator } from "components/HighlightDisambiguator";
 import { IpsumArcColor, IpsumColor, multiplyIpsumArcColors } from "util/colors";
-import { useStateDocumentQuery } from "state/in-memory";
 import { IpsumEntityData } from "util/entities";
+import { gql } from "util/apollo";
+import { useQuery } from "@apollo/client";
 
 // Draft doesn't provide this type, this is inferred from logging the props
 // value.
@@ -21,6 +22,23 @@ interface DecoratorProps {
   start: number;
   children: React.ReactNode;
 }
+
+const HighlightDecorationQuery = gql(`
+  query HighlightDecoration($highlightIds: [ID!]!, $arcIds: [ID!]!) {
+    highlights(ids: $highlightIds) {
+      id
+      arc {
+        id
+        color
+      }
+    }
+    arcs(ids: $arcIds) {
+      id
+      name
+      color
+    }
+  }
+`);
 
 /**
  * Gets applied in place of any text that `decorator.ts` has determined to have
@@ -43,6 +61,12 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     [entityData.arcIds, entityData.textArcAssignments]
   );
 
+  const {
+    data: { highlights, arcs },
+  } = useQuery(HighlightDecorationQuery, {
+    variables: { arcIds, highlightIds: entityHighlightIds },
+  });
+
   const { ctrlKey } = useContext(JournalHotkeysContext);
   const {
     hoveredHighlightIds,
@@ -50,25 +74,22 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     selectedHighlightIds,
     setSelectedHighlightIds,
   } = useContext(HighlightSelectionContext);
-  const { data: arcs } = useStateDocumentQuery({
-    collection: "arc",
-    name: "arc decoration",
-  });
-  const { data: highlights } = useStateDocumentQuery({
-    collection: "highlight",
-    keys: entityHighlightIds,
-  });
 
-  const entityArcs = arcIds?.map((id) => arcs[id]).filter((arc) => !!arc) ?? [];
+  const entityArcs =
+    arcIds
+      ?.map((id) => arcs.find((arc) => arc.id === id))
+      .filter((arc) => !!arc) ?? [];
   const hoveredHighlights =
-    hoveredHighlightIds?.map((id) => highlights[id]) ?? [];
+    hoveredHighlightIds?.map((id) =>
+      highlights.find((highlight) => highlight.id === id)
+    ) ?? [];
 
   const selectedHighlights =
     selectedHighlightIds
       ?.filter((selectedHighlightId) =>
         entityHighlightIds.includes(selectedHighlightId)
       )
-      ?.map((id) => highlights[id]) ?? [];
+      ?.map((id) => highlights.find((highlight) => highlight.id === id)) ?? [];
 
   const isHovered = useMemo(
     () =>
@@ -86,20 +107,20 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
 
   const allArcsIpsumColor = multiplyIpsumArcColors(
     Object.values(highlights)
-      .filter((h) => !!h?.arcId)
-      .map((highlight) => arcs[highlight.arcId].color),
+      .filter((h) => !!h?.arc?.id)
+      .map((highlight) => arcs.find((a) => a.id === highlight.arc.id).color),
     { saturation: 100, lightness: 50 }
   );
   const hoveredArcsIpsumColor = multiplyIpsumArcColors(
     hoveredHighlights
-      ?.filter((h) => !!h?.arcId)
-      .map((highlight) => arcs[highlight.arcId].color),
+      ?.filter((h) => !!h?.arc?.id)
+      .map((highlight) => arcs.find((a) => a.id === highlight.arc.id).color),
     { saturation: 100, lightness: 50 }
   );
   const selectedArcsIpsumColor = multiplyIpsumArcColors(
     selectedHighlights
-      ?.filter((h) => !!h?.arcId)
-      .map((highlight) => arcs[highlight.arcId].color),
+      ?.filter((h) => !!h?.arc?.id)
+      .map((highlight) => arcs.find((a) => a.id === highlight.arc.id).color),
     { saturation: 100, lightness: 50 }
   );
 
