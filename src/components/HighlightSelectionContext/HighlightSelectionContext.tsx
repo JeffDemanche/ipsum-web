@@ -3,9 +3,10 @@
  * and other abilities across components.
  */
 
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import { useQuery } from "@apollo/client";
+import React, { useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { InMemoryStateContext } from "state/in-memory";
+import { gql } from "util/apollo";
 import { dataToSearchParams, urlToData } from "util/url";
 
 interface HighlightSelectionContextValue {
@@ -32,6 +33,14 @@ interface HighlightSelectionProviderProps {
   children: React.ReactNode;
 }
 
+const HighlightSelectionProviderQuery = gql(`
+  query HighlightSelectionProvider($highlightIds: [ID!]) {
+    highlights(ids: $highlightIds) {
+      id
+    }
+  }
+`);
+
 export const HighlightSelectionProvider: React.FC<
   HighlightSelectionProviderProps
 > = ({ children }) => {
@@ -39,14 +48,17 @@ export const HighlightSelectionProvider: React.FC<
 
   const location = useLocation();
 
-  const { state } = useContext(InMemoryStateContext);
+  const { data } = useQuery(HighlightSelectionProviderQuery, {
+    variables: {
+      highlightIds: urlToData<"journal">(window.location.href).highlight,
+    },
+    skip: !urlToData<"journal">(window.location.href).highlight,
+  });
 
-  const selectedHighlightIds = useMemo(
-    () =>
-      urlToData<"journal">(window.location.href).highlight?.filter(
-        (highlightId) => !!state.highlight[highlightId]
-      ),
-    [state, location]
+  const selectedHighlights = data?.highlights ?? [];
+
+  const selectedHighlightIds = selectedHighlights?.map(
+    (highlight) => highlight.id
   );
 
   const setSelectedHighlightIds = useCallback(

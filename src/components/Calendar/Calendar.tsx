@@ -1,7 +1,9 @@
+import { useQuery } from "@apollo/client";
 import { Button, Link, Paper, Typography } from "@mui/material";
 import { Info, DateTime } from "luxon";
 import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { gql } from "util/apollo";
 import {
   getDaysBetween,
   IpsumDateTime,
@@ -10,14 +12,22 @@ import {
 } from "util/dates";
 import styles from "./Calendar.less";
 import { CalendarDayTile } from "./CalendarDayTile";
-import { useStateDocumentQuery } from "state/in-memory";
+
+const CalendarQuery = gql(`
+  query Calendar {
+    entries {
+      entryKey
+      date
+    }
+  }
+`);
 
 export const Calendar: React.FC = () => {
   const date = useDate(3000);
 
-  const { data: entries } = useStateDocumentQuery({
-    collection: "entry",
-  });
+  const {
+    data: { entries },
+  } = useQuery(CalendarQuery);
 
   const allEntryDates = useMemo(
     () => Object.values(entries).map((entry) => parseIpsumDateTime(entry.date)),

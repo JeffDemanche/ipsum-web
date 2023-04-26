@@ -44,6 +44,5 @@ export const useExcerptContentState = ({
       highlightSelectionState
     );
   }, [entryContentState, highlightId]);
-
   return excerptCS;
 };

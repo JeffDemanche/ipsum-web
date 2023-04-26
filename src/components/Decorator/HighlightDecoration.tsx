@@ -45,9 +45,13 @@ const HighlightDecorationQuery = gql(`
  * the "ARC" entity applied to it.
  */
 export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
-  const entityData = props.contentState
-    .getEntity(props.entityKey)
-    .getData() as IpsumEntityData;
+  const entityData = useMemo(
+    () =>
+      props.contentState
+        .getEntity(props.entityKey)
+        .getData() as IpsumEntityData,
+    [props.contentState, props.entityKey]
+  );
 
   const entityHighlightIds = useMemo(
     () => entityData.textArcAssignments?.map((a) => a.arcAssignmentId) ?? [],
@@ -61,11 +65,12 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     [entityData.arcIds, entityData.textArcAssignments]
   );
 
-  const {
-    data: { highlights, arcs },
-  } = useQuery(HighlightDecorationQuery, {
+  const { data } = useQuery(HighlightDecorationQuery, {
     variables: { arcIds, highlightIds: entityHighlightIds },
   });
+
+  const highlights = useMemo(() => data?.highlights ?? [], [data?.highlights]);
+  const arcs = useMemo(() => data?.arcs ?? [], [data?.arcs]);
 
   const { ctrlKey } = useContext(JournalHotkeysContext);
   const {
@@ -79,17 +84,21 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     arcIds
       ?.map((id) => arcs.find((arc) => arc.id === id))
       .filter((arc) => !!arc) ?? [];
-  const hoveredHighlights =
-    hoveredHighlightIds?.map((id) =>
-      highlights.find((highlight) => highlight.id === id)
-    ) ?? [];
+  const hoveredHighlights = useMemo(
+    () =>
+      highlights.filter((highlight) =>
+        hoveredHighlightIds?.includes(highlight.id)
+      ),
+    [highlights, hoveredHighlightIds]
+  );
 
-  const selectedHighlights =
-    selectedHighlightIds
-      ?.filter((selectedHighlightId) =>
-        entityHighlightIds.includes(selectedHighlightId)
-      )
-      ?.map((id) => highlights.find((highlight) => highlight.id === id)) ?? [];
+  const selectedHighlights = useMemo(
+    () =>
+      highlights.filter((highlight) =>
+        selectedHighlightIds?.includes(highlight.id)
+      ),
+    [highlights, selectedHighlightIds]
+  );
 
   const isHovered = useMemo(
     () =>

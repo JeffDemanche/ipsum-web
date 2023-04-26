@@ -40,8 +40,6 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
 
   const [loadErrors, setLoadErrors] = useState<string[] | undefined>(undefined);
 
-  console.log(loadErrors);
-
   const loadFromFile = useCallback(async () => {
     setLoadErrors(
       loadApolloState(

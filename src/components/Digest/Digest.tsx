@@ -22,11 +22,12 @@ const DigestQuery = gql(`
 `);
 
 export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
-  const {
-    data: {
-      entry: { highlights },
-    },
-  } = useQuery(DigestQuery, { variables: { entryKey } });
+  const { data } = useQuery(DigestQuery, { variables: { entryKey } });
+
+  const highlights = useMemo(
+    () => data?.entry?.highlights ?? [],
+    [data?.entry?.highlights]
+  );
 
   const {
     selectedHighlightIds,

@@ -30,7 +30,7 @@ export const HighlightExcerpt: React.FunctionComponent<
 > = ({ highlightId }) => {
   const {
     data: { highlights },
-  } = useQuery(HighlightExcerptQuery);
+  } = useQuery(HighlightExcerptQuery, { variables: { highlightId } });
   const highlight = highlights?.[0];
 
   const entry = highlight?.entry;

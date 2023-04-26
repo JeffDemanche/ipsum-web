@@ -3,7 +3,8 @@ import styles from "./HighlightTag.less";
 import { Paper, Link, Typography } from "@mui/material";
 import { IpsumArcColor, IpsumColor } from "util/colors";
 import cx from "classnames";
-import { useStateDocumentQuery } from "state/in-memory";
+import { gql } from "util/apollo";
+import { useQuery } from "@apollo/client";
 
 interface HighlightTagProps {
   highlightId: string;
@@ -15,6 +16,19 @@ interface HighlightTagProps {
   onMouseLeave?: () => void;
 }
 
+const HighlightTagQuery = gql(`
+  query HighlightTag($highlightId: ID!) {
+    highlight(id: $highlightId) {
+      id
+      arc {
+        id
+        name
+        color
+      }
+    }
+  }
+`);
+
 export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   highlightId,
   type = "span",
@@ -24,16 +38,13 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
-  const { data: highlights } = useStateDocumentQuery({
-    collection: "highlight",
-    keys: [highlightId],
+  const {
+    data: {
+      highlight: { arc },
+    },
+  } = useQuery(HighlightTagQuery, {
+    variables: { highlightId },
   });
-  const { data: arcs } = useStateDocumentQuery({
-    collection: "arc",
-    keys: Object.values(highlights).map((h) => h.arcId),
-  });
-
-  const arc = arcs[highlights[highlightId]?.arcId];
 
   const [hover, setHover] = useState(false);
 

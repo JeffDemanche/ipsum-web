@@ -1,3 +1,4 @@
+/* eslint-disable import/no-internal-modules */
 /**
  * This package is an abstraction layer on top of what is currently just the
  * InMemoryState. That is a pure React reducer, which has certain constraints
@@ -7,11 +8,6 @@
 
 import { useCallback, useContext, useState } from "react";
 import {
-  InMemoryAction,
-  InMemoryStateContext,
-  InMemoryState,
-} from "state/in-memory";
-import {
   apiAssignArc,
   apiCreateAndAssignArc,
   apiUnassignArc,
@@ -20,6 +16,9 @@ import {
 import { apiCreateOrUpdateEntry, apiDeleteEntry } from "./entry";
 import { apiUpdateJournalTitle } from "./journalTitle";
 import { apiDeleteHighlight } from "./highlight";
+import { InMemoryStateContext } from "state/in-memory/in-memory-context";
+import { InMemoryState } from "state/in-memory/in-memory-schema";
+import { InMemoryAction } from "state/in-memory/in-memory-actions";
 
 export interface APIContext {
   state: InMemoryState;

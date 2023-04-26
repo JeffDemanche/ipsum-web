@@ -1,9 +1,11 @@
+import { useQuery } from "@apollo/client";
 import { Close } from "@mui/icons-material";
 import { IconButton, Paper } from "@mui/material";
 import { ArcDetailOntologySection } from "components/ArcDetailOntologySection";
 import { ArcDetailPrefsBox } from "components/ArcDetailPrefsBox";
 import { ArcDetailWikiSection } from "components/ArcDetailWikiSection";
 import React, { useContext } from "react";
+import { gql } from "util/apollo";
 import { IpsumColor } from "util/colors";
 import styles from "./ArcDetail.less";
 import { ArcDetailContext, ArcDetailProvider } from "./ArcDetailContext";
@@ -30,10 +32,23 @@ interface ArcDetailWithProviderProps {
   closeColumn: () => void;
 }
 
+const ArcDetailQuery = gql(`
+  query ArcDetail($arcId: ID!) {
+    arc(id: $arcId) {
+      id
+      color
+    }
+  }
+`);
+
 const ArcDetailWithProvider: React.FunctionComponent<
   ArcDetailWithProviderProps
 > = ({ closeColumn }) => {
-  const { arc } = useContext(ArcDetailContext);
+  const { arcId } = useContext(ArcDetailContext);
+
+  const {
+    data: { arc },
+  } = useQuery(ArcDetailQuery, { variables: { arcId } });
 
   return (
     <Paper

@@ -39,7 +39,9 @@ const MedianHighlightBoxQuery = gql(`
 export const MedianHighlightBox: React.FunctionComponent<
   MedianHighlightBoxProps
 > = ({ highlightId }) => {
-  const { data } = useQuery(MedianHighlightBoxQuery);
+  const { data } = useQuery(MedianHighlightBoxQuery, {
+    variables: { highlightId },
+  });
   const highlight = data?.highlights?.[0];
 
   const { openArcDetail } = useContext(DiptychContext);

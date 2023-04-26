@@ -117,3 +117,25 @@ replServer.defineCommand("fix_apollo_migration_fields", {
     }
   },
 });
+replServer.defineCommand("add_typenames", {
+  action() {
+    const highlightsCopy = { ...modifiedData.highlights };
+    Object.keys(highlightsCopy).forEach((key) => {
+      highlightsCopy[key].__typename = "Highlight";
+    });
+
+    const entriesCopy = { ...modifiedData.entries };
+    Object.keys(entriesCopy).forEach((key) => {
+      entriesCopy[key].__typename = "Entry";
+    });
+
+    const arcsCopy = { ...modifiedData.arcs };
+    Object.keys(arcsCopy).forEach((key) => {
+      arcsCopy[key].__typename = "Arc";
+    });
+
+    modifiedData.highlights = highlightsCopy;
+    modifiedData.entries = entriesCopy;
+    modifiedData.arcs = arcsCopy;
+  },
+});

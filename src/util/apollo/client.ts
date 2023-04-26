@@ -12,6 +12,7 @@ import {
   QueryArcsArgs,
   QueryEntriesArgs,
   QueryEntryArgs,
+  QueryHighlightArgs,
   QueryHighlightsArgs,
 } from "./__generated__/graphql";
 
@@ -27,7 +28,7 @@ const typeDefs = gql`
     arc(id: ID!): Arc
     arcs(ids: [ID!]): [Arc]
 
-    highlight(id: ID!): Arc
+    highlight(id: ID!): Highlight
     highlights(ids: [ID!], entries: [ID!], arcs: [ID!]): [Highlight]
   }
 
@@ -46,6 +47,7 @@ const typeDefs = gql`
     id: ID!
     name: String!
     color: Int!
+    highlights: [Highlight!]!
   }
 
   type Highlight {
@@ -115,51 +117,48 @@ const typePolicies: TypePolicies = {
       journalMetadata() {
         return vars.journalMetadata();
       },
-      entry(_, { variables }) {
-        if (variables.entryKey) {
-          return vars.entries()[variables.entryKey] ?? null;
+      entry(_, { args }) {
+        if (args.entryKey) {
+          return vars.entries()[args.entryKey] ?? null;
         }
         return null;
       },
-      entries(_, { variables }: { variables?: QueryEntriesArgs }) {
-        if (variables?.entryKeys) {
-          return variables.entryKeys.map(
-            (entryKey) => vars.entries()[entryKey]
-          );
+      entries(_, { args }: { args: QueryEntriesArgs }) {
+        if (args?.entryKeys) {
+          return args.entryKeys.map((entryKey) => vars.entries()[entryKey]);
         }
-        return vars.entries();
+        return Object.values(vars.entries());
       },
-      arc(_, { variables }) {
-        if (variables?.id) {
-          return vars.arcs()[variables.id];
+      arc(_, { args }) {
+        if (args?.id) {
+          return vars.arcs()[args.id];
         }
         return null;
       },
-      arcs(_, { variables }: { variables?: QueryArcsArgs }) {
-        if (variables?.ids) {
-          return variables.ids.map((id) => vars.arcs()[id]);
+      arcs(_, { args }: { args: QueryArcsArgs }) {
+        if (args?.ids) {
+          return args.ids.map((id) => vars.arcs()[id]);
         }
-        return vars.arcs();
+        return Object.values(vars.arcs());
       },
-      highlight(_, { variables }) {
-        if (variables?.id) {
-          return vars.highlights()[variables.id];
+      highlight(_, { args }) {
+        if (args?.id) {
+          return vars.highlights()[args.id];
         }
-        return null;
+        return undefined;
       },
-      highlights(_, { variables }: { variables?: QueryHighlightsArgs }) {
-        if (variables?.ids && !variables?.entries && !variables?.arcs) {
-          return variables.ids.map((id) => vars.highlights()[id]);
-        } else if (variables?.ids || variables?.entries || variables?.arcs) {
+      highlights(_, { args }: { args?: QueryHighlightsArgs }) {
+        if (args?.ids && !args?.entries && !args?.arcs) {
+          return args.ids.map((id) => vars.highlights()[id]);
+        } else if (args?.ids || args?.entries || args?.arcs) {
           return Object.values(vars.highlights()).filter(
             (highlight) =>
-              (!variables.ids || variables.ids.includes(highlight.id)) &&
-              (!variables.entries ||
-                variables.entries.includes(highlight.entry)) &&
-              (!variables.arcs || variables.arcs.includes(highlight.arc))
+              (!args.ids || args.ids.includes(highlight.id)) &&
+              (!args.entries || args.entries.includes(highlight.entry)) &&
+              (!args.arcs || args.arcs.includes(highlight.arc))
           );
         }
-        return vars.highlights();
+        return Object.values(vars.highlights());
       },
     },
   },
@@ -175,6 +174,13 @@ const typePolicies: TypePolicies = {
   },
   Arc: {
     keyFields: ["id"],
+    fields: {
+      highlights(_, { readField }) {
+        return Object.values(vars.highlights()).filter(
+          (highlight) => highlight.arc === readField("id")
+        );
+      },
+    },
   },
   Highlight: {
     keyFields: ["id"],
@@ -189,6 +195,6 @@ const typePolicies: TypePolicies = {
   },
 };
 
-const cache = new InMemoryCache({ typePolicies });
+const cache = new InMemoryCache({ typePolicies, addTypename: true });
 
 export const client = new ApolloClient({ cache, typeDefs });

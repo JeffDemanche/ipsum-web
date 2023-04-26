@@ -12,6 +12,7 @@ const SerializedSchema = t.type({
   entries: t.record(
     t.string,
     t.type({
+      __typename: t.literal("Entry"),
       entryKey: t.string,
       date: t.string,
       contentState: t.string,
@@ -20,6 +21,7 @@ const SerializedSchema = t.type({
   arcs: t.record(
     t.string,
     t.type({
+      __typename: t.literal("Arc"),
       id: t.string,
       name: t.string,
       color: t.number,
@@ -28,6 +30,7 @@ const SerializedSchema = t.type({
   highlights: t.record(
     t.string,
     t.type({
+      __typename: t.literal("Highlight"),
       id: t.string,
       arc: t.string,
       entry: t.string,
@@ -58,19 +61,14 @@ export const loadApolloState = (serialized: string): string[] | undefined => {
   const parsed = SerializedSchema.decode(raw);
 
   if (parsed._tag === "Left") {
+    console.error(PathReporter.report(parsed));
     return PathReporter.report(parsed);
   } else {
-    serializeVars.forEach((varName) => {
-      const reactiveVarMap = {
-        journalId: vars.journalId.bind(vars),
-        journalTitle: vars.journalTitle.bind(vars),
-        journalMetadata: vars.journalMetadata.bind(vars),
-        entries: vars.entries.bind(vars),
-        arcs: vars.arcs.bind(vars),
-        highlights: vars.highlights.bind(vars),
-      };
-
-      reactiveVarMap[varName](parsed.right[varName]);
-    });
+    vars.journalId(parsed.right.journalId);
+    vars.journalMetadata(parsed.right.journalMetadata);
+    vars.journalTitle(parsed.right.journalTitle);
+    vars.entries(parsed.right.entries);
+    vars.arcs(parsed.right.arcs);
+    vars.highlights(parsed.right.highlights);
   }
 };

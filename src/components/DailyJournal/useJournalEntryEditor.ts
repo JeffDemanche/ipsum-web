@@ -3,7 +3,8 @@ import { useContext, useEffect, useMemo, useRef } from "react";
 import { parseContentState, stringifyContentState } from "util/content-state";
 import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
 import { decorator } from "components/Decorator";
-import { useStateDocumentQuery, Document } from "state/in-memory";
+import { gql } from "util/apollo";
+import { useQuery } from "@apollo/client";
 
 interface UseJournalEntryEditorArgs {
   entryKey: string;
@@ -13,8 +14,17 @@ interface UseJournalEntryEditorResult {
   editorRef: React.MutableRefObject<Editor>;
   editorState: EditorState;
   empty: boolean;
-  entry: Document<"entry">;
+  entry: { entryKey: string };
 }
+
+const UseJournalEntryEditorQuery = gql(`
+  query UseJournalEntryEditor($entryKey: ID!) {
+    entry(entryKey: $entryKey) {
+      entryKey
+      contentState
+    }
+  }
+`);
 
 /**
  * Provides common React functionality to use between both the JournalEntryToday
@@ -23,12 +33,11 @@ interface UseJournalEntryEditorResult {
 export const useJournalEntryEditor = ({
   entryKey,
 }: UseJournalEntryEditorArgs): UseJournalEntryEditorResult => {
-  const { data: entryObj } = useStateDocumentQuery({
-    collection: "entry",
-    keys: [entryKey],
+  const {
+    data: { entry },
+  } = useQuery(UseJournalEntryEditorQuery, {
+    variables: { entryKey },
   });
-
-  const entry = entryObj[entryKey];
 
   const contentStateFromState = useMemo(
     () =>
