@@ -13,7 +13,7 @@ interface HighlightExcerptProps {
   highlightId: string;
 }
 
-const HighlightExcerptQuery = gql(`
+export const HighlightExcerptQuery = gql(`
   query HighlightExcerpt($highlightId: ID!) {
     highlights(ids: [$highlightId]) {
       id

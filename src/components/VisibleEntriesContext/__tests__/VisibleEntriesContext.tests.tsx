@@ -1,6 +1,5 @@
 import { render } from "@testing-library/react";
 import React, { useContext } from "react";
-import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
 import { stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
@@ -10,6 +9,9 @@ import {
   VisibleEntriesProvider,
 } from "components/VisibleEntriesContext/VisibleEntriesContext";
 import { useSearchParams } from "react-router-dom";
+import { mockEntries } from "util/apollo/__tests__/apollo-test-utils";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "util/apollo";
 
 jest.mock("react-router-dom");
 
@@ -24,6 +26,33 @@ const Consumer: React.FC<{ valueFn: (value: VisibleEntries) => void }> = ({
 };
 
 describe("VisibleEntriesContext", () => {
+  beforeEach(() => {
+    mockEntries({
+      "10/01/2022": {
+        __typename: "Entry",
+        entryKey: "10/01/2022",
+        contentState: stringifyContentState(
+          createEditorStateFromFormat("hello world 1").getCurrentContent()
+        ),
+        date: IpsumDateTime.fromString(
+          "10/01/2022",
+          "entry-printed-date"
+        ).dateTime.toISO(),
+      },
+      "10/03/2022": {
+        __typename: "Entry",
+        entryKey: "10/03/2022",
+        contentState: stringifyContentState(
+          createEditorStateFromFormat("hello world 2").getCurrentContent()
+        ),
+        date: IpsumDateTime.fromString(
+          "10/03/2022",
+          "entry-printed-date"
+        ).dateTime.toISO(),
+      },
+    });
+  });
+
   it("returns entries between startDate and endDate params", () => {
     (useSearchParams as jest.Mock).mockReturnValue([
       {
@@ -37,36 +66,11 @@ describe("VisibleEntriesContext", () => {
     const valueFn = jest.fn();
 
     render(
-      <MockInMemoryStateProvider
-        state={{
-          entry: {
-            "10/01/2022": {
-              entryKey: "10/01/2022",
-              contentState: stringifyContentState(
-                createEditorStateFromFormat("hello world 1").getCurrentContent()
-              ),
-              date: IpsumDateTime.fromString(
-                "10/01/2022",
-                "entry-printed-date"
-              ).dateTime.toISO(),
-            },
-            "10/03/2022": {
-              entryKey: "10/03/2022",
-              contentState: stringifyContentState(
-                createEditorStateFromFormat("hello world 2").getCurrentContent()
-              ),
-              date: IpsumDateTime.fromString(
-                "10/03/2022",
-                "entry-printed-date"
-              ).dateTime.toISO(),
-            },
-          },
-        }}
-      >
+      <ApolloProvider client={client}>
         <VisibleEntriesProvider>
           <Consumer valueFn={valueFn}></Consumer>
         </VisibleEntriesProvider>
-      </MockInMemoryStateProvider>
+      </ApolloProvider>
     );
 
     expect(valueFn).toHaveBeenCalledTimes(1);

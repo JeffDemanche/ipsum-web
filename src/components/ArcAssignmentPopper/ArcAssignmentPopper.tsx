@@ -28,7 +28,7 @@ interface ArcAssignmentPopoverProps {
   onClose?: () => void;
 }
 
-const ArcAssignmentPopperQuery = gql(`
+export const ArcAssignmentPopperQuery = gql(`
   query ArcAssignmentPopper {
     journalMetadata {
       lastArcHue

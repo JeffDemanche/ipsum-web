@@ -18,11 +18,13 @@ describe("apollo entries API", () => {
   describe("createEntry", () => {
     it("should add entries to the state", () => {
       const entry1 = {
+        __typename: "Entry",
         entryKey: "1/2/2020",
         date: "1/2/2020",
         contentState: "Hello, world!",
       };
       const entry2 = {
+        __typename: "Entry",
         entryKey: "4/2/2020",
         date: "4/2/2020",
         contentState: "Hello, world 2!",
@@ -40,11 +42,13 @@ describe("apollo entries API", () => {
   describe("updateEntry", () => {
     it("should update entries in the state", () => {
       const entry1 = {
+        __typename: "Entry",
         entryKey: "1/2/2020",
         date: "1/2/2020",
         contentState: "Hello, world!",
       };
       const entry2 = {
+        __typename: "Entry",
         entryKey: "4/2/2020",
         date: "4/2/2020",
         contentState: "Hello, world 2!",
@@ -99,11 +103,13 @@ describe("apollo entries API", () => {
   describe("deleteEntry", () => {
     it("should delete entries from the state", () => {
       const entry1 = {
+        __typename: "Entry",
         entryKey: "1/2/2020",
         date: "1/2/2020",
         contentState: "Hello, world!",
       };
       const entry2 = {
+        __typename: "Entry",
         entryKey: "4/2/2020",
         date: "4/2/2020",
         contentState: "Hello, world 2!",

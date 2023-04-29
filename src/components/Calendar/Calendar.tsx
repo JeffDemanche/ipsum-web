@@ -13,7 +13,7 @@ import {
 import styles from "./Calendar.less";
 import { CalendarDayTile } from "./CalendarDayTile";
 
-const CalendarQuery = gql(`
+export const CalendarQuery = gql(`
   query Calendar {
     entries {
       entryKey
@@ -25,9 +25,11 @@ const CalendarQuery = gql(`
 export const Calendar: React.FC = () => {
   const date = useDate(3000);
 
-  const {
-    data: { entries },
-  } = useQuery(CalendarQuery);
+  const { data } = useQuery(CalendarQuery, {
+    fetchPolicy: "cache-only",
+  });
+
+  const entries = data.entries;
 
   const allEntryDates = useMemo(
     () => Object.values(entries).map((entry) => parseIpsumDateTime(entry.date)),

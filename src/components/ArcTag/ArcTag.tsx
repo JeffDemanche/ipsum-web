@@ -20,7 +20,7 @@ interface ArcTag {
   onMouseLeave?: () => void;
 }
 
-const ArcTagQuery = gql(`
+export const ArcTagQuery = gql(`
   query ArcTag($arcId: ID!) {
     arc(id: $arcId) {
       id

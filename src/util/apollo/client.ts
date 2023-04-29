@@ -58,6 +58,10 @@ const typeDefs = gql`
 `;
 
 export type UnhydratedType = {
+  JournalMetadata: {
+    __typename: "JournalMetadata";
+    lastArcHue: number;
+  };
   Entry: {
     __typename: "Entry";
     entryKey: string;
@@ -82,9 +86,9 @@ export const vars = {
   journalId: makeVar(uuidv4()),
   journalTitle: makeVar("new journal"),
   journalMetadata: makeVar({ lastArcHue: 0 }),
-  entries: makeVar<{ [entryKey: string]: UnhydratedType["Entry"] }>({}),
-  arcs: makeVar<{ [id: string]: UnhydratedType["Arc"] }>({}),
-  highlights: makeVar<{ [id: string]: UnhydratedType["Highlight"] }>({}),
+  entries: makeVar<{ [entryKey in string]: UnhydratedType["Entry"] }>({}),
+  arcs: makeVar<{ [id in string]: UnhydratedType["Arc"] }>({}),
+  highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
 };
 
 export const serializeVars: (keyof typeof vars)[] = [

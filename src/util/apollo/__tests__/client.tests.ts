@@ -120,7 +120,10 @@ describe("apollo client", () => {
 
       expect(result.highlight.id).toEqual(highlight.id);
       expect(result.highlight.arc).toEqual(vars.arcs()[arc.id]);
-      expect(result.highlight.entry).toEqual(vars.entries()[entry.entryKey]);
+      expect(result.highlight.entry).toEqual({
+        __typename: "Entry",
+        entryKey: "1/2/2020",
+      });
     });
   });
 

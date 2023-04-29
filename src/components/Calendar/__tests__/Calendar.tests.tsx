@@ -4,6 +4,9 @@ import React from "react";
 import { IpsumDateTime, useDate } from "util/dates";
 import { Calendar } from "../Calendar";
 import { useSearchParams } from "react-router-dom";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "util/apollo";
+import { mockEntries } from "util/apollo/__tests__/apollo-test-utils";
 
 jest.mock("react-router-dom");
 jest.mock("../Calendar.less", () => jest.fn());
@@ -14,6 +17,8 @@ jest.mock("util/dates", () => ({
 
 describe("Calendar", () => {
   beforeEach(() => {
+    mockEntries({});
+
     (useSearchParams as jest.Mock).mockReturnValue([
       {
         get: () => {},
@@ -31,7 +36,11 @@ describe("Calendar", () => {
   });
 
   it("renders days of week starting on sunday", async () => {
-    const { unmount } = render(<Calendar />);
+    const { unmount } = render(
+      <ApolloProvider client={client}>
+        <Calendar />
+      </ApolloProvider>
+    );
 
     const daysOfWeek = screen.getAllByTestId("calendar-day-of-week", {
       exact: false,
@@ -68,7 +77,11 @@ describe("Calendar", () => {
           )
       );
 
-      const { unmount } = render(<Calendar />);
+      const { unmount } = render(
+        <ApolloProvider client={client}>
+          <Calendar />
+        </ApolloProvider>
+      );
 
       if (expectedEmptyDays === 0) {
         expect(screen.queryByTestId("calendar-empty-day")).toBeNull();
@@ -86,7 +99,11 @@ describe("Calendar", () => {
     (useDate as jest.Mock).mockReturnValue(
       new IpsumDateTime(DateTime.fromObject({ month: 6, year: 2022 }))
     );
-    const { unmount } = render(<Calendar />);
+    const { unmount } = render(
+      <ApolloProvider client={client}>
+        <Calendar />
+      </ApolloProvider>
+    );
 
     const emptyDays = screen.getAllByTestId("calendar-empty-day");
     expect(emptyDays).toHaveLength(3);
@@ -98,7 +115,11 @@ describe("Calendar", () => {
     (useDate as jest.Mock).mockReturnValue(
       new IpsumDateTime(DateTime.fromObject({ month: 2, year: 3000 }))
     );
-    const { unmount } = render(<Calendar />);
+    const { unmount } = render(
+      <ApolloProvider client={client}>
+        <Calendar />
+      </ApolloProvider>
+    );
 
     expect(await screen.findByText("28")).toBeDefined();
 
