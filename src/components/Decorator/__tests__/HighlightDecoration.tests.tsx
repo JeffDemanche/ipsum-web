@@ -1,11 +1,30 @@
+import { ApolloProvider } from "@apollo/client";
 import { render, screen } from "@testing-library/react";
 import React from "react";
-import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
+import { client } from "util/apollo";
+import {
+  mockArcs,
+  mockHighlights,
+} from "util/apollo/__tests__/apollo-test-utils";
 import { IpsumEntityTransformer } from "util/entities";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
 import { HighlightDecoration } from "../HighlightDecoration";
 
 describe("HighlightDecoration", () => {
+  beforeEach(() => {
+    mockArcs({
+      arc_id: { __typename: "Arc", color: 0, id: "arc_id", name: "foxes" },
+    });
+    mockHighlights({
+      highlight_id: {
+        __typename: "Highlight",
+        id: "highlight_id",
+        arc: "arc_id",
+        entry: "",
+      },
+    });
+  });
+
   it("renders a highlighted span with underline for an entity which contains one arc", async () => {
     const editorState = createEditorStateFromFormat(
       "<p>the quick [brown fox] jumped over the lazy dog</p>"
@@ -19,14 +38,7 @@ describe("HighlightDecoration", () => {
     }).contentState;
 
     const { unmount } = render(
-      <MockInMemoryStateProvider
-        state={{
-          arc: { arc_id: { color: 0, id: "arc_id", name: "foxes" } },
-          highlight: {
-            highlight_id: { id: "highlight_id", arcId: "arc_id", entryKey: "" },
-          },
-        }}
-      >
+      <ApolloProvider client={client}>
         <HighlightDecoration
           blockKey={contentStateWithArc.getFirstBlock().getKey()}
           contentState={contentStateWithArc}
@@ -38,7 +50,7 @@ describe("HighlightDecoration", () => {
         >
           brown fox
         </HighlightDecoration>
-      </MockInMemoryStateProvider>
+      </ApolloProvider>
     );
     const decorationSpan = await screen.findByText("brown fox");
     // offset-x offset-y blur-radius color

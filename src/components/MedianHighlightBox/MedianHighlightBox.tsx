@@ -10,33 +10,41 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import { useStateDocumentQuery } from "state/in-memory";
 import { IpsumArcColor } from "util/colors";
 import styles from "./MedianHighlightBox.less";
-import { useApiAction } from "state/api";
 import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import cx from "classnames";
+import { gql, removeHighlightFromEntry } from "util/apollo";
+import { useQuery } from "@apollo/client";
 
 interface MedianHighlightBoxProps {
   highlightId: string;
 }
 
+const MedianHighlightBoxQuery = gql(`
+  query MedianHighlightBox($highlightId: ID!) {
+    highlights(ids: [$highlightId]) {
+      id
+      arc {
+        id
+        color
+      }
+      entry {
+        entryKey
+      }
+    }
+  }
+`);
+
 export const MedianHighlightBox: React.FunctionComponent<
   MedianHighlightBoxProps
 > = ({ highlightId }) => {
+  const { data } = useQuery(MedianHighlightBoxQuery, {
+    variables: { highlightId },
+  });
+  const highlight = data?.highlights?.[0];
+
   const { openArcDetail } = useContext(DiptychContext);
-
-  const { data: highlightData } = useStateDocumentQuery({
-    collection: "highlight",
-    keys: [highlightId],
-  });
-
-  const arcId = highlightData[highlightId]?.arcId;
-
-  const { data: arcData } = useStateDocumentQuery({
-    collection: "arc",
-    keys: [arcId],
-  });
 
   const onArcClick = useCallback(
     (arcId?: string, e?: React.MouseEvent) => {
@@ -80,14 +88,17 @@ export const MedianHighlightBox: React.FunctionComponent<
       colorParams = { saturation: 40, lightness: 70 };
     }
 
-    return arcData[arcId]
-      ? new IpsumArcColor(arcData[arcId].color)
+    return highlight.arc?.id
+      ? new IpsumArcColor(highlight.arc.color)
           .toIpsumColor(colorParams)
           .toRgbaCSS()
       : "white";
-  }, [arcData, arcId, highlightBoxSelected, highlightHovered]);
-
-  const { act } = useApiAction({ name: "deleteHighlight" });
+  }, [
+    highlight?.arc.color,
+    highlight.arc.id,
+    highlightBoxSelected,
+    highlightHovered,
+  ]);
 
   const onCloseClick = useCallback(
     (e: React.MouseEvent) => {
@@ -100,9 +111,12 @@ export const MedianHighlightBox: React.FunctionComponent<
   const onDeleteClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      act({ highlightId });
+      removeHighlightFromEntry({
+        entryKey: highlight.entry.entryKey,
+        highlightId,
+      });
     },
-    [act, highlightId]
+    [highlight.entry.entryKey, highlightId]
   );
 
   return (
@@ -152,7 +166,7 @@ export const MedianHighlightBox: React.FunctionComponent<
           <ArcTag
             arcForToken={{
               type: "from id",
-              id: highlightData[highlightId]?.arcId,
+              id: highlight?.arc.id,
             }}
             onClick={onArcClick}
           ></ArcTag>

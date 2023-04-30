@@ -1,4 +1,7 @@
 /**
+ * Ex usage: `npm run project-tools --input_file=./projects/[...].ipsum
+ * --output_file=./projects/[...].ipsum`
+ *
  * Gives us a REPL to make changes to a project file that might be useful for
  * when the schema for project files changes during development.
  */
@@ -82,5 +85,57 @@ replServer.defineCommand("fix_entities", {
     } catch (e) {
       console.error(e);
     }
+  },
+});
+replServer.defineCommand("fix_apollo_migration_fields", {
+  action(arg) {
+    try {
+      const highlightsCopy = { ...modifiedData.highlights };
+      Object.keys(highlightsCopy).forEach((key) => {
+        const arc = highlightsCopy[key].arcId ?? highlightsCopy[key].arc;
+        const entry = highlightsCopy[key].entryKey ?? highlightsCopy[key].entry;
+        highlightsCopy[key].arc = arc;
+        highlightsCopy[key].entry = entry;
+        delete highlightsCopy[key].arcId;
+        delete highlightsCopy[key].entryKey;
+      });
+      modifiedData.highlights = highlightsCopy;
+
+      const entriesCopy = { ...modifiedData.entries };
+      Object.keys(entriesCopy).forEach((key) => {
+        if (entriesCopy[key].date?.["_luxonDateTime"]) {
+          console.log(entriesCopy[key].date["_luxonDateTime"]);
+          const date =
+            entriesCopy[key].date["_luxonDateTime"] ?? entriesCopy[key].date;
+          delete entriesCopy[key].date;
+          entriesCopy[key].date = date;
+        }
+      });
+      modifiedData.entries = entriesCopy;
+    } catch (e) {
+      console.error(e);
+    }
+  },
+});
+replServer.defineCommand("add_typenames", {
+  action() {
+    const highlightsCopy = { ...modifiedData.highlights };
+    Object.keys(highlightsCopy).forEach((key) => {
+      highlightsCopy[key].__typename = "Highlight";
+    });
+
+    const entriesCopy = { ...modifiedData.entries };
+    Object.keys(entriesCopy).forEach((key) => {
+      entriesCopy[key].__typename = "Entry";
+    });
+
+    const arcsCopy = { ...modifiedData.arcs };
+    Object.keys(arcsCopy).forEach((key) => {
+      arcsCopy[key].__typename = "Arc";
+    });
+
+    modifiedData.highlights = highlightsCopy;
+    modifiedData.entries = entriesCopy;
+    modifiedData.arcs = arcsCopy;
   },
 });

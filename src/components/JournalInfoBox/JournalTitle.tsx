@@ -6,13 +6,21 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useApiAction } from "state/api";
 import styles from "./JournalTitle.less";
-import { useStateFieldQuery } from "state/in-memory";
+import { useQuery } from "@apollo/client";
+import { gql, updateJournalTitle } from "util/apollo";
+
+const JournalTitleQuery = gql(`
+  query JournalTitle {
+    journalTitle
+  }
+`);
 
 export const JournalTitle: React.FunctionComponent = () => {
-  const { data: journalTitle } = useStateFieldQuery({ field: "journalTitle" });
-  const { act } = useApiAction({ name: "updateJournalTitle" });
+  const {
+    data: { journalTitle },
+  } = useQuery(JournalTitleQuery);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [editing, setEditing] = useState(false);
   const [inputVal, setInputVal] = useState("");
@@ -29,10 +37,10 @@ export const JournalTitle: React.FunctionComponent = () => {
 
   const update = useCallback(() => {
     if (inputVal.trim() !== "") {
-      act({ title: inputVal.trim() });
+      updateJournalTitle(inputVal.trim());
     }
     setEditing(false);
-  }, [act, inputVal]);
+  }, [inputVal]);
 
   const content = useMemo(() => {
     if (editing) {

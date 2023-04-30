@@ -10,11 +10,16 @@ import React, {
 import styles from "./ArcAssignmentPopper.less";
 import { useSearchArcs } from "util/hooks";
 import { nextHue } from "util/colors";
-import { useApiAction } from "state/api";
 import { EditorSelectionContext } from "components/EditorSelection";
 import { noop } from "underscore";
-import { useStateFieldQuery } from "state/in-memory";
 import { ArcTag } from "components/ArcTag";
+import {
+  assignHighlightToEntry,
+  createArc,
+  createHighlight,
+  gql,
+} from "util/apollo";
+import { useQuery } from "@apollo/client";
 
 interface ArcAssignmentPopoverProps {
   open: boolean;
@@ -22,6 +27,14 @@ interface ArcAssignmentPopoverProps {
   editorKey: string;
   onClose?: () => void;
 }
+
+export const ArcAssignmentPopperQuery = gql(`
+  query ArcAssignmentPopper {
+    journalMetadata {
+      lastArcHue
+    }
+  }
+`);
 
 export const ArcAssignmentPopper: React.FunctionComponent<
   ArcAssignmentPopoverProps
@@ -36,14 +49,9 @@ export const ArcAssignmentPopper: React.FunctionComponent<
     setInputVal("");
   }, [open]);
 
-  const { data: journalMetadata } = useStateFieldQuery({
-    field: "journalMetadata",
-  });
-
-  const { act: addArcAction } = useApiAction({
-    name: "createAndAssignArc",
-  });
-  const { act: assignArcAction } = useApiAction({ name: "assignArc" });
+  const {
+    data: { journalMetadata },
+  } = useQuery(ArcAssignmentPopperQuery);
 
   const lastArcHue = journalMetadata?.lastArcHue;
 
@@ -55,24 +63,30 @@ export const ArcAssignmentPopper: React.FunctionComponent<
 
   const addArc = useCallback(() => {
     const selection = getSelection(editorKey);
-    addArcAction({
+    const arc = createArc({
       name: inputVal,
+    });
+    const highlight = createHighlight({ arc: arc.id, entry: editorKey });
+    assignHighlightToEntry({
       entryKey: editorKey,
+      highlightId: highlight.id,
       selectionState: selection.selectionState,
     });
     onClose?.();
-  }, [addArcAction, editorKey, getSelection, inputVal, onClose]);
+  }, [editorKey, getSelection, inputVal, onClose]);
 
   const assignArc = useCallback(
     (arcId: string) => {
       const selection = getSelection(editorKey);
-      assignArcAction({
-        arcId,
+
+      const highlight = createHighlight({ arc: arcId, entry: editorKey });
+      assignHighlightToEntry({
         entryKey: editorKey,
+        highlightId: highlight.id,
         selectionState: selection.selectionState,
       });
     },
-    [assignArcAction, editorKey, getSelection]
+    [editorKey, getSelection]
   );
 
   const tokens = [

@@ -1,6 +1,11 @@
+import { ApolloProvider } from "@apollo/client";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React, { useState } from "react";
-import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
+import { client } from "util/apollo";
+import {
+  mockArcs,
+  mockJournalMetadata,
+} from "util/apollo/__tests__/apollo-test-utils";
 import { useSearchArcs } from "util/hooks";
 import { ArcAssignmentPopper } from "../ArcAssignmentPopper";
 
@@ -15,22 +20,7 @@ const TestPopper = ({
 }) => {
   const [anchor, setAnchor] = useState<HTMLDivElement>(null);
   return (
-    <MockInMemoryStateProvider
-      state={{
-        arc: {
-          red_arc_id: {
-            id: "red_arc_id",
-            name: "red_arc",
-            color: 0,
-          },
-          blue_arc_id: {
-            id: "blue_arc_id",
-            name: "blue_arc",
-            color: 127,
-          },
-        },
-      }}
-    >
+    <ApolloProvider client={client}>
       <div
         ref={(el) => {
           setAnchor(el);
@@ -43,12 +33,27 @@ const TestPopper = ({
           editorKey={editorKey}
         ></ArcAssignmentPopper>
       )}
-    </MockInMemoryStateProvider>
+    </ApolloProvider>
   );
 };
 
 describe("ArcAssignmentPopper", () => {
   beforeEach(() => {
+    mockJournalMetadata({ __typename: "JournalMetadata", lastArcHue: 0 });
+    mockArcs({
+      red_arc_id: {
+        __typename: "Arc",
+        id: "red_arc_id",
+        name: "red_arc",
+        color: 0,
+      },
+      blue_arc_id: {
+        __typename: "Arc",
+        id: "blue_arc_id",
+        name: "blue_arc",
+        color: 127,
+      },
+    });
     jest.mocked(useSearchArcs).mockReturnValue({
       returnedArcs: [
         { id: "red_arc_id", name: "red_arc", color: 0 },

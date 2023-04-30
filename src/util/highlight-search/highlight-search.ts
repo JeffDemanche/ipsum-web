@@ -1,9 +1,5 @@
-import { useMemo } from "react";
-import {
-  Document,
-  useStateDocumentQuery,
-  useFindDocuments,
-} from "state/in-memory";
+import { useQuery } from "@apollo/client";
+import { gql } from "util/apollo";
 import { compareDatesDesc, IpsumDateTime } from "util/dates";
 
 interface UseHighlightSearchArgs {
@@ -11,33 +7,46 @@ interface UseHighlightSearchArgs {
 }
 
 interface UseHighlightSearchResults {
-  searchResults: Document<"highlight">[];
+  searchResults: { id: string }[];
 }
+
+const UseHighlightSearchQuery = gql(`
+  query UseHighlightSearch($highlightId: ID!) {
+    highlight(id: $highlightId) {
+      id
+      arc {
+        id
+        highlights {
+          id
+          entry {
+            entryKey
+          }
+        }
+      }
+      entry {
+        entryKey
+      }
+    }
+  }
+`);
 
 export const useHighlightSearch = (
   args: UseHighlightSearchArgs
 ): UseHighlightSearchResults => {
-  const { data } = useStateDocumentQuery<"highlight">({
-    collection: "highlight",
-    keys: [args.highlightId],
-  });
-
-  const { documents: highlightsWithArc } = useFindDocuments({
-    collection: "highlight",
-    fieldName: "arcId",
-    fieldValue: data[args.highlightId]?.arcId,
-    skip: !data[args.highlightId],
-  });
-
-  const { data: searchResults } = useStateDocumentQuery<"highlight">({
-    collection: "highlight",
-    keys: highlightsWithArc ?? [],
+  const {
+    data: {
+      highlight: {
+        arc: { highlights: searchResults },
+      },
+    },
+  } = useQuery(UseHighlightSearchQuery, {
+    variables: { highlightId: args.highlightId },
   });
 
   const sortedResults = Object.values(searchResults).sort((a, b) =>
     compareDatesDesc(
-      IpsumDateTime.fromString(a.entryKey, "entry-printed-date"),
-      IpsumDateTime.fromString(b.entryKey, "entry-printed-date")
+      IpsumDateTime.fromString(a.entry.entryKey, "entry-printed-date"),
+      IpsumDateTime.fromString(b.entry.entryKey, "entry-printed-date")
     )
   );
 

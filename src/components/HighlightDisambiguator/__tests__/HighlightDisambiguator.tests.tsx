@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { HighlightDisambiguator } from "../HighlightDisambiguator";
-import { MockInMemoryStateProvider } from "state/in-memory/__tests__/MockInMemoryStateProvider";
+import {
+  mockArcs,
+  mockHighlights,
+} from "util/apollo/__tests__/apollo-test-utils";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "util/apollo";
 
 const TestDisambiguator: React.FunctionComponent<{
   open: boolean;
@@ -9,18 +14,7 @@ const TestDisambiguator: React.FunctionComponent<{
 }> = ({ open, onArcSelected: onHighlightSelected }) => {
   const [anchor, setAnchor] = useState<HTMLDivElement>(null);
   return (
-    <MockInMemoryStateProvider
-      state={{
-        arc: {
-          arc_1: { id: "arc_1", color: 0, name: "Arc one" },
-          arc_2: { id: "arc_2", color: 100, name: "Arc two" },
-        },
-        highlight: {
-          highlight_1: { arcId: "arc_1", entryKey: "", id: "highlight_1" },
-          highlight_2: { arcId: "arc_2", entryKey: "", id: "highlight_2" },
-        },
-      }}
-    >
+    <ApolloProvider client={client}>
       <div
         ref={(el) => {
           setAnchor(el);
@@ -34,11 +28,32 @@ const TestDisambiguator: React.FunctionComponent<{
           highlightIds={["highlight_1", "highlight_2"]}
         ></HighlightDisambiguator>
       )}
-    </MockInMemoryStateProvider>
+    </ApolloProvider>
   );
 };
 
 describe("HighlightDisambiguator", () => {
+  beforeEach(() => {
+    mockArcs({
+      arc_1: { __typename: "Arc", id: "arc_1", color: 0, name: "Arc one" },
+      arc_2: { __typename: "Arc", id: "arc_2", color: 100, name: "Arc two" },
+    });
+    mockHighlights({
+      highlight_1: {
+        __typename: "Highlight",
+        arc: "arc_1",
+        entry: "",
+        id: "highlight_1",
+      },
+      highlight_2: {
+        __typename: "Highlight",
+        arc: "arc_2",
+        entry: "",
+        id: "highlight_2",
+      },
+    });
+  });
+
   it("has links for both arcs with correct hues", async () => {
     const { unmount } = render(<TestDisambiguator open></TestDisambiguator>);
 

@@ -3,7 +3,8 @@ import styles from "./ArcTag.less";
 import { Paper, Link, Typography } from "@mui/material";
 import { IpsumArcColor, IpsumColor } from "util/colors";
 import cx from "classnames";
-import { useStateDocumentQuery } from "state/in-memory";
+import { gql } from "util/apollo";
+import { useQuery } from "@apollo/client";
 
 type ArcForTag =
   | { type: "from id"; id: string }
@@ -19,6 +20,16 @@ interface ArcTag {
   onMouseLeave?: () => void;
 }
 
+export const ArcTagQuery = gql(`
+  query ArcTag($arcId: ID!) {
+    arc(id: $arcId) {
+      id
+      color
+      name
+    }
+  }
+`);
+
 export const ArcTag: React.FunctionComponent<ArcTag> = ({
   arcForToken,
   type = "span",
@@ -28,13 +39,15 @@ export const ArcTag: React.FunctionComponent<ArcTag> = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
-  const { data: arcs } = useStateDocumentQuery({
-    collection: "arc",
-    name: "arc token",
+  const { data } = useQuery(ArcTagQuery, {
+    variables: {
+      arcId: arcForToken.type === "from id" ? arcForToken.id : undefined,
+    },
+    skip: arcForToken.type === "from data",
   });
 
   const arc: { color: number; name: string } =
-    arcForToken.type === "from id" ? arcs[arcForToken.id] : arcForToken;
+    arcForToken.type === "from id" ? data.arc : arcForToken;
 
   const [hover, setHover] = useState(false);
 

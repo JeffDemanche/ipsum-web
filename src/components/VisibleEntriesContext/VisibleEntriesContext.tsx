@@ -1,7 +1,8 @@
+import { useQuery } from "@apollo/client";
 import React, { useMemo } from "react";
 import { useParams } from "react-router";
 import { useSearchParams } from "react-router-dom";
-import { useStateDocumentQuery } from "state/in-memory";
+import { gql } from "util/apollo";
 import { IpsumDateTime, sortDates } from "util/dates";
 
 export interface VisibleEntries {
@@ -21,12 +22,21 @@ export const VisibleEntriesContext =
 
 const DEFAULT_NUM_VISIBLE_ENTRIES = 20;
 
+const VisibleEntriesProviderQuery = gql(`
+  query VisibleEntries {
+    entries {
+      entryKey
+      date
+    }
+  }
+`);
+
 export const VisibleEntriesProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }: { children: React.ReactElement }) => {
-  const { data: entries } = useStateDocumentQuery({
-    collection: "entry",
-  });
+  const {
+    data: { entries },
+  } = useQuery(VisibleEntriesProviderQuery);
 
   const [searchParams] = useSearchParams();
 
@@ -37,7 +47,7 @@ export const VisibleEntriesProvider: React.FC<{
 
   const { date } = useParams();
 
-  const entryKeysInState = Object.keys(entries);
+  const entryKeysInState = entries.map((entry) => entry.entryKey);
   const sortedEntryDateTimes = sortDates(
     entryKeysInState.map((entryKey) =>
       IpsumDateTime.fromString(entryKey, "entry-printed-date")

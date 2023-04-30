@@ -1,15 +1,27 @@
 import React, { useCallback, useContext, useState } from "react";
-import { Paper, Slider } from "@mui/material";
+import { Slider } from "@mui/material";
 import styles from "./ArcDetailPrefsBox.less";
 import { IpsumArcColor } from "util/colors";
-import { useApiAction } from "state/api";
 import { ArcDetailContext, ArcDetailSection } from "components/ArcDetail";
 import { ArcTag } from "components/ArcTag";
+import { gql, updateArc } from "util/apollo";
+import { useQuery } from "@apollo/client";
+
+const ArcDetailPrefsBoxQuery = gql(`
+  query ArcDetailPrefsBox($arcId: ID!) {
+    arc(id: $arcId) {
+      id
+      color
+    }
+  } 
+`);
 
 export const ArcDetailPrefsBox: React.FC = () => {
-  const { arc } = useContext(ArcDetailContext);
+  const { arcId } = useContext(ArcDetailContext);
 
-  const { act: updateArc } = useApiAction({ name: "updateArc" });
+  const {
+    data: { arc },
+  } = useQuery(ArcDetailPrefsBoxQuery, { variables: { arcId } });
 
   const [localColor, setLocalColor] = useState(arc.color);
 
@@ -19,9 +31,9 @@ export const ArcDetailPrefsBox: React.FC = () => {
 
   const onColorSliderChangeCommitted = useCallback(
     (event: Event, value: number) => {
-      updateArc({ arcId: arc.id, color: value });
+      updateArc({ id: arc.id, color: value });
     },
-    [arc.id, updateArc]
+    [arc.id]
   );
 
   const color = new IpsumArcColor(localColor);

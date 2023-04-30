@@ -1,19 +1,34 @@
 import { HighlightTag } from "components/HighlightTag";
 import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import React, { useCallback, useContext, useMemo } from "react";
-import { useApiAction } from "state/api";
 import styles from "./Digest.less";
-import { useStateDocumentQuery } from "state/in-memory";
 import { DiptychContext } from "components/DiptychContext";
+import { gql } from "util/apollo";
+import { useQuery } from "@apollo/client";
 
 interface DigestProps {
   entryKey: string;
 }
 
+const DigestQuery = gql(`
+  query Digest($entryKey: ID!) {
+    entry(entryKey: $entryKey) {
+      entryKey
+      highlights {
+        id
+      }
+    }
+  }
+`);
+
 export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
-  const { data: highlights } = useStateDocumentQuery({
-    collection: "highlight",
-  });
+  const { data } = useQuery(DigestQuery, { variables: { entryKey } });
+
+  const highlights = useMemo(
+    () => data?.entry?.highlights ?? [],
+    [data?.entry?.highlights]
+  );
+
   const {
     selectedHighlightIds,
     setSelectedHighlightIds,
@@ -22,13 +37,6 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
   } = useContext(HighlightSelectionContext);
 
   const { setFirstLayer } = useContext(DiptychContext);
-
-  const arcAssignmentValues = Object.values(highlights);
-  const assignments = useMemo(() => {
-    return arcAssignmentValues.filter(
-      (assignment) => assignment.entryKey === entryKey
-    );
-  }, [arcAssignmentValues, entryKey]);
 
   const tokenSelected = useCallback(
     (highlightId: string) => selectedHighlightIds?.includes(highlightId),
@@ -42,26 +50,24 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
     [hoveredHighlightIds, selectedHighlightIds]
   );
 
-  const { act: unassignArc } = useApiAction({ name: "unassignArc" });
-
   const entryDigests = useMemo(() => {
     return (
       <div className={styles["digest-for-entry"]}>
-        {assignments.map((assgn, i) => {
+        {highlights.map((highlight, i) => {
           return (
             <React.Fragment key={i}>
               <HighlightTag
                 className={styles["digest-token"]}
-                highlightId={assgn.id}
-                highlighted={tokenHighlighted(assgn.id)}
+                highlightId={highlight.id}
+                highlighted={tokenHighlighted(highlight.id)}
                 onMouseEnter={() => {
-                  setHoveredHighlightIds([assgn.id]);
+                  setHoveredHighlightIds([highlight.id]);
                 }}
                 onMouseLeave={() => {
                   setHoveredHighlightIds(undefined);
                 }}
                 onClick={() => {
-                  setSelectedHighlightIds([assgn.id]);
+                  setSelectedHighlightIds([highlight.id]);
                 }}
               ></HighlightTag>
             </React.Fragment>
@@ -70,7 +76,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
       </div>
     );
   }, [
-    assignments,
+    highlights,
     setHoveredHighlightIds,
     setSelectedHighlightIds,
     tokenHighlighted,
