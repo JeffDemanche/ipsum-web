@@ -16,14 +16,17 @@ export const createEntry = (
   return newEntry;
 };
 
-export const updateEntry = (entry: Partial<UnhydratedType["Entry"]>) => {
+export const updateEntry = (
+  entry: Partial<UnhydratedType["Entry"]>
+): UnhydratedType["Entry"] | undefined => {
   if (!entry.entryKey)
     throw new Error("updateEntry: entry.entryKey is required");
 
-  if (!vars.entries()[entry.entryKey]) return;
+  if (!vars.entries()[entry.entryKey]) return undefined;
 
   const newEntries = { ...vars.entries() };
-  newEntries[entry.entryKey] = { ...newEntries[entry.entryKey], ...entry };
+  const newEntry = { ...newEntries[entry.entryKey], ...entry };
+  newEntries[entry.entryKey] = newEntry;
   vars.entries(newEntries);
 };
 
