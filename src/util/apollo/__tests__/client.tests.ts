@@ -4,6 +4,8 @@ import { createEntry } from "../api/entries";
 import { createHighlight } from "../api/highlights";
 import { vars, client, initializeState } from "../client";
 
+jest.mock("../autosave");
+
 describe("apollo client", () => {
   beforeEach(() => {
     initializeState();

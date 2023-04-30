@@ -10,6 +10,8 @@ import {
 } from "../entries";
 import { createHighlight } from "../highlights";
 
+jest.mock("../../autosave");
+
 describe("apollo entries API", () => {
   beforeEach(() => {
     initializeState();

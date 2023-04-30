@@ -5,6 +5,8 @@ import {
   updateHighlight,
 } from "../highlights";
 
+jest.mock("../../autosave");
+
 describe("apollo highlights API", () => {
   beforeEach(() => {
     initializeState();
