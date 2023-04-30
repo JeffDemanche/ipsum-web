@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { readFromFile, writeToFile } from "util/file";
 import { useIpsumIDBWrapper } from "util/indexed-db";
+import { autosave } from "./autosave";
 import { initializeState, vars } from "./client";
 import { loadApolloState, writeApolloState } from "./serializer";
 
@@ -55,6 +56,7 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
         })
       )
     );
+    autosave();
   }, []);
 
   const resetToInitial = useCallback(() => {
@@ -93,7 +95,7 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
         loadErrors,
       }}
     >
-      {children}
+      {hasLoadedAutosave ? children : <p>loading autosave...</p>}
     </ApolloSerializationContext.Provider>
   );
 };

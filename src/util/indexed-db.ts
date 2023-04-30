@@ -1,5 +1,6 @@
 import { IDBPDatabase, openDB } from "idb";
 import { useEffect, useState } from "react";
+import { vars } from "./apollo/client";
 
 /**
  * Module for Ipsum interfacing with IndexedDB.
@@ -47,8 +48,10 @@ export class IpsumIndexedDBClient {
     return id;
   }
 
-  public async putAutosaveValue(state: object) {
+  public async putAutosaveValue(state: string) {
+    localStorage.setItem("ipsum-autosave-id", vars.journalId());
     const result = await this.putValue("autosavedStates", {
+      id: vars.journalId(),
       state,
     });
     return result;
@@ -86,18 +89,21 @@ const createIpsumIDBWrapper = async (tableNames: string[]) => {
   }
 };
 
+export let idbWrapper: IpsumIndexedDBClient | undefined;
+
 export const useIpsumIDBWrapper = () => {
-  const [wrapper, setWrapper] = useState(
-    undefined as IpsumIndexedDBClient | undefined
-  );
+  const [wrapperRef, setWrapperRef] = useState<
+    IpsumIndexedDBClient | undefined
+  >();
 
   useEffect(() => {
-    if (wrapper === undefined) {
+    if (wrapperRef === undefined) {
       createIpsumIDBWrapper(["autosavedStates"]).then((result) => {
-        setWrapper(result || undefined);
+        idbWrapper = result || undefined;
+        setWrapperRef(idbWrapper);
       });
     }
-  }, [wrapper]);
+  }, [wrapperRef]);
 
-  return wrapper;
+  return wrapperRef;
 };

@@ -14,7 +14,7 @@ import { IpsumArcColor } from "util/colors";
 import styles from "./MedianHighlightBox.less";
 import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import cx from "classnames";
-import { gql, removeHighlightFromEntry } from "util/apollo";
+import { deleteHighlight, gql, removeHighlightFromEntry } from "util/apollo";
 import { useQuery } from "@apollo/client";
 
 interface MedianHighlightBoxProps {
@@ -115,6 +115,7 @@ export const MedianHighlightBox: React.FunctionComponent<
         entryKey: highlight.entry.entryKey,
         highlightId,
       });
+      deleteHighlight(highlightId);
     },
     [highlight.entry.entryKey, highlightId]
   );

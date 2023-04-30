@@ -1,5 +1,6 @@
 import { nextHue } from "util/colors";
 import { v4 as uuidv4 } from "uuid";
+import { autosave } from "../autosave";
 import { UnhydratedType, vars } from "../client";
 
 export const createArc = ({
@@ -19,6 +20,7 @@ export const createArc = ({
     color,
   };
   vars.arcs({ ...vars.arcs(), [arcId]: arc });
+  autosave();
   return arc;
 };
 
@@ -30,6 +32,7 @@ export const updateArc = (arc: Partial<UnhydratedType["Arc"]>) => {
   const newArcs = { ...vars.arcs() };
   newArcs[arc.id] = { ...newArcs[arc.id], ...arc };
   vars.arcs(newArcs);
+  autosave();
 };
 
 export const deleteArc = (id: string) => {
@@ -38,4 +41,5 @@ export const deleteArc = (id: string) => {
   const newArcs = { ...vars.arcs() };
   delete newArcs[id];
   vars.arcs(newArcs);
+  autosave();
 };

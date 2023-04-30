@@ -33,22 +33,20 @@ const UseHighlightSearchQuery = gql(`
 export const useHighlightSearch = (
   args: UseHighlightSearchArgs
 ): UseHighlightSearchResults => {
-  const {
-    data: {
-      highlight: {
-        arc: { highlights: searchResults },
-      },
-    },
-  } = useQuery(UseHighlightSearchQuery, {
+  const { data } = useQuery(UseHighlightSearchQuery, {
     variables: { highlightId: args.highlightId },
   });
 
-  const sortedResults = Object.values(searchResults).sort((a, b) =>
-    compareDatesDesc(
-      IpsumDateTime.fromString(a.entry.entryKey, "entry-printed-date"),
-      IpsumDateTime.fromString(b.entry.entryKey, "entry-printed-date")
-    )
-  );
+  const searchResults = data?.highlight?.arc?.highlights;
+
+  const sortedResults =
+    searchResults &&
+    Object.values(searchResults).sort((a, b) =>
+      compareDatesDesc(
+        IpsumDateTime.fromString(a.entry.entryKey, "entry-printed-date"),
+        IpsumDateTime.fromString(b.entry.entryKey, "entry-printed-date")
+      )
+    );
 
   return {
     searchResults: sortedResults,

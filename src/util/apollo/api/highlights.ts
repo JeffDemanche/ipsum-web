@@ -1,5 +1,6 @@
 import { UnhydratedType, vars } from "../client";
 import { v4 as uuidv4 } from "uuid";
+import { autosave } from "../autosave";
 
 export const createHighlight = (
   highlight: Omit<UnhydratedType["Highlight"], "__typename" | "id">
@@ -15,6 +16,7 @@ export const createHighlight = (
     ...vars.highlights(),
     [highlightId]: { __typename: "Highlight", id: highlightId, ...result },
   });
+  autosave();
   return result;
 };
 
@@ -32,6 +34,7 @@ export const updateHighlight = (
     ...highlight,
   };
   vars.highlights(newHighlights);
+  autosave();
 };
 
 export const deleteHighlight = (id: string) => {
@@ -40,4 +43,5 @@ export const deleteHighlight = (id: string) => {
   const newHighlights = { ...vars.highlights() };
   delete newHighlights[id];
   vars.highlights(newHighlights);
+  autosave();
 };

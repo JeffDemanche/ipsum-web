@@ -24,18 +24,14 @@ interface DecoratorProps {
 }
 
 const HighlightDecorationQuery = gql(`
-  query HighlightDecoration($highlightIds: [ID!]!, $arcIds: [ID!]!) {
+  query HighlightDecoration($highlightIds: [ID!]!) {
     highlights(ids: $highlightIds) {
       id
       arc {
         id
+        name
         color
       }
-    }
-    arcs(ids: $arcIds) {
-      id
-      name
-      color
     }
   }
 `);
@@ -57,20 +53,25 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     () => entityData.textArcAssignments?.map((a) => a.arcAssignmentId) ?? [],
     [entityData.textArcAssignments]
   );
-  const arcIds = useMemo(
-    () =>
-      entityData.textArcAssignments?.map((a) => a.arcId) ??
-      entityData.arcIds ??
-      [],
-    [entityData.arcIds, entityData.textArcAssignments]
-  );
+
+  // const arcIds = useMemo(
+  //   () =>
+  //     entityData.textArcAssignments?.map((a) => a.arcId) ??
+  //     entityData.arcIds ??
+  //     [],
+  //   [entityData.arcIds, entityData.textArcAssignments]
+  // );
 
   const { data } = useQuery(HighlightDecorationQuery, {
-    variables: { arcIds, highlightIds: entityHighlightIds },
+    variables: { highlightIds: entityHighlightIds },
   });
 
   const highlights = useMemo(() => data?.highlights ?? [], [data?.highlights]);
-  const arcs = useMemo(() => data?.arcs ?? [], [data?.arcs]);
+
+  const arcs = useMemo(
+    () => data?.highlights?.reduce((prev, cur) => [...prev, cur.arc], []) ?? [],
+    [data?.highlights]
+  );
 
   const { ctrlKey } = useContext(JournalHotkeysContext);
   const {
@@ -80,10 +81,6 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     setSelectedHighlightIds,
   } = useContext(HighlightSelectionContext);
 
-  const entityArcs =
-    arcIds
-      ?.map((id) => arcs.find((arc) => arc.id === id))
-      .filter((arc) => !!arc) ?? [];
   const hoveredHighlights = useMemo(
     () =>
       highlights.filter((highlight) =>
@@ -117,19 +114,19 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
   const allArcsIpsumColor = multiplyIpsumArcColors(
     Object.values(highlights)
       .filter((h) => !!h?.arc?.id)
-      .map((highlight) => arcs.find((a) => a.id === highlight.arc.id).color),
+      .map((highlight) => arcs.find((a) => a.id === highlight.arc.id)?.color),
     { saturation: 100, lightness: 50 }
   );
   const hoveredArcsIpsumColor = multiplyIpsumArcColors(
     hoveredHighlights
       ?.filter((h) => !!h?.arc?.id)
-      .map((highlight) => arcs.find((a) => a.id === highlight.arc.id).color),
+      .map((highlight) => arcs.find((a) => a.id === highlight.arc.id)?.color),
     { saturation: 100, lightness: 50 }
   );
   const selectedArcsIpsumColor = multiplyIpsumArcColors(
     selectedHighlights
       ?.filter((h) => !!h?.arc?.id)
-      .map((highlight) => arcs.find((a) => a.id === highlight.arc.id).color),
+      .map((highlight) => arcs.find((a) => a.id === highlight.arc.id)?.color),
     { saturation: 100, lightness: 50 }
   );
 
@@ -144,11 +141,11 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     }
   }
 
-  const backgroundColor = entityArcs
+  const backgroundColor = arcs
     ? appliedIpsumColor.setAlpha(isHighlighted ? 0.2 : 0.05).toRgbaCSS()
     : `rgba(0, 0, 0, ${isHighlighted ? 0.2 : 0.05})`;
 
-  const boxShadow = entityArcs.reduce((acc, cur, i): string => {
+  const boxShadow = arcs.reduce((acc, cur, i): string => {
     const ipsumColor = new IpsumArcColor(cur.color)
       .toIpsumColor({
         saturation: 100,
@@ -156,19 +153,19 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
       })
       .setAlpha(isHighlighted ? 0.4 : 0.25);
     return `${acc} 0 ${(i + 1) * 2}px 0 0 ${ipsumColor.toRgbaCSS()}
-      ${i === entityArcs.length - 1 ? "" : ","}`;
+      ${i === arcs.length - 1 ? "" : ","}`;
   }, "");
 
   const cursor = ctrlKey ? "pointer" : undefined;
 
   const ref = useRef<HTMLSpanElement>(null);
-  const disambiguatorOpen = !!(multipleHighlightsSelected && arcIds.length > 1);
+  const disambiguatorOpen = !!(multipleHighlightsSelected && arcs.length > 1);
 
   return (
     <>
       <span
         ref={ref}
-        aria-details={entityArcs.map((arc) => `${arc.name}`).join(" ")}
+        aria-details={arcs.map((arc) => `${arc.name}`).join(" ")}
         onMouseEnter={() => {
           setHoveredHighlightIds(entityHighlightIds);
         }}
@@ -185,7 +182,7 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
       >
         {props.children}
       </span>
-      {ref?.current && arcIds && (
+      {ref?.current && arcs && (
         <HighlightDisambiguator
           highlightIds={entityHighlightIds}
           onHighlightSelected={(highlightId: string) => {

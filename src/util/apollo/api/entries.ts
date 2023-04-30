@@ -2,6 +2,7 @@ import { UnhydratedType, vars } from "../client";
 import { IpsumEntityTransformer } from "util/entities";
 import { SelectionState } from "draft-js";
 import { parseContentState, stringifyContentState } from "util/content-state";
+import { autosave } from "../autosave";
 
 export const createEntry = (
   entry: Omit<UnhydratedType["Entry"], "__typename">
@@ -13,6 +14,7 @@ export const createEntry = (
     ...vars.entries(),
     [entry.entryKey]: newEntry,
   });
+  autosave();
   return newEntry;
 };
 
@@ -28,6 +30,7 @@ export const updateEntry = (
   const newEntry = { ...newEntries[entry.entryKey], ...entry };
   newEntries[entry.entryKey] = newEntry;
   vars.entries(newEntries);
+  autosave();
 };
 
 export const assignHighlightToEntry = ({
@@ -48,6 +51,7 @@ export const assignHighlightToEntry = ({
     entryKey: entryKey,
     contentState: stringifyContentState(contentStateWithAssignment),
   });
+  autosave();
 };
 
 export const removeHighlightFromEntry = ({
@@ -66,6 +70,7 @@ export const removeHighlightFromEntry = ({
     entryKey: entryKey,
     contentState: stringifyContentState(contentStateNoHighlight),
   });
+  autosave();
 };
 
 export const deleteEntry = (entryKey: string) => {
@@ -74,4 +79,5 @@ export const deleteEntry = (entryKey: string) => {
   const newEntries = { ...vars.entries() };
   delete newEntries[entryKey];
   vars.entries(newEntries);
+  autosave();
 };

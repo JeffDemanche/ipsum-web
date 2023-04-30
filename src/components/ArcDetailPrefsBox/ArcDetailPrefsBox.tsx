@@ -46,7 +46,7 @@ export const ArcDetailPrefsBox: React.FC = () => {
       ></ArcTag>
       <Slider
         min={0}
-        max={255}
+        max={359}
         onChange={onColorSliderChange}
         onChangeCommitted={onColorSliderChangeCommitted}
         value={localColor}
