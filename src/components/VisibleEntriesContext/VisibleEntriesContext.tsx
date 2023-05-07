@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import { useSearchParams } from "react-router-dom";
 import { gql } from "util/apollo";
 import { IpsumDateTime, sortDates } from "util/dates";
+import { urlToData } from "util/url";
 
 export interface VisibleEntries {
   visibleEntryKeys: string[];
@@ -39,6 +40,8 @@ export const VisibleEntriesProvider: React.FC<{
   } = useQuery(VisibleEntriesProviderQuery);
 
   const [searchParams] = useSearchParams();
+
+  const urlData = urlToData<"journal">(window.location.href);
 
   const sort = searchParams.get("sort");
 

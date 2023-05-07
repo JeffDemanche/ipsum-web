@@ -1,32 +1,39 @@
 import { render } from "@testing-library/react";
 import React, { useContext, useEffect } from "react";
-import { dataToSearchParams } from "util/url";
+import { dataToSearchParams, URLLayer } from "util/url";
+import { searchParamsToData } from "util/url/urls";
 import { DiptychContext, DiptychProvider } from "../DiptychContext";
 import { Diptych } from "../types";
 
 const navigateSpy = jest.fn();
+
 jest.mock("react-router", () => ({
   ...jest.requireActual("react-router"),
   useNavigate: () => navigateSpy,
+  useLocation: jest.fn(),
 }));
 
 describe("DiptychContext", () => {
-  const setup = ({ url }: { url: URL }) => {
+  const setup = ({
+    initialUrlLayers,
+    action,
+  }: {
+    initialUrlLayers: URLLayer[];
+    action?: (context: Diptych) => void;
+  }) => {
     jest.resetAllMocks();
 
-    const Consumer: React.FunctionComponent<{
-      onContextUpdate: (context: Diptych) => void;
-      action?: (context: Diptych) => void;
-    }> = ({ onContextUpdate, action }) => {
+    const url = new URL("http://www.test.com");
+    url.search = dataToSearchParams<"journal">({
+      layers: initialUrlLayers,
+    });
+
+    const Consumer: React.FunctionComponent = () => {
       const context = useContext(DiptychContext);
 
       useEffect(() => {
-        onContextUpdate(context);
-      }, [context, onContextUpdate]);
-
-      useEffect(() => {
         action?.(context);
-      }, [action, context]);
+      }, [context]);
 
       return <></>;
     };
@@ -35,71 +42,167 @@ describe("DiptychContext", () => {
     // @ts-expect-error types, idk
     window.location = { href: url.toString() };
 
-    return { Consumer };
-  };
-
-  it("gets layers with one ArcDetail including base DailyJournal layer", () => {
-    const url = new URL("http://www.test.com");
-    url.search = dataToSearchParams<"journal">({
-      layers: [
-        {
-          type: "arc_detail",
-          connectionId: "layer1_c_id",
-          objectId: "layer1_o_id",
-        },
-      ],
-    });
-
-    const { Consumer } = setup({ url });
-
-    const onContextUpdate = jest.fn();
-
     render(
       <DiptychProvider>
-        <Consumer onContextUpdate={onContextUpdate}></Consumer>
+        <Consumer></Consumer>
       </DiptychProvider>
     );
 
-    expect(onContextUpdate.mock.calls[0][0].layers).toHaveLength(2);
-    expect(onContextUpdate.mock.calls[0][0].layers[0].type).toEqual(
-      "DailyJournal"
-    );
-    expect(onContextUpdate.mock.calls[0][0].layers[1]).toEqual({
-      type: "ArcDetail",
-      arcId: "layer1_o_id",
-      diptychMedian: {
-        connectionId: "layer1_c_id",
-      },
+    return {};
+  };
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  describe("setLayer", () => {
+    it("navigates when setting second layer details", () => {
+      const initialUrlLayers: URLLayer[] = [
+        {
+          type: "daily_journal",
+        },
+        {
+          type: "arc_detail",
+          connectionId: "layer1_c_id",
+          arcId: "layer1_a_id",
+        },
+      ];
+      const newLayer1: URLLayer = {
+        type: "arc_detail",
+        connectionId: "layer2_c_id",
+        arcId: "layer2_a_id",
+      };
+      setup({
+        initialUrlLayers,
+        action: (context) => {
+          context.setLayer(1, newLayer1);
+        },
+      });
+      const layers = searchParamsToData<"journal">(
+        navigateSpy.mock.calls[0][0].search
+      ).layers;
+      expect(layers).toEqual([
+        {
+          type: "daily_journal",
+        },
+        {
+          type: "arc_detail",
+          connectionId: "layer2_c_id",
+          arcId: "layer2_a_id",
+        },
+      ] as URLLayer[]);
+    });
+
+    it("navigates and closes second layer when setting first layer details", () => {
+      const initialUrlLayers: URLLayer[] = [
+        {
+          type: "daily_journal",
+        },
+        {
+          type: "arc_detail",
+          connectionId: "layer1_c_id",
+          arcId: "layer1_a_id",
+        },
+      ];
+      const newLayer1: URLLayer = {
+        type: "daily_journal",
+      };
+      setup({
+        initialUrlLayers,
+        action: (context) => {
+          context.setLayer(0, newLayer1);
+        },
+      });
+      const layers = searchParamsToData<"journal">(
+        navigateSpy.mock.calls[0][0].search
+      ).layers;
+      expect(layers).toEqual([newLayer1] as URLLayer[]);
     });
   });
 
-  it("closes first opened ArcDetail layer and goes back to DailyJournal (don't keep connection)", () => {
-    const url = new URL("http://www.test.com");
-    url.search = dataToSearchParams<"journal">({
-      layers: [
+  describe("setConnection", () => {
+    it("navigates when setting connection second layer connection, changes second layer to ConnectionOnly", () => {
+      const initialUrlLayers: URLLayer[] = [
+        {
+          type: "daily_journal",
+        },
         {
           type: "arc_detail",
           connectionId: "layer1_c_id",
-          objectId: "layer1_o_id",
+          arcId: "layer1_a_id",
         },
-      ],
+      ];
+      setup({
+        initialUrlLayers,
+        action: (context) => {
+          context.setConnection(1, "layer2_c_id");
+        },
+      });
+      const layers = searchParamsToData<"journal">(
+        navigateSpy.mock.calls[0][0].search
+      ).layers;
+      expect(layers).toEqual([
+        { type: "daily_journal" },
+        { type: "connection_only", connectionId: "layer2_c_id" },
+      ] as URLLayer[]);
+    });
+  });
+
+  describe("setTopConnection", () => {
+    it("navigates to override current top layer if that layer is ConnectionOnly", () => {
+      const initialUrlLayers: URLLayer[] = [
+        {
+          type: "daily_journal",
+        },
+        {
+          type: "connection_only",
+          connectionId: "old_c_id",
+        },
+      ];
+      setup({
+        initialUrlLayers,
+        action: (context) => {
+          context.setTopConnection("new_c_id");
+        },
+      });
+      const layers = searchParamsToData<"journal">(
+        navigateSpy.mock.calls[0][0].search
+      ).layers;
+      expect(layers).toEqual([
+        { type: "daily_journal" },
+        { type: "connection_only", connectionId: "new_c_id" },
+      ] as URLLayer[]);
     });
 
-    const { Consumer } = setup({ url });
-
-    const onContextUpdate = jest.fn();
-
-    render(
-      <DiptychProvider>
-        <Consumer
-          onContextUpdate={onContextUpdate}
-          action={(context) => {
-            context.closeLayer(1, false);
-          }}
-        ></Consumer>
-      </DiptychProvider>
-    );
-
-    expect(navigateSpy.mock.calls[0][0].search).toEqual("");
+    it("navigates to create new layer if topmost layer isn't ConnectionOnly", () => {
+      const initialUrlLayers: URLLayer[] = [
+        {
+          type: "daily_journal",
+        },
+        {
+          type: "arc_detail",
+          connectionId: "layer1_c_id",
+          arcId: "layer1_a_id",
+        },
+      ];
+      setup({
+        initialUrlLayers,
+        action: (context) => {
+          context.setTopConnection("layer2_c_id");
+        },
+      });
+      const layers = searchParamsToData<"journal">(
+        navigateSpy.mock.calls[0][0].search
+      ).layers;
+      expect(layers).toEqual([
+        { type: "daily_journal" },
+        {
+          type: "arc_detail",
+          connectionId: "layer1_c_id",
+          arcId: "layer1_a_id",
+        },
+        { type: "connection_only", connectionId: "layer2_c_id" },
+      ] as URLLayer[]);
+    });
   });
 });

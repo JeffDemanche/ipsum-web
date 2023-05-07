@@ -1,17 +1,17 @@
-import { HighlightSelectionContext } from "components/HighlightSelectionContext";
-import React, { useCallback, useContext, useMemo } from "react";
-import { useNavigate } from "react-router";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { dataToSearchParams, URLLayer, urlToData } from "util/url";
 import { Diptych, DiptychLayer } from "./types";
 
 export const DiptychContext = React.createContext<Diptych>({
-  layers: [{ type: "DailyJournal" }],
+  layers: [],
   layersBySide: { 0: [], 1: [] },
   topLayerIndex: 0,
-  pushLayer: () => {},
-  setFirstLayer: () => {},
-  closeLayer: () => {},
-  openArcDetail: () => {},
+
+  setLayer: () => {},
+  setConnection: () => {},
+  setTopLayer: () => {},
+  setTopConnection: () => {},
 });
 
 interface DiptychProviderProps {
@@ -23,24 +23,45 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const { selectedHighlightIds } = useContext(HighlightSelectionContext);
-
-  const urlData = urlToData<"journal">(window.location.href);
+  const location = useLocation();
+  const urlData = useMemo(
+    () => urlToData<"journal">(window.location.href),
+    [location]
+  );
 
   const urlLayers = useMemo(() => urlData.layers ?? [], [urlData.layers]);
 
   const layers: DiptychLayer[] = useMemo(() => {
     return [
-      { type: "DailyJournal" },
-      ...urlLayers.map(
-        (urlLayer): DiptychLayer => ({
-          type: "ArcDetail",
-          arcId: urlLayer.objectId,
-          diptychMedian: {
-            connectionId: urlLayer.connectionId,
-          },
-        })
-      ),
+      ...urlLayers.map((urlLayer): DiptychLayer => {
+        switch (urlLayer.type) {
+          case "connection_only":
+            return {
+              type: "ConnectionOnly",
+              diptychMedian: {
+                connectionId: urlLayer.connectionId,
+              },
+              urlLayer,
+            };
+          case "arc_detail":
+            return {
+              type: "ArcDetail",
+              arcId: urlLayer.arcId,
+              urlLayer,
+              diptychMedian: {
+                connectionId: urlLayer.connectionId,
+              },
+            };
+          case "daily_journal":
+            return {
+              type: "DailyJournal",
+              urlLayer,
+              diptychMedian: {
+                connectionId: urlLayer.connectionId,
+              },
+            };
+        }
+      }),
     ];
   }, [urlLayers]);
 
@@ -53,74 +74,70 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
 
   const topLayerIndex = layers.length - 1;
 
-  const pushLayer = useCallback(
-    (layer: URLLayer) => {
+  const setLayer = useCallback(
+    (index: number, layer?: URLLayer) => {
+      if (index > 0 && layer && !layer.connectionId)
+        throw new Error("setLayer: no connectionId for non-base layer");
+
       const currParams = urlToData<"journal">(window.location.href);
+      const currentLayers = currParams.layers ?? [];
+      const newLayers = [...currentLayers.slice(0, index)];
+      if (layer) newLayers[index] = layer;
       const newSearchParams = dataToSearchParams<"journal">({
         ...currParams,
-        layers: [...currParams.layers, layer],
+        layers: newLayers,
       });
-      navigate({ search: newSearchParams });
+      navigate({ search: newSearchParams }, { replace: true });
     },
     [navigate]
   );
 
-  const setFirstLayer = useCallback(
-    (layer: URLLayer) => {
+  const setConnection = useCallback(
+    (index: number, connectionId?: string) => {
+      if (index < 1 || index > topLayerIndex + 1)
+        throw new Error(`setConnection: invalid index: ${index}`);
+
       const currParams = urlToData<"journal">(window.location.href);
-      const newSearchParams = dataToSearchParams<"journal">({
-        ...currParams,
-        layers: [layer],
-      });
-      navigate({ search: newSearchParams });
-    },
-    [navigate]
-  );
-
-  const closeLayer = useCallback(
-    (index: number, keepConnection?: boolean) => {
-      const currParams = urlToData<"journal">(window.location.href);
-
-      const newLayers = currParams.layers.slice(0, index - 1);
-
-      if (keepConnection) {
-        const closedLayer = { ...currParams.layers[index - 1] };
-        delete closedLayer.objectId;
-        newLayers.push(closedLayer);
-      }
-
+      const currentLayers = currParams.layers ?? [];
+      const newLayers = [...currentLayers.slice(0, index)];
+      if (connectionId)
+        newLayers[index] = { type: "connection_only", connectionId };
       const newSearchParams = dataToSearchParams<"journal">({
         ...currParams,
         layers: newLayers,
       });
       navigate({ search: newSearchParams });
     },
-    [navigate]
+    [navigate, topLayerIndex]
   );
 
-  const openArcDetail = useCallback(
-    (index: number, arcId: string) => {
-      const currParams = urlToData<"journal">(window.location.href);
-      const currentLayers = currParams.layers ?? [];
-      const selectedHighlight =
-        selectedHighlightIds?.length === 1
-          ? selectedHighlightIds[0]
-          : undefined;
-      const newSearchParams = dataToSearchParams<"journal">({
-        ...currParams,
-        layers: [
-          ...currentLayers.slice(0, index - 1),
-          {
-            type: "arc_detail",
-            connectionId: selectedHighlight,
-            objectId: arcId,
-          },
-        ],
-      });
-      navigate({ search: newSearchParams });
+  const setTopLayer = useCallback(
+    (layer?: URLLayer) => {
+      if (layers.length && layers[topLayerIndex].type === "ConnectionOnly") {
+        setLayer(topLayerIndex, layer);
+      } else {
+        setLayer(topLayerIndex + 1, layer);
+      }
     },
-    [navigate, selectedHighlightIds]
+    [layers, setLayer, topLayerIndex]
   );
+
+  const setTopConnection = useCallback(
+    (connectionId?: string) => {
+      if (layers[topLayerIndex].type === "ConnectionOnly") {
+        setConnection(topLayerIndex, connectionId);
+      } else {
+        setConnection(topLayerIndex + 1, connectionId);
+      }
+    },
+    [layers, setConnection, topLayerIndex]
+  );
+
+  useEffect(() => {
+    if (urlLayers.length === 0) {
+      setTopLayer({ type: "daily_journal" });
+    }
+  }, [setTopLayer, urlLayers.length]);
 
   return (
     <DiptychContext.Provider
@@ -128,10 +145,10 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
         layers,
         layersBySide,
         topLayerIndex,
-        pushLayer,
-        setFirstLayer,
-        closeLayer,
-        openArcDetail,
+        setLayer,
+        setConnection,
+        setTopLayer,
+        setTopConnection,
       }}
     >
       {children}

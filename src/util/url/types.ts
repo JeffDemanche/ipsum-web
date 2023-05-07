@@ -1,12 +1,31 @@
 export type View = "" | "journal";
 
-export type LayerType = "daily_journal" | "arc_detail";
+export type LayerType = "connection_only" | "daily_journal" | "arc_detail";
 
-export type URLLayer = {
+export type BaseURLLayer = {
   type: LayerType;
-  objectId?: string;
   connectionId?: string;
 };
+
+interface ConnectionOnlyLayer extends BaseURLLayer {
+  type: "connection_only";
+  connectionId: string;
+}
+
+interface DailyJournalURLLayer extends BaseURLLayer {
+  type: "daily_journal";
+  dateRange?: [string, string];
+}
+
+interface ArcDetailURLLayer extends BaseURLLayer {
+  type: "arc_detail";
+  arcId: string;
+}
+
+export type URLLayer =
+  | ConnectionOnlyLayer
+  | DailyJournalURLLayer
+  | ArcDetailURLLayer;
 
 interface JournalViewSearchData {
   highlight?: string[];

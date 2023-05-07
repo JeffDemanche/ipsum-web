@@ -44,14 +44,15 @@ export const MedianHighlightBox: React.FunctionComponent<
   });
   const highlight = data?.highlights?.[0];
 
-  const { openArcDetail } = useContext(DiptychContext);
+  const { setTopLayer } = useContext(DiptychContext);
 
   const onArcClick = useCallback(
     (arcId?: string, e?: React.MouseEvent) => {
       e.stopPropagation();
-      arcId && openArcDetail(0, arcId);
+      arcId &&
+        setTopLayer({ type: "arc_detail", connectionId: highlightId, arcId });
     },
-    [openArcDetail]
+    [highlightId, setTopLayer]
   );
 
   const {

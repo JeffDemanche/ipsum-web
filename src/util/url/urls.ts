@@ -7,7 +7,13 @@ import { View, IpsumURLSearch } from "./types";
  * search param type structures).
  */
 export const urlToData = <V extends View>(url: string): IpsumURLSearch<V> => {
-  return qs.parse(new URL(url).search.slice(1)) as IpsumURLSearch<V>;
+  return searchParamsToData(new URL(url).search.slice(1)) as IpsumURLSearch<V>;
+};
+
+export const searchParamsToData = <V extends View>(
+  search: string
+): IpsumURLSearch<V> => {
+  return qs.parse(search) as IpsumURLSearch<V>;
 };
 
 /**

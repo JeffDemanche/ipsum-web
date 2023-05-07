@@ -2,7 +2,6 @@ import { HighlightTag } from "components/HighlightTag";
 import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./Digest.less";
-import { DiptychContext } from "components/DiptychContext";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 
@@ -35,8 +34,6 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
     hoveredHighlightIds,
     setHoveredHighlightIds,
   } = useContext(HighlightSelectionContext);
-
-  const { setFirstLayer } = useContext(DiptychContext);
 
   const tokenSelected = useCallback(
     (highlightId: string) => selectedHighlightIds?.includes(highlightId),

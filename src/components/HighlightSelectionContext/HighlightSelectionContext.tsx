@@ -64,6 +64,7 @@ export const HighlightSelectionProvider: React.FC<
   const setSelectedHighlightIds = useCallback(
     (highlights: string[]) => {
       const newParams = dataToSearchParams<"journal">({
+        ...urlToData<"journal">(window.location.href),
         highlight: highlights,
       });
       navigate({ search: newParams }, { replace: false });

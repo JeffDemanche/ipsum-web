@@ -1,8 +1,9 @@
 import { ArcDetail } from "components/ArcDetail";
 import { DiptychContext, DiptychLayer } from "components/DiptychContext";
 import { DailyJournal } from "components/DailyJournal";
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./DiptychColumn.less";
+import { LayerContextProvider } from "./LayerContext";
 
 interface DiptychColumnProps {
   diptychIndex: number;
@@ -15,23 +16,33 @@ export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
 }) => {
   const topMostLayer = layers[layers.length - 1];
 
-  const { closeLayer } = useContext(DiptychContext);
+  const { setLayer } = useContext(DiptychContext);
 
   const closeColumn = useCallback(() => {
-    closeLayer(diptychIndex, false);
-  }, [closeLayer, diptychIndex]);
+    console.log(diptychIndex);
+    setLayer(diptychIndex, undefined);
+  }, [diptychIndex, setLayer]);
+
+  const content = useMemo(() => {
+    switch (topMostLayer.type) {
+      case "DailyJournal":
+        return <DailyJournal></DailyJournal>;
+      case "ArcDetail":
+        return (
+          <ArcDetail
+            arcId={topMostLayer.arcId}
+            incomingHighlightId={topMostLayer.diptychMedian.connectionId}
+            closeColumn={closeColumn}
+          ></ArcDetail>
+        );
+      case "ConnectionOnly":
+        return null;
+    }
+  }, [closeColumn, topMostLayer]);
 
   return (
-    <div className={styles["diptych-layer"]}>
-      {topMostLayer.type === "DailyJournal" ? (
-        <DailyJournal></DailyJournal>
-      ) : (
-        <ArcDetail
-          arcId={topMostLayer.arcId}
-          incomingHighlightId={topMostLayer.diptychMedian.connectionId}
-          closeColumn={closeColumn}
-        ></ArcDetail>
-      )}
-    </div>
+    <LayerContextProvider diptychLayer={topMostLayer}>
+      <div className={styles["diptych-layer"]}>{content}</div>
+    </LayerContextProvider>
   );
 };

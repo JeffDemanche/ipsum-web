@@ -5,7 +5,11 @@ import { URLLayer } from "util/url";
  */
 interface DiptychMedian {
   /** Such as highlightId */
-  connectionId: string;
+  connectionId?: string;
+}
+
+interface ConnectionOnlyLayer {
+  type: "ConnectionOnly";
 }
 
 interface DailyJournalLayer {
@@ -20,8 +24,13 @@ interface ArcDetailLayer {
 /**
  * A layer of the diptych, such as the journal view or an arc detail view.
  */
-export type DiptychLayer = (DailyJournalLayer | ArcDetailLayer) & {
-  diptychMedian?: DiptychMedian;
+export type DiptychLayer = (
+  | ConnectionOnlyLayer
+  | DailyJournalLayer
+  | ArcDetailLayer
+) & {
+  diptychMedian: DiptychMedian;
+  urlLayer: URLLayer;
 };
 
 export interface Diptych {
@@ -29,8 +38,23 @@ export interface Diptych {
   layersBySide: { 0: DiptychLayer[]; 1: DiptychLayer[] };
   topLayerIndex: number;
 
-  pushLayer: (layer: URLLayer) => void;
-  setFirstLayer: (layer: URLLayer) => void;
-  closeLayer: (index: number, keepConnection?: boolean) => void;
-  openArcDetail: (index: number, arcId: string) => void;
+  /**
+   * Sets the layer at the given index, only if that index is between 0 and 1
+   * greater than the top layer. If the top layer is just a connection, deal
+   * with that case? Remove all layers above the index at which it was set to.
+   * If layer is undefined, this can have the effect of simply closing a layer.
+   */
+  setLayer: (index: number, layer?: URLLayer) => void;
+
+  /**
+   * Sets the connectiondId for the layer at index. index must be between 1 and
+   * 1 greater than the top layer (because layer 0 can’t have an incoming
+   * connection). Set the layer at the specified index to just be the
+   * connection, and remove all layers on top of it.
+   */
+  setConnection: (index: number, connectionId?: string) => void;
+
+  setTopLayer: (layer: URLLayer) => void;
+
+  setTopConnection: (connectionId: string) => void;
 }
