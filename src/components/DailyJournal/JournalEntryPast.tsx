@@ -26,16 +26,6 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
     DailyJournalEditorContext
   );
 
-  // We listen for clicks on Surface to move the focus to the end of the Editor,
-  // this is a hacky way of overriding that if the click is on the Editor
-  // itself.
-  // useEffect(() => {
-  //   editorRef.current.editor.onclick = (e) => {
-  //     e.stopPropagation();
-  //   };
-  //   setEntryEditorRef(entryKey, editorRef);
-  // }, [editorRef, entryKey, setEntryEditorRef]);
-
   const handleKeyCommand = useCallback(
     (command: string, editorState: EditorState) => {
       const newState = RichUtils.handleKeyCommand(editorState, command);

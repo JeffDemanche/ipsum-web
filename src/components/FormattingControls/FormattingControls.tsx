@@ -5,8 +5,12 @@ import { DailyJournalEditorContext } from "components/DailyJournal";
 import { ToggleButton } from "@mui/material";
 
 export const FormattingControls: React.FunctionComponent = () => {
-  const { focusedEditorKey, setEntryEditorState, entryEditorStates } =
-    useContext(DailyJournalEditorContext);
+  const {
+    focusedEditorKey,
+    setEntryEditorState,
+    entryEditorStates,
+    todayEntryKey,
+  } = useContext(DailyJournalEditorContext);
 
   const focusedEditorState = useMemo(
     () => entryEditorStates.get(focusedEditorKey),
@@ -21,40 +25,73 @@ export const FormattingControls: React.FunctionComponent = () => {
   const boldEnabled = !!focusedEditorState?.getCurrentInlineStyle().has("BOLD");
 
   const onBoldClick = useCallback(() => {
-    setEntryEditorState(focusedEditorKey, (previousEditorState) =>
-      RichUtils.toggleInlineStyle(
-        EditorState.forceSelection(previousEditorState, focusedEditorSelection),
-        "BOLD"
-      )
-    );
-  }, [focusedEditorKey, focusedEditorSelection, setEntryEditorState]);
+    todayEntryKey === focusedEditorKey &&
+      setEntryEditorState(
+        focusedEditorKey,
+        (previousEditorState) =>
+          RichUtils.toggleInlineStyle(
+            EditorState.forceSelection(
+              previousEditorState,
+              focusedEditorSelection
+            ),
+            "BOLD"
+          ),
+        true
+      );
+  }, [
+    focusedEditorKey,
+    focusedEditorSelection,
+    setEntryEditorState,
+    todayEntryKey,
+  ]);
 
   const italicEnabled = !!focusedEditorState
     ?.getCurrentInlineStyle()
     .has("ITALIC");
 
   const onItalicClick = useCallback(() => {
-    setEntryEditorState(focusedEditorKey, (previousEditorState) =>
-      RichUtils.toggleInlineStyle(
-        EditorState.forceSelection(previousEditorState, focusedEditorSelection),
-        "ITALIC"
-      )
-    );
-  }, [focusedEditorKey, focusedEditorSelection, setEntryEditorState]);
+    todayEntryKey === focusedEditorKey &&
+      setEntryEditorState(
+        focusedEditorKey,
+        (previousEditorState) =>
+          RichUtils.toggleInlineStyle(
+            EditorState.forceSelection(
+              previousEditorState,
+              focusedEditorSelection
+            ),
+            "ITALIC"
+          ),
+        true
+      );
+  }, [
+    focusedEditorKey,
+    focusedEditorSelection,
+    setEntryEditorState,
+    todayEntryKey,
+  ]);
 
   const toggleBlockStyle = useCallback(
     (type: string) => {
-      setEntryEditorState(focusedEditorKey, (previousEditorState) =>
-        RichUtils.toggleBlockType(
-          EditorState.forceSelection(
-            previousEditorState,
-            focusedEditorSelection
-          ),
-          type
-        )
-      );
+      todayEntryKey === focusedEditorKey &&
+        setEntryEditorState(
+          focusedEditorKey,
+          (previousEditorState) =>
+            RichUtils.toggleBlockType(
+              EditorState.forceSelection(
+                previousEditorState,
+                focusedEditorSelection
+              ),
+              type
+            ),
+          true
+        );
     },
-    [focusedEditorKey, focusedEditorSelection, setEntryEditorState]
+    [
+      focusedEditorKey,
+      focusedEditorSelection,
+      setEntryEditorState,
+      todayEntryKey,
+    ]
   );
 
   const onDailyJournalControlsClick = useCallback((e: React.MouseEvent) => {
@@ -72,6 +109,7 @@ export const FormattingControls: React.FunctionComponent = () => {
         disabled={!focusedEditorKey}
         selected={boldEnabled}
         onChange={onBoldClick}
+        onMouseDown={(e) => e.preventDefault()}
       >
         <b>b</b>
       </ToggleButton>
@@ -81,6 +119,7 @@ export const FormattingControls: React.FunctionComponent = () => {
         disabled={!focusedEditorKey}
         selected={italicEnabled}
         onChange={onItalicClick}
+        onMouseDown={(e) => e.preventDefault()}
       >
         <b>i</b>
       </ToggleButton>
@@ -90,6 +129,7 @@ export const FormattingControls: React.FunctionComponent = () => {
         disabled={!focusedEditorKey}
         selected={blockType === "header-one"}
         onChange={() => toggleBlockStyle("header-one")}
+        onMouseDown={(e) => e.preventDefault()}
       >
         <b>h1</b>
       </ToggleButton>
@@ -99,6 +139,7 @@ export const FormattingControls: React.FunctionComponent = () => {
         disabled={!focusedEditorKey}
         selected={blockType === "unordered-list-item"}
         onChange={() => toggleBlockStyle("unordered-list-item")}
+        onMouseDown={(e) => e.preventDefault()}
       >
         <b>ul</b>
       </ToggleButton>
@@ -108,6 +149,7 @@ export const FormattingControls: React.FunctionComponent = () => {
         disabled={!focusedEditorKey}
         selected={blockType === "ordered-list-item"}
         onChange={() => toggleBlockStyle("ordered-list-item")}
+        onMouseDown={(e) => e.preventDefault()}
       >
         <b>ol</b>
       </ToggleButton>
@@ -117,6 +159,7 @@ export const FormattingControls: React.FunctionComponent = () => {
         disabled={!focusedEditorKey}
         selected={blockType === "blockquote"}
         onChange={() => toggleBlockStyle("blockquote")}
+        onMouseDown={(e) => e.preventDefault()}
       >
         <b>qu</b>
       </ToggleButton>

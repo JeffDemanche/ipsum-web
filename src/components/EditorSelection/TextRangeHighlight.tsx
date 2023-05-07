@@ -57,7 +57,7 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
 
   // Calculates dims for an element that exactly wraps all selection boxes.
   const completeSelectionDims = useMemo(() => {
-    if (!rectList) return undefined;
+    if (!rectList || !rectList.length) return undefined;
 
     let top = Number.MAX_SAFE_INTEGER;
     let left = Number.MAX_SAFE_INTEGER;

@@ -4,14 +4,13 @@ import { Digest } from "components/Digest";
 import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
 import { stringifyContentState } from "util/content-state";
-import { IpsumDateTime, stringifyIpsumDateTime } from "util/dates";
+import { IpsumDateTime } from "util/dates";
 import { useDebouncedCallback } from "util/hooks";
 import { placeholderForDate } from "util/placeholders";
 import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
 import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
 import { useJournalEntryEditor } from "./useJournalEntryEditor";
-import { createEntry, deleteEntry, updateEntry } from "util/apollo";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -27,16 +26,8 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
 }: JournalEntryTodayProps) => {
   const { editorRef, editorState, empty } = useJournalEntryEditor({ entryKey });
 
-  const { setEntryEditorState, onEditorFocus, onEditorBlur } = useContext(
-    DailyJournalEditorContext
-  );
-
-  // const { act: deleteEntry } = useApiAction({
-  //   name: "deleteEntry",
-  // });
-  // const { act: createOrUpdateEntry } = useApiAction({
-  //   name: "createOrUpdateEntry",
-  // });
+  const { setEntryEditorState, onEditorFocus, onEditorBlur, saveEntry } =
+    useContext(DailyJournalEditorContext);
 
   /**
    * Debounced so we only update the state once every so often while typing.
@@ -48,24 +39,9 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
     const changed =
       stringifyContentState(editorState.getCurrentContent()) !==
       stringifyContentState(newEditorState.getCurrentContent());
+
     if (newEditorState && changed) {
-      if (empty) {
-        deleteEntry(entryKey);
-      } else {
-        const entry = {
-          entryKey,
-          date: stringifyIpsumDateTime(
-            IpsumDateTime.fromString(entryKey, "entry-printed-date")
-          ),
-          contentState: stringifyContentState(
-            newEditorState.getCurrentContent()
-          ),
-        };
-        const attemptedUpdate = updateEntry(entry);
-        if (!attemptedUpdate) {
-          createEntry(entry);
-        }
-      }
+      saveEntry(entryKey, newEditorState);
     }
   }, 500);
 

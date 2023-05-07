@@ -1,6 +1,13 @@
 import { decorator } from "components/Decorator";
 import { ContentState, Editor, EditorState } from "draft-js";
 import React, { useCallback, useState } from "react";
+import { createEntry, deleteEntry, updateEntry } from "util/apollo";
+import { stringifyContentState } from "util/content-state";
+import {
+  IpsumDateTime,
+  stringifyIpsumDateTime,
+  useDateString,
+} from "util/dates";
 
 const noop = () => {};
 
@@ -18,6 +25,8 @@ interface DailyJournalEditorContextValue {
   focusedEditorKey: string | undefined;
   onEditorFocus: (editorKey: string) => void;
   onEditorBlur: (editorKey: string) => void;
+
+  todayEntryKey: string;
 
   /**
    * For an editorKey, registers it on this context so it can be manipulated
@@ -40,7 +49,8 @@ interface DailyJournalEditorContextValue {
   entryEditorStates: EditorStateMap;
   setEntryEditorState: (
     entryKey: string,
-    setEditorState: (previousEditorState: EditorState) => EditorState
+    setEditorState: (previousEditorState: EditorState) => EditorState,
+    save?: boolean
   ) => void;
 
   entryEditorMetadatas: EditorMetadataMap;
@@ -54,6 +64,8 @@ interface DailyJournalEditorContextValue {
     entryKey: string,
     ref: React.MutableRefObject<Editor>
   ) => void;
+
+  saveEntry: (entryKey: string, editorState?: EditorState) => void;
 }
 
 export const emptyDailyJournalEditorContextValue: DailyJournalEditorContextValue =
@@ -61,6 +73,8 @@ export const emptyDailyJournalEditorContextValue: DailyJournalEditorContextValue
     focusedEditorKey: undefined,
     onEditorFocus: noop,
     onEditorBlur: noop,
+
+    todayEntryKey: "",
 
     registerEditor: noop,
     unregisterEditor: noop,
@@ -71,6 +85,8 @@ export const emptyDailyJournalEditorContextValue: DailyJournalEditorContextValue
     setEntryEditorMetadata: noop,
     entryEditorRefs: new Map<string, React.MutableRefObject<Editor>>(),
     setEntryEditorRef: noop,
+
+    saveEntry: noop,
   };
 
 export const DailyJournalEditorContext = React.createContext(
@@ -84,6 +100,8 @@ interface DailyJournalEditorContextProviderProps {
 export const DailyJournalEditorContextProvider: React.FunctionComponent<
   DailyJournalEditorContextProviderProps
 > = ({ children }: DailyJournalEditorContextProviderProps) => {
+  const todayEntryKey = useDateString(30000, "entry-printed-date");
+
   const [focusedEditorKey, setFocusedEditorKey] = useState(undefined);
 
   const onEditorFocus = useCallback((editorKey: string) => {
@@ -111,18 +129,51 @@ export const DailyJournalEditorContextProvider: React.FunctionComponent<
     ReadonlyMap<string, React.MutableRefObject<Editor>>
   >(new Map());
 
+  /**
+   * The optional editorState parameter will be used to update the Apollo state
+   * if provided, otherwise we use the editor state from the context map. This
+   * is useful to avoid debounce issues for saving while typing.
+   */
+  const saveEntry = useCallback(
+    (entryKey: string, editorState?: EditorState) => {
+      const contentState =
+        editorState?.getCurrentContent() ??
+        entryEditorStates.get(entryKey).getCurrentContent();
+
+      if (!contentState.hasText()) {
+        deleteEntry(entryKey);
+      } else {
+        const entry = {
+          entryKey,
+          date: stringifyIpsumDateTime(
+            IpsumDateTime.fromString(entryKey, "entry-printed-date")
+          ),
+          contentState: stringifyContentState(contentState),
+        };
+        const attemptedUpdate = updateEntry(entry);
+        if (!attemptedUpdate) {
+          createEntry(entry);
+        }
+      }
+    },
+    [entryEditorStates]
+  );
+
   const setEntryEditorState = useCallback(
     (
       entryKey: string,
-      setEditorState: (previousEditorState: EditorState) => EditorState
+      setEditorState: (previousEditorState: EditorState) => EditorState,
+      save = false
     ) => {
       setEntryEditorStates((prevEntryEditorStates) => {
         const editorsCopy = new Map(prevEntryEditorStates);
-        editorsCopy.set(entryKey, setEditorState(editorsCopy.get(entryKey)));
+        const newEditorState = setEditorState(editorsCopy.get(entryKey));
+        if (save) saveEntry(entryKey, newEditorState);
+        editorsCopy.set(entryKey, newEditorState);
         return editorsCopy;
       });
     },
-    []
+    [saveEntry]
   );
 
   const setEntryEditorMetadata = useCallback(
@@ -203,6 +254,8 @@ export const DailyJournalEditorContextProvider: React.FunctionComponent<
         onEditorFocus,
         onEditorBlur,
 
+        todayEntryKey,
+
         registerEditor,
         unregisterEditor,
 
@@ -212,6 +265,8 @@ export const DailyJournalEditorContextProvider: React.FunctionComponent<
         setEntryEditorMetadata,
         entryEditorRefs,
         setEntryEditorRef,
+
+        saveEntry,
       }}
     >
       {children}
