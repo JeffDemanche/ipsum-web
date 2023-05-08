@@ -129,7 +129,9 @@ const typePolicies: TypePolicies = {
       },
       entries(_, { args }: { args: QueryEntriesArgs }) {
         if (args?.entryKeys) {
-          return args.entryKeys.map((entryKey) => vars.entries()[entryKey]);
+          return args.entryKeys
+            .map((entryKey) => vars.entries()[entryKey])
+            .filter(Boolean);
         }
         return Object.values(vars.entries());
       },

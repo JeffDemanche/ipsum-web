@@ -44,7 +44,7 @@ export const MedianHighlightBox: React.FunctionComponent<
   });
   const highlight = data?.highlights?.[0];
 
-  const { setTopLayer } = useContext(DiptychContext);
+  const { setTopLayer, setTopConnection } = useContext(DiptychContext);
 
   const onArcClick = useCallback(
     (arcId?: string, e?: React.MouseEvent) => {
@@ -105,8 +105,9 @@ export const MedianHighlightBox: React.FunctionComponent<
     (e: React.MouseEvent) => {
       e.stopPropagation();
       setSelectedHighlightIds([]);
+      setTopConnection(undefined);
     },
-    [setSelectedHighlightIds]
+    [setSelectedHighlightIds, setTopConnection]
   );
 
   const onDeleteClick = useCallback(

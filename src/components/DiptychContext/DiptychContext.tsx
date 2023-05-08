@@ -127,7 +127,7 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
       if (layers[topLayerIndex].type === "ConnectionOnly") {
         setConnection(topLayerIndex, connectionId);
       } else {
-        setConnection(topLayerIndex + 1, connectionId);
+        setConnection(topLayerIndex, connectionId);
       }
     },
     [layers, setConnection, topLayerIndex]
