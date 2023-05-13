@@ -14,6 +14,8 @@ interface ConnectionOnlyLayer {
 
 interface DailyJournalLayer {
   type: "DailyJournal";
+  startDate?: string;
+  endDate?: string;
 }
 
 interface ArcDetailLayer {

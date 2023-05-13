@@ -6,13 +6,11 @@ import {
   gql,
   makeVar,
 } from "@apollo/client";
+import { parseIpsumDateTime } from "util/dates";
 import { v4 as uuidv4 } from "uuid";
-import { Arc, Entry } from ".";
 import {
   QueryArcsArgs,
   QueryEntriesArgs,
-  QueryEntryArgs,
-  QueryHighlightArgs,
   QueryHighlightsArgs,
 } from "./__generated__/graphql";
 
@@ -24,6 +22,7 @@ const typeDefs = gql`
 
     entry(entryKey: ID!): Entry
     entries(entryKeys: [ID!]): [Entry]
+    recentEntries(count: Int!): [Entry!]!
 
     arc(id: ID!): Arc
     arcs(ids: [ID!]): [Arc]
@@ -134,6 +133,15 @@ const typePolicies: TypePolicies = {
             .filter(Boolean);
         }
         return Object.values(vars.entries());
+      },
+      recentEntries(_, { args }) {
+        return Object.values(vars.entries())
+          .sort(
+            (a, b) =>
+              parseIpsumDateTime(b.date).dateTime.toJSDate().getTime() -
+              parseIpsumDateTime(a.date).dateTime.toJSDate().getTime()
+          )
+          .slice(0, args.count);
       },
       arc(_, { args }) {
         if (args?.id) {

@@ -45,8 +45,10 @@ export const VisibleEntriesProvider: React.FC<{
 
   const sort = searchParams.get("sort");
 
-  const startDate = searchParams.get("startDate");
-  const endDate = searchParams.get("endDate");
+  const startDate =
+    urlData.layers[0]?.type === "daily_journal" && urlData.layers[0]?.startDate;
+  const endDate =
+    urlData.layers[0]?.type === "daily_journal" && urlData.layers[0]?.endDate;
 
   const { date } = useParams();
 
@@ -62,12 +64,12 @@ export const VisibleEntriesProvider: React.FC<{
     let dateRangeEntries = sortedEntryDateTimes;
 
     if (startDate && endDate) {
-      dateRangeEntries = sortedEntryDateTimes.filter((dateTime) =>
-        dateTime.isInRange(
+      dateRangeEntries = sortedEntryDateTimes.filter((dateTime) => {
+        return dateTime.isInRange(
           IpsumDateTime.fromString(startDate, "url-format"),
           IpsumDateTime.fromString(endDate, "url-format")
-        )
-      );
+        );
+      });
     } else if (date) {
       dateRangeEntries = [IpsumDateTime.fromString(date, "url-format")];
     }

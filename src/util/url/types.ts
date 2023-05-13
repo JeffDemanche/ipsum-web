@@ -14,7 +14,8 @@ interface ConnectionOnlyLayer extends BaseURLLayer {
 
 interface DailyJournalURLLayer extends BaseURLLayer {
   type: "daily_journal";
-  dateRange?: [string, string];
+  startDate?: string;
+  endDate?: string;
 }
 
 interface ArcDetailURLLayer extends BaseURLLayer {
