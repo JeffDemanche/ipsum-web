@@ -23,6 +23,7 @@ const typeDefs = gql`
     entry(entryKey: ID!): Entry
     entries(entryKeys: [ID!]): [Entry]
     recentEntries(count: Int!): [Entry!]!
+    entryDates: [String!]!
 
     arc(id: ID!): Arc
     arcs(ids: [ID!]): [Arc]
@@ -142,6 +143,9 @@ const typePolicies: TypePolicies = {
               parseIpsumDateTime(a.date).dateTime.toJSDate().getTime()
           )
           .slice(0, args.count);
+      },
+      entryDates() {
+        return Object.values(vars.entries()).map((entry) => entry.date);
       },
       arc(_, { args }) {
         if (args?.id) {

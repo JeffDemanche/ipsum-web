@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { DateRange, Range } from "react-date-range";
+import { DateRange, DateRangePicker } from "react-date-range";
 import styles from "./JournalDateRangePicker.less";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
@@ -8,7 +8,7 @@ import { useQuery } from "@apollo/client";
 import { IpsumDateTime } from "util/dates";
 import { theme } from "styles/styles";
 import { dataToSearchParams, urlToData } from "util/url";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 
 export const JournalDateRangeRecentEntriesQuery = gql(`
   query JournalDateRangeRecentEntries($count: Int!) {
@@ -21,9 +21,7 @@ export const JournalDateRangeRecentEntriesQuery = gql(`
 
 export const JournalDateRangeQuery = gql(`
   query JournalDateRange($entryKeys: [ID!]!) {
-    entries(entryKeys: $entryKeys) {
-      entryKey
-    }
+    entryDates
   }
 `);
 
@@ -51,32 +49,38 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
     ];
   }, [hasRecentEntries, recentEntriesData.recentEntries]);
 
-  const [dateRange, setDateRange] = useState<Range[]>(recentEntriesRange);
+  const location = useLocation();
 
-  useEffect(() => {
-    setDateRange(recentEntriesRange);
-  }, [recentEntriesRange]);
+  const searchParams = useMemo(
+    () => urlToData<"journal">(window.location.href),
+    [location]
+  );
+
+  const dateRange = useMemo(() => {
+    if (searchParams.layers?.[0]?.type === "daily_journal") {
+      const startDate = searchParams.layers[0].startDate;
+      const endDate = searchParams.layers[0].endDate;
+
+      if (startDate && endDate) {
+        return [
+          {
+            startDate: new Date(startDate),
+            endDate: new Date(endDate),
+            key: "selection",
+          },
+        ];
+      }
+    }
+    return [
+      {
+        startDate: recentEntriesRange[0].startDate,
+        endDate: recentEntriesRange[0].endDate,
+        key: "selection",
+      },
+    ];
+  }, [recentEntriesRange, searchParams.layers]);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (dateRange.length > 0) {
-      const searchParams = urlToData<"journal">(window.location.href);
-
-      if (searchParams.layers[0]?.type === "daily_journal") {
-        searchParams.layers[0].startDate = IpsumDateTime.fromJsDate(
-          dateRange[0].startDate
-        ).toString("url-format");
-        searchParams.layers[0].endDate = IpsumDateTime.fromJsDate(
-          dateRange[0].endDate
-        ).toString("url-format");
-      }
-
-      navigate({ search: dataToSearchParams(searchParams) }, { replace: true });
-    }
-  }, [dateRange, navigate]);
-
-  const today = new Date();
 
   const dateToMonthEntryKeys = useCallback((item: Date) => {
     const monthStartDay =
@@ -95,15 +99,44 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
     return monthEntryKeys;
   }, []);
 
-  const [monthEntryKeys, setMonthEntryKeys] = useState<string[]>(
+  const navigateToDates = useCallback(
+    (startDate: Date, endDate: Date) => {
+      if (dateRange.length > 0) {
+        const searchParams = urlToData<"journal">(window.location.href);
+
+        if (searchParams.layers[0]?.type === "daily_journal") {
+          searchParams.layers[0].startDate =
+            IpsumDateTime.fromJsDate(startDate).toString("url-format");
+          searchParams.layers[0].endDate =
+            IpsumDateTime.fromJsDate(endDate).toString("url-format");
+        }
+
+        navigate(
+          { search: dataToSearchParams(searchParams) },
+          { replace: true }
+        );
+      }
+    },
+    [dateRange.length, navigate]
+  );
+
+  const today = new Date();
+
+  const [monthEntryKeys, setMonthEntryKeys] = useState<string[]>(() =>
     dateToMonthEntryKeys(
       IpsumDateTime.fromJsDate(today).dateTime.startOf("month").toJSDate()
     )
   );
 
-  const { data } = useQuery(JournalDateRangeQuery, {
-    variables: { entryKeys: monthEntryKeys },
-  });
+  const { data } = useQuery(JournalDateRangeQuery);
+
+  const sortedEntryDates = useMemo(
+    () =>
+      [...data.entryDates].sort(
+        (a, b) => new Date(a).getTime() - new Date(b).getTime()
+      ),
+    [data.entryDates]
+  );
 
   const dayContentRenderer = useCallback(
     (day: Date) => {
@@ -119,8 +152,12 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
           </div>
         );
       } else if (
-        data.entries
-          .map((entry) => entry.entryKey)
+        sortedEntryDates
+          .map((date) =>
+            IpsumDateTime.fromJsDate(new Date(date)).toString(
+              "entry-printed-date"
+            )
+          )
           .includes(
             IpsumDateTime.fromJsDate(day).toString("entry-printed-date")
           )
@@ -135,13 +172,13 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
       } else {
         // Days without entries
         return (
-          <div style={{ color: theme.palette.onSurfaceMediumEmphasis }}>
+          <div style={{ color: theme.palette.onSurfaceHighEmphasis }}>
             {day.getDate()}
           </div>
         );
       }
     },
-    [data.entries, monthEntryKeys]
+    [monthEntryKeys, sortedEntryDates]
   );
 
   return (
@@ -149,11 +186,12 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
       date={today}
       className={styles["picker"]}
       onChange={(item) => {
-        setDateRange([item.selection]);
+        navigateToDates(item.selection.startDate, item.selection.endDate);
       }}
       onShownDateChange={(item) => {
         setMonthEntryKeys(dateToMonthEntryKeys(item));
       }}
+      retainEndDateOnFirstSelection={true}
       moveRangeOnFirstSelection={false}
       dayContentRenderer={dayContentRenderer}
       ranges={dateRange}
@@ -163,6 +201,12 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
       color="black"
       rangeColors={[theme.palette.background.default]}
       shownDate={today}
+      minDate={
+        sortedEntryDates.length ? new Date(sortedEntryDates.at(0)) : undefined
+      }
+      maxDate={
+        sortedEntryDates.length ? new Date(sortedEntryDates.at(-1)) : undefined
+      }
     ></DateRange>
   );
 };

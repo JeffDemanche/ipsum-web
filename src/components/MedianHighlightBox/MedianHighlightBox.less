@@ -10,28 +10,31 @@
   }
 }
 
-.details {
+.details-options {
   display: flex;
+  flex-direction: row;
+
+  .delete-button {
+    justify-self: right;
+  }
+
+  .highlight-title {
+    flex-grow: 1;
+  }
 }
 
-.details-left {
-}
-
-.details-right {
+.details-relations {
   display: flex;
-  flex-grow: 1;
-  justify-content: right;
-  align-items: center;
+
+  .relations-right {
+    display: flex;
+    flex-grow: 1;
+    justify-content: right;
+    align-items: center;
+  }
 }
 
 .top-controls-container {
-  display: none;
-
-  .delete-button {
-    float: right;
-  }
-
-  &.selected {
-    display: block;
-  }
+  display: flex;
+  flex-direction: column;
 }

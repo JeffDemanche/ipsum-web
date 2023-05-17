@@ -1,4 +1,4 @@
-import { Close, Comment, Delete } from "@mui/icons-material";
+import { ArrowLeftRounded, Comment, Delete } from "@mui/icons-material";
 import { Card, IconButton, Tooltip, Typography } from "@mui/material";
 import { ArcTag } from "components/ArcTag";
 import { DiptychContext } from "components/DiptychContext";
@@ -16,6 +16,10 @@ import { HighlightSelectionContext } from "components/HighlightSelectionContext"
 import cx from "classnames";
 import { deleteHighlight, gql, removeHighlightFromEntry } from "util/apollo";
 import { useQuery } from "@apollo/client";
+import { parseIpsumDateTime } from "util/dates";
+import { theme } from "styles/styles";
+import { dataToSearchParams, urlToData } from "util/url";
+import { useNavigate } from "react-router";
 
 interface MedianHighlightBoxProps {
   highlightId: string;
@@ -31,6 +35,7 @@ const MedianHighlightBoxQuery = gql(`
       }
       entry {
         entryKey
+        date
       }
     }
   }
@@ -43,6 +48,10 @@ export const MedianHighlightBox: React.FunctionComponent<
     variables: { highlightId },
   });
   const highlight = data?.highlights?.[0];
+
+  const entryDate = parseIpsumDateTime(data.highlights[0].entry.date).toString(
+    "entry-printed-date-nice"
+  );
 
   const { setTopLayer, setTopConnection } = useContext(DiptychContext);
 
@@ -62,11 +71,23 @@ export const MedianHighlightBox: React.FunctionComponent<
     setHoveredHighlightIds,
   } = useContext(HighlightSelectionContext);
 
+  const navigate = useNavigate();
+
   const onCardClick = useCallback(
     (e: React.MouseEvent) => {
       setSelectedHighlightIds([highlightId]);
+
+      const searchParams = urlToData<"journal">(window.location.href);
+      if (searchParams.layers[0]?.type === "daily_journal") {
+        const highlightEntryDate = parseIpsumDateTime(highlight.entry.date);
+        searchParams.layers[0].startDate =
+          highlightEntryDate.toString("url-format");
+        searchParams.layers[0].endDate =
+          highlightEntryDate.toString("url-format");
+      }
+      navigate({ search: dataToSearchParams(searchParams) }, { replace: true });
     },
-    [highlightId, setSelectedHighlightIds]
+    [highlight.entry.date, highlightId, setSelectedHighlightIds]
   );
 
   const highlightHovered = hoveredHighlightIds?.includes(highlightId);
@@ -81,12 +102,12 @@ export const MedianHighlightBox: React.FunctionComponent<
   }, [highlightBoxSelected]);
 
   const cardColor = useMemo(() => {
-    let colorParams = { saturation: 30, lightness: 90 };
+    let colorParams = { saturation: 30, lightness: 40 };
     if (highlightHovered) {
-      colorParams = { saturation: 30, lightness: 80 };
+      colorParams = { saturation: 30, lightness: 30 };
     }
     if (highlightBoxSelected) {
-      colorParams = { saturation: 40, lightness: 70 };
+      colorParams = { saturation: 20, lightness: 20 };
     }
 
     return highlight.arc?.id
@@ -140,41 +161,74 @@ export const MedianHighlightBox: React.FunctionComponent<
       sx={{ backgroundColor: cardColor }}
       ref={boxRef}
     >
-      <div
-        className={cx(
-          highlightBoxSelected && styles["selected"],
-          styles["top-controls-container"]
-        )}
-      >
-        <Tooltip title="Close highlight">
-          <IconButton size="small" onClick={onCloseClick}>
-            <Close />
-          </IconButton>
-        </Tooltip>
-        <Tooltip className={styles["delete-button"]} title="Delete highlight">
-          <IconButton size="small" onClick={onDeleteClick}>
-            <Delete />
-          </IconButton>
-        </Tooltip>
-      </div>
+      {highlightBoxSelected ? (
+        <div
+          className={cx(
+            styles["selected"],
+            styles["details-controls-container"]
+          )}
+        >
+          <div className={styles["details-options"]}>
+            <Tooltip title="Close highlight">
+              <IconButton size="small" color="secondary" onClick={onCloseClick}>
+                <ArrowLeftRounded />
+              </IconButton>
+            </Tooltip>
+            <Typography
+              variant="h6"
+              color={theme.palette.onPrimaryHighEmphasis}
+              className={styles["highlight-title"]}
+            >
+              {entryDate}
+            </Typography>
+            <div className={styles["options-buttons"]}>
+              <Tooltip title="Comment">
+                <IconButton color="secondary" size="small">
+                  <Comment />
+                </IconButton>
+              </Tooltip>
+              <Tooltip
+                className={styles["delete-button"]}
+                title="Delete highlight"
+              >
+                <IconButton
+                  color="secondary"
+                  size="small"
+                  onClick={onDeleteClick}
+                >
+                  <Delete />
+                </IconButton>
+              </Tooltip>
+            </div>
+          </div>
+          <div className={styles["details-relations"]}>
+            <div className={styles["relations-right"]}>
+              <Typography color={theme.palette.onPrimaryHighEmphasis}>
+                relates to&nbsp;
+              </Typography>
+              <ArcTag
+                arcForToken={{
+                  type: "from id",
+                  id: highlight?.arc.id,
+                }}
+                onClick={onArcClick}
+              ></ArcTag>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className={cx(styles["top-controls-container"])}>
+          <Typography
+            variant="h6"
+            color={theme.palette.onPrimaryHighEmphasis}
+            className={styles["highlight-title"]}
+          >
+            {entryDate}
+          </Typography>
+        </div>
+      )}
+
       <HighlightExcerpt highlightId={highlightId} />
-      <div className={styles["details"]}>
-        <div className={styles["details-left"]}>
-          <IconButton size="small">
-            <Comment />
-          </IconButton>
-        </div>
-        <div className={styles["details-right"]}>
-          <Typography>relates to&nbsp;</Typography>
-          <ArcTag
-            arcForToken={{
-              type: "from id",
-              id: highlight?.arc.id,
-            }}
-            onClick={onArcClick}
-          ></ArcTag>
-        </div>
-      </div>
     </Card>
   );
 };

@@ -47,14 +47,19 @@ declare module "@mui/material/Paper" {
 export const theme = createTheme({
   typography: {
     allVariants: {},
-    h1: { fontFamily: "Inria Sans", fontWeight: "light", fontSize: "96px" },
-    h2: { fontFamily: "Inria Sans", fontWeight: "light", fontSize: "60px" },
-    h3: { fontFamily: "Inria Sans", fontWeight: "regular", fontSize: "30px" },
-    h4: { fontFamily: "Inria Sans", fontWeight: "regular", fontSize: "24px" },
-    h5: { fontFamily: "Inria Sans", fontWeight: "regular", fontSize: "20px" },
-    h6: { fontFamily: "Inria Sans", fontWeight: "bold", fontSize: "20px" },
+    h1: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "96px" },
+    h2: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "60px" },
+    h3: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "30px" },
+    h4: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "24px" },
+    h5: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "20px" },
+    h6: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "16px" },
     body1: { fontFamily: "Meiryo", fontWeight: "regular", fontSize: "16px" },
     body2: { fontFamily: "Meiryo", fontWeight: "regular", fontSize: "14px" },
+    subtitle1: {
+      fontFamily: "Inria Sans",
+      fontWeight: "100",
+      fontSize: "14px",
+    },
   },
   palette: {
     primary: {
@@ -67,11 +72,11 @@ export const theme = createTheme({
       default: brown[200],
     },
     onSurfaceDisabled: "rgba(0, 0, 0, 0.38)",
-    onSurfaceHighEmphasis: "rgba(0, 0, 0, 0.60)",
-    onSurfaceMediumEmphasis: "rgba(0, 0, 0, 0.87)",
+    onSurfaceHighEmphasis: "rgba(0, 0, 0, 0.87)",
+    onSurfaceMediumEmphasis: "rgba(0, 0, 0, 0.60)",
     onPrimaryDisabled: "rgba(255, 255, 255, 0.38)",
-    onPrimaryHighEmphasis: "rgba(255, 255, 255, 0.60)",
-    onPrimaryMediumEmphasis: "rgba(255, 255, 255, 0.87)",
+    onPrimaryHighEmphasis: "rgba(255, 255, 255, 0.87)",
+    onPrimaryMediumEmphasis: "rgba(255, 255, 255, 0.60)",
   },
   components: {
     MuiDrawer: {
@@ -81,7 +86,16 @@ export const theme = createTheme({
     MuiOutlinedInput: {},
     MuiTextField: {},
     MuiDivider: {},
+    MuiIconButton: {
+      styleOverrides: {
+        sizeSmall: {
+          height: "24px",
+          width: "24px",
+        },
+      },
+    },
     MuiButton: {
+      variants: [],
       styleOverrides: {
         root: {
           textTransform: "none",

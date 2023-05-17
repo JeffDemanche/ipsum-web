@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import React, { useMemo } from "react";
+import { useLocation } from "react-router";
 import { useParams } from "react-router";
-import { useSearchParams } from "react-router-dom";
 import { gql } from "util/apollo";
 import { IpsumDateTime, sortDates } from "util/dates";
 import { urlToData } from "util/url";
@@ -39,16 +39,24 @@ export const VisibleEntriesProvider: React.FC<{
     data: { entries },
   } = useQuery(VisibleEntriesProviderQuery);
 
-  const [searchParams] = useSearchParams();
+  let sort: "asc" | "desc" = "desc";
+  sort = "desc";
 
-  const urlData = urlToData<"journal">(window.location.href);
+  const location = useLocation();
 
-  const sort = searchParams.get("sort");
+  const searchParams = useMemo(
+    () => urlToData<"journal">(window.location.href),
+    [location]
+  );
 
   const startDate =
-    urlData.layers[0]?.type === "daily_journal" && urlData.layers[0]?.startDate;
+    searchParams.layers?.[0] &&
+    searchParams.layers[0]?.type === "daily_journal" &&
+    searchParams.layers[0]?.startDate;
   const endDate =
-    urlData.layers[0]?.type === "daily_journal" && urlData.layers[0]?.endDate;
+    searchParams.layers?.[0] &&
+    searchParams.layers[0]?.type === "daily_journal" &&
+    searchParams.layers[0]?.endDate;
 
   const { date } = useParams();
 
@@ -57,6 +65,7 @@ export const VisibleEntriesProvider: React.FC<{
     entryKeysInState.map((entryKey) =>
       IpsumDateTime.fromString(entryKey, "entry-printed-date")
     ),
+    // @ts-expect-error
     sort === "asc"
   );
 
