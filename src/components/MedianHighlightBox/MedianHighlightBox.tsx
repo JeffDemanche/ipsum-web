@@ -73,22 +73,19 @@ export const MedianHighlightBox: React.FunctionComponent<
 
   const navigate = useNavigate();
 
-  const onCardClick = useCallback(
-    (e: React.MouseEvent) => {
-      setSelectedHighlightIds([highlightId]);
+  const onCardClick = useCallback(() => {
+    setSelectedHighlightIds([highlightId]);
 
-      const searchParams = urlToData<"journal">(window.location.href);
-      if (searchParams.layers[0]?.type === "daily_journal") {
-        const highlightEntryDate = parseIpsumDateTime(highlight.entry.date);
-        searchParams.layers[0].startDate =
-          highlightEntryDate.toString("url-format");
-        searchParams.layers[0].endDate =
-          highlightEntryDate.toString("url-format");
-      }
-      navigate({ search: dataToSearchParams(searchParams) }, { replace: true });
-    },
-    [highlight.entry.date, highlightId, setSelectedHighlightIds]
-  );
+    const searchParams = urlToData<"journal">(window.location.href);
+    if (searchParams.layers[0]?.type === "daily_journal") {
+      const highlightEntryDate = parseIpsumDateTime(highlight.entry.date);
+      searchParams.layers[0].startDate =
+        highlightEntryDate.toString("url-format");
+      searchParams.layers[0].endDate =
+        highlightEntryDate.toString("url-format");
+    }
+    navigate({ search: dataToSearchParams(searchParams) }, { replace: true });
+  }, [highlight.entry.date, highlightId, navigate, setSelectedHighlightIds]);
 
   const highlightHovered = hoveredHighlightIds?.includes(highlightId);
   const highlightBoxSelected = selectedHighlightIds.includes(highlightId);

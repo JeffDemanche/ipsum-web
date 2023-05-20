@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { DateRange, DateRangePicker } from "react-date-range";
+import React, { useCallback, useMemo, useState } from "react";
+import { DateRange } from "react-date-range";
 import styles from "./JournalDateRangePicker.less";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
@@ -39,10 +39,10 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
     return [
       {
         startDate: hasRecentEntries
-          ? new Date(recentEntriesData.recentEntries.at(-1)?.date)
+          ? new Date(recentEntriesData.recentEntries.at(0)?.date)
           : new Date(),
         endDate: hasRecentEntries
-          ? new Date(recentEntriesData.recentEntries.at(0)?.date)
+          ? new Date(recentEntriesData.recentEntries.at(-1)?.date)
           : new Date(),
         key: "selection",
       },
@@ -191,13 +191,13 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
       onShownDateChange={(item) => {
         setMonthEntryKeys(dateToMonthEntryKeys(item));
       }}
-      retainEndDateOnFirstSelection={true}
-      moveRangeOnFirstSelection={false}
+      // retainEndDateOnFirstSelection={true}
+      // moveRangeOnFirstSelection={false}
       dayContentRenderer={dayContentRenderer}
       ranges={dateRange}
       direction="vertical"
       preventSnapRefocus={true}
-      calendarFocus="backwards"
+      calendarFocus="forwards"
       color="black"
       rangeColors={[theme.palette.background.default]}
       shownDate={today}
