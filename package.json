@@ -71,6 +71,7 @@
     "react-dom": "^18.0.0",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
+    "simplebar-react": "^3.2.4",
     "style-loader": "^3.3.1",
     "ts-jest": "^28.0.2",
     "ts-loader": "^9.2.8",
