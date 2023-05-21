@@ -20,6 +20,7 @@ import { parseIpsumDateTime } from "util/dates";
 import { theme } from "styles/styles";
 import { dataToSearchParams, urlToData } from "util/url";
 import { useNavigate } from "react-router";
+import { Linker } from "components/Linker";
 
 interface MedianHighlightBoxProps {
   highlightId: string;
@@ -200,16 +201,25 @@ export const MedianHighlightBox: React.FunctionComponent<
           </div>
           <div className={styles["details-relations"]}>
             <div className={styles["relations-right"]}>
-              <Typography color={theme.palette.onPrimaryHighEmphasis}>
-                relates to&nbsp;
-              </Typography>
-              <ArcTag
-                arcForToken={{
-                  type: "from id",
-                  id: highlight?.arc.id,
-                }}
-                onClick={onArcClick}
-              ></ArcTag>
+              <div className={styles["relation"]}>
+                <Typography
+                  variant="body2"
+                  display="flex"
+                  color={theme.palette.onPrimaryHighEmphasis}
+                >
+                  relates to&nbsp;
+                </Typography>
+                <ArcTag
+                  arcForToken={{
+                    type: "from id",
+                    id: highlight?.arc.id,
+                  }}
+                  onClick={onArcClick}
+                ></ArcTag>
+              </div>
+              <div>
+                <Linker className={styles["linker"]}></Linker>
+              </div>
             </div>
           </div>
         </div>

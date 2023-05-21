@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { gql } from "util/apollo";
 
 interface UseSearchArcsParams {
+  skip?: boolean;
   query: string;
   maxResults?: number;
 }
@@ -21,14 +22,15 @@ const UseSearchArcsQuery = gql(`
 `);
 
 export const useSearchArcs = ({
+  skip,
   query,
   maxResults = 10,
 }: UseSearchArcsParams): UseSearchArcsReturn => {
-  const {
-    data: { arcs },
-  } = useQuery(UseSearchArcsQuery);
+  const { data } = useQuery(UseSearchArcsQuery, { skip });
 
-  const allArcs = Object.values(arcs).filter((arc) => {
+  if (skip) return { returnedArcs: [] };
+
+  const allArcs = Object.values(data?.arcs).filter((arc) => {
     return arc.name.toLowerCase().includes(query.toLowerCase());
   });
 

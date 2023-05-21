@@ -28,6 +28,7 @@ const documents = {
     "\n  query JournalDateRangeRecentEntries($count: Int!) {\n    recentEntries(count: $count) {\n      entryKey\n      date\n    }\n  }\n": types.JournalDateRangeRecentEntriesDocument,
     "\n  query JournalDateRange($entryKeys: [ID!]!) {\n    entryDates\n  }\n": types.JournalDateRangeDocument,
     "\n  query JournalTitle {\n    journalTitle\n  }\n": types.JournalTitleDocument,
+    "\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n": types.LinkerDocument,
     "\n  query MedianHighlightBox($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      arc {\n        id\n        color\n      }\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n": types.MedianHighlightBoxDocument,
     "\n  query VisibleEntries {\n    entries {\n      entryKey\n      date\n    }\n  }\n": types.VisibleEntriesDocument,
     "\n  query UseHighlightSearch($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      arc {\n        id\n        highlights {\n          id\n          entry {\n            entryKey\n          }\n        }\n      }\n      entry {\n        entryKey\n      }\n    }\n  }\n": types.UseHighlightSearchDocument,
@@ -108,6 +109,10 @@ export function gql(source: "\n  query JournalDateRange($entryKeys: [ID!]!) {\n 
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query JournalTitle {\n    journalTitle\n  }\n"): (typeof documents)["\n  query JournalTitle {\n    journalTitle\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n"): (typeof documents)["\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

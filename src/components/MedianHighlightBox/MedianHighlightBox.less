@@ -28,9 +28,19 @@
 
   .relations-right {
     display: flex;
+    flex-direction: column;
+    gap: 4px;
     flex-grow: 1;
     justify-content: right;
-    align-items: center;
+    align-items: flex-end;
+
+    .relation {
+      display: flex;
+    }
+
+    .linker {
+      max-width: 200px;
+    }
   }
 }
 
