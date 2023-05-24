@@ -25,6 +25,8 @@ const SerializedSchema = t.type({
       id: t.string,
       name: t.string,
       color: t.number,
+      incomingRelations: t.array(t.string),
+      outgoingRelations: t.array(t.string),
     })
   ),
   highlights: t.record(
@@ -34,6 +36,19 @@ const SerializedSchema = t.type({
       id: t.string,
       arc: t.string,
       entry: t.string,
+      outgoingRelations: t.array(t.string),
+    })
+  ),
+  relations: t.record(
+    t.string,
+    t.type({
+      __typename: t.literal("Relation"),
+      id: t.string,
+      subjectType: t.union([t.literal("Arc"), t.literal("Highlight")]),
+      subject: t.string,
+      predicate: t.string,
+      objectType: t.literal("Arc"),
+      object: t.string,
     })
   ),
 });
@@ -70,5 +85,6 @@ export const loadApolloState = (serialized: string): string[] | undefined => {
     vars.entries(parsed.right.entries);
     vars.arcs(parsed.right.arcs);
     vars.highlights(parsed.right.highlights);
+    vars.relations(parsed.right.relations);
   }
 };

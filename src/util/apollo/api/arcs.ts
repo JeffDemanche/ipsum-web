@@ -18,6 +18,8 @@ export const createArc = ({
     id: arcId,
     name,
     color,
+    incomingRelations: [],
+    outgoingRelations: [],
   };
   vars.arcs({ ...vars.arcs(), [arcId]: arc });
   autosave();

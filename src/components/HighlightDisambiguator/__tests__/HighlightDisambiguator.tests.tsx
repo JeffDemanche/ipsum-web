@@ -35,8 +35,22 @@ const TestDisambiguator: React.FunctionComponent<{
 describe("HighlightDisambiguator", () => {
   beforeEach(() => {
     mockArcs({
-      arc_1: { __typename: "Arc", id: "arc_1", color: 0, name: "Arc one" },
-      arc_2: { __typename: "Arc", id: "arc_2", color: 100, name: "Arc two" },
+      arc_1: {
+        __typename: "Arc",
+        id: "arc_1",
+        color: 0,
+        name: "Arc one",
+        incomingRelations: [],
+        outgoingRelations: [],
+      },
+      arc_2: {
+        __typename: "Arc",
+        id: "arc_2",
+        color: 100,
+        name: "Arc two",
+        incomingRelations: [],
+        outgoingRelations: [],
+      },
     });
     mockHighlights({
       highlight_1: {
@@ -44,12 +58,14 @@ describe("HighlightDisambiguator", () => {
         arc: "arc_1",
         entry: "",
         id: "highlight_1",
+        outgoingRelations: [],
       },
       highlight_2: {
         __typename: "Highlight",
         arc: "arc_2",
         entry: "",
         id: "highlight_2",
+        outgoingRelations: [],
       },
     });
   });

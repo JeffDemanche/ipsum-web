@@ -46,12 +46,16 @@ describe("ArcAssignmentPopper", () => {
         id: "red_arc_id",
         name: "red_arc",
         color: 0,
+        incomingRelations: [],
+        outgoingRelations: [],
       },
       blue_arc_id: {
         __typename: "Arc",
         id: "blue_arc_id",
         name: "blue_arc",
         color: 127,
+        incomingRelations: [],
+        outgoingRelations: [],
       },
     });
     jest.mocked(useSearchArcs).mockReturnValue({

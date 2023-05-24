@@ -12,6 +12,7 @@ import {
   QueryArcsArgs,
   QueryEntriesArgs,
   QueryHighlightsArgs,
+  QueryRelationsArgs,
 } from "./__generated__/graphql";
 
 const typeDefs = gql`
@@ -30,6 +31,9 @@ const typeDefs = gql`
 
     highlight(id: ID!): Highlight
     highlights(ids: [ID!], entries: [ID!], arcs: [ID!]): [Highlight]
+
+    relation(id: ID!): Relation
+    relations(ids: [ID!]): [Relation]
   }
 
   type JournalMetadata {
@@ -48,12 +52,26 @@ const typeDefs = gql`
     name: String!
     color: Int!
     highlights: [Highlight!]!
+
+    incomingRelations: [Relation!]!
+    outgoingRelations: [Relation!]!
   }
 
   type Highlight {
     id: ID!
     arc: Arc!
     entry: Entry!
+
+    outgoingRelations: [Relation!]!
+  }
+
+  union RelationSubject = Arc | Highlight
+
+  type Relation {
+    id: ID!
+    subject: RelationSubject!
+    predicate: String!
+    object: Arc!
   }
 `;
 
@@ -73,12 +91,24 @@ export type UnhydratedType = {
     id: string;
     name: string;
     color: number;
+    incomingRelations: string[];
+    outgoingRelations: string[];
   };
   Highlight: {
     __typename: "Highlight";
     id: string;
     arc: string;
     entry: string;
+    outgoingRelations: string[];
+  };
+  Relation: {
+    __typename: "Relation";
+    id: string;
+    subjectType: "Arc" | "Highlight";
+    subject: string;
+    predicate: string;
+    objectType: "Arc";
+    object: string;
   };
 };
 
@@ -89,6 +119,7 @@ export const vars = {
   entries: makeVar<{ [entryKey in string]: UnhydratedType["Entry"] }>({}),
   arcs: makeVar<{ [id in string]: UnhydratedType["Arc"] }>({}),
   highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
+  relations: makeVar<{ [id in string]: UnhydratedType["Relation"] }>({}),
 };
 
 export const serializeVars: (keyof typeof vars)[] = [
@@ -98,6 +129,7 @@ export const serializeVars: (keyof typeof vars)[] = [
   "entries",
   "arcs",
   "highlights",
+  "relations",
 ];
 
 export const initializeState = () => {
@@ -107,6 +139,7 @@ export const initializeState = () => {
   vars.entries({});
   vars.arcs({});
   vars.highlights({});
+  vars.relations({});
 };
 
 const typePolicies: TypePolicies = {
@@ -178,6 +211,18 @@ const typePolicies: TypePolicies = {
         }
         return Object.values(vars.highlights());
       },
+      relation(_, { args }) {
+        if (args?.id) {
+          return vars.relations()[args.id];
+        }
+        return undefined;
+      },
+      relations(_, { args }: { args?: QueryRelationsArgs }) {
+        if (args?.ids) {
+          return args.ids.map((id) => vars.relations()[id]);
+        }
+        return Object.values(vars.relations());
+      },
     },
   },
   Entry: {
@@ -198,6 +243,12 @@ const typePolicies: TypePolicies = {
           (highlight) => highlight.arc === readField("id")
         );
       },
+      incomingRelations(relationIds: string[]) {
+        return relationIds.map((id) => vars.relations()[id]);
+      },
+      outgoingRelations(relationIds: string[]) {
+        return relationIds.map((id) => vars.relations()[id]);
+      },
     },
   },
   Highlight: {
@@ -208,6 +259,30 @@ const typePolicies: TypePolicies = {
       },
       entry(entryKey) {
         return vars.entries()[entryKey];
+      },
+      outgoingRelations(relationIds: string[]) {
+        return relationIds.map((id) => vars.relations()[id]);
+      },
+    },
+  },
+  Relation: {
+    keyFields: ["id"],
+    fields: {
+      subject(subjectId: string, { readField }) {
+        const id: string = readField("id");
+        const type = vars.relations()[id].subjectType;
+        if (type === "Arc") {
+          return vars.arcs()[subjectId];
+        } else if (type === "Highlight") {
+          return vars.highlights()[subjectId];
+        }
+      },
+      object(objectId: string, { readField }) {
+        const id: string = readField("id");
+        const type = vars.relations()[id].objectType;
+        if (type === "Arc") {
+          return vars.arcs()[objectId];
+        }
       },
     },
   },

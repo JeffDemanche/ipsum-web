@@ -19,7 +19,9 @@ export type Arc = {
   color: Scalars['Int'];
   highlights: Array<Highlight>;
   id: Scalars['ID'];
+  incomingRelations: Array<Relation>;
   name: Scalars['String'];
+  outgoingRelations: Array<Relation>;
 };
 
 export type Entry = {
@@ -35,6 +37,7 @@ export type Highlight = {
   arc: Arc;
   entry: Entry;
   id: Scalars['ID'];
+  outgoingRelations: Array<Relation>;
 };
 
 export type JournalMetadata = {
@@ -55,6 +58,8 @@ export type Query = {
   journalMetadata: JournalMetadata;
   journalTitle: Scalars['String'];
   recentEntries: Array<Entry>;
+  relation?: Maybe<Relation>;
+  relations?: Maybe<Array<Maybe<Relation>>>;
 };
 
 
@@ -93,6 +98,26 @@ export type QueryHighlightsArgs = {
 export type QueryRecentEntriesArgs = {
   count: Scalars['Int'];
 };
+
+
+export type QueryRelationArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryRelationsArgs = {
+  ids?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+export type Relation = {
+  __typename?: 'Relation';
+  id: Scalars['ID'];
+  object: Arc;
+  predicate: Scalars['String'];
+  subject: RelationSubject;
+};
+
+export type RelationSubject = Arc | Highlight;
 
 export type ArcAssignmentPopperQueryVariables = Exact<{ [key: string]: never; }>;
 

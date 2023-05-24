@@ -11,6 +11,7 @@ import { readFileSync, existsSync } from "fs";
 import repl from "repl";
 import { migrateEntityTextArcAssignments } from "./migrate-entity-text-arc-assignments";
 import { prettyPrint } from "./pretty-print";
+import { migrateRelations } from "./relations-migration-1";
 import { renameField } from "./rename";
 import { write } from "./write";
 
@@ -32,7 +33,7 @@ try {
 }
 
 const originalData = JSON.parse(data);
-let modifiedData = { ...originalData };
+let modifiedData = JSON.parse(data);
 
 const replServer = repl.start({ prompt: "project-tools => " });
 
@@ -137,5 +138,10 @@ replServer.defineCommand("add_typenames", {
     modifiedData.highlights = highlightsCopy;
     modifiedData.entries = entriesCopy;
     modifiedData.arcs = arcsCopy;
+  },
+});
+replServer.defineCommand("migrate_relations", {
+  action() {
+    migrateRelations(modifiedData);
   },
 });

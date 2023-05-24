@@ -13,7 +13,14 @@ import { HighlightDecoration } from "../HighlightDecoration";
 describe("HighlightDecoration", () => {
   beforeEach(() => {
     mockArcs({
-      arc_id: { __typename: "Arc", color: 0, id: "arc_id", name: "foxes" },
+      arc_id: {
+        __typename: "Arc",
+        color: 0,
+        id: "arc_id",
+        name: "foxes",
+        incomingRelations: [],
+        outgoingRelations: [],
+      },
     });
     mockHighlights({
       highlight_id: {
@@ -21,6 +28,7 @@ describe("HighlightDecoration", () => {
         id: "highlight_id",
         arc: "arc_id",
         entry: "",
+        outgoingRelations: [],
       },
     });
   });

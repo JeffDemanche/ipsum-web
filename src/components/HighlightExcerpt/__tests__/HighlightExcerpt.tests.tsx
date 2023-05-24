@@ -37,6 +37,7 @@ describe("HighlightExcerpt", () => {
         id: "highlight_1",
         entry: "entry_1",
         arc: "",
+        outgoingRelations: [],
       },
     });
   });

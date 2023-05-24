@@ -2,15 +2,23 @@ import { UnhydratedType, vars } from "../client";
 import { v4 as uuidv4 } from "uuid";
 import { autosave } from "../autosave";
 
-export const createHighlight = (
-  highlight: Omit<UnhydratedType["Highlight"], "__typename" | "id">
-): UnhydratedType["Highlight"] => {
+export const createHighlight = ({
+  arc,
+  entry,
+  outgoingRelations,
+}: {
+  arc: string;
+  entry: string;
+  outgoingRelations?: string[];
+}): UnhydratedType["Highlight"] => {
   const highlightId = uuidv4();
 
   const result: UnhydratedType["Highlight"] = {
     __typename: "Highlight",
     id: highlightId,
-    ...highlight,
+    arc,
+    entry,
+    outgoingRelations: outgoingRelations ?? [],
   };
   vars.highlights({
     ...vars.highlights(),

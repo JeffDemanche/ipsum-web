@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import { createArc } from "../api/arcs";
 import { createEntry } from "../api/entries";
 import { createHighlight } from "../api/highlights";
+import { createRelation } from "../api/relations";
 import { vars, client, initializeState } from "../client";
 
 jest.mock("../autosave");
@@ -121,7 +122,8 @@ describe("apollo client", () => {
       });
 
       expect(result.highlight.id).toEqual(highlight.id);
-      expect(result.highlight.arc).toEqual(vars.arcs()[arc.id]);
+      expect(result.highlight.arc.id).toEqual(arc.id);
+      expect(result.highlight.arc.name).toEqual(arc.name);
       expect(result.highlight.entry).toEqual({
         __typename: "Entry",
         entryKey: "1/2/2020",
@@ -162,7 +164,8 @@ describe("apollo client", () => {
         `),
       });
 
-      expect(result.highlights[0].arc).toEqual(vars.arcs()[arc.id]);
+      expect(result.highlights[0].arc.id).toEqual(arc.id);
+      expect(result.highlights[0].arc.name).toEqual(arc.name);
       expect(result.highlights[0].entry).toEqual(
         vars.entries()[entry.entryKey]
       );
@@ -208,6 +211,52 @@ describe("apollo client", () => {
       expect(result.entries[0].highlights[0].id).toEqual(highlight1.id);
       expect(result.entries[0].highlights[1].id).toEqual(highlight2.id);
       expect(result.entries[1].highlights).toHaveLength(0);
+    });
+
+    it("should hydrate relations", () => {
+      const highlight1 = createHighlight({
+        arc: "",
+        entry: "1/2/2020",
+      });
+      const arc1 = createArc({ name: "test arc 1" });
+      const relation1 = createRelation({
+        object: arc1.id,
+        objectType: "Arc",
+        subject: highlight1.id,
+        subjectType: "Highlight",
+        predicate: "relates to",
+      });
+
+      const result = client.readQuery({
+        query: gql(`
+          query ReadRelation($id: ID!) {
+            relation(id: $id) {
+              id
+              subject {
+                __typename
+                ... on Highlight {
+                  id
+                }
+                ... on Arc {
+                  id
+                }
+              }
+              object {
+                __typename
+                id
+                name
+              }
+            } 
+          }
+        `),
+        variables: {
+          id: relation1.id,
+        },
+      });
+
+      expect(result.relation.id).toEqual(relation1.id);
+      expect(result.relation.subject.__typename).toEqual("Highlight");
+      expect(result.relation.object.__typename).toEqual("Arc");
     });
   });
 });
