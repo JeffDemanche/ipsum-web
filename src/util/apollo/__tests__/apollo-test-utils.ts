@@ -21,3 +21,9 @@ export const mockHighlights = (highlight: {
 }) => {
   vars.highlights(highlight);
 };
+
+export const mockRelations = (relations: {
+  [id in string]: UnhydratedType["Relation"];
+}) => {
+  vars.relations(relations);
+};

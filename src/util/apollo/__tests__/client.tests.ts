@@ -53,12 +53,24 @@ describe("apollo client", () => {
         contentState: "Hello, world!",
       });
       const highlight1 = createHighlight({
-        arc: arc1.id,
         entry: "1/2/2020",
       });
-      createHighlight({
-        arc: arc2.id,
+      const highlight2 = createHighlight({
         entry: "1/2/2020",
+      });
+      createRelation({
+        object: arc1.id,
+        objectType: "Arc",
+        subject: highlight1.id,
+        subjectType: "Highlight",
+        predicate: "relates to",
+      });
+      createRelation({
+        object: arc2.id,
+        objectType: "Arc",
+        subject: highlight2.id,
+        subjectType: "Highlight",
+        predicate: "relates to",
       });
 
       const result = client.readQuery({
@@ -66,10 +78,15 @@ describe("apollo client", () => {
           query ReadHighlights($arc: [ID!]) {
             highlights(arcs: $arcs) {
               id
-              arc {
-                id
-                name
-                color
+              outgoingRelations {
+                object {
+                  __typename
+                  ... on Arc {
+                    id
+                    name
+                    color
+                  }
+                }
               }
               entry {
                 entryKey
@@ -86,6 +103,9 @@ describe("apollo client", () => {
 
       expect(result.highlights).toHaveLength(1);
       expect(result.highlights[0].id).toEqual(highlight1.id);
+      expect(result.highlights[0].outgoingRelations[0].object.id).toEqual(
+        arc1.id
+      );
     });
 
     it("queries a single highlight", () => {
@@ -96,8 +116,14 @@ describe("apollo client", () => {
         contentState: "Hello, world!",
       });
       const highlight = createHighlight({
-        arc: arc.id,
         entry: entry.entryKey,
+      });
+      createRelation({
+        object: arc.id,
+        objectType: "Arc",
+        predicate: "relates to",
+        subject: highlight.id,
+        subjectType: "Highlight",
       });
 
       const result = client.readQuery({
@@ -105,10 +131,15 @@ describe("apollo client", () => {
           query ReadHighlight($highlight: ID!) {
             highlight(id: $highlight) {
               id
-              arc {
-                id
-                name
-                color
+              outgoingRelations {
+                object {
+                  __typename
+                  ... on Arc {
+                    id
+                    name
+                    color
+                  }
+                }
               }
               entry {
                 entryKey
@@ -122,8 +153,10 @@ describe("apollo client", () => {
       });
 
       expect(result.highlight.id).toEqual(highlight.id);
-      expect(result.highlight.arc.id).toEqual(arc.id);
-      expect(result.highlight.arc.name).toEqual(arc.name);
+      expect(result.highlight.outgoingRelations[0].object.id).toEqual(arc.id);
+      expect(result.highlight.outgoingRelations[0].object.name).toEqual(
+        arc.name
+      );
       expect(result.highlight.entry).toEqual({
         __typename: "Entry",
         entryKey: "1/2/2020",
@@ -139,9 +172,15 @@ describe("apollo client", () => {
         date: "1/2/2020",
         contentState: "Hello, world!",
       });
-      createHighlight({
-        arc: arc.id,
+      const highlight = createHighlight({
         entry: "1/2/2020",
+      });
+      createRelation({
+        object: arc.id,
+        objectType: "Arc",
+        predicate: "relates to",
+        subject: highlight.id,
+        subjectType: "Highlight",
       });
 
       const result = client.readQuery({
@@ -149,10 +188,15 @@ describe("apollo client", () => {
           query ReadHighlight {
             highlights {
               id
-              arc {
-                id
-                name
-                color
+              outgoingRelations {
+                object {
+                  __typename
+                  ... on Arc {
+                    id
+                    name
+                    color
+                  }
+                }
               }
               entry {
                 entryKey
@@ -164,8 +208,12 @@ describe("apollo client", () => {
         `),
       });
 
-      expect(result.highlights[0].arc.id).toEqual(arc.id);
-      expect(result.highlights[0].arc.name).toEqual(arc.name);
+      expect(result.highlights[0].outgoingRelations[0].object.id).toEqual(
+        arc.id
+      );
+      expect(result.highlights[0].outgoingRelations[0].object.name).toEqual(
+        arc.name
+      );
       expect(result.highlights[0].entry).toEqual(
         vars.entries()[entry.entryKey]
       );
@@ -183,11 +231,9 @@ describe("apollo client", () => {
         contentState: "Hello, world!",
       });
       const highlight1 = createHighlight({
-        arc: "",
         entry: "1/2/2020",
       });
       const highlight2 = createHighlight({
-        arc: "",
         entry: "1/2/2020",
       });
 
@@ -215,8 +261,8 @@ describe("apollo client", () => {
 
     it("should hydrate relations", () => {
       const highlight1 = createHighlight({
-        arc: "",
         entry: "1/2/2020",
+        outgoingRelations: [],
       });
       const arc1 = createArc({ name: "test arc 1" });
       const relation1 = createRelation({

@@ -4,6 +4,7 @@ import { HighlightDisambiguator } from "../HighlightDisambiguator";
 import {
   mockArcs,
   mockHighlights,
+  mockRelations,
 } from "util/apollo/__tests__/apollo-test-utils";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "util/apollo";
@@ -40,7 +41,7 @@ describe("HighlightDisambiguator", () => {
         id: "arc_1",
         color: 0,
         name: "Arc one",
-        incomingRelations: [],
+        incomingRelations: ["relation_1"],
         outgoingRelations: [],
       },
       arc_2: {
@@ -48,24 +49,42 @@ describe("HighlightDisambiguator", () => {
         id: "arc_2",
         color: 100,
         name: "Arc two",
-        incomingRelations: [],
+        incomingRelations: ["relation_2"],
         outgoingRelations: [],
       },
     });
     mockHighlights({
       highlight_1: {
         __typename: "Highlight",
-        arc: "arc_1",
         entry: "",
         id: "highlight_1",
-        outgoingRelations: [],
+        outgoingRelations: ["relation_1"],
       },
       highlight_2: {
         __typename: "Highlight",
-        arc: "arc_2",
         entry: "",
         id: "highlight_2",
-        outgoingRelations: [],
+        outgoingRelations: ["relation_2"],
+      },
+    });
+    mockRelations({
+      relation_1: {
+        __typename: "Relation",
+        id: "relation_1",
+        object: "arc_1",
+        objectType: "Arc",
+        predicate: "predicate",
+        subject: "highlight_1",
+        subjectType: "Highlight",
+      },
+      relation_2: {
+        __typename: "Relation",
+        id: "relation_2",
+        object: "arc_2",
+        objectType: "Arc",
+        predicate: "predicate",
+        subject: "highlight_2",
+        subjectType: "Highlight",
       },
     });
   });

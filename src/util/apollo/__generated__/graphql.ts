@@ -34,7 +34,7 @@ export type Entry = {
 
 export type Highlight = {
   __typename?: 'Highlight';
-  arc: Arc;
+  arc?: Maybe<Arc>;
   entry: Entry;
   id: Scalars['ID'];
   outgoingRelations: Array<Relation>;
@@ -169,7 +169,7 @@ export type HighlightDecorationQueryVariables = Exact<{
 }>;
 
 
-export type HighlightDecorationQuery = { __typename?: 'Query', highlights?: Array<{ __typename?: 'Highlight', id: string, arc: { __typename?: 'Arc', id: string, name: string, color: number } } | null> | null };
+export type HighlightDecorationQuery = { __typename?: 'Query', highlights?: Array<{ __typename?: 'Highlight', id: string, arc?: { __typename?: 'Arc', id: string, name: string, color: number } | null } | null> | null };
 
 export type DigestQueryVariables = Exact<{
   entryKey: Scalars['ID'];
@@ -197,7 +197,7 @@ export type HighlightTagQueryVariables = Exact<{
 }>;
 
 
-export type HighlightTagQuery = { __typename?: 'Query', highlight?: { __typename?: 'Highlight', id: string, arc: { __typename?: 'Arc', id: string, name: string, color: number } } | null };
+export type HighlightTagQuery = { __typename?: 'Query', highlight?: { __typename?: 'Highlight', id: string, arc?: { __typename?: 'Arc', id: string, name: string, color: number } | null } | null };
 
 export type JournalDateRangeRecentEntriesQueryVariables = Exact<{
   count: Scalars['Int'];
@@ -228,7 +228,7 @@ export type MedianHighlightBoxQueryVariables = Exact<{
 }>;
 
 
-export type MedianHighlightBoxQuery = { __typename?: 'Query', highlights?: Array<{ __typename?: 'Highlight', id: string, arc: { __typename?: 'Arc', id: string, color: number }, entry: { __typename?: 'Entry', entryKey: string, date: string } } | null> | null };
+export type MedianHighlightBoxQuery = { __typename?: 'Query', highlights?: Array<{ __typename?: 'Highlight', id: string, arc?: { __typename?: 'Arc', id: string, color: number } | null, entry: { __typename?: 'Entry', entryKey: string, date: string } } | null> | null };
 
 export type VisibleEntriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -240,7 +240,7 @@ export type UseHighlightSearchQueryVariables = Exact<{
 }>;
 
 
-export type UseHighlightSearchQuery = { __typename?: 'Query', highlight?: { __typename?: 'Highlight', id: string, arc: { __typename?: 'Arc', id: string, highlights: Array<{ __typename?: 'Highlight', id: string, entry: { __typename?: 'Entry', entryKey: string } }> }, entry: { __typename?: 'Entry', entryKey: string } } | null };
+export type UseHighlightSearchQuery = { __typename?: 'Query', highlight?: { __typename?: 'Highlight', id: string, arc?: { __typename?: 'Arc', id: string, highlights: Array<{ __typename?: 'Highlight', id: string, entry: { __typename?: 'Entry', entryKey: string } }> } | null, entry: { __typename?: 'Entry', entryKey: string } } | null };
 
 export type UseSearchArcsQueryVariables = Exact<{ [key: string]: never; }>;
 

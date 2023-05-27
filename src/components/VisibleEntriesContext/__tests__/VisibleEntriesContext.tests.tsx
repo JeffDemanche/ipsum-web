@@ -14,6 +14,10 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "util/apollo";
 
 jest.mock("react-router-dom");
+jest.mock("react-router", () => ({
+  ...jest.requireActual("react-router"),
+  useLocation: jest.fn(),
+}));
 
 const Consumer: React.FC<{ valueFn: (value: VisibleEntries) => void }> = ({
   valueFn,

@@ -17,6 +17,7 @@ import {
   assignHighlightToEntry,
   createArc,
   createHighlight,
+  createRelation,
   gql,
 } from "util/apollo";
 import { useQuery } from "@apollo/client";
@@ -66,7 +67,14 @@ export const ArcAssignmentPopper: React.FunctionComponent<
     const arc = createArc({
       name: inputVal,
     });
-    const highlight = createHighlight({ arc: arc.id, entry: editorKey });
+    const highlight = createHighlight({ entry: editorKey });
+    createRelation({
+      subject: highlight.id,
+      subjectType: "Highlight",
+      predicate: "relates to",
+      object: arc.id,
+      objectType: "Arc",
+    });
     assignHighlightToEntry({
       entryKey: editorKey,
       highlightId: highlight.id,
@@ -79,7 +87,7 @@ export const ArcAssignmentPopper: React.FunctionComponent<
     (arcId: string) => {
       const selection = getSelection(editorKey);
 
-      const highlight = createHighlight({ arc: arcId, entry: editorKey });
+      const highlight = createHighlight({ entry: editorKey });
       assignHighlightToEntry({
         entryKey: editorKey,
         highlightId: highlight.id,

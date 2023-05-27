@@ -2,6 +2,7 @@ import { ApolloProvider } from "@apollo/client";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React, { useState } from "react";
 import { client } from "util/apollo";
+import { vars } from "util/apollo/client";
 import {
   mockArcs,
   mockJournalMetadata,
@@ -10,6 +11,7 @@ import { useSearchArcs } from "util/hooks";
 import { ArcAssignmentPopper } from "../ArcAssignmentPopper";
 
 jest.mock("util/hooks");
+jest.mock("util/apollo/autosave");
 
 const TestPopper = ({
   open = true,

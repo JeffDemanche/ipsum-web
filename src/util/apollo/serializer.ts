@@ -34,7 +34,6 @@ const SerializedSchema = t.type({
     t.type({
       __typename: t.literal("Highlight"),
       id: t.string,
-      arc: t.string,
       entry: t.string,
       outgoingRelations: t.array(t.string),
     })

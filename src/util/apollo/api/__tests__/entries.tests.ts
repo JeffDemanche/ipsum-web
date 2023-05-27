@@ -78,7 +78,7 @@ describe("apollo entries API", () => {
         contentState: stringifyContentState(editorState.getCurrentContent()),
       };
       createEntry(entry1);
-      const highlight = createHighlight({ arc: "1", entry: "1/2/2020" });
+      const highlight = createHighlight({ entry: "1/2/2020" });
       assignHighlightToEntry({
         entryKey: "1/2/2020",
         highlightId: highlight.id,

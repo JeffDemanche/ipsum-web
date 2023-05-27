@@ -5,6 +5,7 @@ import { client } from "util/apollo";
 import {
   mockEntries,
   mockHighlights,
+  mockRelations,
 } from "util/apollo/__tests__/apollo-test-utils";
 import { stringifyContentState } from "util/content-state";
 import { IpsumEntityTransformer } from "util/entities";
@@ -36,8 +37,18 @@ describe("HighlightExcerpt", () => {
         __typename: "Highlight",
         id: "highlight_1",
         entry: "entry_1",
-        arc: "",
-        outgoingRelations: [],
+        outgoingRelations: ["relation_1"],
+      },
+    });
+    mockRelations({
+      relation_1: {
+        __typename: "Relation",
+        id: "relation_1",
+        object: "arc_1",
+        objectType: "Arc",
+        predicate: "predicate_1",
+        subject: "highlight_1",
+        subjectType: "Highlight",
       },
     });
   });

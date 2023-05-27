@@ -42,7 +42,6 @@ describe("apollo relations API", () => {
       const { id: arcId } = createArc({ name: "arc" });
       const { id: highlightId } = createHighlight({
         entry: "entry",
-        arc: arcId,
       });
       const { id } = createRelation({
         subject: highlightId,

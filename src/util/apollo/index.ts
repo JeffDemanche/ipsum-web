@@ -5,6 +5,7 @@ export * from "./api/arcs";
 export * from "./api/entries";
 export * from "./api/highlights";
 export * from "./api/journalTitle";
+export * from "./api/relations";
 export {
   ApolloSerializationProvider,
   ApolloSerializationContext,

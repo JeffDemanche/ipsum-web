@@ -15,7 +15,7 @@ export const migrateRelations = (fileData: any) => {
           id,
           subject: curr.id,
           subjectType: "Highlight",
-          relation: "relates to",
+          predicate: "relates to",
           object: curr.arc,
           objectType: "Arc",
           __typename: "Relation",

@@ -9,10 +9,13 @@ import {
 import { parseIpsumDateTime } from "util/dates";
 import { v4 as uuidv4 } from "uuid";
 import {
+  Arc,
   QueryArcsArgs,
   QueryEntriesArgs,
   QueryHighlightsArgs,
   QueryRelationsArgs,
+  Relation,
+  RelationSubject,
 } from "./__generated__/graphql";
 
 const typeDefs = gql`
@@ -59,9 +62,8 @@ const typeDefs = gql`
 
   type Highlight {
     id: ID!
-    arc: Arc!
     entry: Entry!
-
+    arc: Arc
     outgoingRelations: [Relation!]!
   }
 
@@ -97,7 +99,6 @@ export type UnhydratedType = {
   Highlight: {
     __typename: "Highlight";
     id: string;
-    arc: string;
     entry: string;
     outgoingRelations: string[];
   };
@@ -199,15 +200,23 @@ const typePolicies: TypePolicies = {
         return undefined;
       },
       highlights(_, { args }: { args?: QueryHighlightsArgs }) {
-        if (args?.ids && !args?.entries && !args?.arcs) {
+        if (args?.ids && !args?.entries) {
           return args.ids.map((id) => vars.highlights()[id]);
         } else if (args?.ids || args?.entries || args?.arcs) {
-          return Object.values(vars.highlights()).filter(
-            (highlight) =>
+          return Object.values(vars.highlights()).filter((highlight) => {
+            const highlightRelations = highlight.outgoingRelations
+              .map((relation) => vars.relations()[relation])
+              .filter((relation) => relation.objectType === "Arc");
+            const arcsIntersection = highlightRelations.filter((relation) =>
+              args.arcs?.includes(relation.object)
+            );
+
+            return (
               (!args.ids || args.ids.includes(highlight.id)) &&
               (!args.entries || args.entries.includes(highlight.entry)) &&
-              (!args.arcs || args.arcs.includes(highlight.arc))
-          );
+              (!args.arcs || arcsIntersection.length > 0)
+            );
+          });
         }
         return Object.values(vars.highlights());
       },
@@ -239,9 +248,15 @@ const typePolicies: TypePolicies = {
     keyFields: ["id"],
     fields: {
       highlights(_, { readField }) {
-        return Object.values(vars.highlights()).filter(
-          (highlight) => highlight.arc === readField("id")
-        );
+        return Object.values(vars.highlights()).filter((highlight) => {
+          highlight.outgoingRelations.find((outgoingRelation) => {
+            const relation = vars.relations()[outgoingRelation];
+            return (
+              relation.subjectType === "Arc" &&
+              relation.subject === readField("id")
+            );
+          });
+        });
       },
       incomingRelations(relationIds: string[]) {
         return relationIds.map((id) => vars.relations()[id]);
@@ -254,8 +269,14 @@ const typePolicies: TypePolicies = {
   Highlight: {
     keyFields: ["id"],
     fields: {
-      arc(arcId) {
-        return vars.arcs()[arcId];
+      arc(_, { readField }) {
+        const outgoingRelations =
+          readField<{ __typename: "Relation"; object: string }[]>(
+            "outgoingRelations"
+          );
+        return outgoingRelations.length
+          ? vars.arcs()[outgoingRelations[0].object]
+          : null;
       },
       entry(entryKey) {
         return vars.entries()[entryKey];

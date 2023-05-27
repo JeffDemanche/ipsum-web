@@ -3,11 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 import { autosave } from "../autosave";
 
 export const createHighlight = ({
-  arc,
   entry,
   outgoingRelations,
 }: {
-  arc: string;
   entry: string;
   outgoingRelations?: string[];
 }): UnhydratedType["Highlight"] => {
@@ -16,7 +14,6 @@ export const createHighlight = ({
   const result: UnhydratedType["Highlight"] = {
     __typename: "Highlight",
     id: highlightId,
-    arc,
     entry,
     outgoingRelations: outgoingRelations ?? [],
   };

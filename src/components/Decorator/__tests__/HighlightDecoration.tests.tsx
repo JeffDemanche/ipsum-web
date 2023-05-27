@@ -5,6 +5,7 @@ import { client } from "util/apollo";
 import {
   mockArcs,
   mockHighlights,
+  mockRelations,
 } from "util/apollo/__tests__/apollo-test-utils";
 import { IpsumEntityTransformer } from "util/entities";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
@@ -18,7 +19,7 @@ describe("HighlightDecoration", () => {
         color: 0,
         id: "arc_id",
         name: "foxes",
-        incomingRelations: [],
+        incomingRelations: ["relation_id"],
         outgoingRelations: [],
       },
     });
@@ -26,9 +27,19 @@ describe("HighlightDecoration", () => {
       highlight_id: {
         __typename: "Highlight",
         id: "highlight_id",
-        arc: "arc_id",
         entry: "",
-        outgoingRelations: [],
+        outgoingRelations: ["relation_id"],
+      },
+    });
+    mockRelations({
+      relation_id: {
+        __typename: "Relation",
+        id: "relation_id",
+        object: "arc_id",
+        objectType: "Arc",
+        predicate: "relates to",
+        subject: "highlight_id",
+        subjectType: "Highlight",
       },
     });
   });
