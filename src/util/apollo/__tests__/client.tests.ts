@@ -304,5 +304,40 @@ describe("apollo client", () => {
       expect(result.relation.subject.__typename).toEqual("Highlight");
       expect(result.relation.object.__typename).toEqual("Arc");
     });
+
+    it("should hydrate arc highlights", () => {
+      const arc = createArc({ name: "test arc 1" });
+      const highlight1 = createHighlight({
+        entry: "1/2/2020",
+        outgoingRelations: [],
+      });
+      createRelation({
+        object: arc.id,
+        objectType: "Arc",
+        subject: highlight1.id,
+        subjectType: "Highlight",
+        predicate: "relates to",
+      });
+
+      const result = client.readQuery({
+        query: gql(`
+          query ReadArc($id: ID!) {
+            arc(id: $id) {
+              id
+              highlights {
+                id
+              }
+            } 
+          }
+        `),
+        variables: {
+          id: arc.id,
+        },
+      });
+
+      expect(result.arc.id).toEqual(arc.id);
+      expect(result.arc.highlights).toHaveLength(1);
+      expect(result.arc.highlights[0].id).toEqual(highlight1.id);
+    });
   });
 });

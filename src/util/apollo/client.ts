@@ -9,13 +9,10 @@ import {
 import { parseIpsumDateTime } from "util/dates";
 import { v4 as uuidv4 } from "uuid";
 import {
-  Arc,
   QueryArcsArgs,
   QueryEntriesArgs,
   QueryHighlightsArgs,
   QueryRelationsArgs,
-  Relation,
-  RelationSubject,
 } from "./__generated__/graphql";
 
 const typeDefs = gql`
@@ -248,14 +245,12 @@ const typePolicies: TypePolicies = {
     keyFields: ["id"],
     fields: {
       highlights(_, { readField }) {
-        return Object.values(vars.highlights()).filter((highlight) => {
-          highlight.outgoingRelations.find((outgoingRelation) => {
-            const relation = vars.relations()[outgoingRelation];
-            return (
-              relation.subjectType === "Arc" &&
-              relation.subject === readField("id")
-            );
-          });
+        const incomingRelations =
+          readField<{ __typename: "Relation"; subject: string }[]>(
+            "incomingRelations"
+          );
+        return incomingRelations.map((relation) => {
+          return vars.highlights()[relation.subject];
         });
       },
       incomingRelations(relationIds: string[]) {
