@@ -30,13 +30,19 @@ const MedianHighlightBoxQuery = gql(`
   query MedianHighlightBox($highlightId: ID!) {
     highlights(ids: [$highlightId]) {
       id
-      arc {
-        id
-        color
-      }
       entry {
         entryKey
         date
+      }
+      outgoingRelations {
+        __typename
+        predicate
+        object {
+          ... on Arc {
+            id
+            color
+          }
+        }
       }
     }
   }
@@ -49,6 +55,8 @@ export const MedianHighlightBox: React.FunctionComponent<
     variables: { highlightId },
   });
   const highlight = data?.highlights?.[0];
+  const highlightRelations = highlight.outgoingRelations;
+  const firstArc = highlightRelations[0].object;
 
   const entryDate = parseIpsumDateTime(data.highlights[0].entry.date).toString(
     "entry-printed-date-nice"
@@ -108,17 +116,10 @@ export const MedianHighlightBox: React.FunctionComponent<
       colorParams = { saturation: 20, lightness: 20 };
     }
 
-    return highlight.arc?.id
-      ? new IpsumArcColor(highlight.arc.color)
-          .toIpsumColor(colorParams)
-          .toRgbaCSS()
+    return firstArc?.id
+      ? new IpsumArcColor(firstArc.color).toIpsumColor(colorParams).toRgbaCSS()
       : "white";
-  }, [
-    highlight?.arc.color,
-    highlight.arc.id,
-    highlightBoxSelected,
-    highlightHovered,
-  ]);
+  }, [firstArc.color, firstArc?.id, highlightBoxSelected, highlightHovered]);
 
   const onCloseClick = useCallback(
     (e: React.MouseEvent) => {
@@ -207,12 +208,12 @@ export const MedianHighlightBox: React.FunctionComponent<
                   display="flex"
                   color={theme.palette.onPrimaryHighEmphasis}
                 >
-                  relates to&nbsp;
+                  {highlight.outgoingRelations[0].predicate}&nbsp;
                 </Typography>
                 <ArcTag
                   arcForToken={{
                     type: "from id",
-                    id: highlight?.arc.id,
+                    id: firstArc?.id,
                   }}
                   onClick={onArcClick}
                 ></ArcTag>

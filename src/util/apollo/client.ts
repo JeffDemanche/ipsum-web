@@ -245,12 +245,10 @@ const typePolicies: TypePolicies = {
     keyFields: ["id"],
     fields: {
       highlights(_, { readField }) {
-        const incomingRelations =
-          readField<{ __typename: "Relation"; subject: string }[]>(
-            "incomingRelations"
+        return Object.values(vars.highlights()).filter((highlight) => {
+          return highlight.outgoingRelations.some(
+            (relation) => vars.relations()[relation].object === readField("id")
           );
-        return incomingRelations.map((relation) => {
-          return vars.highlights()[relation.subject];
         });
       },
       incomingRelations(relationIds: string[]) {
