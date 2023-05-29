@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { readFromFile, writeToFile } from "util/file";
 import { useIpsumIDBWrapper } from "util/indexed-db";
 import { autosave } from "./autosave";
@@ -59,9 +60,13 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
     autosave();
   }, []);
 
+  const navigate = useNavigate();
+
   const resetToInitial = useCallback(() => {
     initializeState();
-  }, []);
+    autosave();
+    navigate({ search: "" });
+  }, [navigate]);
 
   // Autosave stuff
   const idbWrapper = useIpsumIDBWrapper();

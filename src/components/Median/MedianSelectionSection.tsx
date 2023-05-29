@@ -13,7 +13,7 @@ export const MedianSelectionSection: React.FunctionComponent = () => {
   });
 
   const highlightBoxes = useMemo(() => {
-    if (selectedHighlightIds.length !== 1) {
+    if (!searchResults || selectedHighlightIds.length !== 1) {
       return null;
     } else {
       return searchResults.map((highlight, i) => (

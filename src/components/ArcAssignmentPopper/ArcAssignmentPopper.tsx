@@ -88,6 +88,13 @@ export const ArcAssignmentPopper: React.FunctionComponent<
       const selection = getSelection(editorKey);
 
       const highlight = createHighlight({ entry: editorKey });
+      createRelation({
+        subject: highlight.id,
+        subjectType: "Highlight",
+        predicate: "relates to",
+        object: arcId,
+        objectType: "Arc",
+      });
       assignHighlightToEntry({
         entryKey: editorKey,
         highlightId: highlight.id,

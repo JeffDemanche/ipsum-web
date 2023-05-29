@@ -73,7 +73,7 @@ export const Linker: React.FunctionComponent<LinkerProps> = ({
         arcForToken={{
           type: "from data",
           color: nextHue(data.journalMetadata.lastArcHue),
-          name: "Create Arc",
+          name: searchTerm,
         }}
         onClick={() => {
           onAddArc(searchTerm);
@@ -112,7 +112,11 @@ export const Linker: React.FunctionComponent<LinkerProps> = ({
             ></TextField>
           </ClickAwayListener>
         )}
-        <IconButton onClick={onPlusClick} size="small">
+        <IconButton
+          aria-label="Add or link arc"
+          onClick={onPlusClick}
+          size="small"
+        >
           <Add color="secondary"></Add>
         </IconButton>
       </div>

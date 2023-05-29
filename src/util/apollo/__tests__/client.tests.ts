@@ -165,26 +165,69 @@ describe("apollo client", () => {
   });
 
   describe("hydration", () => {
-    it("should hydrate highlight arcs and entries", () => {
-      const arc = createArc({ name: "test arc 1" });
-      const entry = createEntry({
-        entryKey: "1/2/2020",
-        date: "1/2/2020",
-        contentState: "Hello, world!",
-      });
-      const highlight = createHighlight({
-        entry: "1/2/2020",
-      });
-      createRelation({
-        object: arc.id,
-        objectType: "Arc",
-        predicate: "relates to",
-        subject: highlight.id,
-        subjectType: "Highlight",
-      });
+    describe("entries", () => {
+      it("should hydrate entry highlights", () => {
+        createEntry({
+          entryKey: "1/2/2020",
+          date: "1/2/2020",
+          contentState: "Hello, world!",
+        });
+        createEntry({
+          entryKey: "1/4/2020",
+          date: "1/4/2020",
+          contentState: "Hello, world!",
+        });
+        const highlight1 = createHighlight({
+          entry: "1/2/2020",
+        });
+        const highlight2 = createHighlight({
+          entry: "1/2/2020",
+        });
 
-      const result = client.readQuery({
-        query: gql(`
+        const result = client.readQuery({
+          query: gql(`
+            query ReadEntry($entryKeys: [ID!]!) {
+              entries(entryKeys: $entryKeys) {
+                entryKey
+                highlights {
+                  id
+                }
+              } 
+            }
+          `),
+          variables: {
+            entryKeys: ["1/2/2020", "1/4/2020"],
+          },
+        });
+
+        expect(result.entries[0].highlights).toHaveLength(2);
+        expect(result.entries[0].highlights[0].id).toEqual(highlight1.id);
+        expect(result.entries[0].highlights[1].id).toEqual(highlight2.id);
+        expect(result.entries[1].highlights).toHaveLength(0);
+      });
+    });
+
+    describe("highlights", () => {
+      it("should hydrate highlight arcs and entries", () => {
+        const arc = createArc({ name: "test arc 1" });
+        const entry = createEntry({
+          entryKey: "1/2/2020",
+          date: "1/2/2020",
+          contentState: "Hello, world!",
+        });
+        const highlight = createHighlight({
+          entry: "1/2/2020",
+        });
+        createRelation({
+          object: arc.id,
+          objectType: "Arc",
+          predicate: "relates to",
+          subject: highlight.id,
+          subjectType: "Highlight",
+        });
+
+        const result = client.readQuery({
+          query: gql(`
           query ReadHighlight {
             highlights {
               id
@@ -206,121 +249,107 @@ describe("apollo client", () => {
             }
           }
         `),
+        });
+
+        expect(result.highlights[0].outgoingRelations[0].object.id).toEqual(
+          arc.id
+        );
+        expect(result.highlights[0].outgoingRelations[0].object.name).toEqual(
+          arc.name
+        );
+        expect(result.highlights[0].entry).toEqual(
+          vars.entries()[entry.entryKey]
+        );
       });
 
-      expect(result.highlights[0].outgoingRelations[0].object.id).toEqual(
-        arc.id
-      );
-      expect(result.highlights[0].outgoingRelations[0].object.name).toEqual(
-        arc.name
-      );
-      expect(result.highlights[0].entry).toEqual(
-        vars.entries()[entry.entryKey]
-      );
-    });
+      it("should handle arc for highlight with no relations", () => {
+        createHighlight({
+          entry: "1/2/2020",
+        });
 
-    it("should hydrate entry highlights", () => {
-      createEntry({
-        entryKey: "1/2/2020",
-        date: "1/2/2020",
-        contentState: "Hello, world!",
-      });
-      createEntry({
-        entryKey: "1/4/2020",
-        date: "1/4/2020",
-        contentState: "Hello, world!",
-      });
-      const highlight1 = createHighlight({
-        entry: "1/2/2020",
-      });
-      const highlight2 = createHighlight({
-        entry: "1/2/2020",
-      });
-
-      const result = client.readQuery({
-        query: gql(`
-          query ReadEntry($entryKeys: [ID!]!) {
-            entries(entryKeys: $entryKeys) {
-              entryKey
-              highlights {
-                id
-              }
-            } 
-          }
-        `),
-        variables: {
-          entryKeys: ["1/2/2020", "1/4/2020"],
-        },
-      });
-
-      expect(result.entries[0].highlights).toHaveLength(2);
-      expect(result.entries[0].highlights[0].id).toEqual(highlight1.id);
-      expect(result.entries[0].highlights[1].id).toEqual(highlight2.id);
-      expect(result.entries[1].highlights).toHaveLength(0);
-    });
-
-    it("should hydrate relations", () => {
-      const highlight1 = createHighlight({
-        entry: "1/2/2020",
-        outgoingRelations: [],
-      });
-      const arc1 = createArc({ name: "test arc 1" });
-      const relation1 = createRelation({
-        object: arc1.id,
-        objectType: "Arc",
-        subject: highlight1.id,
-        subjectType: "Highlight",
-        predicate: "relates to",
-      });
-
-      const result = client.readQuery({
-        query: gql(`
-          query ReadRelation($id: ID!) {
-            relation(id: $id) {
+        const result = client.readQuery({
+          query: gql(`
+          query ReadHighlight {
+            highlights {
               id
-              subject {
-                __typename
-                ... on Highlight {
-                  id
-                }
-                ... on Arc {
-                  id
-                }
-              }
-              object {
-                __typename
+              arc {
                 id
                 name
               }
-            } 
+            }
           }
         `),
-        variables: {
-          id: relation1.id,
-        },
-      });
+        });
 
-      expect(result.relation.id).toEqual(relation1.id);
-      expect(result.relation.subject.__typename).toEqual("Highlight");
-      expect(result.relation.object.__typename).toEqual("Arc");
+        expect(result.highlights[0].arc).toBeNull();
+      });
     });
 
-    it("should hydrate arc highlights", () => {
-      const arc = createArc({ name: "test arc 1" });
-      const highlight1 = createHighlight({
-        entry: "1/2/2020",
-        outgoingRelations: [],
-      });
-      createRelation({
-        object: arc.id,
-        objectType: "Arc",
-        subject: highlight1.id,
-        subjectType: "Highlight",
-        predicate: "relates to",
-      });
+    describe("relations", () => {
+      it("should hydrate relations", () => {
+        const highlight1 = createHighlight({
+          entry: "1/2/2020",
+          outgoingRelations: [],
+        });
+        const arc1 = createArc({ name: "test arc 1" });
+        const relation1 = createRelation({
+          object: arc1.id,
+          objectType: "Arc",
+          subject: highlight1.id,
+          subjectType: "Highlight",
+          predicate: "relates to",
+        });
 
-      const result = client.readQuery({
-        query: gql(`
+        const result = client.readQuery({
+          query: gql(`
+            query ReadRelation($id: ID!) {
+              relation(id: $id) {
+                id
+                subject {
+                  __typename
+                  ... on Highlight {
+                    id
+                  }
+                  ... on Arc {
+                    id
+                  }
+                }
+                object {
+                  __typename
+                  id
+                  name
+                }
+              } 
+            }
+          `),
+          variables: {
+            id: relation1.id,
+          },
+        });
+
+        expect(result.relation.id).toEqual(relation1.id);
+        expect(result.relation.subject.__typename).toEqual("Highlight");
+        expect(result.relation.object.__typename).toEqual("Arc");
+      });
+    });
+
+    describe("arcs", () => {
+      it("should hydrate arc highlights", () => {
+        const arc = createArc({ name: "test arc 1" });
+        const highlight1 = createHighlight({
+          entry: "1/2/2020",
+          outgoingRelations: [],
+        });
+        createRelation({
+          object: arc.id,
+          objectType: "Arc",
+          subject: highlight1.id,
+          subjectType: "Highlight",
+          predicate: "relates to",
+        });
+
+        const result = client.readQuery({
+          query: gql(`
           query ReadArc($id: ID!) {
             arc(id: $id) {
               id
@@ -330,14 +359,15 @@ describe("apollo client", () => {
             } 
           }
         `),
-        variables: {
-          id: arc.id,
-        },
-      });
+          variables: {
+            id: arc.id,
+          },
+        });
 
-      expect(result.arc.id).toEqual(arc.id);
-      expect(result.arc.highlights).toHaveLength(1);
-      expect(result.arc.highlights[0].id).toEqual(highlight1.id);
+        expect(result.arc.id).toEqual(arc.id);
+        expect(result.arc.highlights).toHaveLength(1);
+        expect(result.arc.highlights[0].id).toEqual(highlight1.id);
+      });
     });
   });
 });

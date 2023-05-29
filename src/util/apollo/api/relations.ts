@@ -19,6 +19,17 @@ export const createRelation = ({
 }): UnhydratedType["Relation"] => {
   const relationId = uuidv4();
 
+  const result: UnhydratedType["Relation"] = {
+    __typename: "Relation",
+    id: relationId,
+    subject,
+    subjectType,
+    predicate,
+    object,
+    objectType: "Arc",
+  };
+  vars.relations({ ...vars.relations(), [relationId]: result });
+
   // Update outgoing relations on subject objects
   if (subjectType === "Arc") {
     if (!vars.arcs()[subject])
@@ -51,16 +62,6 @@ export const createRelation = ({
     });
   }
 
-  const result: UnhydratedType["Relation"] = {
-    __typename: "Relation",
-    id: relationId,
-    subject,
-    subjectType,
-    predicate,
-    object,
-    objectType: "Arc",
-  };
-  vars.relations({ ...vars.relations(), [relationId]: result });
   autosave();
   return result;
 };

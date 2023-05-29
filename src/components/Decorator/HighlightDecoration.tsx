@@ -69,7 +69,10 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
   const highlights = useMemo(() => data?.highlights ?? [], [data?.highlights]);
 
   const arcs = useMemo(
-    () => data?.highlights?.reduce((prev, cur) => [...prev, cur.arc], []) ?? [],
+    () =>
+      data?.highlights
+        ?.reduce((prev, cur) => [...prev, cur.arc], [])
+        .filter(Boolean) ?? [],
     [data?.highlights]
   );
 

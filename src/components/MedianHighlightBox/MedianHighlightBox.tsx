@@ -14,7 +14,13 @@ import { IpsumArcColor } from "util/colors";
 import styles from "./MedianHighlightBox.less";
 import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import cx from "classnames";
-import { deleteHighlight, gql, removeHighlightFromEntry } from "util/apollo";
+import {
+  createArc,
+  createRelation,
+  deleteHighlight,
+  gql,
+  removeHighlightFromEntry,
+} from "util/apollo";
 import { useQuery } from "@apollo/client";
 import { parseIpsumDateTime } from "util/dates";
 import { theme } from "styles/styles";
@@ -142,6 +148,50 @@ export const MedianHighlightBox: React.FunctionComponent<
     [highlight.entry.entryKey, highlightId]
   );
 
+  const linkArc = useCallback(
+    (arcId: string) => {
+      createRelation({
+        subject: highlight.id,
+        subjectType: "Highlight",
+        predicate: "relates to",
+        object: arcId,
+        objectType: "Arc",
+      });
+    },
+    [highlight.id]
+  );
+
+  const createAndLinkArc = useCallback(
+    (name: string) => {
+      const arc = createArc({ name });
+      linkArc(arc.id);
+    },
+    [linkArc]
+  );
+
+  const relationsMarkup = useMemo(
+    () =>
+      highlightRelations.map((relation, i) => (
+        <div className={styles["relation"]} key={i}>
+          <Typography
+            variant="body2"
+            display="flex"
+            color={theme.palette.onPrimaryHighEmphasis}
+          >
+            {relation.predicate}&nbsp;
+          </Typography>
+          <ArcTag
+            arcForToken={{
+              type: "from id",
+              id: relation.object.id,
+            }}
+            onClick={onArcClick}
+          ></ArcTag>
+        </div>
+      )),
+    [highlightRelations, onArcClick]
+  );
+
   return (
     <Card
       onMouseEnter={() => {
@@ -202,24 +252,13 @@ export const MedianHighlightBox: React.FunctionComponent<
           </div>
           <div className={styles["details-relations"]}>
             <div className={styles["relations-right"]}>
-              <div className={styles["relation"]}>
-                <Typography
-                  variant="body2"
-                  display="flex"
-                  color={theme.palette.onPrimaryHighEmphasis}
-                >
-                  {highlight.outgoingRelations[0].predicate}&nbsp;
-                </Typography>
-                <ArcTag
-                  arcForToken={{
-                    type: "from id",
-                    id: firstArc?.id,
-                  }}
-                  onClick={onArcClick}
-                ></ArcTag>
-              </div>
+              <div className={styles["relations"]}>{relationsMarkup}</div>
               <div>
-                <Linker className={styles["linker"]}></Linker>
+                <Linker
+                  onAddArc={createAndLinkArc}
+                  onChooseArc={linkArc}
+                  className={styles["linker"]}
+                ></Linker>
               </div>
             </div>
           </div>
