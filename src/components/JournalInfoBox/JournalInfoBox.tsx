@@ -25,20 +25,24 @@ export const JournalInfoBox: React.FC = () => {
     <div className={styles["journal-info-box"]}>
       <JournalTitle></JournalTitle>
       <div>
-        <Button onClick={onClickNew} variant="outlined" tooltip="New journal">
-          N
+        <Button onClick={onClickNew} variant="contained" tooltip="New journal">
+          New
         </Button>
         &nbsp;
-        <Button onClick={onClickSave} variant="outlined" tooltip="Save to file">
-          S
+        <Button
+          onClick={onClickSave}
+          variant="contained"
+          tooltip="Save to file"
+        >
+          Save
         </Button>
         &nbsp;
         <Button
           onClick={onClickLoad}
-          variant="outlined"
+          variant="contained"
           tooltip="Load from file"
         >
-          L
+          Load
         </Button>
       </div>
     </div>

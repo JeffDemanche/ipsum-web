@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material";
-import { brown, amber } from "@mui/material/colors";
+import { brown, amber, grey } from "@mui/material/colors";
 
 export const stylesheet = {
   colors: {
@@ -21,6 +21,7 @@ export const stylesheet = {
 
 declare module "@mui/material/styles" {
   interface Palette {
+    darkBackground: PaletteOptions["primary"];
     onSurfaceDisabled: string;
     onSurfaceHighEmphasis: string;
     onSurfaceMediumEmphasis: string;
@@ -29,12 +30,17 @@ declare module "@mui/material/styles" {
     onPrimaryMediumEmphasis: string;
   }
   interface PaletteOptions {
+    darkBackground: PaletteOptions["primary"];
     onSurfaceDisabled: string;
     onSurfaceHighEmphasis: string;
     onSurfaceMediumEmphasis: string;
     onPrimaryDisabled: string;
     onPrimaryHighEmphasis: string;
     onPrimaryMediumEmphasis: string;
+  }
+
+  interface PaletteColor {
+    darkBackground?: string;
   }
 }
 
@@ -70,6 +76,10 @@ export const theme = createTheme({
     },
     background: {
       default: brown[200],
+    },
+    darkBackground: {
+      main: grey[900],
+      contrastText: grey[50],
     },
     onSurfaceDisabled: "rgba(0, 0, 0, 0.38)",
     onSurfaceHighEmphasis: "rgba(0, 0, 0, 0.87)",

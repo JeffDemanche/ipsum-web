@@ -8,6 +8,7 @@ import styles from "./Linker.less";
 import { nextHue } from "util/colors";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
+import { theme } from "styles/styles";
 
 interface LinkerProps {
   allowCreate?: boolean;
@@ -84,7 +85,7 @@ export const Linker: React.FunctionComponent<LinkerProps> = ({
 
   return (
     <Paper
-      sx={{ backgroundColor: "black" }}
+      sx={{ backgroundColor: (theme) => theme.palette.primary.dark }}
       className={cx(className, styles["linker"])}
     >
       <div className={styles["top-row"]}>
