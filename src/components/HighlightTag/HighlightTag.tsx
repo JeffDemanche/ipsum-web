@@ -20,10 +20,16 @@ const HighlightTagQuery = gql(`
   query HighlightTag($highlightId: ID!) {
     highlight(id: $highlightId) {
       id
-      arc {
+      outgoingRelations {
         id
-        name
-        color
+        object {
+          __typename
+          ... on Arc {
+            id
+            name
+            color
+          }
+        }
       }
     }
   }
@@ -40,60 +46,61 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
 }) => {
   const {
     data: {
-      highlight: { arc },
+      highlight: { outgoingRelations },
     },
   } = useQuery(HighlightTagQuery, {
     variables: { highlightId },
   });
 
+  const maxArcsInName = 3;
+
+  const name = React.useMemo(() => {
+    return outgoingRelations
+      .slice(0, maxArcsInName)
+      .reduce((acc, relation, i) => {
+        return i === 0
+          ? `${relation.object.name}`
+          : `${acc}/${relation.object.name}`;
+      }, "");
+  }, [outgoingRelations]);
+
+  const firstArc = outgoingRelations[0]?.object;
+
   const [hover, setHover] = useState(false);
 
-  const ipsumColorL90 = arc
-    ? new IpsumArcColor(arc.color).toIpsumColor({
-        saturation: 50,
-        lightness: 90,
-      })
-    : new IpsumColor("hsl", [0, 0, 90]);
-  const ipsumColorL80 = arc
-    ? new IpsumArcColor(arc.color).toIpsumColor({
-        saturation: 50,
-        lightness: 80,
-      })
-    : new IpsumColor("hsl", [0, 0, 80]);
-  const ipsumColorL50 = arc
-    ? new IpsumArcColor(arc.color).toIpsumColor({
+  const ipsumColorL50 = firstArc
+    ? new IpsumArcColor(firstArc.color).toIpsumColor({
         saturation: 50,
         lightness: 50,
       })
     : new IpsumColor("hsl", [0, 0, 50]);
-  const ipsumColorL30 = arc
-    ? new IpsumArcColor(arc.color).toIpsumColor({
+  const ipsumColorL30 = firstArc
+    ? new IpsumArcColor(firstArc.color).toIpsumColor({
         saturation: 50,
         lightness: 30,
       })
     : new IpsumColor("hsl", [0, 0, 30]);
 
+  const backgroundColor = ipsumColorL50.setAlpha(0.05).toRgbaCSS();
+  const backgroundColorHighlighted = ipsumColorL50.setAlpha(0.2).toRgbaCSS();
+
+  const boxShadow = `0 2px 0 0 ${ipsumColorL50.setAlpha(0.4).toRgbaCSS()}`;
+  const boxShadowHighlighted = `0 2px 0 0 ${ipsumColorL50
+    .setAlpha(0.25)
+    .toRgbaCSS()}`;
+
   const style: CSSProperties =
     hover || highlighted
       ? {
           color: ipsumColorL30.toRgbaCSS(),
-          textDecorationColor: ipsumColorL30.toRgbaCSS(),
-          backgroundColor: ipsumColorL80.toRgbaCSS(),
+          boxShadow: boxShadowHighlighted,
+          backgroundColor: backgroundColorHighlighted,
         }
       : {
           color: ipsumColorL30.toRgbaCSS(),
-          textDecorationColor: ipsumColorL30.toRgbaCSS(),
-          backgroundColor: ipsumColorL90.toRgbaCSS(),
+          boxShadow,
+          backgroundColor,
         };
-
-  const innerTag =
-    type === "span" ? (
-      <span className={styles["highlight-tag-inner"]}>
-        {arc?.name ?? "null"}
-      </span>
-    ) : (
-      <h3 className={styles["highlight-tag-inner"]}>{arc?.name ?? "null"}</h3>
-    );
 
   return (
     <Paper
@@ -115,7 +122,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
           onClick={onClick}
           style={style}
         >
-          {arc?.name ?? "null"}
+          {name ?? "null"}
         </Link>
       </Typography>
     </Paper>
