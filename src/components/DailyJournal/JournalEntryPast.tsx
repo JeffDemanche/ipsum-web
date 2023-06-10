@@ -6,8 +6,8 @@ import React, { useCallback, useContext } from "react";
 import { IpsumDateTime } from "util/dates";
 import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
-import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
-import { useJournalEntryEditor } from "./useJournalEntryEditor";
+import { EditorContext } from "../EditorWrapper/EditorContext";
+import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
 
 interface JournalEntryProps {
   entryKey: string;
@@ -18,13 +18,12 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
   entryKey,
   showDivider,
 }: JournalEntryProps) => {
-  const { editorRef, editorState } = useJournalEntryEditor({
+  const { editorRef, editorState } = useEntryEditor({
     entryKey,
   });
 
-  const { setEntryEditorState, onEditorFocus, onEditorBlur } = useContext(
-    DailyJournalEditorContext
-  );
+  const { setEntryEditorState, onEditorFocus, onEditorBlur } =
+    useContext(EditorContext);
 
   const handleKeyCommand = useCallback(
     (command: string, editorState: EditorState) => {

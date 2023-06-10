@@ -92,13 +92,15 @@ describe("HighlightDisambiguator", () => {
   it("has links for both arcs with correct hues", async () => {
     const { unmount } = render(<TestDisambiguator open></TestDisambiguator>);
 
-    const arc1 = await screen.findByRole("link", { name: "Arc one" });
-    const arc2 = await screen.findByRole("link", { name: "Arc two" });
+    const highlight1 = await screen.findByRole("link", { name: "Arc one" });
+    const highlight2 = await screen.findByRole("link", { name: "Arc two" });
 
-    expect(arc1).toBeInTheDocument();
-    expect(arc1.style.textDecorationColor).toEqual("rgba(115, 38, 38, 1)");
-    expect(arc2).toBeInTheDocument();
-    expect(arc2.style.textDecorationColor).toEqual("rgba(64, 115, 38, 1)");
+    expect(highlight1).toBeInTheDocument();
+    expect(highlight1.style.backgroundColor).toEqual("rgba(191, 64, 64, 0.05)");
+    expect(highlight2).toBeInTheDocument();
+    expect(highlight2.style.backgroundColor).toEqual(
+      "rgba(106, 191, 64, 0.05)"
+    );
 
     unmount();
   });

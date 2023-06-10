@@ -21,7 +21,7 @@ interface EditorMetadata {}
 
 type EditorMetadataMap = ReadonlyMap<string, EditorMetadata>;
 
-interface DailyJournalEditorContextValue {
+interface EditorContextValue {
   focusedEditorKey: string | undefined;
   onEditorFocus: (editorKey: string) => void;
   onEditorBlur: (editorKey: string) => void;
@@ -68,38 +68,35 @@ interface DailyJournalEditorContextValue {
   saveEntry: (entryKey: string, editorState?: EditorState) => void;
 }
 
-export const emptyDailyJournalEditorContextValue: DailyJournalEditorContextValue =
-  {
-    focusedEditorKey: undefined,
-    onEditorFocus: noop,
-    onEditorBlur: noop,
+export const emptyEditorContextValue: EditorContextValue = {
+  focusedEditorKey: undefined,
+  onEditorFocus: noop,
+  onEditorBlur: noop,
 
-    todayEntryKey: "",
+  todayEntryKey: "",
 
-    registerEditor: noop,
-    unregisterEditor: noop,
+  registerEditor: noop,
+  unregisterEditor: noop,
 
-    entryEditorStates: new Map<string, EditorState>(),
-    setEntryEditorState: noop,
-    entryEditorMetadatas: new Map<string, EditorMetadata>(),
-    setEntryEditorMetadata: noop,
-    entryEditorRefs: new Map<string, React.MutableRefObject<Editor>>(),
-    setEntryEditorRef: noop,
+  entryEditorStates: new Map<string, EditorState>(),
+  setEntryEditorState: noop,
+  entryEditorMetadatas: new Map<string, EditorMetadata>(),
+  setEntryEditorMetadata: noop,
+  entryEditorRefs: new Map<string, React.MutableRefObject<Editor>>(),
+  setEntryEditorRef: noop,
 
-    saveEntry: noop,
-  };
+  saveEntry: noop,
+};
 
-export const DailyJournalEditorContext = React.createContext(
-  emptyDailyJournalEditorContextValue
-);
+export const EditorContext = React.createContext(emptyEditorContextValue);
 
-interface DailyJournalEditorContextProviderProps {
+interface EditorContextProviderProps {
   children: React.ReactNode;
 }
 
-export const DailyJournalEditorContextProvider: React.FunctionComponent<
-  DailyJournalEditorContextProviderProps
-> = ({ children }: DailyJournalEditorContextProviderProps) => {
+export const EditorContextProvider: React.FunctionComponent<
+  EditorContextProviderProps
+> = ({ children }: EditorContextProviderProps) => {
   const todayEntryKey = useDateString(30000, "entry-printed-date");
 
   const [focusedEditorKey, setFocusedEditorKey] = useState(undefined);
@@ -248,7 +245,7 @@ export const DailyJournalEditorContextProvider: React.FunctionComponent<
   }, []);
 
   return (
-    <DailyJournalEditorContext.Provider
+    <EditorContext.Provider
       value={{
         focusedEditorKey,
         onEditorFocus,
@@ -270,6 +267,6 @@ export const DailyJournalEditorContextProvider: React.FunctionComponent<
       }}
     >
       {children}
-    </DailyJournalEditorContext.Provider>
+    </EditorContext.Provider>
   );
 };

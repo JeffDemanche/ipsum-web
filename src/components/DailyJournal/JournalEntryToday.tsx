@@ -9,8 +9,8 @@ import { useDebouncedCallback } from "util/hooks";
 import { placeholderForDate } from "util/placeholders";
 import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
-import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
-import { useJournalEntryEditor } from "./useJournalEntryEditor";
+import { EditorContext } from "../EditorWrapper/EditorContext";
+import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -24,10 +24,10 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   entryKey,
   showDivider,
 }: JournalEntryTodayProps) => {
-  const { editorRef, editorState, empty } = useJournalEntryEditor({ entryKey });
+  const { editorRef, editorState, empty } = useEntryEditor({ entryKey });
 
   const { setEntryEditorState, onEditorFocus, onEditorBlur, saveEntry } =
-    useContext(DailyJournalEditorContext);
+    useContext(EditorContext);
 
   /**
    * Debounced so we only update the state once every so often while typing.

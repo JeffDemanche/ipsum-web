@@ -1,4 +1,4 @@
-import { DailyJournalEditorContext } from "components/DailyJournal";
+import { EditorContext } from "components/EditorWrapper";
 import React, { useCallback, useContext, useMemo } from "react";
 import { IpsumSelectionState } from "util/selection";
 
@@ -22,9 +22,7 @@ interface EditorSelectionProviderProps {
 export const EditorSelectionProvider: React.FC<
   EditorSelectionProviderProps
 > = ({ children }: EditorSelectionProviderProps) => {
-  const { entryEditorStates, entryEditorRefs } = useContext(
-    DailyJournalEditorContext
-  );
+  const { entryEditorStates, entryEditorRefs } = useContext(EditorContext);
 
   // Maps entry keys to IpsumSelectionStates for that editor.
   const entrySelectionStates: ReadonlyMap<string, IpsumSelectionState> =

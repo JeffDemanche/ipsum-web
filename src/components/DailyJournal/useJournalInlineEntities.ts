@@ -1,6 +1,6 @@
 import { EditorState, Modifier } from "draft-js";
 import { useCallback, useContext } from "react";
-import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
+import { EditorContext } from "../EditorWrapper/EditorContext";
 
 interface UseJournalInlineEntitiesResult {
   addArcEntity: (arcId: string) => void;
@@ -15,9 +15,7 @@ export const useJournalInlineEntities = ({
 }: {
   editorId: string;
 }): UseJournalInlineEntitiesResult => {
-  const { entryEditorStates, setEntryEditorState } = useContext(
-    DailyJournalEditorContext
-  );
+  const { entryEditorStates, setEntryEditorState } = useContext(EditorContext);
 
   const editorState = entryEditorStates.get(editorId);
 

@@ -16,7 +16,7 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
   color,
   onClickAway,
 }) => {
-  const range = selection.getRange();
+  const range = selection?.getRange();
   const rectList: DOMRectList = useMemo(() => range?.getClientRects(), [range]);
 
   const containerRef = useRef<HTMLDivElement>();

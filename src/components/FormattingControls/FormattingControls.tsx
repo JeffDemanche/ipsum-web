@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./FormattingControls.less";
 import { EditorState, RichUtils } from "draft-js";
-import { DailyJournalEditorContext } from "components/DailyJournal";
+import { EditorContext } from "components/EditorWrapper";
 import { ToggleButton } from "@mui/material";
 
 export const FormattingControls: React.FunctionComponent = () => {
@@ -10,7 +10,7 @@ export const FormattingControls: React.FunctionComponent = () => {
     setEntryEditorState,
     entryEditorStates,
     todayEntryKey,
-  } = useContext(DailyJournalEditorContext);
+  } = useContext(EditorContext);
 
   const focusedEditorState = useMemo(
     () => entryEditorStates.get(focusedEditorKey),

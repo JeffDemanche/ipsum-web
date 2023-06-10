@@ -1,16 +1,16 @@
 import { ContentState, Editor, EditorState } from "draft-js";
 import { useContext, useEffect, useMemo, useRef } from "react";
 import { parseContentState, stringifyContentState } from "util/content-state";
-import { DailyJournalEditorContext } from "./DailyJournalEditorContext";
+import { EditorContext } from "./EditorContext";
 import { decorator } from "components/Decorator";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 
-interface UseJournalEntryEditorArgs {
+interface UseEntryEditorArgs {
   entryKey: string;
 }
 
-interface UseJournalEntryEditorResult {
+interface UseEntryEditorResult {
   editorRef: React.MutableRefObject<Editor>;
   editorState: EditorState;
   empty: boolean;
@@ -30,9 +30,9 @@ const UseJournalEntryEditorQuery = gql(`
  * Provides common React functionality to use between both the JournalEntryToday
  * component and the JournalEntryPast component.
  */
-export const useJournalEntryEditor = ({
+export const useEntryEditor = ({
   entryKey,
-}: UseJournalEntryEditorArgs): UseJournalEntryEditorResult => {
+}: UseEntryEditorArgs): UseEntryEditorResult => {
   const {
     data: { entry },
   } = useQuery(UseJournalEntryEditorQuery, {
@@ -55,7 +55,7 @@ export const useJournalEntryEditor = ({
     unregisterEditor,
     entryEditorStates,
     entryEditorMetadatas,
-  } = useContext(DailyJournalEditorContext);
+  } = useContext(EditorContext);
 
   const editorState = entryEditorStates.get(entryKey);
   const editorMetadata = entryEditorMetadatas.get(entryKey);
