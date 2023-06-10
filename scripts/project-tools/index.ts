@@ -12,6 +12,7 @@ import repl from "repl";
 import { migrateEntityTextArcAssignments } from "./migrate-entity-text-arc-assignments";
 import { prettyPrint } from "./pretty-print";
 import { migrateRelations } from "./relations-migration-1";
+import { fixArcIncomingRelations } from "./relations-migration-2";
 import { renameField } from "./rename";
 import { write } from "./write";
 
@@ -143,5 +144,10 @@ replServer.defineCommand("add_typenames", {
 replServer.defineCommand("migrate_relations", {
   action() {
     migrateRelations(modifiedData);
+  },
+});
+replServer.defineCommand("fix_relations", {
+  action() {
+    fixArcIncomingRelations(modifiedData);
   },
 });

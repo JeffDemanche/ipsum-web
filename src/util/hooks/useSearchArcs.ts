@@ -11,7 +11,7 @@ interface UseSearchArcsReturn {
   returnedArcs: { id: string; name: string; color: number }[];
 }
 
-const UseSearchArcsQuery = gql(`
+export const UseSearchArcsQuery = gql(`
   query UseSearchArcs {
     arcs {
       id
@@ -28,7 +28,7 @@ export const useSearchArcs = ({
 }: UseSearchArcsParams): UseSearchArcsReturn => {
   const { data } = useQuery(UseSearchArcsQuery, { skip });
 
-  if (skip) return { returnedArcs: [] };
+  if (skip || !data) return { returnedArcs: [] };
 
   const allArcs = Object.values(data?.arcs).filter((arc) => {
     return arc.name.toLowerCase().includes(query.toLowerCase());

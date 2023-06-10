@@ -61,6 +61,7 @@ const typeDefs = gql`
     id: ID!
     entry: Entry!
     arc: Arc
+    arcs: [Arc!]!
     outgoingRelations: [Relation!]!
   }
 
@@ -119,6 +120,9 @@ export const vars = {
   highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
   relations: makeVar<{ [id in string]: UnhydratedType["Relation"] }>({}),
 };
+
+// @ts-expect-error Expose vars for debugging
+global.apollo_vars = vars;
 
 export const serializeVars: (keyof typeof vars)[] = [
   "journalId",
@@ -271,6 +275,15 @@ const typePolicies: TypePolicies = {
           ? vars.arcs()[outgoingRelations[0].object]
           : null;
       },
+      arcs(_, { readField }) {
+        const outgoingRelations =
+          readField<{ __typename: "Relation"; object: string }[]>(
+            "outgoingRelations"
+          );
+        return outgoingRelations.map(
+          (relation) => vars.arcs()[relation.object]
+        );
+      },
       entry(entryKey) {
         return vars.entries()[entryKey];
       },
@@ -294,6 +307,7 @@ const typePolicies: TypePolicies = {
       object(objectId: string, { readField }) {
         const id: string = readField("id");
         const type = vars.relations()[id].objectType;
+
         if (type === "Arc") {
           return vars.arcs()[objectId];
         }
