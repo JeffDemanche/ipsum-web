@@ -1,12 +1,14 @@
-import { ArcDetailSection } from "components/ArcDetail";
+import { ArcDetailContext, ArcDetailSection } from "components/ArcDetail";
 import { EditorWrapper, useEntryEditor } from "components/EditorWrapper";
-import React from "react";
+import React, { useContext } from "react";
 
 export const ArcDetailWikiSection: React.FunctionComponent = () => {
+  const { arcId } = useContext(ArcDetailContext);
+
   const onChange = () => {};
 
-  const { editorRef, editorState, empty } = useEntryEditor({
-    entryKey: "test",
+  const { editorRef, editorState } = useEntryEditor({
+    entryKey: `arc-entry-${arcId}`,
   });
 
   return (
