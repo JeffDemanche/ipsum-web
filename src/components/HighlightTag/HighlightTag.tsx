@@ -1,8 +1,7 @@
 import React, { CSSProperties, useState } from "react";
 import styles from "./HighlightTag.less";
-import { Paper, Link, Typography } from "@mui/material";
+import { Link, Typography } from "@mui/material";
 import { IpsumArcColor, IpsumColor } from "util/colors";
-import cx from "classnames";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 
