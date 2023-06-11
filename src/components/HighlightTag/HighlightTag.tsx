@@ -84,9 +84,9 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   const backgroundColor = ipsumColorL50.setAlpha(0.05).toRgbaCSS();
   const backgroundColorHighlighted = ipsumColorL50.setAlpha(0.2).toRgbaCSS();
 
-  const boxShadow = `0 2px 0 0 ${ipsumColorL50.setAlpha(0.4).toRgbaCSS()}`;
+  const boxShadow = `0 2px 0 0 ${ipsumColorL50.setAlpha(0.25).toRgbaCSS()}`;
   const boxShadowHighlighted = `0 2px 0 0 ${ipsumColorL50
-    .setAlpha(0.25)
+    .setAlpha(0.4)
     .toRgbaCSS()}`;
 
   const style: CSSProperties =
@@ -103,28 +103,23 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
         };
 
   return (
-    <Paper
-      className={cx(className, styles["highlight-tag-container"])}
-      sx={style}
-    >
-      <Typography variant={type === "span" ? "body2" : "h3"}>
-        <Link
-          href={"#"}
-          onMouseEnter={() => {
-            setHover(true);
-            onMouseEnter?.();
-          }}
-          onMouseLeave={() => {
-            setHover(false);
-            onMouseLeave?.();
-          }}
-          className={styles["highlight-tag-a"]}
-          onClick={onClick}
-          style={style}
-        >
-          {name ?? "null"}
-        </Link>
-      </Typography>
-    </Paper>
+    <Typography variant={type === "span" ? "body2" : "h3"}>
+      <Link
+        href={"#"}
+        onMouseEnter={() => {
+          setHover(true);
+          onMouseEnter?.();
+        }}
+        onMouseLeave={() => {
+          setHover(false);
+          onMouseLeave?.();
+        }}
+        className={styles["highlight-tag-a"]}
+        onClick={onClick}
+        style={style}
+      >
+        {name ?? "null"}
+      </Link>
+    </Typography>
   );
 };
