@@ -1,0 +1,1 @@
+export { IpsumTimeMachine } from "./diff";
