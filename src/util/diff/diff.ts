@@ -5,7 +5,7 @@ import {
   IpsumDateTime,
   sortDates,
 } from "util/dates";
-import { PatchesMap, TimeMachine } from "./types";
+import { PatchesMap, StringifiedTimeMachine, TimeMachine } from "./types";
 
 /**
  * Wrapper for Google's `diff-match-patch` library which augments the
@@ -164,11 +164,25 @@ export class IpsumTimeMachine {
     return copy;
   }
 
-  serialize(): TimeMachine {
+  serialize(): StringifiedTimeMachine {
     return {
       initialText: this._initialText,
-      patchData: this._patchData,
+      patchData: JSON.stringify(this._patchData),
       currentText: this._currentValue,
     };
+  }
+
+  toString(): string {
+    return JSON.stringify(this.serialize());
+  }
+
+  static fromString(stringifiedTimeMachine: string): IpsumTimeMachine {
+    const parsed: StringifiedTimeMachine = JSON.parse(stringifiedTimeMachine);
+
+    return new IpsumTimeMachine({
+      initialText: parsed.initialText,
+      patchData: JSON.parse(parsed.patchData),
+      currentText: parsed.currentText,
+    });
   }
 }

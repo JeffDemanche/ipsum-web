@@ -2,6 +2,8 @@ import { nextHue } from "util/colors";
 import { v4 as uuidv4 } from "uuid";
 import { autosave } from "../autosave";
 import { UnhydratedType, vars } from "../client";
+import { createArcEntry } from "./arcEntries";
+import { initializeHistory } from "./history";
 
 export const createArc = ({
   name,
@@ -13,11 +15,15 @@ export const createArc = ({
 
   vars.journalMetadata({ ...vars.journalMetadata(), lastArcHue: color });
 
+  const arcEntry = createArcEntry({ arcId });
+
   const arc: UnhydratedType["Arc"] = {
     __typename: "Arc",
     id: arcId,
     name,
     color,
+    arcEntry: arcEntry.entryKey,
+    history: initializeHistory(),
     incomingRelations: [],
     outgoingRelations: [],
   };

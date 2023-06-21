@@ -9,6 +9,7 @@ import {
 import { parseIpsumDateTime } from "util/dates";
 import { v4 as uuidv4 } from "uuid";
 import {
+  QueryArcEntriesArgs,
   QueryArcsArgs,
   QueryEntriesArgs,
   QueryHighlightsArgs,
@@ -26,6 +27,9 @@ const typeDefs = gql`
     recentEntries(count: Int!): [Entry!]!
     entryDates: [String!]!
 
+    arcEntry(arcId: ID!): ArcEntry
+    arcEntries(entryKeys: [ID!]): [ArcEntry]
+
     arc(id: ID!): Arc
     arcs(ids: [ID!]): [Arc]
 
@@ -36,10 +40,16 @@ const typeDefs = gql`
     relations(ids: [ID!]): [Relation]
   }
 
+  # Generalized type that can be used on objects that have a history
+  type History {
+    dateCreated: String
+  }
+
   type JournalMetadata {
     lastArcHue: Int!
   }
 
+  # TODO Rename to DailyJournalEntry ?
   type Entry {
     entryKey: String!
     date: String!
@@ -47,11 +57,18 @@ const typeDefs = gql`
     highlights: [Highlight!]!
   }
 
+  type ArcEntry {
+    entryKey: String!
+    trackedContentState: String!
+  }
+
   type Arc {
     id: ID!
     name: String!
     color: Int!
     highlights: [Highlight!]!
+    history: History!
+    arcEntry: ArcEntry!
 
     incomingRelations: [Relation!]!
     outgoingRelations: [Relation!]!
@@ -59,6 +76,7 @@ const typeDefs = gql`
 
   type Highlight {
     id: ID!
+    history: History!
     entry: Entry!
     arc: Arc
     arcs: [Arc!]!
@@ -76,6 +94,11 @@ const typeDefs = gql`
 `;
 
 export type UnhydratedType = {
+  History: {
+    __typename: "History";
+    dateCreated?: string;
+  };
+
   JournalMetadata: {
     __typename: "JournalMetadata";
     lastArcHue: number;
@@ -86,9 +109,17 @@ export type UnhydratedType = {
     date: string;
     contentState: string;
   };
+  ArcEntry: {
+    __typename: "ArcEntry";
+    entryKey: string;
+    arcId: string;
+    trackedContentState: string;
+  };
   Arc: {
     __typename: "Arc";
     id: string;
+    history: UnhydratedType["History"];
+    arcEntry: string;
     name: string;
     color: number;
     incomingRelations: string[];
@@ -97,6 +128,7 @@ export type UnhydratedType = {
   Highlight: {
     __typename: "Highlight";
     id: string;
+    history: UnhydratedType["History"];
     entry: string;
     outgoingRelations: string[];
   };
@@ -116,6 +148,7 @@ export const vars = {
   journalTitle: makeVar("new journal"),
   journalMetadata: makeVar({ lastArcHue: 0 }),
   entries: makeVar<{ [entryKey in string]: UnhydratedType["Entry"] }>({}),
+  arcEntries: makeVar<{ [entryKey in string]: UnhydratedType["ArcEntry"] }>({}),
   arcs: makeVar<{ [id in string]: UnhydratedType["Arc"] }>({}),
   highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
   relations: makeVar<{ [id in string]: UnhydratedType["Relation"] }>({}),
@@ -130,6 +163,7 @@ export const serializeVars: (keyof typeof vars)[] = [
   "journalMetadata",
   "entries",
   "arcs",
+  "arcEntries",
   "highlights",
   "relations",
 ];
@@ -140,6 +174,7 @@ export const initializeState = () => {
   vars.journalMetadata({ lastArcHue: 0 });
   vars.entries({});
   vars.arcs({});
+  vars.arcEntries({});
   vars.highlights({});
   vars.relations({});
 };
@@ -193,6 +228,21 @@ const typePolicies: TypePolicies = {
           return args.ids.map((id) => vars.arcs()[id]);
         }
         return Object.values(vars.arcs());
+      },
+      arcEntry(_, { args }) {
+        if (args?.arcId) {
+          const arcEntryKey = Object.values(vars.arcs()).find(
+            (arc) => arc.id === args.arcId
+          ).arcEntry;
+          return vars.arcEntries()[arcEntryKey];
+        }
+        return null;
+      },
+      arcEntries(_, { args }: { args: QueryArcEntriesArgs }) {
+        if (args?.entryKeys) {
+          return args.entryKeys.map((entryKey) => vars.arcEntries()[entryKey]);
+        }
+        return Object.values(vars.arcEntries());
       },
       highlight(_, { args }) {
         if (args?.id) {

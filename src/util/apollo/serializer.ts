@@ -3,6 +3,11 @@ import { serializeVars, vars } from "./client";
 import * as t from "io-ts";
 import { PathReporter } from "io-ts/PathReporter";
 
+const HistorySchema = t.type({
+  __typename: t.literal("History"),
+  dateCreated: t.union([t.string, t.undefined]),
+});
+
 const SerializedSchema = t.type({
   journalId: t.string,
   journalTitle: t.string,
@@ -23,8 +28,10 @@ const SerializedSchema = t.type({
     t.type({
       __typename: t.literal("Arc"),
       id: t.string,
+      history: HistorySchema,
       name: t.string,
       color: t.number,
+      arcEntry: t.string,
       incomingRelations: t.array(t.string),
       outgoingRelations: t.array(t.string),
     })
@@ -34,6 +41,7 @@ const SerializedSchema = t.type({
     t.type({
       __typename: t.literal("Highlight"),
       id: t.string,
+      history: HistorySchema,
       entry: t.string,
       outgoingRelations: t.array(t.string),
     })
