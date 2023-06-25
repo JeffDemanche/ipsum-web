@@ -4,14 +4,12 @@ import { IpsumTimeMachine } from "util/diff";
 
 export const createArcEntry = ({
   arcId,
+  arcName,
 }: {
   arcId: string;
+  arcName: string;
 }): UnhydratedType["ArcEntry"] => {
-  const arc = vars.arcs()[arcId];
-
-  if (!arc) throw new Error(`createArcEntry: arc ${arcId} not found`);
-
-  const arcEntryKey = `arc-entry:${arc.name}:${uuidv4()}`;
+  const arcEntryKey = `arc-entry:${arcName}:${uuidv4()}`;
 
   const arcEntry: UnhydratedType["ArcEntry"] = {
     __typename: "ArcEntry",

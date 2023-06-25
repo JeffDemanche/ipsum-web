@@ -15,7 +15,7 @@ export const createArc = ({
 
   vars.journalMetadata({ ...vars.journalMetadata(), lastArcHue: color });
 
-  const arcEntry = createArcEntry({ arcId });
+  const arcEntry = createArcEntry({ arcId, arcName: name });
 
   const arc: UnhydratedType["Arc"] = {
     __typename: "Arc",
