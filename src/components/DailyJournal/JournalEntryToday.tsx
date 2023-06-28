@@ -1,4 +1,3 @@
-import { Divider, Typography } from "@mui/material";
 import cx from "classnames";
 import { Digest } from "components/Digest";
 import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
@@ -11,6 +10,8 @@ import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
 import { EditorContext } from "../EditorWrapper/EditorContext";
 import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
+import { Divider, Typography } from "@mui/material";
+import { ReflectionAccordion } from "./ReflectionAccordion";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -95,6 +96,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
             "entry-printed-date-nice"
           )}
         </Typography>
+        <ReflectionAccordion></ReflectionAccordion>
         {editorState && (
           <>
             <Digest entryKey={entryKey} />

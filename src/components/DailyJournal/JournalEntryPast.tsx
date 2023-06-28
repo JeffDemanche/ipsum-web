@@ -8,6 +8,7 @@ import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
 import { EditorContext } from "../EditorWrapper/EditorContext";
 import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
+import { ReflectionAccordion } from "./ReflectionAccordion";
 
 interface JournalEntryProps {
   entryKey: string;
@@ -78,6 +79,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
             "entry-printed-date-nice"
           )}
         </Typography>
+        <ReflectionAccordion></ReflectionAccordion>
         {editorState && (
           <>
             <Digest entryKey={entryKey} />
