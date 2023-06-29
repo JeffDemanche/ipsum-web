@@ -14,7 +14,6 @@ interface UseEntryEditorResult {
   editorRef: React.MutableRefObject<Editor>;
   editorState: EditorState;
   empty: boolean;
-  entry: { entryKey: string };
 }
 
 const UseJournalEntryEditorQuery = gql(`
@@ -100,6 +99,5 @@ export const useEntryEditor = ({
     editorRef,
     editorState,
     empty,
-    entry,
   };
 };

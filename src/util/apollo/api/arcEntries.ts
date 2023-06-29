@@ -1,6 +1,7 @@
 import { UnhydratedType, vars } from "../client";
 import { v4 as uuidv4 } from "uuid";
 import { IpsumTimeMachine } from "util/diff";
+import { autosave } from "../autosave";
 
 export const createArcEntry = ({
   arcId,
@@ -29,9 +30,8 @@ export const updateArcEntry = ({
 }: {
   entryKey: string;
   contentState: string;
-}) => {
-  if (!vars.arcEntries()[entryKey])
-    throw new Error(`updateArcEntry: arc entryKey ${entryKey} not found`);
+}): UnhydratedType["ArcEntry"] | undefined => {
+  if (!vars.arcEntries()[entryKey]) return undefined;
 
   const oldTrackedContentState = IpsumTimeMachine.fromString(
     vars.arcEntries()[entryKey].trackedContentState
@@ -42,11 +42,14 @@ export const updateArcEntry = ({
   );
 
   const newArcEntries = { ...vars.arcEntries() };
-  newArcEntries[entryKey] = {
+  const newArcEntry = {
     ...newArcEntries[entryKey],
     trackedContentState: newTrackedContentState.toString(),
   };
+  newArcEntries[entryKey] = newArcEntry;
   vars.arcEntries(newArcEntries);
+  autosave();
+  return newArcEntry;
 };
 
 export const deleteArcEntry = (entryKey: string) => {

@@ -31,6 +31,7 @@ export const updateEntry = (
   newEntries[entry.entryKey] = newEntry;
   vars.entries(newEntries);
   autosave();
+  return newEntry;
 };
 
 export const assignHighlightToEntry = ({
