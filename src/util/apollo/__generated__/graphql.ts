@@ -32,14 +32,34 @@ export type ArcEntry = {
   entry: Entry;
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  commentEntry: CommentEntry;
+  history: History;
+  id: Scalars['ID'];
+};
+
+export type CommentEntry = {
+  __typename?: 'CommentEntry';
+  comment: Comment;
+  entry: Entry;
+};
+
 export type Entry = {
   __typename?: 'Entry';
   contentState: Scalars['String'];
   date: Scalars['String'];
   entryKey: Scalars['String'];
+  entryType: EntryType;
   highlights: Array<Highlight>;
   trackedContentState: Scalars['String'];
 };
+
+export enum EntryType {
+  Arc = 'ARC',
+  Comment = 'COMMENT',
+  Journal = 'JOURNAL'
+}
 
 export type Highlight = {
   __typename?: 'Highlight';
@@ -54,6 +74,11 @@ export type Highlight = {
 export type History = {
   __typename?: 'History';
   dateCreated?: Maybe<Scalars['String']>;
+};
+
+export type JournalEntry = {
+  __typename?: 'JournalEntry';
+  entry: Entry;
 };
 
 export type JournalMetadata = {
@@ -72,10 +97,12 @@ export type Query = {
   entryDates: Array<Scalars['String']>;
   highlight?: Maybe<Highlight>;
   highlights?: Maybe<Array<Maybe<Highlight>>>;
+  journalEntryDates: Array<Scalars['String']>;
   journalId: Scalars['String'];
   journalMetadata: JournalMetadata;
   journalTitle: Scalars['String'];
   recentEntries: Array<Entry>;
+  recentJournalEntries: Array<JournalEntry>;
   relation?: Maybe<Relation>;
   relations?: Maybe<Array<Maybe<Relation>>>;
 };
@@ -124,6 +151,11 @@ export type QueryHighlightsArgs = {
 
 
 export type QueryRecentEntriesArgs = {
+  count: Scalars['Int'];
+};
+
+
+export type QueryRecentJournalEntriesArgs = {
   count: Scalars['Int'];
 };
 

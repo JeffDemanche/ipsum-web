@@ -5,10 +5,12 @@ import { parseContentState, stringifyContentState } from "util/content-state";
 import { autosave } from "../autosave";
 import { IpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
+import { EntryType } from "../__generated__/graphql";
 
 export const createEntry = (entry: {
   entryKey: string;
   stringifiedContentState: string;
+  entryType: EntryType;
 }): UnhydratedType["Entry"] => {
   if (vars.entries()[entry.entryKey]) return;
 
@@ -22,6 +24,7 @@ export const createEntry = (entry: {
       __typename: "History",
       dateCreated: IpsumDateTime.today().toString("iso"),
     },
+    entryType: entry.entryType,
   };
   vars.entries({
     ...vars.entries(),

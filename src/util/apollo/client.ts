@@ -28,6 +28,9 @@ const typeDefs = gql`
     recentEntries(count: Int!): [Entry!]!
     entryDates: [String!]!
 
+    recentJournalEntries(count: Int!): [JournalEntry!]!
+    journalEntryDates: [String!]!
+
     arcEntry(arcId: ID!): ArcEntry
     arcEntries(entryKeys: [ID!]): [ArcEntry]
 
@@ -50,7 +53,12 @@ const typeDefs = gql`
     lastArcHue: Int!
   }
 
-  # TODO Rename to DailyJournalEntry ?
+  enum EntryType {
+    JOURNAL
+    ARC
+    COMMENT
+  }
+
   type Entry {
     entryKey: String!
     date: String!
@@ -58,11 +66,22 @@ const typeDefs = gql`
     contentState: String!
     trackedContentState: String!
     highlights: [Highlight!]!
+    entryType: EntryType!
+  }
+
+  type JournalEntry {
+    entryKey: String!
+    entry: Entry!
   }
 
   type ArcEntry {
     entry: Entry!
     arc: Arc!
+  }
+
+  type CommentEntry {
+    entry: Entry!
+    comment: Comment!
   }
 
   type Arc {
@@ -94,6 +113,13 @@ const typeDefs = gql`
     predicate: String!
     object: Arc!
   }
+
+  # TODO
+  type Comment {
+    id: ID!
+    commentEntry: CommentEntry!
+    history: History!
+  }
 `;
 
 export type UnhydratedType = {
@@ -110,10 +136,22 @@ export type UnhydratedType = {
     entryKey: string;
     trackedContentState: string;
     history: UnhydratedType["History"];
+    entryType: "JOURNAL" | "ARC" | "COMMENT";
+  };
+  JournalEntry: {
+    __typename: "JournalEntry";
+    entryKey: string;
+    entry: string;
   };
   ArcEntry: {
     __typename: "ArcEntry";
     entry: string;
+    arc: string;
+  };
+  CommentEntry: {
+    __typename: "CommentEntry";
+    entry: string;
+    comment: string;
   };
   Arc: {
     __typename: "Arc";
@@ -141,6 +179,12 @@ export type UnhydratedType = {
     objectType: "Arc";
     object: string;
   };
+  Comment: {
+    __typename: "Comment";
+    id: string;
+    commentEntry: string;
+    history: UnhydratedType["History"];
+  };
 };
 
 export const vars = {
@@ -148,10 +192,17 @@ export const vars = {
   journalTitle: makeVar("new journal"),
   journalMetadata: makeVar({ lastArcHue: 0 }),
   entries: makeVar<{ [entryKey in string]: UnhydratedType["Entry"] }>({}),
+  journalEntries: makeVar<{
+    [entryKey in string]: UnhydratedType["JournalEntry"];
+  }>({}),
   arcEntries: makeVar<{ [entryKey in string]: UnhydratedType["ArcEntry"] }>({}),
+  commentEntries: makeVar<{
+    [entryKey in string]: UnhydratedType["CommentEntry"];
+  }>({}),
   arcs: makeVar<{ [id in string]: UnhydratedType["Arc"] }>({}),
   highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
   relations: makeVar<{ [id in string]: UnhydratedType["Relation"] }>({}),
+  comments: makeVar<{ [id in string]: UnhydratedType["Comment"] }>({}),
 };
 
 // @ts-expect-error Expose vars for debugging
@@ -163,7 +214,9 @@ export const serializeVars: (keyof typeof vars)[] = [
   "journalMetadata",
   "entries",
   "arcs",
+  "journalEntries",
   "arcEntries",
+  "commentEntries",
   "highlights",
   "relations",
 ];
@@ -174,9 +227,12 @@ export const initializeState = () => {
   vars.journalMetadata({ lastArcHue: 0 });
   vars.entries({});
   vars.arcs({});
+  vars.journalEntries({});
   vars.arcEntries({});
+  vars.commentEntries({});
   vars.highlights({});
   vars.relations({});
+  vars.comments({});
 };
 
 const typePolicies: TypePolicies = {
@@ -222,6 +278,20 @@ const typePolicies: TypePolicies = {
         return Object.values(vars.entries()).map(
           (entry) => entry.history.dateCreated
         );
+      },
+      recentJournalEntries(_, { args }) {
+        return Object.values(vars.entries())
+          .filter((entry) => entry.entryType === "JOURNAL")
+          .sort(
+            (a, b) =>
+              parseIpsumDateTime(b.history.dateCreated)
+                .dateTime.toJSDate()
+                .getTime() -
+              parseIpsumDateTime(a.history.dateCreated)
+                .dateTime.toJSDate()
+                .getTime()
+          )
+          .slice(0, args.count);
       },
       arc(_, { args }) {
         if (args?.id) {

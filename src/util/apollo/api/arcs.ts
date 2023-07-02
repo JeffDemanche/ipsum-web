@@ -2,7 +2,7 @@ import { nextHue } from "util/colors";
 import { v4 as uuidv4 } from "uuid";
 import { autosave } from "../autosave";
 import { UnhydratedType, vars } from "../client";
-import { createArcEntry } from "./arcEntries";
+import { createArcEntry, deleteArcEntry } from "./arcEntries";
 import { initializeHistory } from "./history";
 
 export const createArc = ({
@@ -46,8 +46,12 @@ export const updateArc = (arc: Partial<UnhydratedType["Arc"]>) => {
 export const deleteArc = (id: string) => {
   if (!vars.arcs()[id]) return;
 
+  const arcEntryKey = vars.arcs()[id].arcEntry;
+  deleteArcEntry(arcEntryKey);
+
   const newArcs = { ...vars.arcs() };
   delete newArcs[id];
   vars.arcs(newArcs);
+
   autosave();
 };

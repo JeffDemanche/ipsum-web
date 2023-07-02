@@ -5,7 +5,8 @@ import { createArc } from "../api/arcs";
 import { createEntry } from "../api/entries";
 import { createHighlight } from "../api/highlights";
 import { createRelation } from "../api/relations";
-import { vars, client, initializeState } from "../client";
+import { client, initializeState } from "../client";
+import { EntryType } from "../__generated__/graphql";
 
 jest.mock("../autosave");
 
@@ -21,12 +22,14 @@ describe("apollo client", () => {
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("Hello, world!")
         ),
+        entryType: EntryType.Journal,
       });
       createEntry({
         entryKey: "1/2/2020",
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("Hello, world!")
         ),
+        entryType: EntryType.Journal,
       });
 
       const result = client.readQuery({
@@ -56,6 +59,7 @@ describe("apollo client", () => {
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("Hello, world!")
         ),
+        entryType: EntryType.Journal,
       });
       const highlight1 = createHighlight({
         entry: "1/2/2020",
@@ -120,6 +124,7 @@ describe("apollo client", () => {
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("Hello, world!")
         ),
+        entryType: EntryType.Journal,
       });
       const highlight = createHighlight({
         entry: entry.entryKey,
@@ -178,12 +183,14 @@ describe("apollo client", () => {
           stringifiedContentState: stringifyContentState(
             ContentState.createFromText("Hello, world!")
           ),
+          entryType: EntryType.Journal,
         });
         createEntry({
           entryKey: "1/4/2020",
           stringifiedContentState: stringifyContentState(
             ContentState.createFromText("Hello, world!")
           ),
+          entryType: EntryType.Journal,
         });
         const highlight1 = createHighlight({
           entry: "1/2/2020",
@@ -230,6 +237,7 @@ describe("apollo client", () => {
         createEntry({
           entryKey: "1/2/2020",
           stringifiedContentState: entryCS,
+          entryType: EntryType.Journal,
         });
         const highlight = createHighlight({
           entry: "1/2/2020",

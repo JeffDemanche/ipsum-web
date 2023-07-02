@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { createEntry } from "./entries";
 import { ContentState } from "draft-js";
 import { stringifyContentState } from "util/content-state";
+import { EntryType } from "../__generated__/graphql";
 
 export const createArcEntry = ({
   arcId,
@@ -13,16 +14,18 @@ export const createArcEntry = ({
 }): UnhydratedType["ArcEntry"] => {
   const arcEntryKey = `arc-entry:${arcName}:${uuidv4()}`;
 
-  const entry = createEntry({
+  createEntry({
     entryKey: arcEntryKey,
     stringifiedContentState: stringifyContentState(
       ContentState.createFromText("")
     ),
+    entryType: EntryType.Arc,
   });
 
   const arcEntry: UnhydratedType["ArcEntry"] = {
     __typename: "ArcEntry",
     entry: arcEntryKey,
+    arc: arcId,
   };
 
   vars.arcEntries({ ...vars.arcEntries(), [arcEntryKey]: arcEntry });

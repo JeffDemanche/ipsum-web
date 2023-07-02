@@ -1,5 +1,6 @@
 import { ContentState } from "draft-js";
 import { vars, initializeState } from "util/apollo/client";
+import { EntryType } from "util/apollo/__generated__/graphql";
 import { parseContentState, stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
@@ -28,6 +29,7 @@ describe("apollo entries API", () => {
       const entry1 = {
         entryKey: "1/2/2020",
         stringifiedContentState: entry1CS,
+        entryType: EntryType.Journal,
       };
       const entry2CS = stringifyContentState(
         ContentState.createFromText("Hello, world 2!")
@@ -35,6 +37,7 @@ describe("apollo entries API", () => {
       const entry2 = {
         entryKey: "4/2/2020",
         stringifiedContentState: entry2CS,
+        entryType: EntryType.Journal,
       };
       createEntry(entry1);
       expect(vars.entries()["1/2/2020"]).toEqual(
@@ -71,6 +74,7 @@ describe("apollo entries API", () => {
       const entry1 = {
         entryKey: "1/2/2020",
         stringifiedContentState: entry1CS,
+        entryType: EntryType.Journal,
       };
       const entry2CS = stringifyContentState(
         ContentState.createFromText("Hello, world 2!")
@@ -78,6 +82,7 @@ describe("apollo entries API", () => {
       const entry2 = {
         entryKey: "4/2/2020",
         stringifiedContentState: entry2CS,
+        entryType: EntryType.Journal,
       };
       createEntry(entry1);
       createEntry(entry2);
@@ -121,6 +126,7 @@ describe("apollo entries API", () => {
         stringifiedContentState: stringifyContentState(
           editorState.getCurrentContent()
         ),
+        entryType: EntryType.Journal,
       };
       createEntry(entry1);
       const highlight = createHighlight({ entry: "1/2/2020" });
@@ -159,6 +165,7 @@ describe("apollo entries API", () => {
       const entry1 = {
         entryKey: "1/2/2020",
         stringifiedContentState: entry1CS,
+        entryType: EntryType.Journal,
       };
       const entry2CS = stringifyContentState(
         ContentState.createFromText("Hello, world 2!")
@@ -166,6 +173,7 @@ describe("apollo entries API", () => {
       const entry2 = {
         entryKey: "4/2/2020",
         stringifiedContentState: entry2CS,
+        entryType: EntryType.Journal,
       };
       createEntry(entry1);
       createEntry(entry2);

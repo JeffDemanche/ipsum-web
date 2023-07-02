@@ -1,6 +1,7 @@
 import { IpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { UnhydratedType, vars } from "../client";
+import { EntryType } from "../__generated__/graphql";
 
 /**
  * Allows mocks to supply partials of types, with the unsupplied fields being
@@ -36,6 +37,7 @@ export const mockEntries = (entries: {
         __typename: "History",
         dateCreated: IpsumDateTime.now().toString("iso"),
       },
+      entryType: EntryType.Journal,
     })
   );
 };

@@ -8,14 +8,14 @@ describe("apollo arcs API", () => {
   });
 
   describe("createArc", () => {
-    it("should create an arc with default fields", () => {});
+    it.todo("should create an arc with default fields");
 
-    it("should create an arcEntry with default fields", () => {});
+    it.todo("should create an arcEntry with default fields");
   });
 
   describe("updateArc", () => {});
 
   describe("deleteArc", () => {
-    it("should delete the arc and any associated arc entries", () => {});
+    it.todo("should delete the arc and any associated arc entries");
   });
 });

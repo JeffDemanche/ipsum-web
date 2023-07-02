@@ -1,7 +1,12 @@
 import { decorator } from "components/Decorator";
 import { ContentState, Editor, EditorState } from "draft-js";
 import React, { useCallback, useState } from "react";
-import { createEntry, deleteEntry, updateEntry } from "util/apollo";
+import {
+  createJournalEntry,
+  deleteJournalEntry,
+  EntryType,
+  updateEntry,
+} from "util/apollo";
 import { stringifyContentState } from "util/content-state";
 import { useDateString } from "util/dates";
 
@@ -134,15 +139,16 @@ export const EditorContextProvider: React.FunctionComponent<
         entryEditorStates.get(entryKey).getCurrentContent();
 
       if (!contentState.hasText()) {
-        deleteEntry(entryKey);
+        deleteJournalEntry({ entryKey });
       } else {
         const entry = {
           entryKey,
           stringifiedContentState: stringifyContentState(contentState),
+          entryType: EntryType.Journal,
         };
         const attemptedUpdate = updateEntry(entry);
         if (!attemptedUpdate) {
-          createEntry(entry);
+          createJournalEntry(entry);
         }
       }
     },

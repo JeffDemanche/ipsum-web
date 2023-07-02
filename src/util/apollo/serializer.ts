@@ -23,14 +23,35 @@ const SerializedSchema = t.type({
       contentState: t.string,
       trackedContentState: t.string,
       history: HistorySchema,
+      entryType: t.union([
+        t.literal("JOURNAL"),
+        t.literal("ARC"),
+        t.literal("COMMENT"),
+      ]),
+    })
+  ),
+  journalEntries: t.record(
+    t.string,
+    t.type({
+      __typename: t.literal("JournalEntry"),
+      entryKey: t.string,
+      entry: t.string,
     })
   ),
   arcEntries: t.record(
     t.string,
     t.type({
       __typename: t.literal("ArcEntry"),
-      id: t.string,
       entry: t.string,
+      arc: t.string,
+    })
+  ),
+  commentEntries: t.record(
+    t.string,
+    t.type({
+      __typename: t.literal("CommentEntry"),
+      entry: t.string,
+      comment: t.string,
     })
   ),
   arcs: t.record(
@@ -68,6 +89,15 @@ const SerializedSchema = t.type({
       object: t.string,
     })
   ),
+  comments: t.record(
+    t.string,
+    t.type({
+      __typename: t.literal("Comment"),
+      id: t.string,
+      history: HistorySchema,
+      commentEntry: t.string,
+    })
+  ),
 });
 
 /**
@@ -100,9 +130,12 @@ export const loadApolloState = (serialized: string): string[] | undefined => {
     vars.journalMetadata(parsed.right.journalMetadata);
     vars.journalTitle(parsed.right.journalTitle);
     vars.entries(parsed.right.entries);
+    vars.journalEntries(parsed.right.journalEntries);
     vars.arcEntries(parsed.right.arcEntries);
+    vars.commentEntries(parsed.right.commentEntries);
     vars.arcs(parsed.right.arcs);
     vars.highlights(parsed.right.highlights);
     vars.relations(parsed.right.relations);
+    vars.comments(parsed.right.comments);
   }
 };
