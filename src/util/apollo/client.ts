@@ -101,7 +101,6 @@ export type UnhydratedType = {
     __typename: "History";
     dateCreated?: string;
   };
-
   JournalMetadata: {
     __typename: "JournalMetadata";
     lastArcHue: number;
@@ -301,9 +300,7 @@ const typePolicies: TypePolicies = {
         );
       },
       date(_, { readField }) {
-        return parseIpsumDateTime(
-          readField<UnhydratedType["History"]>("history").dateCreated
-        );
+        return readField<UnhydratedType["History"]>("history").dateCreated;
       },
       contentState(_, { readField }) {
         const trackedContentState = readField<string>("trackedContentState");
