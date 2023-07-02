@@ -1,4 +1,7 @@
 import { initializeState } from "util/apollo/client";
+import { createArcEntry } from "../arcEntries";
+
+jest.mock("../../autosave");
 
 describe("apollo arcEntries API", () => {
   beforeEach(() => {
@@ -6,7 +9,9 @@ describe("apollo arcEntries API", () => {
   });
 
   describe("createArcEntry", () => {
-    it("should create an arcEntry with an empty trackedContentState", () => {});
+    it("should create an arcEntry with an empty trackedContentState", () => {
+      const arcEntry = createArcEntry({ arcId: "arcId", arcName: "arcName" });
+    });
   });
 
   describe("updateArcEntry", () => {

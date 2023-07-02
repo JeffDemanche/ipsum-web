@@ -22,7 +22,7 @@ export const createArc = ({
     id: arcId,
     name,
     color,
-    arcEntry: arcEntry.entryKey,
+    arcEntry: arcEntry.entry,
     history: initializeHistory(),
     incomingRelations: [],
     outgoingRelations: [],

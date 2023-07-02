@@ -1,4 +1,6 @@
 import { gql } from "@apollo/client";
+import { ContentState } from "draft-js";
+import { stringifyContentState } from "util/content-state";
 import { createArc } from "../api/arcs";
 import { createEntry } from "../api/entries";
 import { createHighlight } from "../api/highlights";
@@ -16,13 +18,15 @@ describe("apollo client", () => {
     it("queries entries with specified entry keys", () => {
       createEntry({
         entryKey: "1/1/2020",
-        date: "1/1/2020",
-        contentState: "Hello, world!",
+        stringifiedContentState: stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        ),
       });
       createEntry({
         entryKey: "1/2/2020",
-        date: "1/2/2020",
-        contentState: "Hello, world!",
+        stringifiedContentState: stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        ),
       });
 
       const result = client.readQuery({
@@ -49,8 +53,9 @@ describe("apollo client", () => {
       const arc2 = createArc({ name: "test arc 2" });
       createEntry({
         entryKey: "1/2/2020",
-        date: "1/2/2020",
-        contentState: "Hello, world!",
+        stringifiedContentState: stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        ),
       });
       const highlight1 = createHighlight({
         entry: "1/2/2020",
@@ -112,8 +117,9 @@ describe("apollo client", () => {
       const arc = createArc({ name: "test arc 1" });
       const entry = createEntry({
         entryKey: "1/2/2020",
-        date: "1/2/2020",
-        contentState: "Hello, world!",
+        stringifiedContentState: stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        ),
       });
       const highlight = createHighlight({
         entry: entry.entryKey,
@@ -169,13 +175,15 @@ describe("apollo client", () => {
       it("should hydrate entry highlights", () => {
         createEntry({
           entryKey: "1/2/2020",
-          date: "1/2/2020",
-          contentState: "Hello, world!",
+          stringifiedContentState: stringifyContentState(
+            ContentState.createFromText("Hello, world!")
+          ),
         });
         createEntry({
           entryKey: "1/4/2020",
-          date: "1/4/2020",
-          contentState: "Hello, world!",
+          stringifiedContentState: stringifyContentState(
+            ContentState.createFromText("Hello, world!")
+          ),
         });
         const highlight1 = createHighlight({
           entry: "1/2/2020",
@@ -205,15 +213,23 @@ describe("apollo client", () => {
         expect(result.entries[0].highlights[1].id).toEqual(highlight2.id);
         expect(result.entries[1].highlights).toHaveLength(0);
       });
+
+      it.todo("should hydrate date from history");
+
+      it.todo(
+        "should hydrate contentState from most recent entry in trackedContentState"
+      );
     });
 
     describe("highlights", () => {
       it("should hydrate highlight arcs and entries", () => {
         const arc = createArc({ name: "test arc 1" });
-        const entry = createEntry({
+        const entryCS = stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        );
+        createEntry({
           entryKey: "1/2/2020",
-          date: "1/2/2020",
-          contentState: "Hello, world!",
+          stringifiedContentState: entryCS,
         });
         const highlight = createHighlight({
           entry: "1/2/2020",
@@ -258,7 +274,10 @@ describe("apollo client", () => {
           arc.name
         );
         expect(result.highlights[0].entry).toEqual(
-          vars.entries()[entry.entryKey]
+          expect.objectContaining({
+            entryKey: "1/2/2020",
+            contentState: entryCS,
+          })
         );
       });
 

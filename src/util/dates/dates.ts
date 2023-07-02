@@ -7,16 +7,20 @@ import { useEffect, useState } from "react";
 
 /** Date formats we can create a string of from a DateTime. */
 type IpsumDateFormatTo =
+  | "stored-day"
   | "entry-printed-date"
   | "entry-printed-date-nice"
   | "month-word"
-  | "url-format";
+  | "url-format"
+  | "iso";
 
 /** Date formats we can create a DateTime of from a string. */
 type IpsumDateFormatFrom =
+  | "stored-day"
   | "entry-printed-date"
   | "entry-printed-date-nice"
-  | "url-format";
+  | "url-format"
+  | "iso";
 
 /**
  * Gets current Luxon DateTime object.
@@ -75,10 +79,18 @@ export const getDaysBetween = (
 };
 
 export const compareDatesAsc = (a: IpsumDateTime, b: IpsumDateTime) =>
-  a.dateTime.valueOf() > b.dateTime.valueOf() ? 1 : -1;
+  a.dateTime.valueOf() === b.dateTime.valueOf()
+    ? 0
+    : a.dateTime.valueOf() > b.dateTime.valueOf()
+    ? 1
+    : -1;
 
 export const compareDatesDesc = (a: IpsumDateTime, b: IpsumDateTime) =>
-  a.dateTime.valueOf() < b.dateTime.valueOf() ? 1 : -1;
+  a.dateTime.valueOf() === b.dateTime.valueOf()
+    ? 0
+    : a.dateTime.valueOf() < b.dateTime.valueOf()
+    ? 1
+    : -1;
 
 export const sortDates = (
   dates: IpsumDateTime[],
@@ -106,12 +118,15 @@ export class IpsumDateTime {
 
   static fromString = (dateString: string, format: IpsumDateFormatFrom) => {
     switch (format) {
+      case "stored-day":
       case "entry-printed-date":
         return new this(DateTime.fromFormat(dateString, "D"));
       case "entry-printed-date-nice":
         return new this(DateTime.fromFormat(dateString, "D"));
       case "url-format":
         return new this(DateTime.fromFormat(dateString, "MM-dd-yyyy"));
+      case "iso":
+        return new this(DateTime.fromISO(dateString));
       default:
         return undefined;
     }
@@ -128,6 +143,7 @@ export class IpsumDateTime {
 
   toString = (format: IpsumDateFormatTo): string => {
     switch (format) {
+      case "stored-day":
       case "entry-printed-date":
         return this._luxonDateTime.toLocaleString();
       case "entry-printed-date-nice":
@@ -140,6 +156,8 @@ export class IpsumDateTime {
         return this._luxonDateTime.toLocaleString({ month: "long" });
       case "url-format":
         return this._luxonDateTime.toFormat("MM-dd-yyyy");
+      case "iso":
+        return this._luxonDateTime.toISO();
       default:
         return undefined;
     }
@@ -147,5 +165,13 @@ export class IpsumDateTime {
 
   get dateTime() {
     return this._luxonDateTime;
+  }
+
+  static today() {
+    return new this(DateTime.now().startOf("day"));
+  }
+
+  static now() {
+    return new this(DateTime.now());
   }
 }

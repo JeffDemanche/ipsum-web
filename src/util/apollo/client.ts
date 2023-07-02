@@ -7,6 +7,7 @@ import {
   makeVar,
 } from "@apollo/client";
 import { parseIpsumDateTime } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
 import { v4 as uuidv4 } from "uuid";
 import {
   QueryArcEntriesArgs,
@@ -53,13 +54,15 @@ const typeDefs = gql`
   type Entry {
     entryKey: String!
     date: String!
+    # Resolves to most recent tracked contentState
     contentState: String!
+    trackedContentState: String!
     highlights: [Highlight!]!
   }
 
   type ArcEntry {
-    entryKey: String!
-    trackedContentState: String!
+    entry: Entry!
+    arc: Arc!
   }
 
   type Arc {
@@ -106,14 +109,12 @@ export type UnhydratedType = {
   Entry: {
     __typename: "Entry";
     entryKey: string;
-    date: string;
-    contentState: string;
+    trackedContentState: string;
+    history: UnhydratedType["History"];
   };
   ArcEntry: {
     __typename: "ArcEntry";
-    entryKey: string;
-    arcId: string;
-    trackedContentState: string;
+    entry: string;
   };
   Arc: {
     __typename: "Arc";
@@ -209,13 +210,19 @@ const typePolicies: TypePolicies = {
         return Object.values(vars.entries())
           .sort(
             (a, b) =>
-              parseIpsumDateTime(b.date).dateTime.toJSDate().getTime() -
-              parseIpsumDateTime(a.date).dateTime.toJSDate().getTime()
+              parseIpsumDateTime(b.history.dateCreated)
+                .dateTime.toJSDate()
+                .getTime() -
+              parseIpsumDateTime(a.history.dateCreated)
+                .dateTime.toJSDate()
+                .getTime()
           )
           .slice(0, args.count);
       },
       entryDates() {
-        return Object.values(vars.entries()).map((entry) => entry.date);
+        return Object.values(vars.entries()).map(
+          (entry) => entry.history.dateCreated
+        );
       },
       arc(_, { args }) {
         if (args?.id) {
@@ -292,6 +299,16 @@ const typePolicies: TypePolicies = {
         return Object.values(vars.highlights()).filter(
           (highlight) => highlight.entry === readField("entryKey")
         );
+      },
+      date(_, { readField }) {
+        return parseIpsumDateTime(
+          readField<UnhydratedType["History"]>("history").dateCreated
+        );
+      },
+      contentState(_, { readField }) {
+        const trackedContentState = readField<string>("trackedContentState");
+        const timeMachine = IpsumTimeMachine.fromString(trackedContentState);
+        return timeMachine.currentValue;
       },
     },
   },

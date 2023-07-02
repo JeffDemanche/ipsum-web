@@ -1,3 +1,5 @@
+import { IpsumDateTime } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
 import { UnhydratedType, vars } from "../client";
 
 /**
@@ -29,8 +31,11 @@ export const mockEntries = (entries: {
     defaultize<UnhydratedType["Entry"]>(entries, {
       __typename: "Entry",
       entryKey: "",
-      contentState: "",
-      date: new Date().toISOString(),
+      trackedContentState: IpsumTimeMachine.create("").toString(),
+      history: {
+        __typename: "History",
+        dateCreated: IpsumDateTime.now().toString("iso"),
+      },
     })
   );
 };

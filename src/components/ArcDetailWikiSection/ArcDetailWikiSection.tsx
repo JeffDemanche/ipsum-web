@@ -6,7 +6,7 @@ import {
 } from "components/EditorWrapper";
 import { EditorState } from "draft-js";
 import React, { useCallback, useContext, useMemo } from "react";
-import { updateArcEntry } from "util/apollo";
+import { updateEntry } from "util/apollo";
 import { stringifyContentState } from "util/content-state";
 import { useDebouncedCallback } from "util/hooks";
 
@@ -32,11 +32,11 @@ export const ArcDetailWikiSection: React.FunctionComponent = () => {
     const contentState = newEditorState.getCurrentContent();
 
     if (newEditorState && changed) {
-      const arcEntry = {
+      const entry = {
         entryKey,
-        contentState: stringifyContentState(contentState),
+        stringifiedContentState: stringifyContentState(contentState),
       };
-      updateArcEntry(arcEntry);
+      updateEntry(entry);
     }
   }, 500);
 

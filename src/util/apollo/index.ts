@@ -6,7 +6,6 @@ export * from "./api/entries";
 export * from "./api/highlights";
 export * from "./api/journalTitle";
 export * from "./api/relations";
-export { updateArcEntry } from "./api/arcEntries";
 export {
   ApolloSerializationProvider,
   ApolloSerializationContext,

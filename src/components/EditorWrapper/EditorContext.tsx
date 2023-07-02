@@ -3,11 +3,7 @@ import { ContentState, Editor, EditorState } from "draft-js";
 import React, { useCallback, useState } from "react";
 import { createEntry, deleteEntry, updateEntry } from "util/apollo";
 import { stringifyContentState } from "util/content-state";
-import {
-  IpsumDateTime,
-  stringifyIpsumDateTime,
-  useDateString,
-} from "util/dates";
+import { useDateString } from "util/dates";
 
 const noop = () => {};
 
@@ -142,10 +138,7 @@ export const EditorContextProvider: React.FunctionComponent<
       } else {
         const entry = {
           entryKey,
-          date: stringifyIpsumDateTime(
-            IpsumDateTime.fromString(entryKey, "entry-printed-date")
-          ),
-          contentState: stringifyContentState(contentState),
+          stringifiedContentState: stringifyContentState(contentState),
         };
         const attemptedUpdate = updateEntry(entry);
         if (!attemptedUpdate) {

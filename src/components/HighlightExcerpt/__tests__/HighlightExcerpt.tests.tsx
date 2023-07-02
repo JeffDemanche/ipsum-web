@@ -8,6 +8,7 @@ import {
   mockRelations,
 } from "util/apollo/__tests__/apollo-test-utils";
 import { stringifyContentState } from "util/content-state";
+import { IpsumTimeMachine } from "util/diff";
 import { IpsumEntityTransformer } from "util/entities";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
 import { HighlightExcerpt } from "../HighlightExcerpt";
@@ -28,8 +29,9 @@ describe("HighlightExcerpt", () => {
       entry_1: {
         __typename: "Entry",
         entryKey: "entry_1",
-        date: "",
-        contentState: stringifyContentState(entry_1_content),
+        trackedContentState: IpsumTimeMachine.create(
+          stringifyContentState(entry_1_content)
+        ).toString(),
       },
     });
     mockHighlights({

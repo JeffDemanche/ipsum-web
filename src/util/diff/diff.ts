@@ -1,4 +1,5 @@
 import { diff_match_patch } from "diff-match-patch";
+import { DateTime } from "luxon";
 import {
   compareDatesAsc,
   compareDatesDesc,
@@ -115,6 +116,10 @@ export class IpsumTimeMachine {
     return this.valueAtDateString(dateString);
   }
 
+  get currentValue() {
+    return this._currentValue;
+  }
+
   /**
    * Does not modify.
    *
@@ -135,7 +140,7 @@ export class IpsumTimeMachine {
     if (
       copy._sortedPatchKeys.length > 0 &&
       compareDatesAsc(
-        IpsumDateTime.fromJsDate(date),
+        new IpsumDateTime(DateTime.fromJSDate(date).startOf("day")),
         IpsumDateTime.fromString(mostRecentPatchKey, "entry-printed-date")
       ) === -1
     ) {
@@ -184,5 +189,14 @@ export class IpsumTimeMachine {
       patchData: JSON.parse(parsed.patchData),
       currentText: parsed.currentText,
     });
+  }
+
+  static create(value: string, date?: IpsumDateTime): IpsumTimeMachine {
+    const timeMachine = new IpsumTimeMachine();
+
+    return timeMachine.setValueAtDate(
+      date?.dateTime.toJSDate() ?? new Date(),
+      value
+    );
   }
 }

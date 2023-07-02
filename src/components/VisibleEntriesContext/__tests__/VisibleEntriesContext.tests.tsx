@@ -1,7 +1,6 @@
 import { render } from "@testing-library/react";
 import React, { useContext } from "react";
 import { stringifyContentState } from "util/content-state";
-import { IpsumDateTime } from "util/dates";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
 import {
   VisibleEntries,
@@ -12,6 +11,7 @@ import { useSearchParams } from "react-router-dom";
 import { mockEntries } from "util/apollo/__tests__/apollo-test-utils";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "util/apollo";
+import { IpsumTimeMachine } from "util/diff";
 
 jest.mock("react-router-dom");
 jest.mock("react-router", () => ({
@@ -35,24 +35,20 @@ describe("VisibleEntriesContext", () => {
       "10/01/2022": {
         __typename: "Entry",
         entryKey: "10/01/2022",
-        contentState: stringifyContentState(
-          createEditorStateFromFormat("hello world 1").getCurrentContent()
-        ),
-        date: IpsumDateTime.fromString(
-          "10/01/2022",
-          "entry-printed-date"
-        ).dateTime.toISO(),
+        trackedContentState: IpsumTimeMachine.create(
+          stringifyContentState(
+            createEditorStateFromFormat("hello world 1").getCurrentContent()
+          )
+        ).toString(),
       },
       "10/03/2022": {
         __typename: "Entry",
         entryKey: "10/03/2022",
-        contentState: stringifyContentState(
-          createEditorStateFromFormat("hello world 2").getCurrentContent()
-        ),
-        date: IpsumDateTime.fromString(
-          "10/03/2022",
-          "entry-printed-date"
-        ).dateTime.toISO(),
+        trackedContentState: IpsumTimeMachine.create(
+          stringifyContentState(
+            createEditorStateFromFormat("hello world 2").getCurrentContent()
+          )
+        ).toString(),
       },
     });
   });

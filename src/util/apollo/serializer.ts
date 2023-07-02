@@ -21,6 +21,16 @@ const SerializedSchema = t.type({
       entryKey: t.string,
       date: t.string,
       contentState: t.string,
+      trackedContentState: t.string,
+      history: HistorySchema,
+    })
+  ),
+  arcEntries: t.record(
+    t.string,
+    t.type({
+      __typename: t.literal("ArcEntry"),
+      id: t.string,
+      entry: t.string,
     })
   ),
   arcs: t.record(
@@ -90,6 +100,7 @@ export const loadApolloState = (serialized: string): string[] | undefined => {
     vars.journalMetadata(parsed.right.journalMetadata);
     vars.journalTitle(parsed.right.journalTitle);
     vars.entries(parsed.right.entries);
+    vars.arcEntries(parsed.right.arcEntries);
     vars.arcs(parsed.right.arcs);
     vars.highlights(parsed.right.highlights);
     vars.relations(parsed.right.relations);
