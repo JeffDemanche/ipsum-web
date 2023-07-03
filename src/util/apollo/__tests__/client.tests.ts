@@ -1,6 +1,8 @@
 import { gql } from "@apollo/client";
 import { ContentState } from "draft-js";
-import { stringifyContentState } from "util/content-state";
+import { parseContentState, stringifyContentState } from "util/content-state";
+import { IpsumDateTime } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
 import { createArc } from "../api/arcs";
 import { createEntry } from "../api/entries";
 import { createHighlight } from "../api/highlights";
@@ -221,11 +223,64 @@ describe("apollo client", () => {
         expect(result.entries[1].highlights).toHaveLength(0);
       });
 
-      it.todo("should hydrate date from history");
+      it("should hydrate date from history", () => {
+        createEntry({
+          entryKey: "1/2/2020",
+          stringifiedContentState: stringifyContentState(
+            ContentState.createFromText("Hello, world!")
+          ),
+          entryType: EntryType.Journal,
+        });
 
-      it.todo(
-        "should hydrate contentState from most recent entry in trackedContentState"
-      );
+        const result = client.readQuery({
+          query: gql(`
+            query ReadEntry($entryKey: ID!) {
+              entry(entryKey: $entryKey) {
+                entryKey
+                date
+              } 
+            }
+          `),
+          variables: {
+            entryKey: ["1/2/2020"],
+          },
+        });
+        expect(result.entry.date).toEqual(
+          IpsumDateTime.today().toString("iso")
+        );
+      });
+
+      it("should hydrate contentState from most recent entry in trackedContentState", () => {
+        createEntry({
+          entryKey: "1/2/2020",
+          stringifiedContentState: stringifyContentState(
+            ContentState.createFromText("Hello, world!")
+          ),
+          entryType: EntryType.Journal,
+        });
+
+        const result = client.readQuery({
+          query: gql(`
+            query ReadEntry($entryKey: ID!) {
+              entry(entryKey: $entryKey) {
+                entryKey
+                contentState
+                trackedContentState
+              } 
+            }
+          `),
+          variables: {
+            entryKey: ["1/2/2020"],
+          },
+        });
+        expect(
+          parseContentState(result.entry.contentState).getPlainText()
+        ).toEqual("Hello, world!");
+        expect(
+          IpsumTimeMachine.fromString(result.entry.trackedContentState)
+            .currentValue
+        ).toEqual(result.entry.contentState);
+      });
     });
 
     describe("highlights", () => {

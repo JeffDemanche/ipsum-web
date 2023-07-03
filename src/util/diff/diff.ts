@@ -195,7 +195,7 @@ export class IpsumTimeMachine {
     const timeMachine = new IpsumTimeMachine();
 
     return timeMachine.setValueAtDate(
-      date?.dateTime.toJSDate() ?? new Date(),
+      date?.dateTime.toJSDate() ?? IpsumDateTime.today().dateTime.toJSDate(),
       value
     );
   }

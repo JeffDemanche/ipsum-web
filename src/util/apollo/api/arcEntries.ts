@@ -68,4 +68,8 @@ export const deleteArcEntry = (entryKey: string) => {
   const newArcEntries = { ...vars.arcEntries() };
   delete newArcEntries[entryKey];
   vars.arcEntries(newArcEntries);
+
+  const newEntries = { ...vars.entries() };
+  delete newEntries[entryKey];
+  vars.entries(newEntries);
 };

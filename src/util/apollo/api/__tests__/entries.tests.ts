@@ -21,6 +21,10 @@ describe("apollo entries API", () => {
     initializeState();
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe("createEntry", () => {
     it("should add entries to the state", () => {
       const entry1CS = stringifyContentState(
@@ -63,7 +67,22 @@ describe("apollo entries API", () => {
       );
     });
 
-    it.todo("should set initial trackedContentState");
+    it("should set initial trackedContentState", () => {
+      const entry1CS = stringifyContentState(
+        ContentState.createFromText("Hello, world!")
+      );
+      createEntry({
+        entryKey: "1/2/2020",
+        stringifiedContentState: entry1CS,
+        entryType: EntryType.Journal,
+      });
+      expect(vars.entries()["1/2/2020"]).toEqual(
+        expect.objectContaining({
+          entryKey: "1/2/2020",
+          trackedContentState: IpsumTimeMachine.create(entry1CS).toString(),
+        })
+      );
+    });
   });
 
   describe("updateEntry", () => {
@@ -115,7 +134,43 @@ describe("apollo entries API", () => {
       });
     });
 
-    it.todo("should appropriately update trackedContentState");
+    it("should appropriately update trackedContentState", () => {
+      jest
+        .spyOn(IpsumDateTime, "today")
+        .mockReturnValue(IpsumDateTime.fromJsDate(new Date("2020-01-01")));
+
+      const entry1CS = stringifyContentState(
+        ContentState.createFromText("Hello, world on january first!")
+      );
+      createEntry({
+        entryKey: "1/1/2020",
+        stringifiedContentState: entry1CS,
+        entryType: EntryType.Journal,
+      });
+
+      jest
+        .spyOn(IpsumDateTime, "today")
+        .mockReturnValue(IpsumDateTime.fromJsDate(new Date("2020-02-01")));
+      const entry2CS = stringifyContentState(
+        ContentState.createFromText("Hello, world on february first!")
+      );
+      updateEntry({
+        entryKey: "1/1/2020",
+        stringifiedContentState: entry2CS,
+      });
+
+      const timeMachine = IpsumTimeMachine.fromString(
+        vars.entries()["1/1/2020"].trackedContentState
+      );
+      expect(
+        parseContentState(timeMachine.currentValue).getPlainText()
+      ).toEqual("Hello, world on february first!");
+      expect(
+        parseContentState(
+          timeMachine.valueAtDate(new Date("2020-01-23"))
+        ).getPlainText()
+      ).toEqual("Hello, world on january first!");
+    });
   });
 
   describe("assign and remove highlights", () => {

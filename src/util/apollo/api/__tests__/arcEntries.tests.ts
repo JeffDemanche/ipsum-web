@@ -1,5 +1,5 @@
-import { initializeState } from "util/apollo/client";
-import { createArcEntry } from "../arcEntries";
+import { initializeState, vars } from "util/apollo/client";
+import { createArcEntry, deleteArcEntry } from "../arcEntries";
 
 jest.mock("../../autosave");
 
@@ -9,26 +9,29 @@ describe("apollo arcEntries API", () => {
   });
 
   describe("createArcEntry", () => {
-    it("should create an arcEntry with an empty trackedContentState", () => {
+    it("should create an arcEntry with arc and entry objects referenced", () => {
       const arcEntry = createArcEntry({ arcId: "arcId", arcName: "arcName" });
+
+      expect(vars.arcEntries()[arcEntry.entry]).toEqual(
+        expect.objectContaining({
+          __typename: "ArcEntry",
+          arc: "arcId",
+          entry: arcEntry.entry,
+        })
+      );
     });
   });
 
-  describe("updateArcEntry", () => {
-    it.todo(
-      "should correctly update the trackedContentState when overwriting on a day"
-    );
-
-    it.todo(
-      "should correctly update the trackedContentState when adding a new day"
-    );
-
-    it.todo(
-      "should throw when updating a day before the most recent day on the trackedContentState"
-    );
-  });
-
   describe("deleteArcEntry", () => {
-    it.todo("should also delete the underlying entry");
+    it("should also delete the underlying entry", () => {
+      const arcEntry = createArcEntry({ arcId: "arcId", arcName: "arcName" });
+      expect(vars.arcEntries()[arcEntry.entry]).toBeDefined();
+      expect(vars.entries()[arcEntry.entry]).toBeDefined();
+
+      deleteArcEntry(arcEntry.entry);
+
+      expect(vars.arcEntries()[arcEntry.entry]).toBeUndefined();
+      expect(vars.entries()[arcEntry.entry]).toBeUndefined();
+    });
   });
 });
