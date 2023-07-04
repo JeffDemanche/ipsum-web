@@ -1,13 +1,14 @@
 import { ContentState, Editor, EditorState } from "draft-js";
 import { useContext, useEffect, useMemo, useRef } from "react";
 import { parseContentState, stringifyContentState } from "util/content-state";
-import { EditorContext } from "./EditorContext";
+import { EditorContext, EditorMetadata } from "./EditorContext";
 import { decorator } from "components/Decorator";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 
 interface UseEntryEditorArgs {
   entryKey: string;
+  metadata: EditorMetadata;
 }
 
 interface UseEntryEditorResult {
@@ -31,6 +32,7 @@ const UseJournalEntryEditorQuery = gql(`
  */
 export const useEntryEditor = ({
   entryKey,
+  metadata,
 }: UseEntryEditorArgs): UseEntryEditorResult => {
   const {
     data: { entry },
@@ -63,7 +65,7 @@ export const useEntryEditor = ({
   const empty = !editorState?.getCurrentContent().hasText();
 
   useEffect(() => {
-    registerEditor(entryKey, undefined, editorRef);
+    registerEditor(entryKey, undefined, editorRef, metadata);
     return () => {
       unregisterEditor(entryKey);
     };
@@ -78,10 +80,6 @@ export const useEntryEditor = ({
     ) {
       setEntryEditorState(entryKey, () => {
         return EditorState.createWithContent(contentStateFromState, decorator);
-      });
-      setEntryEditorMetadata(entryKey, {
-        ...editorMetadata,
-        syncedWithState: true,
       });
     }
   }, [

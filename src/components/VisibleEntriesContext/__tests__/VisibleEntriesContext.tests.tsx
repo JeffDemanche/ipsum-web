@@ -8,9 +8,12 @@ import {
   VisibleEntriesProvider,
 } from "components/VisibleEntriesContext/VisibleEntriesContext";
 import { useSearchParams } from "react-router-dom";
-import { mockEntries } from "util/apollo/__tests__/apollo-test-utils";
+import {
+  mockEntries,
+  mockJournalEntries,
+} from "util/apollo/__tests__/apollo-test-utils";
 import { ApolloProvider } from "@apollo/client";
-import { client } from "util/apollo";
+import { client, EntryType } from "util/apollo";
 import { IpsumTimeMachine } from "util/diff";
 
 jest.mock("react-router-dom");
@@ -40,6 +43,7 @@ describe("VisibleEntriesContext", () => {
             createEditorStateFromFormat("hello world 1").getCurrentContent()
           )
         ).toString(),
+        entryType: EntryType.Journal,
       },
       "10/03/2022": {
         __typename: "Entry",
@@ -49,7 +53,12 @@ describe("VisibleEntriesContext", () => {
             createEditorStateFromFormat("hello world 2").getCurrentContent()
           )
         ).toString(),
+        entryType: EntryType.Journal,
       },
+    });
+    mockJournalEntries({
+      "10/01/2022": { entryKey: "10/01/2022", entry: "10/01/2022" },
+      "10/03/2022": { entryKey: "10/03/2022", entry: "10/03/2022" },
     });
   });
 

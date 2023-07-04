@@ -437,6 +437,9 @@ const typePolicies: TypePolicies = {
       outgoingRelations(relationIds: string[]) {
         return relationIds.map((id) => vars.relations()[id]);
       },
+      arcEntry(_, { readField }) {
+        return vars.arcEntries()[readField<string>("arcEntry")];
+      },
     },
   },
   Highlight: {

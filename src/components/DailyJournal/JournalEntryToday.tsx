@@ -12,6 +12,7 @@ import { EditorContext } from "../EditorWrapper/EditorContext";
 import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
 import { Divider, Typography } from "@mui/material";
 import { ReflectionAccordion } from "./ReflectionAccordion";
+import { EntryType } from "util/apollo";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -25,7 +26,10 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   entryKey,
   showDivider,
 }: JournalEntryTodayProps) => {
-  const { editorRef, editorState, empty } = useEntryEditor({ entryKey });
+  const { editorRef, editorState, empty } = useEntryEditor({
+    entryKey,
+    metadata: { entryType: EntryType.Journal },
+  });
 
   const { setEntryEditorState, onEditorFocus, onEditorBlur, saveEntry } =
     useContext(EditorContext);
@@ -42,7 +46,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
       stringifyContentState(newEditorState.getCurrentContent());
 
     if (newEditorState && changed) {
-      saveEntry(entryKey, newEditorState);
+      saveEntry({ entryKey, editorState: newEditorState });
     }
   }, 500);
 

@@ -6,17 +6,25 @@ import {
 } from "components/EditorWrapper";
 import { EditorState } from "draft-js";
 import React, { useCallback, useContext, useMemo } from "react";
-import { updateEntry } from "util/apollo";
+import { EntryType } from "util/apollo";
 import { stringifyContentState } from "util/content-state";
 import { useDebouncedCallback } from "util/hooks";
 
 export const ArcDetailWikiSection: React.FunctionComponent = () => {
-  const { arcId } = useContext(ArcDetailContext);
+  const { arc } = useContext(ArcDetailContext);
 
-  const { setEntryEditorState, onEditorFocus, onEditorBlur } =
+  const arcId = arc.id;
+  const arcName = arc.name;
+
+  const { setEntryEditorState, onEditorFocus, onEditorBlur, saveEntry } =
     useContext(EditorContext);
 
   const entryKey = useMemo(() => `arc-entry-${arcId}`, [arcId]);
+
+  const { editorRef, editorState } = useEntryEditor({
+    entryKey,
+    metadata: { entryType: EntryType.Arc, arcId, arcName },
+  });
 
   /**
    * Debounced so we only update the state once every so often while typing.
@@ -36,7 +44,8 @@ export const ArcDetailWikiSection: React.FunctionComponent = () => {
         entryKey,
         stringifiedContentState: stringifyContentState(contentState),
       };
-      updateEntry(entry);
+      console.log("Saving entry");
+      saveEntry({ entryKey, editorState: newEditorState });
     }
   }, 500);
 
@@ -58,16 +67,13 @@ export const ArcDetailWikiSection: React.FunctionComponent = () => {
     onEditorBlur(entryKey);
   }, [entryKey, onEditorBlur]);
 
-  const { editorRef, editorState } = useEntryEditor({
-    entryKey,
-  });
-
   return (
     <ArcDetailSection>
       {editorState && (
         <EditorWrapper
           enableControls
           enableHighlights
+          placeholder="What is this arc about?"
           onChange={onChange}
           onFocus={onFocus}
           onBlur={onBlur}

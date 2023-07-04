@@ -3,6 +3,7 @@ export * from "./__generated__";
 export * from "./__generated__/graphql";
 export * from "./api/arcs";
 export * from "./api/journalEntries";
+export * from "./api/arcEntries";
 export {
   updateEntry,
   assignHighlightToEntry,

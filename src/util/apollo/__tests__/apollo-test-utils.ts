@@ -59,6 +59,18 @@ export const mockArcs = (arcs: {
   );
 };
 
+export const mockJournalEntries = (journalEntries: {
+  [id in string]: Partial<UnhydratedType["JournalEntry"]>;
+}) => {
+  vars.journalEntries(
+    defaultize<UnhydratedType["JournalEntry"]>(journalEntries, {
+      __typename: "JournalEntry",
+      entryKey: "",
+      entry: "",
+    })
+  );
+};
+
 export const mockHighlights = (highlight: {
   [id in string]: Partial<UnhydratedType["Highlight"]>;
 }) => {
