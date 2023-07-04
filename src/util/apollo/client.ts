@@ -15,6 +15,7 @@ import {
   QueryEntriesArgs,
   QueryHighlightsArgs,
   QueryRelationsArgs,
+  QueryJournalEntriesArgs,
 } from "./__generated__/graphql";
 
 const typeDefs = gql`
@@ -30,6 +31,9 @@ const typeDefs = gql`
 
     recentJournalEntries(count: Int!): [JournalEntry!]!
     journalEntryDates: [String!]!
+
+    journalEntry(entryKey: ID!): JournalEntry
+    journalEntries(entryKeys: [ID!]): [JournalEntry]
 
     arcEntry(arcId: ID!): ArcEntry
     arcEntries(entryKeys: [ID!]): [ArcEntry]
@@ -67,6 +71,7 @@ const typeDefs = gql`
     trackedContentState: String!
     highlights: [Highlight!]!
     entryType: EntryType!
+    history: History!
   }
 
   type JournalEntry {
@@ -219,6 +224,7 @@ export const serializeVars: (keyof typeof vars)[] = [
   "commentEntries",
   "highlights",
   "relations",
+  "comments",
 ];
 
 export const initializeState = () => {
@@ -273,6 +279,20 @@ const typePolicies: TypePolicies = {
                 .getTime()
           )
           .slice(0, args.count);
+      },
+      journalEntry(_, { args }) {
+        if (args.entryKey) {
+          return vars.journalEntries()[args.entryKey] ?? null;
+        }
+        return null;
+      },
+      journalEntries(_, { args }: { args: QueryJournalEntriesArgs }) {
+        if (args?.entryKeys) {
+          return args.entryKeys
+            .map((entryKey) => vars.journalEntries()[entryKey])
+            .filter(Boolean);
+        }
+        return Object.values(vars.journalEntries());
       },
       entryDates() {
         return Object.values(vars.entries()).map(
@@ -376,6 +396,28 @@ const typePolicies: TypePolicies = {
         const trackedContentState = readField<string>("trackedContentState");
         const timeMachine = IpsumTimeMachine.fromString(trackedContentState);
         return timeMachine.currentValue;
+      },
+      history(h) {
+        return h;
+      },
+    },
+  },
+  JournalEntry: {
+    keyFields: ["entryKey"],
+    fields: {
+      entry(_, { readField }) {
+        return vars.entries()[readField<string>("entryKey")];
+      },
+    },
+  },
+  ArcEntry: {
+    keyFields: ["entryKey"],
+    fields: {
+      arc(_, { readField }) {
+        return vars.arcs()[readField<string>("arcId")];
+      },
+      entry(_, { readField }) {
+        return vars.entries()[readField<string>("entryKey")];
       },
     },
   },

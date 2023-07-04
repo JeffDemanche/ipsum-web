@@ -57,7 +57,9 @@ export const updateEntry = (entry: {
       .setValueAtDate(today.dateTime.toJSDate(), entry.stringifiedContentState)
       .toString();
   }
-  newEntry.history = entry.history;
+  if (entry.history) {
+    newEntry.history = entry.history;
+  }
 
   const entryUpdate = { ...oldEntry, ...newEntry };
 

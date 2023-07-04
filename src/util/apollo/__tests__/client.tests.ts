@@ -175,6 +175,8 @@ describe("apollo client", () => {
         entryKey: "1/2/2020",
       });
     });
+
+    it.todo("queries for journalEntries");
   });
 
   describe("hydration", () => {

@@ -19,8 +19,6 @@ const SerializedSchema = t.type({
     t.type({
       __typename: t.literal("Entry"),
       entryKey: t.string,
-      date: t.string,
-      contentState: t.string,
       trackedContentState: t.string,
       history: HistorySchema,
       entryType: t.union([
@@ -123,7 +121,7 @@ export const loadApolloState = (serialized: string): string[] | undefined => {
   const parsed = SerializedSchema.decode(raw);
 
   if (parsed._tag === "Left") {
-    console.error(PathReporter.report(parsed));
+    PathReporter.report(parsed).forEach((error) => console.error(error));
     return PathReporter.report(parsed);
   } else {
     vars.journalId(parsed.right.journalId);
