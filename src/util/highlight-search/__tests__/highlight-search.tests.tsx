@@ -85,8 +85,6 @@ describe("HighlightSearch", () => {
       entry_1: {
         __typename: "Entry",
         entryKey: "entry_1",
-        date: "entry_1_date",
-        contentState: "",
       },
     });
 

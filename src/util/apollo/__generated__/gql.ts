@@ -18,10 +18,9 @@ const documents = {
     "\n  query ArcDetailContext($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n    }\n  }\n": types.ArcDetailContextDocument,
     "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n    }\n  } \n": types.ArcDetailPrefsBoxDocument,
     "\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n      name\n    }\n  }\n": types.ArcTagDocument,
-    "\n  query Calendar {\n    entries {\n      entryKey\n      date\n    }\n  }\n": types.CalendarDocument,
-    "\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n": types.UseJournalEntryEditorDocument,
     "\n  query HighlightDecoration($highlightIds: [ID!]!) {\n    highlights(ids: $highlightIds) {\n      id\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n": types.HighlightDecorationDocument,
     "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      highlights {\n        id\n      }\n    }\n  }\n": types.DigestDocument,
+    "\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n": types.UseJournalEntryEditorDocument,
     "\n  query HighlightExcerpt($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        contentState\n      }\n    }\n  }\n": types.HighlightExcerptDocument,
     "\n  query HighlightSelectionProvider($highlightIds: [ID!]) {\n    highlights(ids: $highlightIds) {\n      id\n    }\n  }\n": types.HighlightSelectionProviderDocument,
     "\n  query HighlightTag($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      outgoingRelations {\n        id\n        object {\n          __typename\n          ... on Arc {\n            id\n            name\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightTagDocument,
@@ -30,7 +29,7 @@ const documents = {
     "\n  query JournalTitle {\n    journalTitle\n  }\n": types.JournalTitleDocument,
     "\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n": types.LinkerDocument,
     "\n  query MedianHighlightBox($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.MedianHighlightBoxDocument,
-    "\n  query VisibleEntries {\n    entries {\n      entryKey\n      date\n    }\n  }\n": types.VisibleEntriesDocument,
+    "\n  query VisibleEntries {\n    journalEntries {\n      entryKey\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n": types.VisibleEntriesDocument,
     "\n  query UseHighlightSearch($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      outgoingRelations {\n        id\n        predicate\n        object {\n          id\n          incomingRelations {\n            id\n            predicate\n            subject {\n              __typename\n              ... on Highlight {\n                id\n                entry {\n                  entryKey\n                  date\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n": types.UseHighlightSearchDocument,
     "\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n": types.UseSearchArcsDocument,
 };
@@ -72,19 +71,15 @@ export function gql(source: "\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query Calendar {\n    entries {\n      entryKey\n      date\n    }\n  }\n"): (typeof documents)["\n  query Calendar {\n    entries {\n      entryKey\n      date\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n"): (typeof documents)["\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function gql(source: "\n  query HighlightDecoration($highlightIds: [ID!]!) {\n    highlights(ids: $highlightIds) {\n      id\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n"): (typeof documents)["\n  query HighlightDecoration($highlightIds: [ID!]!) {\n    highlights(ids: $highlightIds) {\n      id\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      highlights {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      highlights {\n        id\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n"): (typeof documents)["\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -120,7 +115,7 @@ export function gql(source: "\n  query MedianHighlightBox($highlightId: ID!) {\n
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query VisibleEntries {\n    entries {\n      entryKey\n      date\n    }\n  }\n"): (typeof documents)["\n  query VisibleEntries {\n    entries {\n      entryKey\n      date\n    }\n  }\n"];
+export function gql(source: "\n  query VisibleEntries {\n    journalEntries {\n      entryKey\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n"): (typeof documents)["\n  query VisibleEntries {\n    journalEntries {\n      entryKey\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

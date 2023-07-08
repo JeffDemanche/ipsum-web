@@ -1,9 +1,14 @@
 import { gql } from "@apollo/client";
+import { ContentState } from "draft-js";
+import { parseContentState, stringifyContentState } from "util/content-state";
+import { IpsumDateTime } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
 import { createArc } from "../api/arcs";
 import { createEntry } from "../api/entries";
 import { createHighlight } from "../api/highlights";
 import { createRelation } from "../api/relations";
-import { vars, client, initializeState } from "../client";
+import { client, initializeState } from "../client";
+import { EntryType } from "../__generated__/graphql";
 
 jest.mock("../autosave");
 
@@ -16,13 +21,17 @@ describe("apollo client", () => {
     it("queries entries with specified entry keys", () => {
       createEntry({
         entryKey: "1/1/2020",
-        date: "1/1/2020",
-        contentState: "Hello, world!",
+        stringifiedContentState: stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        ),
+        entryType: EntryType.Journal,
       });
       createEntry({
         entryKey: "1/2/2020",
-        date: "1/2/2020",
-        contentState: "Hello, world!",
+        stringifiedContentState: stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        ),
+        entryType: EntryType.Journal,
       });
 
       const result = client.readQuery({
@@ -49,8 +58,10 @@ describe("apollo client", () => {
       const arc2 = createArc({ name: "test arc 2" });
       createEntry({
         entryKey: "1/2/2020",
-        date: "1/2/2020",
-        contentState: "Hello, world!",
+        stringifiedContentState: stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        ),
+        entryType: EntryType.Journal,
       });
       const highlight1 = createHighlight({
         entry: "1/2/2020",
@@ -112,8 +123,10 @@ describe("apollo client", () => {
       const arc = createArc({ name: "test arc 1" });
       const entry = createEntry({
         entryKey: "1/2/2020",
-        date: "1/2/2020",
-        contentState: "Hello, world!",
+        stringifiedContentState: stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        ),
+        entryType: EntryType.Journal,
       });
       const highlight = createHighlight({
         entry: entry.entryKey,
@@ -162,6 +175,8 @@ describe("apollo client", () => {
         entryKey: "1/2/2020",
       });
     });
+
+    it.todo("queries for journalEntries");
   });
 
   describe("hydration", () => {
@@ -169,13 +184,17 @@ describe("apollo client", () => {
       it("should hydrate entry highlights", () => {
         createEntry({
           entryKey: "1/2/2020",
-          date: "1/2/2020",
-          contentState: "Hello, world!",
+          stringifiedContentState: stringifyContentState(
+            ContentState.createFromText("Hello, world!")
+          ),
+          entryType: EntryType.Journal,
         });
         createEntry({
           entryKey: "1/4/2020",
-          date: "1/4/2020",
-          contentState: "Hello, world!",
+          stringifiedContentState: stringifyContentState(
+            ContentState.createFromText("Hello, world!")
+          ),
+          entryType: EntryType.Journal,
         });
         const highlight1 = createHighlight({
           entry: "1/2/2020",
@@ -205,15 +224,77 @@ describe("apollo client", () => {
         expect(result.entries[0].highlights[1].id).toEqual(highlight2.id);
         expect(result.entries[1].highlights).toHaveLength(0);
       });
+
+      it("should hydrate date from history", () => {
+        createEntry({
+          entryKey: "1/2/2020",
+          stringifiedContentState: stringifyContentState(
+            ContentState.createFromText("Hello, world!")
+          ),
+          entryType: EntryType.Journal,
+        });
+
+        const result = client.readQuery({
+          query: gql(`
+            query ReadEntry($entryKey: ID!) {
+              entry(entryKey: $entryKey) {
+                entryKey
+                date
+              } 
+            }
+          `),
+          variables: {
+            entryKey: ["1/2/2020"],
+          },
+        });
+        expect(result.entry.date).toEqual(
+          IpsumDateTime.today().toString("iso")
+        );
+      });
+
+      it("should hydrate contentState from most recent entry in trackedContentState", () => {
+        createEntry({
+          entryKey: "1/2/2020",
+          stringifiedContentState: stringifyContentState(
+            ContentState.createFromText("Hello, world!")
+          ),
+          entryType: EntryType.Journal,
+        });
+
+        const result = client.readQuery({
+          query: gql(`
+            query ReadEntry($entryKey: ID!) {
+              entry(entryKey: $entryKey) {
+                entryKey
+                contentState
+                trackedContentState
+              } 
+            }
+          `),
+          variables: {
+            entryKey: ["1/2/2020"],
+          },
+        });
+        expect(
+          parseContentState(result.entry.contentState).getPlainText()
+        ).toEqual("Hello, world!");
+        expect(
+          IpsumTimeMachine.fromString(result.entry.trackedContentState)
+            .currentValue
+        ).toEqual(result.entry.contentState);
+      });
     });
 
     describe("highlights", () => {
       it("should hydrate highlight arcs and entries", () => {
         const arc = createArc({ name: "test arc 1" });
-        const entry = createEntry({
+        const entryCS = stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        );
+        createEntry({
           entryKey: "1/2/2020",
-          date: "1/2/2020",
-          contentState: "Hello, world!",
+          stringifiedContentState: entryCS,
+          entryType: EntryType.Journal,
         });
         const highlight = createHighlight({
           entry: "1/2/2020",
@@ -258,7 +339,10 @@ describe("apollo client", () => {
           arc.name
         );
         expect(result.highlights[0].entry).toEqual(
-          vars.entries()[entry.entryKey]
+          expect.objectContaining({
+            entryKey: "1/2/2020",
+            contentState: entryCS,
+          })
         );
       });
 

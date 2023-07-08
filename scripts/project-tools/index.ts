@@ -9,12 +9,12 @@
 import { readFileSync, existsSync } from "fs";
 
 import repl from "repl";
-import { migrateEntityTextArcAssignments } from "./migrate-entity-text-arc-assignments";
 import { prettyPrint } from "./pretty-print";
-import { migrateRelations } from "./relations-migration-1";
-import { fixArcIncomingRelations } from "./relations-migration-2";
 import { renameField } from "./rename";
 import { write } from "./write";
+import { SerializedSchema } from "../../src/util/apollo/serializer-schema";
+import { PathReporter } from "io-ts/lib/PathReporter";
+import { migrateArcEntries } from "./migrations/arc-entries-migration";
 
 const inputFileArg = process.env.npm_config_input_file;
 const outputFileArg = process.env.npm_config_output_file;
@@ -80,40 +80,16 @@ replServer.defineCommand("rename_field", {
     }
   },
 });
-replServer.defineCommand("fix_entities", {
+replServer.defineCommand("validate", {
   action(arg) {
     try {
-      migrateEntityTextArcAssignments(modifiedData, "arc_assignment", "entry");
-    } catch (e) {
-      console.error(e);
-    }
-  },
-});
-replServer.defineCommand("fix_apollo_migration_fields", {
-  action(arg) {
-    try {
-      const highlightsCopy = { ...modifiedData.highlights };
-      Object.keys(highlightsCopy).forEach((key) => {
-        const arc = highlightsCopy[key].arcId ?? highlightsCopy[key].arc;
-        const entry = highlightsCopy[key].entryKey ?? highlightsCopy[key].entry;
-        highlightsCopy[key].arc = arc;
-        highlightsCopy[key].entry = entry;
-        delete highlightsCopy[key].arcId;
-        delete highlightsCopy[key].entryKey;
-      });
-      modifiedData.highlights = highlightsCopy;
+      const parsed = SerializedSchema.decode(modifiedData);
 
-      const entriesCopy = { ...modifiedData.entries };
-      Object.keys(entriesCopy).forEach((key) => {
-        if (entriesCopy[key].date?.["_luxonDateTime"]) {
-          console.log(entriesCopy[key].date["_luxonDateTime"]);
-          const date =
-            entriesCopy[key].date["_luxonDateTime"] ?? entriesCopy[key].date;
-          delete entriesCopy[key].date;
-          entriesCopy[key].date = date;
-        }
-      });
-      modifiedData.entries = entriesCopy;
+      if (parsed._tag === "Left") {
+        PathReporter.report(parsed).forEach((error) => console.error(error));
+      } else {
+        console.log("Passed validation!");
+      }
     } catch (e) {
       console.error(e);
     }
@@ -141,13 +117,8 @@ replServer.defineCommand("add_typenames", {
     modifiedData.arcs = arcsCopy;
   },
 });
-replServer.defineCommand("migrate_relations", {
+replServer.defineCommand("migrate_arc_entries", {
   action() {
-    migrateRelations(modifiedData);
-  },
-});
-replServer.defineCommand("fix_relations", {
-  action() {
-    fixArcIncomingRelations(modifiedData);
+    migrateArcEntries(modifiedData);
   },
 });

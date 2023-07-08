@@ -1,11 +1,12 @@
 import { diff_match_patch } from "diff-match-patch";
+import { DateTime } from "luxon";
 import {
   compareDatesAsc,
   compareDatesDesc,
   IpsumDateTime,
   sortDates,
 } from "util/dates";
-import { PatchesMap, TimeMachine } from "./types";
+import { PatchesMap, StringifiedTimeMachine, TimeMachine } from "./types";
 
 /**
  * Wrapper for Google's `diff-match-patch` library which augments the
@@ -115,6 +116,10 @@ export class IpsumTimeMachine {
     return this.valueAtDateString(dateString);
   }
 
+  get currentValue() {
+    return this._currentValue;
+  }
+
   /**
    * Does not modify.
    *
@@ -135,7 +140,7 @@ export class IpsumTimeMachine {
     if (
       copy._sortedPatchKeys.length > 0 &&
       compareDatesAsc(
-        IpsumDateTime.fromJsDate(date),
+        new IpsumDateTime(DateTime.fromJSDate(date).startOf("day")),
         IpsumDateTime.fromString(mostRecentPatchKey, "entry-printed-date")
       ) === -1
     ) {
@@ -164,11 +169,34 @@ export class IpsumTimeMachine {
     return copy;
   }
 
-  serialize(): TimeMachine {
+  serialize(): StringifiedTimeMachine {
     return {
       initialText: this._initialText,
-      patchData: this._patchData,
+      patchData: JSON.stringify(this._patchData),
       currentText: this._currentValue,
     };
+  }
+
+  toString(): string {
+    return JSON.stringify(this.serialize());
+  }
+
+  static fromString(stringifiedTimeMachine: string): IpsumTimeMachine {
+    const parsed: StringifiedTimeMachine = JSON.parse(stringifiedTimeMachine);
+
+    return new IpsumTimeMachine({
+      initialText: parsed.initialText,
+      patchData: JSON.parse(parsed.patchData),
+      currentText: parsed.currentText,
+    });
+  }
+
+  static create(value: string, date?: IpsumDateTime): IpsumTimeMachine {
+    const timeMachine = new IpsumTimeMachine();
+
+    return timeMachine.setValueAtDate(
+      date?.dateTime.toJSDate() ?? IpsumDateTime.today().dateTime.toJSDate(),
+      value
+    );
   }
 }

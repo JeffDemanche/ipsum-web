@@ -1,13 +1,17 @@
 import { decorator } from "components/Decorator";
 import { ContentState, Editor, EditorState } from "draft-js";
 import React, { useCallback, useState } from "react";
-import { createEntry, deleteEntry, updateEntry } from "util/apollo";
-import { stringifyContentState } from "util/content-state";
 import {
-  IpsumDateTime,
-  stringifyIpsumDateTime,
-  useDateString,
-} from "util/dates";
+  createJournalEntry,
+  deleteArc,
+  deleteJournalEntry,
+  EntryType,
+  updateEntry,
+  createArcEntry,
+  deleteArcEntry,
+} from "util/apollo";
+import { stringifyContentState } from "util/content-state";
+import { useDateString } from "util/dates";
 
 const noop = () => {};
 
@@ -15,9 +19,17 @@ type EditorStateMap = ReadonlyMap<string, EditorState>;
 
 type EditorRefMap = ReadonlyMap<string, React.MutableRefObject<Editor>>;
 
-// Just keep this around because I think it'll come in handy.
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface EditorMetadata {}
+interface EditorMetadataJournal {
+  entryType: EntryType.Journal;
+}
+
+interface EditorMetadataArc {
+  entryType: EntryType.Arc;
+  arcId: string;
+  arcName: string;
+}
+
+export type EditorMetadata = EditorMetadataJournal | EditorMetadataArc;
 
 type EditorMetadataMap = ReadonlyMap<string, EditorMetadata>;
 
@@ -35,7 +47,8 @@ interface EditorContextValue {
   registerEditor: (
     editorKey: string,
     contentState: ContentState,
-    editorRef: React.MutableRefObject<Editor>
+    editorRef: React.MutableRefObject<Editor>,
+    metadata: EditorMetadata
   ) => void;
 
   /**
@@ -65,7 +78,7 @@ interface EditorContextValue {
     ref: React.MutableRefObject<Editor>
   ) => void;
 
-  saveEntry: (entryKey: string, editorState?: EditorState) => void;
+  saveEntry: (args: { entryKey: string; editorState?: EditorState }) => void;
 }
 
 export const emptyEditorContextValue: EditorContextValue = {
@@ -132,28 +145,51 @@ export const EditorContextProvider: React.FunctionComponent<
    * is useful to avoid debounce issues for saving while typing.
    */
   const saveEntry = useCallback(
-    (entryKey: string, editorState?: EditorState) => {
+    ({
+      entryKey,
+      editorState,
+    }: {
+      entryKey: string;
+      editorState?: EditorState;
+    }) => {
+      const entryMetadata = entryEditorMetadatas.get(entryKey);
+
       const contentState =
         editorState?.getCurrentContent() ??
         entryEditorStates.get(entryKey).getCurrentContent();
 
       if (!contentState.hasText()) {
-        deleteEntry(entryKey);
+        switch (entryMetadata.entryType) {
+          case EntryType.Journal:
+            deleteJournalEntry({ entryKey });
+            break;
+          case EntryType.Arc:
+            deleteArcEntry(entryKey);
+            break;
+        }
       } else {
         const entry = {
           entryKey,
-          date: stringifyIpsumDateTime(
-            IpsumDateTime.fromString(entryKey, "entry-printed-date")
-          ),
-          contentState: stringifyContentState(contentState),
+          stringifiedContentState: stringifyContentState(contentState),
+          entryType: EntryType.Journal,
         };
         const attemptedUpdate = updateEntry(entry);
         if (!attemptedUpdate) {
-          createEntry(entry);
+          switch (entryMetadata.entryType) {
+            case EntryType.Journal:
+              createJournalEntry(entry);
+              break;
+            case EntryType.Arc:
+              createArcEntry({
+                arcId: entryMetadata.arcId,
+                arcName: entryMetadata.arcName,
+              });
+              break;
+          }
         }
       }
     },
-    [entryEditorStates]
+    [entryEditorMetadatas, entryEditorStates]
   );
 
   const setEntryEditorState = useCallback(
@@ -165,7 +201,7 @@ export const EditorContextProvider: React.FunctionComponent<
       setEntryEditorStates((prevEntryEditorStates) => {
         const editorsCopy = new Map(prevEntryEditorStates);
         const newEditorState = setEditorState(editorsCopy.get(entryKey));
-        if (save) saveEntry(entryKey, newEditorState);
+        if (save) saveEntry({ entryKey, editorState: newEditorState });
         editorsCopy.set(entryKey, newEditorState);
         return editorsCopy;
       });
@@ -200,7 +236,8 @@ export const EditorContextProvider: React.FunctionComponent<
     (
       entryKey: string,
       contentState: ContentState,
-      editorRef: React.MutableRefObject<Editor>
+      editorRef: React.MutableRefObject<Editor>,
+      metadata: EditorMetadata
     ) => {
       if (entryEditorStates.has(entryKey) || entryEditorRefs.has(entryKey)) {
         console.error("Tried to register editor that was already registered");
@@ -211,7 +248,7 @@ export const EditorContextProvider: React.FunctionComponent<
             ? EditorState.createWithContent(contentState, decorator)
             : EditorState.createEmpty(decorator)
         );
-        setEntryEditorMetadata(entryKey, { syncedWithState: false });
+        setEntryEditorMetadata(entryKey, metadata);
         setEntryEditorRef(entryKey, editorRef);
       }
     },

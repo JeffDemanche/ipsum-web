@@ -8,7 +8,6 @@ import styles from "./Linker.less";
 import { nextHue } from "util/colors";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
-import { theme } from "styles/styles";
 
 interface LinkerProps {
   allowCreate?: boolean;

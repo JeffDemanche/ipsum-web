@@ -1,56 +1,7 @@
 import { serializeVars, vars } from "./client";
 
-import * as t from "io-ts";
 import { PathReporter } from "io-ts/PathReporter";
-
-const SerializedSchema = t.type({
-  journalId: t.string,
-  journalTitle: t.string,
-  journalMetadata: t.type({
-    lastArcHue: t.number,
-  }),
-  entries: t.record(
-    t.string,
-    t.type({
-      __typename: t.literal("Entry"),
-      entryKey: t.string,
-      date: t.string,
-      contentState: t.string,
-    })
-  ),
-  arcs: t.record(
-    t.string,
-    t.type({
-      __typename: t.literal("Arc"),
-      id: t.string,
-      name: t.string,
-      color: t.number,
-      incomingRelations: t.array(t.string),
-      outgoingRelations: t.array(t.string),
-    })
-  ),
-  highlights: t.record(
-    t.string,
-    t.type({
-      __typename: t.literal("Highlight"),
-      id: t.string,
-      entry: t.string,
-      outgoingRelations: t.array(t.string),
-    })
-  ),
-  relations: t.record(
-    t.string,
-    t.type({
-      __typename: t.literal("Relation"),
-      id: t.string,
-      subjectType: t.union([t.literal("Arc"), t.literal("Highlight")]),
-      subject: t.string,
-      predicate: t.string,
-      objectType: t.literal("Arc"),
-      object: t.string,
-    })
-  ),
-});
+import { SerializedSchema } from "./serializer-schema";
 
 /**
  * Converts Apollo state into a string to be written to disk.
@@ -75,15 +26,19 @@ export const loadApolloState = (serialized: string): string[] | undefined => {
   const parsed = SerializedSchema.decode(raw);
 
   if (parsed._tag === "Left") {
-    console.error(PathReporter.report(parsed));
+    PathReporter.report(parsed).forEach((error) => console.error(error));
     return PathReporter.report(parsed);
   } else {
     vars.journalId(parsed.right.journalId);
     vars.journalMetadata(parsed.right.journalMetadata);
     vars.journalTitle(parsed.right.journalTitle);
     vars.entries(parsed.right.entries);
+    vars.journalEntries(parsed.right.journalEntries);
+    vars.arcEntries(parsed.right.arcEntries);
+    vars.commentEntries(parsed.right.commentEntries);
     vars.arcs(parsed.right.arcs);
     vars.highlights(parsed.right.highlights);
     vars.relations(parsed.right.relations);
+    vars.comments(parsed.right.comments);
   }
 };

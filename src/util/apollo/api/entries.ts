@@ -3,13 +3,29 @@ import { IpsumEntityTransformer } from "util/entities";
 import { SelectionState } from "draft-js";
 import { parseContentState, stringifyContentState } from "util/content-state";
 import { autosave } from "../autosave";
+import { IpsumDateTime } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
+import { EntryType } from "../__generated__/graphql";
 
-export const createEntry = (
-  entry: Omit<UnhydratedType["Entry"], "__typename">
-): UnhydratedType["Entry"] => {
+export const createEntry = (entry: {
+  entryKey: string;
+  stringifiedContentState: string;
+  entryType: EntryType;
+}): UnhydratedType["Entry"] => {
   if (vars.entries()[entry.entryKey]) return;
 
-  const newEntry: UnhydratedType["Entry"] = { __typename: "Entry", ...entry };
+  const newEntry: UnhydratedType["Entry"] = {
+    __typename: "Entry",
+    entryKey: entry.entryKey,
+    trackedContentState: IpsumTimeMachine.create(
+      entry.stringifiedContentState
+    ).toString(),
+    history: {
+      __typename: "History",
+      dateCreated: IpsumDateTime.today().toString("iso"),
+    },
+    entryType: entry.entryType,
+  };
   vars.entries({
     ...vars.entries(),
     [entry.entryKey]: newEntry,
@@ -18,19 +34,40 @@ export const createEntry = (
   return newEntry;
 };
 
-export const updateEntry = (
-  entry: Partial<UnhydratedType["Entry"]>
-): UnhydratedType["Entry"] | undefined => {
+export const updateEntry = (entry: {
+  entryKey: string;
+  stringifiedContentState?: string;
+  history?: UnhydratedType["History"];
+}): UnhydratedType["Entry"] | undefined => {
   if (!entry.entryKey)
     throw new Error("updateEntry: entry.entryKey is required");
 
   if (!vars.entries()[entry.entryKey]) return undefined;
 
-  const newEntries = { ...vars.entries() };
-  const newEntry = { ...newEntries[entry.entryKey], ...entry };
-  newEntries[entry.entryKey] = newEntry;
-  vars.entries(newEntries);
+  const oldEntry = vars.entries()[entry.entryKey];
+  const newEntry: Partial<UnhydratedType["Entry"]> = {};
+
+  const today = IpsumDateTime.today();
+
+  if (entry.stringifiedContentState) {
+    // Make nondestructive changes to the trackedContentState
+    newEntry.trackedContentState = IpsumTimeMachine.fromString(
+      oldEntry.trackedContentState
+    )
+      .setValueAtDate(today.dateTime.toJSDate(), entry.stringifiedContentState)
+      .toString();
+  }
+  if (entry.history) {
+    newEntry.history = entry.history;
+  }
+
+  const entryUpdate = { ...oldEntry, ...newEntry };
+
+  const entriesCopy = { ...vars.entries() };
+  entriesCopy[entry.entryKey] = entryUpdate;
+  vars.entries(entriesCopy);
   autosave();
+  return entryUpdate;
 };
 
 export const assignHighlightToEntry = ({
@@ -42,18 +79,22 @@ export const assignHighlightToEntry = ({
   highlightId: string;
   selectionState: SelectionState;
 }) => {
+  const latestContentState = parseContentState(
+    IpsumTimeMachine.fromString(vars.entries()[entryKey].trackedContentState)
+      .currentValue
+  );
+
   const contentStateWithAssignment = new IpsumEntityTransformer(
-    parseContentState(vars.entries()[entryKey].contentState)
+    latestContentState
   ).applyEntityData(selectionState, "textArcAssignments", {
     arcAssignmentId: highlightId,
   }).contentState;
   updateEntry({
     entryKey: entryKey,
-    contentState: stringifyContentState(contentStateWithAssignment),
+    stringifiedContentState: stringifyContentState(contentStateWithAssignment),
   });
   autosave();
 };
-
 export const removeHighlightFromEntry = ({
   entryKey,
   highlightId,
@@ -61,14 +102,19 @@ export const removeHighlightFromEntry = ({
   entryKey: string;
   highlightId: string;
 }) => {
+  const latestContentState = parseContentState(
+    IpsumTimeMachine.fromString(vars.entries()[entryKey].trackedContentState)
+      .currentValue
+  );
+
   const contentStateNoHighlight = new IpsumEntityTransformer(
-    parseContentState(vars.entries()[entryKey].contentState)
+    latestContentState
   ).removeEntityData("textArcAssignments", null, (existingData) => {
     return existingData.arcAssignmentId !== highlightId;
   }).contentState;
   updateEntry({
     entryKey: entryKey,
-    contentState: stringifyContentState(contentStateNoHighlight),
+    stringifiedContentState: stringifyContentState(contentStateNoHighlight),
   });
   autosave();
 };

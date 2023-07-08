@@ -7,12 +7,15 @@ import {
   makeVar,
 } from "@apollo/client";
 import { parseIpsumDateTime } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
 import { v4 as uuidv4 } from "uuid";
 import {
+  QueryArcEntriesArgs,
   QueryArcsArgs,
   QueryEntriesArgs,
   QueryHighlightsArgs,
   QueryRelationsArgs,
+  QueryJournalEntriesArgs,
 } from "./__generated__/graphql";
 
 const typeDefs = gql`
@@ -26,6 +29,15 @@ const typeDefs = gql`
     recentEntries(count: Int!): [Entry!]!
     entryDates: [String!]!
 
+    recentJournalEntries(count: Int!): [JournalEntry!]!
+    journalEntryDates: [String!]!
+
+    journalEntry(entryKey: ID!): JournalEntry
+    journalEntries(entryKeys: [ID!]): [JournalEntry]
+
+    arcEntry(arcId: ID!): ArcEntry
+    arcEntries(entryKeys: [ID!]): [ArcEntry]
+
     arc(id: ID!): Arc
     arcs(ids: [ID!]): [Arc]
 
@@ -36,15 +48,45 @@ const typeDefs = gql`
     relations(ids: [ID!]): [Relation]
   }
 
+  # Generalized type that can be used on objects that have a history
+  type History {
+    dateCreated: String
+  }
+
   type JournalMetadata {
     lastArcHue: Int!
+  }
+
+  enum EntryType {
+    JOURNAL
+    ARC
+    COMMENT
   }
 
   type Entry {
     entryKey: String!
     date: String!
+    # Resolves to most recent tracked contentState
     contentState: String!
+    trackedContentState: String!
     highlights: [Highlight!]!
+    entryType: EntryType!
+    history: History!
+  }
+
+  type JournalEntry {
+    entryKey: String!
+    entry: Entry!
+  }
+
+  type ArcEntry {
+    entry: Entry!
+    arc: Arc!
+  }
+
+  type CommentEntry {
+    entry: Entry!
+    comment: Comment!
   }
 
   type Arc {
@@ -52,6 +94,8 @@ const typeDefs = gql`
     name: String!
     color: Int!
     highlights: [Highlight!]!
+    history: History!
+    arcEntry: ArcEntry!
 
     incomingRelations: [Relation!]!
     outgoingRelations: [Relation!]!
@@ -59,6 +103,7 @@ const typeDefs = gql`
 
   type Highlight {
     id: ID!
+    history: History!
     entry: Entry!
     arc: Arc
     arcs: [Arc!]!
@@ -73,9 +118,20 @@ const typeDefs = gql`
     predicate: String!
     object: Arc!
   }
+
+  # TODO
+  type Comment {
+    id: ID!
+    commentEntry: CommentEntry!
+    history: History!
+  }
 `;
 
 export type UnhydratedType = {
+  History: {
+    __typename: "History";
+    dateCreated?: string;
+  };
   JournalMetadata: {
     __typename: "JournalMetadata";
     lastArcHue: number;
@@ -83,12 +139,30 @@ export type UnhydratedType = {
   Entry: {
     __typename: "Entry";
     entryKey: string;
-    date: string;
-    contentState: string;
+    trackedContentState: string;
+    history: UnhydratedType["History"];
+    entryType: "JOURNAL" | "ARC" | "COMMENT";
+  };
+  JournalEntry: {
+    __typename: "JournalEntry";
+    entryKey: string;
+    entry: string;
+  };
+  ArcEntry: {
+    __typename: "ArcEntry";
+    entry: string;
+    arc: string;
+  };
+  CommentEntry: {
+    __typename: "CommentEntry";
+    entry: string;
+    comment: string;
   };
   Arc: {
     __typename: "Arc";
     id: string;
+    history: UnhydratedType["History"];
+    arcEntry: string;
     name: string;
     color: number;
     incomingRelations: string[];
@@ -97,6 +171,7 @@ export type UnhydratedType = {
   Highlight: {
     __typename: "Highlight";
     id: string;
+    history: UnhydratedType["History"];
     entry: string;
     outgoingRelations: string[];
   };
@@ -109,6 +184,12 @@ export type UnhydratedType = {
     objectType: "Arc";
     object: string;
   };
+  Comment: {
+    __typename: "Comment";
+    id: string;
+    commentEntry: string;
+    history: UnhydratedType["History"];
+  };
 };
 
 export const vars = {
@@ -116,9 +197,17 @@ export const vars = {
   journalTitle: makeVar("new journal"),
   journalMetadata: makeVar({ lastArcHue: 0 }),
   entries: makeVar<{ [entryKey in string]: UnhydratedType["Entry"] }>({}),
+  journalEntries: makeVar<{
+    [entryKey in string]: UnhydratedType["JournalEntry"];
+  }>({}),
+  arcEntries: makeVar<{ [entryKey in string]: UnhydratedType["ArcEntry"] }>({}),
+  commentEntries: makeVar<{
+    [entryKey in string]: UnhydratedType["CommentEntry"];
+  }>({}),
   arcs: makeVar<{ [id in string]: UnhydratedType["Arc"] }>({}),
   highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
   relations: makeVar<{ [id in string]: UnhydratedType["Relation"] }>({}),
+  comments: makeVar<{ [id in string]: UnhydratedType["Comment"] }>({}),
 };
 
 // @ts-expect-error Expose vars for debugging
@@ -130,8 +219,12 @@ export const serializeVars: (keyof typeof vars)[] = [
   "journalMetadata",
   "entries",
   "arcs",
+  "journalEntries",
+  "arcEntries",
+  "commentEntries",
   "highlights",
   "relations",
+  "comments",
 ];
 
 export const initializeState = () => {
@@ -140,8 +233,12 @@ export const initializeState = () => {
   vars.journalMetadata({ lastArcHue: 0 });
   vars.entries({});
   vars.arcs({});
+  vars.journalEntries({});
+  vars.arcEntries({});
+  vars.commentEntries({});
   vars.highlights({});
   vars.relations({});
+  vars.comments({});
 };
 
 const typePolicies: TypePolicies = {
@@ -174,13 +271,47 @@ const typePolicies: TypePolicies = {
         return Object.values(vars.entries())
           .sort(
             (a, b) =>
-              parseIpsumDateTime(b.date).dateTime.toJSDate().getTime() -
-              parseIpsumDateTime(a.date).dateTime.toJSDate().getTime()
+              parseIpsumDateTime(b.history.dateCreated)
+                .dateTime.toJSDate()
+                .getTime() -
+              parseIpsumDateTime(a.history.dateCreated)
+                .dateTime.toJSDate()
+                .getTime()
           )
           .slice(0, args.count);
       },
+      journalEntry(_, { args }) {
+        if (args.entryKey) {
+          return vars.journalEntries()[args.entryKey] ?? null;
+        }
+        return null;
+      },
+      journalEntries(_, { args }: { args: QueryJournalEntriesArgs }) {
+        if (args?.entryKeys) {
+          return args.entryKeys
+            .map((entryKey) => vars.journalEntries()[entryKey])
+            .filter(Boolean);
+        }
+        return Object.values(vars.journalEntries());
+      },
       entryDates() {
-        return Object.values(vars.entries()).map((entry) => entry.date);
+        return Object.values(vars.entries()).map(
+          (entry) => entry.history.dateCreated
+        );
+      },
+      recentJournalEntries(_, { args }) {
+        return Object.values(vars.entries())
+          .filter((entry) => entry.entryType === "JOURNAL")
+          .sort(
+            (a, b) =>
+              parseIpsumDateTime(b.history.dateCreated)
+                .dateTime.toJSDate()
+                .getTime() -
+              parseIpsumDateTime(a.history.dateCreated)
+                .dateTime.toJSDate()
+                .getTime()
+          )
+          .slice(0, args.count);
       },
       arc(_, { args }) {
         if (args?.id) {
@@ -193,6 +324,21 @@ const typePolicies: TypePolicies = {
           return args.ids.map((id) => vars.arcs()[id]);
         }
         return Object.values(vars.arcs());
+      },
+      arcEntry(_, { args }) {
+        if (args?.arcId) {
+          const arcEntryKey = Object.values(vars.arcs()).find(
+            (arc) => arc.id === args.arcId
+          ).arcEntry;
+          return vars.arcEntries()[arcEntryKey];
+        }
+        return null;
+      },
+      arcEntries(_, { args }: { args: QueryArcEntriesArgs }) {
+        if (args?.entryKeys) {
+          return args.entryKeys.map((entryKey) => vars.arcEntries()[entryKey]);
+        }
+        return Object.values(vars.arcEntries());
       },
       highlight(_, { args }) {
         if (args?.id) {
@@ -243,6 +389,36 @@ const typePolicies: TypePolicies = {
           (highlight) => highlight.entry === readField("entryKey")
         );
       },
+      date(_, { readField }) {
+        return readField<UnhydratedType["History"]>("history").dateCreated;
+      },
+      contentState(_, { readField }) {
+        const trackedContentState = readField<string>("trackedContentState");
+        const timeMachine = IpsumTimeMachine.fromString(trackedContentState);
+        return timeMachine.currentValue;
+      },
+      history(h) {
+        return h;
+      },
+    },
+  },
+  JournalEntry: {
+    keyFields: ["entryKey"],
+    fields: {
+      entry(_, { readField }) {
+        return vars.entries()[readField<string>("entryKey")];
+      },
+    },
+  },
+  ArcEntry: {
+    keyFields: ["entryKey"],
+    fields: {
+      arc(_, { readField }) {
+        return vars.arcs()[readField<string>("arcId")];
+      },
+      entry(_, { readField }) {
+        return vars.entries()[readField<string>("entryKey")];
+      },
     },
   },
   Arc: {
@@ -260,6 +436,9 @@ const typePolicies: TypePolicies = {
       },
       outgoingRelations(relationIds: string[]) {
         return relationIds.map((id) => vars.relations()[id]);
+      },
+      arcEntry(_, { readField }) {
+        return vars.arcEntries()[readField<string>("arcEntry")];
       },
     },
   },

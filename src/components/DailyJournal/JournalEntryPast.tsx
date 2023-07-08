@@ -9,6 +9,7 @@ import styles from "./JournalEntry.less";
 import { EditorContext } from "../EditorWrapper/EditorContext";
 import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
 import { ReflectionAccordion } from "./ReflectionAccordion";
+import { EntryType } from "util/apollo";
 
 interface JournalEntryProps {
   entryKey: string;
@@ -21,6 +22,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
 }: JournalEntryProps) => {
   const { editorRef, editorState } = useEntryEditor({
     entryKey,
+    metadata: { entryType: EntryType.Journal },
   });
 
   const { setEntryEditorState, onEditorFocus, onEditorBlur } =
