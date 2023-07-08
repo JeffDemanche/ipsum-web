@@ -15,6 +15,11 @@ const ArcDetailContextQuery = gql(`
       id
       name
       color
+      arcEntry {
+        entry {
+          entryKey
+        }
+      }
     }
   }
 `);

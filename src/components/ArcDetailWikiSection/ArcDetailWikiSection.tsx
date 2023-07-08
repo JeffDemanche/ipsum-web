@@ -19,7 +19,10 @@ export const ArcDetailWikiSection: React.FunctionComponent = () => {
   const { setEntryEditorState, onEditorFocus, onEditorBlur, saveEntry } =
     useContext(EditorContext);
 
-  const entryKey = useMemo(() => `arc-entry-${arcId}`, [arcId]);
+  const entryKey = useMemo(
+    () => arc.arcEntry.entry.entryKey,
+    [arc.arcEntry.entry.entryKey]
+  );
 
   const { editorRef, editorState } = useEntryEditor({
     entryKey,

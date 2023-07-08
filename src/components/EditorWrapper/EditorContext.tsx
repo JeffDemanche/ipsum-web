@@ -171,7 +171,7 @@ export const EditorContextProvider: React.FunctionComponent<
         const entry = {
           entryKey,
           stringifiedContentState: stringifyContentState(contentState),
-          entryType: EntryType.Journal,
+          entryType: entryMetadata.entryType,
         };
         const attemptedUpdate = updateEntry(entry);
         if (!attemptedUpdate) {

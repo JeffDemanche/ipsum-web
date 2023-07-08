@@ -413,11 +413,11 @@ const typePolicies: TypePolicies = {
   ArcEntry: {
     keyFields: ["entryKey"],
     fields: {
-      arc(_, { readField }) {
-        return vars.arcs()[readField<string>("arcId")];
+      arc(arcId) {
+        return vars.arcs()[arcId];
       },
-      entry(_, { readField }) {
-        return vars.entries()[readField<string>("entryKey")];
+      entry(entryKey) {
+        return vars.entries()[entryKey];
       },
     },
   },
@@ -437,8 +437,8 @@ const typePolicies: TypePolicies = {
       outgoingRelations(relationIds: string[]) {
         return relationIds.map((id) => vars.relations()[id]);
       },
-      arcEntry(_, { readField }) {
-        return vars.arcEntries()[readField<string>("arcEntry")];
+      arcEntry(arcEntryKey) {
+        return vars.arcEntries()[arcEntryKey];
       },
     },
   },
