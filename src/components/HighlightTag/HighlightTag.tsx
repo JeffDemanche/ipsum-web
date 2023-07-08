@@ -102,7 +102,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
         };
 
   return (
-    <Typography variant={type === "span" ? "body2" : "h3"}>
+    <Typography component={"span"} variant={type === "span" ? "body2" : "h3"}>
       <Link
         href={"#"}
         onMouseEnter={() => {

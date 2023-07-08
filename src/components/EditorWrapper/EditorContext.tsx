@@ -3,7 +3,6 @@ import { ContentState, Editor, EditorState } from "draft-js";
 import React, { useCallback, useState } from "react";
 import {
   createJournalEntry,
-  deleteArc,
   deleteJournalEntry,
   EntryType,
   updateEntry,
