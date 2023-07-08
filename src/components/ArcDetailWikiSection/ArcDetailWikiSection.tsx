@@ -37,14 +37,7 @@ export const ArcDetailWikiSection: React.FunctionComponent = () => {
       stringifyContentState(editorState.getCurrentContent()) !==
       stringifyContentState(newEditorState.getCurrentContent());
 
-    const contentState = newEditorState.getCurrentContent();
-
     if (newEditorState && changed) {
-      const entry = {
-        entryKey,
-        stringifiedContentState: stringifyContentState(contentState),
-      };
-      console.log("Saving entry");
       saveEntry({ entryKey, editorState: newEditorState });
     }
   }, 500);
