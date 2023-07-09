@@ -20,23 +20,22 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
   entryKey,
   showDivider,
 }: JournalEntryProps) => {
-  const { editorRef, editorState } = useEntryEditor({
+  const { editorRef, editorState, setEditorState } = useEntryEditor({
     entryKey,
     metadata: { entryType: EntryType.Journal },
   });
 
-  const { setEntryEditorState, onEditorFocus, onEditorBlur } =
-    useContext(EditorContext);
+  const { onEditorFocus, onEditorBlur } = useContext(EditorContext);
 
   const handleKeyCommand = useCallback(
     (command: string, editorState: EditorState) => {
       const newState = RichUtils.handleKeyCommand(editorState, command);
       if (newState) {
-        setEntryEditorState(entryKey, newState);
+        setEditorState(newState);
         return "handled";
       } else return "not-handled";
     },
-    [entryKey, setEntryEditorState]
+    [setEditorState]
   );
 
   const onEditorChange = useCallback(
@@ -54,12 +53,12 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
           ),
           newEditorState.getSelection()
         );
-        setEntryEditorState(entryKey, () => onlySelectionChanges);
+        setEditorState(onlySelectionChanges);
       } else {
-        setEntryEditorState(entryKey, () => newEditorState);
+        setEditorState(newEditorState);
       }
     },
-    [editorState, entryKey, setEntryEditorState]
+    [editorState, setEditorState]
   );
 
   const onFocus = useCallback(() => {
@@ -90,12 +89,14 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
               editorKey={entryKey}
               enableHighlights={true}
               editorState={editorState}
+              setEditorState={setEditorState}
               onChange={onEditorChange}
               onFocus={onFocus}
               onBlur={onBlur}
               handleKeyCommand={handleKeyCommand}
               blockStyleFn={blockStyleFn}
               ref={editorRef}
+              editorRef={editorRef}
             ></EditorWrapper>
           </>
         )}

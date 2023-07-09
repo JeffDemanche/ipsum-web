@@ -2,12 +2,12 @@ import { ApolloProvider } from "@apollo/client";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React, { useState } from "react";
 import { client } from "util/apollo";
-import { vars } from "util/apollo/client";
 import {
   mockArcs,
   mockJournalMetadata,
 } from "util/apollo/__tests__/apollo-test-utils";
 import { useSearchArcs } from "util/hooks";
+import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
 import { ArcAssignmentPopper } from "../ArcAssignmentPopper";
 
 jest.mock("util/hooks");
@@ -21,6 +21,9 @@ const TestPopper = ({
   editorKey?: string;
 }) => {
   const [anchor, setAnchor] = useState<HTMLDivElement>(null);
+  const editorState = createEditorStateFromFormat(
+    "<p>the quick [brown fox] jumped over the lazy dog</p>"
+  );
   return (
     <ApolloProvider client={client}>
       <div
@@ -30,6 +33,8 @@ const TestPopper = ({
       ></div>
       {anchor && (
         <ArcAssignmentPopper
+          editorRef={null}
+          editorState={editorState}
           open={open}
           anchorEl={anchor}
           editorKey={editorKey}

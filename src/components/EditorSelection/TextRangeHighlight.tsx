@@ -2,9 +2,12 @@ import React, { useMemo, useRef } from "react";
 import styles from "./TextRangeHighlight.less";
 import { IpsumSelectionState } from "util/selection";
 import { ArcAssignmentPopper } from "components/ArcAssignmentPopper";
+import { Editor, EditorState } from "draft-js";
 
 interface TextRangeHighlightProps {
   editorKey: string;
+  editorState: EditorState;
+  editorRef: React.RefObject<Editor>;
   selection: IpsumSelectionState;
   color?: string;
   onClickAway: () => void;
@@ -12,6 +15,8 @@ interface TextRangeHighlightProps {
 
 export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
   editorKey,
+  editorState,
+  editorRef,
   selection,
   color,
   onClickAway,
@@ -96,6 +101,8 @@ export const TextRangeHighlight: React.FC<TextRangeHighlightProps> = ({
         ></div>
         {backgroundDivs}
         <ArcAssignmentPopper
+          editorState={editorState}
+          editorRef={editorRef}
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
           editorKey={editorKey}

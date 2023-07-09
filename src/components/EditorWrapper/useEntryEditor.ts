@@ -1,10 +1,37 @@
 import { ContentState, Editor, EditorState } from "draft-js";
-import { useContext, useEffect, useMemo, useRef } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { parseContentState, stringifyContentState } from "util/content-state";
-import { EditorContext, EditorMetadata } from "./EditorContext";
+import { EditorContext } from "./EditorContext";
 import { decorator } from "components/Decorator";
-import { gql } from "util/apollo";
+import {
+  createArcEntry,
+  createJournalEntry,
+  deleteArcEntry,
+  deleteJournalEntry,
+  EntryType,
+  gql,
+  updateEntry,
+} from "util/apollo";
 import { useQuery } from "@apollo/client";
+
+interface EditorMetadataJournal {
+  entryType: EntryType.Journal;
+}
+
+interface EditorMetadataArc {
+  entryType: EntryType.Arc;
+  arcId: string;
+  arcName: string;
+}
+
+export type EditorMetadata = EditorMetadataJournal | EditorMetadataArc;
 
 interface UseEntryEditorArgs {
   entryKey: string;
@@ -15,6 +42,14 @@ interface UseEntryEditorResult {
   editorRef: React.MutableRefObject<Editor>;
   editorState: EditorState;
   empty: boolean;
+  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
+  saveEntry: ({
+    entryKey,
+    editorState,
+  }: {
+    entryKey: string;
+    editorState?: EditorState;
+  }) => void;
 }
 
 const UseJournalEntryEditorQuery = gql(`
@@ -48,29 +83,62 @@ export const useEntryEditor = ({
     [entry]
   );
 
-  const {
-    focusedEditorKey,
-    registerEditor,
-    setEntryEditorState,
-    setEntryEditorMetadata,
-    unregisterEditor,
-    entryEditorStates,
-    entryEditorMetadatas,
-  } = useContext(EditorContext);
-
-  const editorState = entryEditorStates.get(entryKey);
-  const editorMetadata = entryEditorMetadatas.get(entryKey);
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const editorRef = useRef<Editor>();
+
+  const { focusedEditorKey } = useContext(EditorContext);
 
   const empty = !editorState?.getCurrentContent().hasText();
 
-  useEffect(() => {
-    registerEditor(entryKey, undefined, editorRef, metadata);
-    return () => {
-      unregisterEditor(entryKey);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  /**
+   * The optional editorState parameter will be used to update the Apollo state
+   * if provided, otherwise we use the editor state from the context map. This
+   * is useful to avoid debounce issues for saving while typing.
+   */
+  const saveEntry = useCallback(
+    ({
+      entryKey,
+      editorState,
+    }: {
+      entryKey: string;
+      editorState?: EditorState;
+    }) => {
+      const contentState =
+        editorState?.getCurrentContent() ?? editorState.getCurrentContent();
+
+      if (!contentState.hasText()) {
+        switch (metadata.entryType) {
+          case EntryType.Journal:
+            deleteJournalEntry({ entryKey });
+            break;
+          case EntryType.Arc:
+            deleteArcEntry(entryKey);
+            break;
+        }
+      } else {
+        const entry = {
+          entryKey,
+          stringifiedContentState: stringifyContentState(contentState),
+          entryType: metadata.entryType,
+        };
+        const attemptedUpdate = updateEntry(entry);
+        if (!attemptedUpdate) {
+          switch (metadata.entryType) {
+            case EntryType.Journal:
+              createJournalEntry(entry);
+              break;
+            case EntryType.Arc:
+              createArcEntry({
+                arcId: metadata.arcId,
+                arcName: metadata.arcName,
+              });
+              break;
+          }
+        }
+      }
+    },
+    [metadata]
+  );
 
   useEffect(() => {
     if (
@@ -78,24 +146,17 @@ export const useEntryEditor = ({
       stringifyContentState(contentStateFromState) !==
         stringifyContentState(editorState?.getCurrentContent())
     ) {
-      setEntryEditorState(entryKey, () => {
-        return EditorState.createWithContent(contentStateFromState, decorator);
-      });
+      setEditorState(() =>
+        EditorState.createWithContent(contentStateFromState, decorator)
+      );
     }
-  }, [
-    contentStateFromState,
-    editorMetadata,
-    editorState,
-    entry,
-    entryKey,
-    focusedEditorKey,
-    setEntryEditorMetadata,
-    setEntryEditorState,
-  ]);
+  }, [contentStateFromState, editorState, entry, entryKey, focusedEditorKey]);
 
   return {
     editorRef,
     editorState,
     empty,
+    saveEntry,
+    setEditorState,
   };
 };

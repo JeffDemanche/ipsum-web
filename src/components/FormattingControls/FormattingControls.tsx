@@ -1,97 +1,69 @@
-import React, { useCallback, useContext, useMemo } from "react";
+import React, { useCallback, useContext } from "react";
 import styles from "./FormattingControls.less";
 import { EditorState, RichUtils } from "draft-js";
 import { EditorContext } from "components/EditorWrapper";
 import { ToggleButton } from "@mui/material";
 
-export const FormattingControls: React.FunctionComponent = () => {
-  const {
-    focusedEditorKey,
-    setEntryEditorState,
-    entryEditorStates,
-    todayEntryKey,
-  } = useContext(EditorContext);
+interface FormattingControlProps {
+  editorState: EditorState;
+  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
+}
 
-  const focusedEditorState = useMemo(
-    () => entryEditorStates.get(focusedEditorKey),
-    [entryEditorStates, focusedEditorKey]
-  );
-  const focusedEditorSelection = focusedEditorState?.getSelection();
-  const blockType = focusedEditorState
+export const FormattingControls: React.FunctionComponent<
+  FormattingControlProps
+> = ({ editorState, setEditorState }) => {
+  const { focusedEditorKey, todayEntryKey } = useContext(EditorContext);
+
+  const focusedEditorSelection = editorState?.getSelection();
+  const blockType = editorState
     ?.getCurrentContent()
     .getBlockForKey(focusedEditorSelection?.getStartKey())
     .getType();
 
-  const boldEnabled = !!focusedEditorState?.getCurrentInlineStyle().has("BOLD");
+  const boldEnabled = !!editorState?.getCurrentInlineStyle().has("BOLD");
 
   const onBoldClick = useCallback(() => {
     todayEntryKey === focusedEditorKey &&
-      setEntryEditorState(
-        focusedEditorKey,
-        (previousEditorState) =>
-          RichUtils.toggleInlineStyle(
-            EditorState.forceSelection(
-              previousEditorState,
-              focusedEditorSelection
-            ),
-            "BOLD"
+      setEditorState((previousEditorState) =>
+        RichUtils.toggleInlineStyle(
+          EditorState.forceSelection(
+            previousEditorState,
+            focusedEditorSelection
           ),
-        true
+          "BOLD"
+        )
       );
-  }, [
-    focusedEditorKey,
-    focusedEditorSelection,
-    setEntryEditorState,
-    todayEntryKey,
-  ]);
+  }, [focusedEditorKey, focusedEditorSelection, setEditorState, todayEntryKey]);
 
-  const italicEnabled = !!focusedEditorState
-    ?.getCurrentInlineStyle()
-    .has("ITALIC");
+  const italicEnabled = !!editorState?.getCurrentInlineStyle().has("ITALIC");
 
   const onItalicClick = useCallback(() => {
     todayEntryKey === focusedEditorKey &&
-      setEntryEditorState(
-        focusedEditorKey,
-        (previousEditorState) =>
-          RichUtils.toggleInlineStyle(
-            EditorState.forceSelection(
-              previousEditorState,
-              focusedEditorSelection
-            ),
-            "ITALIC"
+      setEditorState((previousEditorState) =>
+        RichUtils.toggleInlineStyle(
+          EditorState.forceSelection(
+            previousEditorState,
+            focusedEditorSelection
           ),
-        true
+          "ITALIC"
+        )
       );
-  }, [
-    focusedEditorKey,
-    focusedEditorSelection,
-    setEntryEditorState,
-    todayEntryKey,
-  ]);
+  }, [focusedEditorKey, focusedEditorSelection, setEditorState, todayEntryKey]);
 
   const toggleBlockStyle = useCallback(
     (type: string) => {
       todayEntryKey === focusedEditorKey &&
-        setEntryEditorState(
-          focusedEditorKey,
-          (previousEditorState) =>
-            RichUtils.toggleBlockType(
-              EditorState.forceSelection(
-                previousEditorState,
-                focusedEditorSelection
-              ),
-              type
+        setEditorState((previousEditorState) =>
+          RichUtils.toggleBlockType(
+            EditorState.forceSelection(
+              previousEditorState,
+              focusedEditorSelection
             ),
-          true
+            type
+          )
         );
     },
-    [
-      focusedEditorKey,
-      focusedEditorSelection,
-      setEntryEditorState,
-      todayEntryKey,
-    ]
+    [focusedEditorKey, focusedEditorSelection, setEditorState, todayEntryKey]
   );
 
   const onDailyJournalControlsClick = useCallback((e: React.MouseEvent) => {

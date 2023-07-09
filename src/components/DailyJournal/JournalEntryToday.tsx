@@ -26,13 +26,13 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   entryKey,
   showDivider,
 }: JournalEntryTodayProps) => {
-  const { editorRef, editorState, empty } = useEntryEditor({
-    entryKey,
-    metadata: { entryType: EntryType.Journal },
-  });
+  const { editorRef, editorState, empty, saveEntry, setEditorState } =
+    useEntryEditor({
+      entryKey,
+      metadata: { entryType: EntryType.Journal },
+    });
 
-  const { setEntryEditorState, onEditorFocus, onEditorBlur, saveEntry } =
-    useContext(EditorContext);
+  const { onEditorFocus, onEditorBlur } = useContext(EditorContext);
 
   /**
    * Debounced so we only update the state once every so often while typing.
@@ -52,21 +52,21 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
 
   const onEditorChange = useCallback(
     (newEditorState: EditorState) => {
-      setEntryEditorState(entryKey, () => newEditorState);
+      setEditorState(() => newEditorState);
       onEditorUpdate(newEditorState);
     },
-    [entryKey, onEditorUpdate, setEntryEditorState]
+    [onEditorUpdate, setEditorState]
   );
 
   const handleKeyCommand = useCallback(
     (command: DraftEditorCommand, editorState: EditorState) => {
       const newState = RichUtils.handleKeyCommand(editorState, command);
       if (newState) {
-        setEntryEditorState(entryKey, () => newState);
+        setEditorState(newState);
         return "handled";
       } else return "not-handled";
     },
-    [entryKey, setEntryEditorState]
+    [setEditorState]
   );
 
   const onFocus = useCallback(() => {
@@ -114,10 +114,12 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
               onFocus={onFocus}
               onBlur={onBlur}
               editorState={editorState}
+              setEditorState={setEditorState}
               handleKeyCommand={handleKeyCommand}
               blockStyleFn={blockStyleFn}
               onChange={onEditorChange}
               ref={editorRef}
+              editorRef={editorRef}
             ></EditorWrapper>
           </>
         )}

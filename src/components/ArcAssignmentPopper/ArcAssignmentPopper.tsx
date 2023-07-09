@@ -2,15 +2,14 @@ import { ClickAwayListener, TextField } from "@mui/material";
 import { Popper } from "components/Popper";
 import React, {
   useCallback,
-  useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import styles from "./ArcAssignmentPopper.less";
 import { useSearchArcs } from "util/hooks";
 import { nextHue } from "util/colors";
-import { EditorSelectionContext } from "components/EditorSelection";
 import { noop } from "underscore";
 import { ArcTag } from "components/ArcTag";
 import {
@@ -21,11 +20,15 @@ import {
   gql,
 } from "util/apollo";
 import { useQuery } from "@apollo/client";
+import { Editor, EditorState } from "draft-js";
+import { IpsumSelectionState } from "util/selection";
 
 interface ArcAssignmentPopoverProps {
   open: boolean;
   anchorEl: HTMLElement;
   editorKey: string;
+  editorState: EditorState;
+  editorRef: React.RefObject<Editor>;
   onClose?: () => void;
 }
 
@@ -39,8 +42,8 @@ export const ArcAssignmentPopperQuery = gql(`
 
 export const ArcAssignmentPopper: React.FunctionComponent<
   ArcAssignmentPopoverProps
-> = ({ open, anchorEl, editorKey, onClose }) => {
-  const { getSelection } = useContext(EditorSelectionContext);
+> = ({ open, anchorEl, editorKey, editorState, editorRef, onClose }) => {
+  // const { getSelection } = useContext(EditorSelectionContext);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -62,8 +65,17 @@ export const ArcAssignmentPopper: React.FunctionComponent<
     setInputVal(inputRef.current.value);
   };
 
+  const selection = useMemo(
+    () =>
+      new IpsumSelectionState(
+        editorState.getSelection(),
+        IpsumSelectionState.rangeFromDocument(),
+        editorRef
+      ),
+    [editorRef, editorState]
+  );
+
   const addArc = useCallback(() => {
-    const selection = getSelection(editorKey);
     const arc = createArc({
       name: inputVal,
     });
@@ -81,12 +93,10 @@ export const ArcAssignmentPopper: React.FunctionComponent<
       selectionState: selection.selectionState,
     });
     onClose?.();
-  }, [editorKey, getSelection, inputVal, onClose]);
+  }, [editorKey, inputVal, onClose, selection.selectionState]);
 
   const assignArc = useCallback(
     (arcId: string) => {
-      const selection = getSelection(editorKey);
-
       const highlight = createHighlight({ entry: editorKey });
       createRelation({
         subject: highlight.id,
@@ -101,7 +111,7 @@ export const ArcAssignmentPopper: React.FunctionComponent<
         selectionState: selection.selectionState,
       });
     },
-    [editorKey, getSelection]
+    [editorKey, selection.selectionState]
   );
 
   const tokens = [

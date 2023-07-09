@@ -16,15 +16,14 @@ export const ArcDetailWikiSection: React.FunctionComponent = () => {
   const arcId = arc.id;
   const arcName = arc.name;
 
-  const { setEntryEditorState, onEditorFocus, onEditorBlur, saveEntry } =
-    useContext(EditorContext);
+  const { onEditorFocus, onEditorBlur } = useContext(EditorContext);
 
   const entryKey = useMemo(
     () => arc.arcEntry.entry.entryKey,
     [arc.arcEntry.entry.entryKey]
   );
 
-  const { editorRef, editorState } = useEntryEditor({
+  const { editorRef, editorState, saveEntry, setEditorState } = useEntryEditor({
     entryKey,
     metadata: { entryType: EntryType.Arc, arcId, arcName },
   });
@@ -47,12 +46,10 @@ export const ArcDetailWikiSection: React.FunctionComponent = () => {
 
   const onChange = useCallback(
     (newEditorState: EditorState) => {
-      setEntryEditorState(entryKey, () => {
-        return newEditorState;
-      });
+      setEditorState(newEditorState);
       onEditorUpdate(newEditorState);
     },
-    [entryKey, onEditorUpdate, setEntryEditorState]
+    [onEditorUpdate, setEditorState]
   );
 
   const onFocus = useCallback(() => {
@@ -74,7 +71,9 @@ export const ArcDetailWikiSection: React.FunctionComponent = () => {
           onFocus={onFocus}
           onBlur={onBlur}
           editorState={editorState}
+          setEditorState={setEditorState}
           ref={editorRef}
+          editorRef={editorRef}
         ></EditorWrapper>
       )}
     </ArcDetailSection>

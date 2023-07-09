@@ -1,4 +1,3 @@
-import { EditorSelectionProvider } from "components/EditorSelection";
 import React from "react";
 import styles from "./ViewJournal.less";
 import { VisibleEntriesProvider } from "../components/VisibleEntriesContext";
@@ -16,13 +15,9 @@ const ProvidersWrapper: React.FC<{ children: React.ReactNode }> = ({
     <DiptychProvider>
       <VisibleEntriesProvider>
         <EditorContextProvider>
-          <EditorSelectionProvider>
-            <JournalHotkeysProvider>
-              <HighlightSelectionProvider>
-                {children}
-              </HighlightSelectionProvider>
-            </JournalHotkeysProvider>
-          </EditorSelectionProvider>
+          <JournalHotkeysProvider>
+            <HighlightSelectionProvider>{children}</HighlightSelectionProvider>
+          </JournalHotkeysProvider>
         </EditorContextProvider>
       </VisibleEntriesProvider>
     </DiptychProvider>

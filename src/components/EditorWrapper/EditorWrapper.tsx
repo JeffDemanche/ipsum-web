@@ -1,15 +1,16 @@
-import { Editor, EditorProps } from "draft-js";
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import {
-  TextRangeHighlight,
-  EditorSelectionContext,
-} from "components/EditorSelection";
+import { Editor, EditorProps, EditorState } from "draft-js";
+import React, { useEffect, useMemo, useState } from "react";
+import { TextRangeHighlight } from "components/EditorSelection";
 import { FormattingControls } from "components/FormattingControls";
 import styles from "./EditorWrapper.less";
+import { IpsumSelectionState } from "util/selection";
 
 interface EditorWrapperProps {
   enableControls: boolean;
   enableHighlights: boolean;
+  editorState: EditorState;
+  editorRef: React.RefObject<Editor>;
+  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
 }
 
 type EditorWrapperPropsCombined = EditorWrapperProps &
@@ -17,11 +18,14 @@ type EditorWrapperPropsCombined = EditorWrapperProps &
 
 export const EditorWrapper: React.FC<EditorWrapperPropsCombined> =
   React.forwardRef<Editor, EditorWrapperPropsCombined>((props, ref) => {
-    const { getSelection } = useContext(EditorSelectionContext);
-
     const editorSelection = useMemo(
-      () => getSelection(props.editorKey),
-      [getSelection, props.editorKey]
+      () =>
+        new IpsumSelectionState(
+          props.editorState.getSelection(),
+          IpsumSelectionState.rangeFromDocument(),
+          props.editorRef
+        ),
+      [props.editorRef, props.editorState]
     );
 
     // editorSelection will become an empty selection as soon as the user
@@ -42,9 +46,16 @@ export const EditorWrapper: React.FC<EditorWrapperPropsCombined> =
 
     return (
       <div className={styles["editor-wrapper-container"]}>
-        {props.enableControls && <FormattingControls />}
+        {props.enableControls && (
+          <FormattingControls
+            editorState={props.editorState}
+            setEditorState={props.setEditorState}
+          />
+        )}
         <Editor {...props} ref={ref}></Editor>
         <TextRangeHighlight
+          editorRef={props.editorRef}
+          editorState={props.editorState}
           editorKey={props.editorKey}
           selection={persistentSelection}
           onClickAway={() => {
