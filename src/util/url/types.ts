@@ -12,7 +12,7 @@ interface ConnectionOnlyLayer extends BaseURLLayer {
   connectionId: string;
 }
 
-interface DailyJournalURLLayer extends BaseURLLayer {
+export interface DailyJournalURLLayer extends BaseURLLayer {
   type: "daily_journal";
   startDate?: string;
   endDate?: string;

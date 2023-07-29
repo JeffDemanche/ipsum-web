@@ -1,2 +1,7 @@
 export { DiptychProvider, DiptychContext } from "./DiptychContext";
-export { DiptychLayer } from "./types";
+export {
+  DiptychLayer,
+  ArcDetailLayer,
+  ConnectionOnlyLayer,
+  DailyJournalLayer,
+} from "./types";

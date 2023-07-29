@@ -33,11 +33,12 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
 
   const layers: DiptychLayer[] = useMemo(() => {
     return [
-      ...urlLayers.map((urlLayer): DiptychLayer => {
+      ...urlLayers.map((urlLayer, index): DiptychLayer => {
         switch (urlLayer.type) {
           case "connection_only":
             return {
               type: "ConnectionOnly",
+              index,
               diptychMedian: {
                 connectionId: urlLayer.connectionId,
               },
@@ -46,6 +47,7 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
           case "arc_detail":
             return {
               type: "ArcDetail",
+              index,
               arcId: urlLayer.arcId,
               urlLayer,
               diptychMedian: {
@@ -55,7 +57,10 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
           case "daily_journal":
             return {
               type: "DailyJournal",
+              index,
               urlLayer,
+              startDate: urlLayer.startDate,
+              endDate: urlLayer.endDate,
               diptychMedian: {
                 connectionId: urlLayer.connectionId,
               },

@@ -1,4 +1,4 @@
-import { URLLayer } from "util/url";
+import { DailyJournalURLLayer, URLLayer } from "util/url";
 
 /**
  * Item which connects two layers, such as an arc highlight.
@@ -8,32 +8,37 @@ interface DiptychMedian {
   connectionId?: string;
 }
 
-interface ConnectionOnlyLayer {
-  type: "ConnectionOnly";
+interface BaseDiptychLayer {
+  diptychMedian: DiptychMedian;
+  urlLayer: URLLayer;
 }
 
-interface DailyJournalLayer {
+export interface ConnectionOnlyLayer extends BaseDiptychLayer {
+  type: "ConnectionOnly";
+  index: number;
+}
+
+export interface DailyJournalLayer extends BaseDiptychLayer {
   type: "DailyJournal";
+  index: number;
   startDate?: string;
   endDate?: string;
+  urlLayer: DailyJournalURLLayer;
 }
 
-interface ArcDetailLayer {
+export interface ArcDetailLayer extends BaseDiptychLayer {
   type: "ArcDetail";
+  index: number;
   arcId: string;
 }
 
 /**
  * A layer of the diptych, such as the journal view or an arc detail view.
  */
-export type DiptychLayer = (
+export type DiptychLayer =
   | ConnectionOnlyLayer
   | DailyJournalLayer
-  | ArcDetailLayer
-) & {
-  diptychMedian: DiptychMedian;
-  urlLayer: URLLayer;
-};
+  | ArcDetailLayer;
 
 export interface Diptych {
   layers: DiptychLayer[];

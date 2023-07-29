@@ -25,7 +25,7 @@ export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
   const content = useMemo(() => {
     switch (topMostLayer.type) {
       case "DailyJournal":
-        return <DailyJournal></DailyJournal>;
+        return <DailyJournal layer={topMostLayer}></DailyJournal>;
       case "ArcDetail":
         return (
           <ArcDetail

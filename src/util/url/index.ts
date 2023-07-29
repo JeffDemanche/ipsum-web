@@ -1,2 +1,2 @@
 export { dataToSearchParams, urlToData, IpsumURL } from "./urls";
-export { URLLayer } from "./types";
+export { URLLayer, DailyJournalURLLayer } from "./types";

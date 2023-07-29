@@ -18,6 +18,7 @@ const documents = {
     "\n  query ArcDetailContext($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n      arcEntry {\n        entry {\n          entryKey\n        }\n      }\n    }\n  }\n": types.ArcDetailContextDocument,
     "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n    }\n  } \n": types.ArcDetailPrefsBoxDocument,
     "\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n      name\n    }\n  }\n": types.ArcTagDocument,
+    "\n  query DailyJournalEditor($before: String!, $after: String!) {\n    journalEntryDates(before: $before, after: $after) \n  }\n": types.DailyJournalEditorDocument,
     "\n  query HighlightDecoration($highlightIds: [ID!]!) {\n    highlights(ids: $highlightIds) {\n      id\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n": types.HighlightDecorationDocument,
     "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      highlights {\n        id\n      }\n    }\n  }\n": types.DigestDocument,
     "\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n": types.UseJournalEntryEditorDocument,
@@ -68,6 +69,10 @@ export function gql(source: "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n      name\n    }\n  }\n"): (typeof documents)["\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n      name\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query DailyJournalEditor($before: String!, $after: String!) {\n    journalEntryDates(before: $before, after: $after) \n  }\n"): (typeof documents)["\n  query DailyJournalEditor($before: String!, $after: String!) {\n    journalEntryDates(before: $before, after: $after) \n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./ViewJournal.less";
-import { VisibleEntriesProvider } from "../components/VisibleEntriesContext";
 import { HighlightSelectionProvider } from "components/HighlightSelectionContext";
 import { JournalHotkeysProvider } from "components/JournalHotkeys";
 import { Diptych } from "components/Diptych";
@@ -13,13 +12,11 @@ const ProvidersWrapper: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   return (
     <DiptychProvider>
-      <VisibleEntriesProvider>
-        <EditorContextProvider>
-          <JournalHotkeysProvider>
-            <HighlightSelectionProvider>{children}</HighlightSelectionProvider>
-          </JournalHotkeysProvider>
-        </EditorContextProvider>
-      </VisibleEntriesProvider>
+      <EditorContextProvider>
+        <JournalHotkeysProvider>
+          <HighlightSelectionProvider>{children}</HighlightSelectionProvider>
+        </JournalHotkeysProvider>
+      </EditorContextProvider>
     </DiptychProvider>
   );
 };
