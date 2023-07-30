@@ -1,8 +1,11 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { DateRange } from "react-date-range";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import styles from "./JournalDateRangePicker.less";
-import "react-date-range/dist/styles.css"; // main css file
-import "react-date-range/dist/theme/default.css"; // theme css file
+import InfiniteCalendar, {
+  Calendar,
+  EVENT_TYPE,
+  withRange,
+} from "react-infinite-calendar";
+import "react-infinite-calendar/styles.css";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 import { IpsumDateTime } from "util/dates";
@@ -80,24 +83,9 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
     ];
   }, [recentEntriesRange, searchParams.layers]);
 
+  console.log(dateRange);
+
   const navigate = useNavigate();
-
-  const dateToMonthEntryKeys = useCallback((item: Date) => {
-    const monthStartDay =
-      IpsumDateTime.fromJsDate(item).dateTime.startOf("month");
-    const monthEndDay = IpsumDateTime.fromJsDate(item).dateTime.endOf("month");
-
-    const monthEntryKeys: string[] = [];
-    let dayCounter = monthStartDay.day;
-    while (dayCounter <= monthEndDay.day) {
-      const day = IpsumDateTime.fromJsDate(
-        monthStartDay.set({ day: dayCounter }).toJSDate()
-      );
-      monthEntryKeys.push(day.toString("entry-printed-date"));
-      dayCounter++;
-    }
-    return monthEntryKeys;
-  }, []);
 
   const navigateToDates = useCallback(
     (startDate: Date, endDate: Date) => {
@@ -120,14 +108,6 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
     [dateRange.length, navigate]
   );
 
-  const today = new Date();
-
-  const [monthEntryKeys, setMonthEntryKeys] = useState<string[]>(() =>
-    dateToMonthEntryKeys(
-      IpsumDateTime.fromJsDate(today).dateTime.startOf("month").toJSDate()
-    )
-  );
-
   const { data } = useQuery(JournalDateRangeQuery);
 
   const sortedEntryDates = useMemo(
@@ -138,75 +118,118 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
     [data.entryDates]
   );
 
-  const dayContentRenderer = useCallback(
-    (day: Date) => {
-      if (
-        !monthEntryKeys.includes(
-          IpsumDateTime.fromJsDate(day).toString("entry-printed-date")
-        )
-      ) {
-        // Days outside of current month
-        return (
-          <div style={{ color: theme.palette.onSurfaceDisabled }}>
-            {day.getDate()}
-          </div>
-        );
-      } else if (
-        sortedEntryDates
-          .map((date) =>
-            IpsumDateTime.fromJsDate(new Date(date)).toString(
-              "entry-printed-date"
-            )
+  const calendarWrapperRef = useRef<HTMLDivElement>(null);
+
+  function getDateString(year: number, month: number, date: number) {
+    return `${year}-${("0" + (month + 1)).slice(-2)}-${("0" + date).slice(-2)}`;
+  }
+
+  // react-infinite-calendar doesn't have a prop for custom date rendering. This
+  // is an extremely hacky workaround being used to specially render dates with
+  // entries.
+  const drawCustomDates = useCallback(
+    (range: typeof dateRange) => {
+      console.time("drawCustomDates");
+      sortedEntryDates
+        .map((date) => new Date(date))
+        .forEach((date) => {
+          const isSelected = range.some((r) => {
+            return (
+              r.startDate.getTime() <= date.getTime() &&
+              r.endDate.getTime() >= date.getTime()
+            );
+          });
+
+          const dayElement = calendarWrapperRef.current.querySelector(
+            `[data-date="${getDateString(
+              date.getFullYear(),
+              date.getMonth(),
+              date.getDate()
+            )}"]`
+          );
+
+          let fill = theme.palette.text.primary;
+          if (isSelected) fill = theme.palette.onPrimaryHighEmphasis;
+          if (range[0].endDate.getTime() === date.getTime())
+            fill = theme.palette.primary.main;
+
+          let circleY = 75;
+          if (
+            range[0].startDate.getTime() === date.getTime() ||
+            range[0].endDate.getTime() === date.getTime()
           )
-          .includes(
-            IpsumDateTime.fromJsDate(day).toString("entry-printed-date")
-          )
-      ) {
-        // Days with entries
-        return (
-          <div className={styles["date-with-entry"]}>
-            {day.getDate()}
-            <div className={styles["dot-container"]}>.</div>
-          </div>
-        );
-      } else {
-        // Days without entries
-        return (
-          <div style={{ color: theme.palette.onSurfaceHighEmphasis }}>
-            {day.getDate()}
-          </div>
-        );
-      }
+            circleY = 85;
+
+          const dayElementContent = document.createElement("div");
+          dayElementContent.classList.add(styles["dot-container"]);
+          dayElementContent.innerHTML = `
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="${circleY}" r="3" fill="${fill}" />
+          </svg>
+        `;
+
+          if (dayElement) {
+            if (!dayElement.classList.contains(styles["date-with-entry"])) {
+              dayElement.appendChild(dayElementContent);
+              dayElement.classList.add(styles["date-with-entry"]);
+            }
+          }
+        });
+      console.timeEnd("drawCustomDates");
     },
-    [monthEntryKeys, sortedEntryDates]
+    [sortedEntryDates]
   );
 
+  const onSelect = useCallback(
+    ({
+      eventType,
+      start,
+      end,
+    }: {
+      eventType: EVENT_TYPE;
+      start: Date;
+      end: Date;
+    }) => {
+      if (eventType === EVENT_TYPE.END) navigateToDates(start, end);
+
+      drawCustomDates([
+        {
+          startDate: start,
+          endDate: end,
+          key: "selection",
+        },
+      ]);
+    },
+    [navigateToDates, drawCustomDates]
+  );
+
+  useEffect(() => {
+    drawCustomDates(dateRange);
+  }, [sortedEntryDates, dateRange]);
+
   return (
-    <DateRange
-      date={today}
-      className={styles["picker"]}
-      onChange={(item) => {
-        navigateToDates(item.selection.startDate, item.selection.endDate);
-      }}
-      onShownDateChange={(item) => {
-        setMonthEntryKeys(dateToMonthEntryKeys(item));
-      }}
-      // retainEndDateOnFirstSelection={true}
-      // moveRangeOnFirstSelection={false}
-      dayContentRenderer={dayContentRenderer}
-      ranges={dateRange}
-      direction="vertical"
-      preventSnapRefocus={true}
-      calendarFocus="forwards"
-      color="black"
-      rangeColors={[theme.palette.background.default]}
-      shownDate={today}
-      minDate={
-        sortedEntryDates.length ? new Date(sortedEntryDates.at(0)) : undefined
-      }
-      maxDate={
-        sortedEntryDates.length ? new Date(sortedEntryDates.at(-1)) : undefined
-      }
-    ></DateRange>
+    <div ref={calendarWrapperRef}>
+      <InfiniteCalendar
+        theme={{
+          headerColor: theme.palette.primary.main,
+          accentColor: theme.palette.primary.main,
+          floatingNav: {
+            background: theme.palette.primary.main,
+            chevron: theme.palette.onPrimaryHighEmphasis,
+            color: theme.palette.onPrimaryHighEmphasis,
+          },
+          selectionColor: theme.palette.primary.main,
+          weekdayColor: theme.palette.primary.dark,
+          textColor: {
+            default: theme.palette.onSurfaceMediumEmphasis,
+            active: theme.palette.onPrimaryHighEmphasis,
+          },
+        }}
+        Component={withRange(Calendar)}
+        onSelect={onSelect}
+        selected={{ start: dateRange[0].startDate, end: dateRange[0].endDate }}
+        onScroll={() => drawCustomDates(dateRange)}
+      ></InfiniteCalendar>
+    </div>
   );
 };

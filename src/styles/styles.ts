@@ -70,6 +70,7 @@ export const theme = createTheme({
   palette: {
     primary: {
       main: brown[500],
+      "700": brown[700],
     },
     secondary: {
       main: amber[500],
