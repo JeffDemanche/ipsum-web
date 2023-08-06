@@ -129,7 +129,6 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
   // entries.
   const drawCustomDates = useCallback(
     (range: typeof dateRange) => {
-      console.time("drawCustomDates");
       sortedEntryDates
         .map((date) => new Date(date))
         .forEach((date) => {
@@ -175,7 +174,6 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
             }
           }
         });
-      console.timeEnd("drawCustomDates");
     },
     [sortedEntryDates]
   );
