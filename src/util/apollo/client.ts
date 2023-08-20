@@ -119,6 +119,23 @@ const typeDefs = gql`
     object: Arc!
   }
 
+  union SRSCardSubject = Arc | Highlight
+
+  type SRSCard {
+    id: ID!
+    lastReviewed: String!
+    interval: Float!
+    ef: Float!
+    subject: SRSCardSubject!
+    endDate: String
+    deck: SRSDeck!
+  }
+
+  type SRSDeck {
+    id: ID!
+    cards: [SRSCard!]!
+  }
+
   # TODO
   type Comment {
     id: ID!
@@ -184,6 +201,21 @@ export type UnhydratedType = {
     objectType: "Arc";
     object: string;
   };
+  SRSCard: {
+    __typename: "SRSCard";
+    id: string;
+    lastReviewed: string;
+    interval: number;
+    ef: number;
+    subjectType: "Arc" | "Highlight";
+    endDate: string;
+    deck: string;
+  };
+  SRSDeck: {
+    __typename: "SRSDeck";
+    id: string;
+    cards: string[];
+  };
   Comment: {
     __typename: "Comment";
     id: string;
@@ -207,6 +239,8 @@ export const vars = {
   arcs: makeVar<{ [id in string]: UnhydratedType["Arc"] }>({}),
   highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
   relations: makeVar<{ [id in string]: UnhydratedType["Relation"] }>({}),
+  srsCards: makeVar<{ [id in string]: UnhydratedType["SRSCard"] }>({}),
+  srsDecks: makeVar<{ [id in string]: UnhydratedType["SRSDeck"] }>({}),
   comments: makeVar<{ [id in string]: UnhydratedType["Comment"] }>({}),
 };
 
@@ -238,6 +272,14 @@ export const initializeState = () => {
   vars.commentEntries({});
   vars.highlights({});
   vars.relations({});
+  vars.srsCards({});
+  vars.srsDecks({
+    default: {
+      __typename: "SRSDeck",
+      id: "default",
+      cards: [],
+    },
+  });
   vars.comments({});
 };
 
