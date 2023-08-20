@@ -193,6 +193,23 @@ export type Relation = {
 
 export type RelationSubject = Arc | Highlight;
 
+export type SrsCard = {
+  __typename?: 'SRSCard';
+  ef: Scalars['Float'];
+  id: Scalars['ID'];
+  interval: Scalars['Float'];
+  lastReviewed: Scalars['String'];
+  subject: SrsCardSubject;
+};
+
+export type SrsCardSubject = Arc | Highlight;
+
+export type SrsDeck = {
+  __typename?: 'SRSDeck';
+  cards: Array<SrsCard>;
+  id: Scalars['ID'];
+};
+
 export type ArcAssignmentPopperQueryVariables = Exact<{ [key: string]: never; }>;
 
 
