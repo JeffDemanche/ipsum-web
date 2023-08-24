@@ -1,17 +1,20 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import styles from "./JournalDateRangePicker.less";
-import InfiniteCalendar, {
-  Calendar,
-  EVENT_TYPE,
-  withRange,
-} from "react-infinite-calendar";
-import "react-infinite-calendar/styles.css";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 import { IpsumDateTime } from "util/dates";
-import { theme } from "styles/styles";
 import { dataToSearchParams, urlToData } from "util/url";
 import { useNavigate, useLocation } from "react-router";
+import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
+import {
+  DateRange,
+  DateRangePickerDay,
+  DateRangePickerDayProps,
+  LocalizationProvider,
+} from "@mui/x-date-pickers-pro";
+import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
+import { styled } from "@mui/material";
 
 export const JournalDateRangeRecentEntriesQuery = gql(`
   query JournalDateRangeRecentEntries($count: Int!) {
@@ -22,11 +25,53 @@ export const JournalDateRangeRecentEntriesQuery = gql(`
   }
 `);
 
+const CalendarDatesContext = React.createContext<{ entryKeys: string[] }>({
+  entryKeys: [],
+});
+
 export const JournalDateRangeQuery = gql(`
   query JournalDateRange($entryKeys: [ID!]!) {
-    entryDates
+    entryKeys
   }
 `);
+
+const CustomDay = styled(DateRangePickerDay)(
+  ({
+    theme,
+    isHighlighting,
+    isStartOfHighlighting,
+    isEndOfHighlighting,
+    outsideCurrentMonth,
+    day,
+  }) => {
+    const { entryKeys } = React.useContext(CalendarDatesContext);
+
+    const entryOnDate = entryKeys.includes(
+      IpsumDateTime.fromJsDate((day as Dayjs).toDate()).toString(
+        "entry-printed-date"
+      )
+    );
+
+    return {
+      ...(entryOnDate && {
+        borderRadius: 0,
+        button: {
+          color: theme.palette.primary.main,
+          fontWeight: 700,
+          textDecoration: "underline",
+        },
+      }),
+      ...(isStartOfHighlighting && {
+        borderTopLeftRadius: "50%",
+        borderBottomLeftRadius: "50%",
+      }),
+      ...(isEndOfHighlighting && {
+        borderTopRightRadius: "50%",
+        borderBottomRightRadius: "50%",
+      }),
+    };
+  }
+) as React.ComponentType<DateRangePickerDayProps<Dayjs>>;
 
 export const JournalDateRangePicker: React.FunctionComponent = () => {
   const { data: recentEntriesData } = useQuery(
@@ -59,31 +104,20 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
     [location]
   );
 
-  const dateRange = useMemo(() => {
+  const dateRange: DateRange<Dayjs> = useMemo(() => {
     if (searchParams.layers?.[0]?.type === "daily_journal") {
       const startDate = searchParams.layers[0].startDate;
       const endDate = searchParams.layers[0].endDate;
 
       if (startDate && endDate) {
-        return [
-          {
-            startDate: new Date(startDate),
-            endDate: new Date(endDate),
-            key: "selection",
-          },
-        ];
+        return [dayjs(startDate), dayjs(endDate)];
       }
     }
     return [
-      {
-        startDate: recentEntriesRange[0].startDate,
-        endDate: recentEntriesRange[0].endDate,
-        key: "selection",
-      },
+      dayjs(recentEntriesRange[0].startDate),
+      dayjs(recentEntriesRange[0].endDate),
     ];
   }, [recentEntriesRange, searchParams.layers]);
-
-  console.log(dateRange);
 
   const navigate = useNavigate();
 
@@ -110,124 +144,33 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
 
   const { data } = useQuery(JournalDateRangeQuery);
 
-  const sortedEntryDates = useMemo(
-    () =>
-      [...data.entryDates].sort(
-        (a, b) => new Date(a).getTime() - new Date(b).getTime()
-      ),
-    [data.entryDates]
-  );
+  const onRangeChange = useCallback(
+    (dateRange: DateRange<Dayjs>) => {
+      const startDate = dateRange[0]?.toDate();
+      const endDate = dateRange[1]?.toDate();
 
-  const calendarWrapperRef = useRef<HTMLDivElement>(null);
-
-  function getDateString(year: number, month: number, date: number) {
-    return `${year}-${("0" + (month + 1)).slice(-2)}-${("0" + date).slice(-2)}`;
-  }
-
-  // react-infinite-calendar doesn't have a prop for custom date rendering. This
-  // is an extremely hacky workaround being used to specially render dates with
-  // entries.
-  const drawCustomDates = useCallback(
-    (range: typeof dateRange) => {
-      sortedEntryDates
-        .map((date) => new Date(date))
-        .forEach((date) => {
-          const isSelected = range.some((r) => {
-            return (
-              r.startDate.getTime() <= date.getTime() &&
-              r.endDate.getTime() >= date.getTime()
-            );
-          });
-
-          const dayElement = calendarWrapperRef.current.querySelector(
-            `[data-date="${getDateString(
-              date.getFullYear(),
-              date.getMonth(),
-              date.getDate()
-            )}"]`
-          );
-
-          let fill = theme.palette.text.primary;
-          if (isSelected) fill = theme.palette.onPrimaryHighEmphasis;
-          if (range[0].endDate.getTime() === date.getTime())
-            fill = theme.palette.primary.main;
-
-          let circleY = 75;
-          if (
-            range[0].startDate.getTime() === date.getTime() ||
-            range[0].endDate.getTime() === date.getTime()
-          )
-            circleY = 85;
-
-          const dayElementContent = document.createElement("div");
-          dayElementContent.classList.add(styles["dot-container"]);
-          dayElementContent.innerHTML = `
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="${circleY}" r="3" fill="${fill}" />
-          </svg>
-        `;
-
-          if (dayElement) {
-            if (!dayElement.classList.contains(styles["date-with-entry"])) {
-              dayElement.appendChild(dayElementContent);
-              dayElement.classList.add(styles["date-with-entry"]);
-            }
-          }
-        });
+      if (startDate && endDate) navigateToDates(startDate, endDate);
     },
-    [sortedEntryDates]
+    [navigateToDates]
   );
-
-  const onSelect = useCallback(
-    ({
-      eventType,
-      start,
-      end,
-    }: {
-      eventType: EVENT_TYPE;
-      start: Date;
-      end: Date;
-    }) => {
-      if (eventType === EVENT_TYPE.END) navigateToDates(start, end);
-
-      drawCustomDates([
-        {
-          startDate: start,
-          endDate: end,
-          key: "selection",
-        },
-      ]);
-    },
-    [navigateToDates, drawCustomDates]
-  );
-
-  useEffect(() => {
-    drawCustomDates(dateRange);
-  }, [sortedEntryDates, dateRange]);
 
   return (
-    <div ref={calendarWrapperRef}>
-      <InfiniteCalendar
-        theme={{
-          headerColor: theme.palette.primary.main,
-          accentColor: theme.palette.primary.main,
-          floatingNav: {
-            background: theme.palette.primary.main,
-            chevron: theme.palette.onPrimaryHighEmphasis,
-            color: theme.palette.onPrimaryHighEmphasis,
-          },
-          selectionColor: theme.palette.primary.main,
-          weekdayColor: theme.palette.primary.dark,
-          textColor: {
-            default: theme.palette.onSurfaceMediumEmphasis,
-            active: theme.palette.onPrimaryHighEmphasis,
-          },
-        }}
-        Component={withRange(Calendar)}
-        onSelect={onSelect}
-        selected={{ start: dateRange[0].startDate, end: dateRange[0].endDate }}
-        onScroll={() => drawCustomDates(dateRange)}
-      ></InfiniteCalendar>
+    <div>
+      <CalendarDatesContext.Provider value={{ entryKeys: data.entryKeys }}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateRangeCalendar
+            disableFuture
+            calendars={2}
+            value={dateRange}
+            onChange={onRangeChange}
+            slots={{ day: CustomDay }}
+            classes={{
+              root: styles["mui-calendar-root"],
+              monthContainer: styles["mui-calendar-month-container"],
+            }}
+          ></DateRangeCalendar>
+        </LocalizationProvider>
+      </CalendarDatesContext.Provider>
     </div>
   );
 };

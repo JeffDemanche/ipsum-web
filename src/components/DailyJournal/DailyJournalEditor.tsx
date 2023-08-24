@@ -6,14 +6,6 @@ import { JournalEntryToday } from "./JournalEntryToday";
 import { useDateString } from "util/dates";
 import { VisibleEntriesContext } from "components/VisibleEntriesContext";
 import { Button } from "@mui/material";
-import { useQuery } from "@apollo/client";
-import { gql } from "util/apollo";
-
-const DailyJournalEditorQuery = gql(`
-  query DailyJournalEditor($before: String!, $after: String!) {
-    journalEntryDates(before: $before, after: $after) 
-  }
-`);
 
 /**
  * Component that renders all loaded entries, including today's.
@@ -22,10 +14,6 @@ export const DailyJournalEditor = () => {
   const { visibleEntryKeys, loadMoreNext, loadMorePrevious } = useContext(
     VisibleEntriesContext
   );
-
-  const { data } = useQuery(DailyJournalEditorQuery, {
-    variables: { before: "2021-10-01", after: "2021-09-01" },
-  });
 
   const today = useDateString(30000, "entry-printed-date");
 

@@ -27,7 +27,7 @@ const typeDefs = gql`
     entry(entryKey: ID!): Entry
     entries(entryKeys: [ID!]): [Entry]
     recentEntries(count: Int!): [Entry!]!
-    entryDates: [String!]!
+    entryKeys: [String!]!
 
     recentJournalEntries(count: Int!): [JournalEntry!]!
     journalEntryDates: [String!]!
@@ -294,10 +294,8 @@ const typePolicies: TypePolicies = {
         }
         return Object.values(vars.journalEntries());
       },
-      entryDates() {
-        return Object.values(vars.entries()).map(
-          (entry) => entry.history.dateCreated
-        );
+      entryKeys() {
+        return Object.values(vars.entries()).map((entry) => entry.entryKey);
       },
       recentJournalEntries(_, { args }) {
         return Object.values(vars.entries())
