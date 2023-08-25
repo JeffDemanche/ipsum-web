@@ -54,20 +54,11 @@ const CustomDay = styled(DateRangePickerDay)(
 
     return {
       ...(entryOnDate && {
-        borderRadius: 0,
         button: {
           color: theme.palette.primary.main,
           fontWeight: 700,
           textDecoration: "underline",
         },
-      }),
-      ...(isStartOfHighlighting && {
-        borderTopLeftRadius: "50%",
-        borderBottomLeftRadius: "50%",
-      }),
-      ...(isEndOfHighlighting && {
-        borderTopRightRadius: "50%",
-        borderBottomRightRadius: "50%",
       }),
     };
   }
@@ -145,11 +136,15 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
   const { data } = useQuery(JournalDateRangeQuery);
 
   const onRangeChange = useCallback(
-    (dateRange: DateRange<Dayjs>) => {
+    (dateRange: DateRange<Dayjs>, selectionState: string) => {
       const startDate = dateRange[0]?.toDate();
       const endDate = dateRange[1]?.toDate();
 
-      if (startDate && endDate) navigateToDates(startDate, endDate);
+      if (startDate && endDate) {
+        if (startDate.getTime() > endDate.getTime())
+          navigateToDates(endDate, startDate);
+        else navigateToDates(startDate, endDate);
+      }
     },
     [navigateToDates]
   );
