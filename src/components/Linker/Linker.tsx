@@ -37,7 +37,8 @@ export const Linker: React.FunctionComponent<LinkerProps> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const onPlusClick = useCallback(() => {
+  const onPlusClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
     setSearching(true);
   }, []);
 
