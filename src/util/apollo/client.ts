@@ -46,6 +46,9 @@ const typeDefs = gql`
 
     relation(id: ID!): Relation
     relations(ids: [ID!]): [Relation]
+
+    srsCardsForToday(): [SRSCard!]!
+    srsReviewsFromDay(day: String!): [SRSCardReview!]!
   }
 
   # Generalized type that can be used on objects that have a history
@@ -119,6 +122,14 @@ const typeDefs = gql`
     object: Arc!
   }
 
+  type Day {
+    day: String!
+    journalEntry: JournalEntry
+    changedArcEntries: [ArcEntry!]
+    comments: [Comment!]
+    srsCardReviews: [SRSCardReview!]
+  }
+
   union SRSCardSubject = Arc | Highlight
 
   type SRSCard {
@@ -129,6 +140,18 @@ const typeDefs = gql`
     subject: SRSCardSubject!
     endDate: String
     deck: SRSDeck!
+    reviews: [SRSCardReview!]!
+  }
+
+  type SRSCardReview {
+    id: ID!
+    card: SRSCard!
+    day: Day!
+    rating: Int!
+    beforeInterval: Float!
+    beforeEF: Float!
+    afterInterval: Float!
+    afterEF: Float!
   }
 
   type SRSDeck {
@@ -201,6 +224,21 @@ export type UnhydratedType = {
     objectType: "Arc";
     object: string;
   };
+  Day: {
+    __typename: "Day";
+    day: string;
+  };
+  SRSCardReview: {
+    __typename: "SRSCardReview";
+    id: string;
+    card: string;
+    day: string;
+    rating: number;
+    beforeInterval: number;
+    beforeEF: number;
+    afterInterval: number;
+    afterEF: number;
+  };
   SRSCard: {
     __typename: "SRSCard";
     id: string;
@@ -239,6 +277,10 @@ export const vars = {
   arcs: makeVar<{ [id in string]: UnhydratedType["Arc"] }>({}),
   highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
   relations: makeVar<{ [id in string]: UnhydratedType["Relation"] }>({}),
+  days: makeVar<{ [day in string]: UnhydratedType["Day"] }>({}),
+  srsCardReviews: makeVar<{ [id in string]: UnhydratedType["SRSCardReview"] }>(
+    {}
+  ),
   srsCards: makeVar<{ [id in string]: UnhydratedType["SRSCard"] }>({}),
   srsDecks: makeVar<{ [id in string]: UnhydratedType["SRSDeck"] }>({}),
   comments: makeVar<{ [id in string]: UnhydratedType["Comment"] }>({}),
@@ -419,6 +461,22 @@ const typePolicies: TypePolicies = {
         }
         return Object.values(vars.relations());
       },
+      srsCardsForToday() {
+        // TODO
+        // return Object.values(vars.srsCards()).filter(
+        //   (card) =>
+        //     new Date(card.lastReviewed).toDateString() ===
+        //     new Date().toDateString()
+        // );
+      },
+      srsReviewsFromDay(_, { args }) {
+        // TODO
+        // return Object.values(vars.srsCardReviews()).filter(
+        //   (review) =>
+        //     new Date(review.day).toDateString() ===
+        //     new Date(args.day).toDateString()
+        // );
+      },
     },
   },
   Entry: {
@@ -537,4 +595,7 @@ const typePolicies: TypePolicies = {
 
 const cache = new InMemoryCache({ typePolicies, addTypename: true });
 
-export const client = new ApolloClient({ cache, typeDefs });
+export const client = new ApolloClient({
+  cache,
+  typeDefs,
+});
