@@ -47,7 +47,8 @@ const typeDefs = gql`
     relation(id: ID!): Relation
     relations(ids: [ID!]): [Relation]
 
-    srsCardsForToday(): [SRSCard!]!
+    srsCard(id: ID!): SRSCard
+    srsCardsForToday: [SRSCard!]!
     srsReviewsFromDay(day: String!): [SRSCardReview!]!
   }
 

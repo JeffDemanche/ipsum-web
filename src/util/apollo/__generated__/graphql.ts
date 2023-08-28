@@ -45,6 +45,15 @@ export type CommentEntry = {
   entry: Entry;
 };
 
+export type Day = {
+  __typename?: 'Day';
+  changedArcEntries?: Maybe<Array<ArcEntry>>;
+  comments?: Maybe<Array<Comment>>;
+  day: Scalars['String'];
+  journalEntry?: Maybe<JournalEntry>;
+  srsCardReviews?: Maybe<Array<SrsCardReview>>;
+};
+
 export type Entry = {
   __typename?: 'Entry';
   contentState: Scalars['String'];
@@ -110,7 +119,8 @@ export type Query = {
   relation?: Maybe<Relation>;
   relations?: Maybe<Array<Maybe<Relation>>>;
   srsCard?: Maybe<SrsCard>;
-  srsCardsForDay: Array<SrsCard>;
+  srsCardsForToday: Array<SrsCard>;
+  srsReviewsFromDay: Array<SrsCardReview>;
 };
 
 
@@ -191,7 +201,7 @@ export type QuerySrsCardArgs = {
 };
 
 
-export type QuerySrsCardsForDayArgs = {
+export type QuerySrsReviewsFromDayArgs = {
   day: Scalars['String'];
 };
 
@@ -207,14 +217,26 @@ export type RelationSubject = Arc | Highlight;
 
 export type SrsCard = {
   __typename?: 'SRSCard';
-  datesReviewed: Array<Scalars['String']>;
   deck: SrsDeck;
   ef: Scalars['Float'];
   endDate?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   interval: Scalars['Float'];
   lastReviewed: Scalars['String'];
+  reviews: Array<SrsCardReview>;
   subject: SrsCardSubject;
+};
+
+export type SrsCardReview = {
+  __typename?: 'SRSCardReview';
+  afterEF: Scalars['Float'];
+  afterInterval: Scalars['Float'];
+  beforeEF: Scalars['Float'];
+  beforeInterval: Scalars['Float'];
+  card: SrsCard;
+  day: Day;
+  id: Scalars['ID'];
+  rating: Scalars['Int'];
 };
 
 export type SrsCardSubject = Arc | Highlight;
@@ -258,12 +280,10 @@ export type ArcTagQueryVariables = Exact<{
 
 export type ArcTagQuery = { __typename?: 'Query', arc?: { __typename?: 'Arc', id: string, color: number, name: string } | null };
 
-export type DayReflectionsQueryVariables = Exact<{
-  day: Scalars['String'];
-}>;
+export type DayReflectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DayReflectionsQuery = { __typename?: 'Query', srsCardsForDay: Array<{ __typename?: 'SRSCard', id: string, lastReviewed: string }> };
+export type DayReflectionsQuery = { __typename?: 'Query', srsCardsForToday: Array<{ __typename?: 'SRSCard', id: string, lastReviewed: string }> };
 
 export type HighlightDecorationQueryVariables = Exact<{
   highlightIds: Array<Scalars['ID']> | Scalars['ID'];
@@ -368,7 +388,7 @@ export const ArcDetailDocument = {"kind":"Document","definitions":[{"kind":"Oper
 export const ArcDetailContextDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ArcDetailContext"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"arcId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"arc"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"arcId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"arcEntry"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entry"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entryKey"}}]}}]}}]}}]}}]} as unknown as DocumentNode<ArcDetailContextQuery, ArcDetailContextQueryVariables>;
 export const ArcDetailPrefsBoxDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ArcDetailPrefsBox"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"arcId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"arc"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"arcId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}}]}}]} as unknown as DocumentNode<ArcDetailPrefsBoxQuery, ArcDetailPrefsBoxQueryVariables>;
 export const ArcTagDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ArcTag"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"arcId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"arc"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"arcId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<ArcTagQuery, ArcTagQueryVariables>;
-export const DayReflectionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"DayReflections"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"day"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"srsCardsForDay"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"day"},"value":{"kind":"Variable","name":{"kind":"Name","value":"day"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"lastReviewed"}}]}}]}}]} as unknown as DocumentNode<DayReflectionsQuery, DayReflectionsQueryVariables>;
+export const DayReflectionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"DayReflections"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"srsCardsForToday"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"lastReviewed"}}]}}]}}]} as unknown as DocumentNode<DayReflectionsQuery, DayReflectionsQueryVariables>;
 export const HighlightDecorationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"HighlightDecoration"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"highlightIds"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"highlights"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"highlightIds"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"arc"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}}]}}]}}]} as unknown as DocumentNode<HighlightDecorationQuery, HighlightDecorationQueryVariables>;
 export const DigestDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Digest"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"entryKey"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entry"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"entryKey"},"value":{"kind":"Variable","name":{"kind":"Name","value":"entryKey"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entryKey"}},{"kind":"Field","name":{"kind":"Name","value":"highlights"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DigestQuery, DigestQueryVariables>;
 export const UseJournalEntryEditorDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"UseJournalEntryEditor"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"entryKey"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entry"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"entryKey"},"value":{"kind":"Variable","name":{"kind":"Name","value":"entryKey"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entryKey"}},{"kind":"Field","name":{"kind":"Name","value":"contentState"}}]}}]}}]} as unknown as DocumentNode<UseJournalEntryEditorQuery, UseJournalEntryEditorQueryVariables>;
