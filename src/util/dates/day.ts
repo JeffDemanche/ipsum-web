@@ -40,4 +40,8 @@ export class IpsumDay {
       IpsumDateTime.fromString(dateString, format ?? "stored-day")
     );
   }
+
+  static today(): IpsumDay {
+    return IpsumDay.fromIpsumDateTime(IpsumDateTime.today());
+  }
 }

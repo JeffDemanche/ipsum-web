@@ -222,7 +222,7 @@ export type SrsCard = {
   endDate?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   interval: Scalars['Float'];
-  lastReviewed: Scalars['String'];
+  lastReviewed?: Maybe<Scalars['String']>;
   reviews: Array<SrsCardReview>;
   subject: SrsCardSubject;
 };
@@ -283,7 +283,7 @@ export type ArcTagQuery = { __typename?: 'Query', arc?: { __typename?: 'Arc', id
 export type DayReflectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DayReflectionsQuery = { __typename?: 'Query', srsCardsForToday: Array<{ __typename?: 'SRSCard', id: string, lastReviewed: string }> };
+export type DayReflectionsQuery = { __typename?: 'Query', srsCardsForToday: Array<{ __typename?: 'SRSCard', id: string, lastReviewed?: string | null }> };
 
 export type HighlightDecorationQueryVariables = Exact<{
   highlightIds: Array<Scalars['ID']> | Scalars['ID'];

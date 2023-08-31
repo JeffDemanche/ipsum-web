@@ -135,7 +135,7 @@ const typeDefs = gql`
 
   type SRSCard {
     id: ID!
-    lastReviewed: String!
+    lastReviewed: String
     interval: Float!
     ef: Float!
     subject: SRSCardSubject!
@@ -243,12 +243,14 @@ export type UnhydratedType = {
   SRSCard: {
     __typename: "SRSCard";
     id: string;
-    lastReviewed: string;
+    lastReviewed?: string;
     interval: number;
     ef: number;
     subjectType: "Arc" | "Highlight";
-    endDate: string;
+    subject: string;
+    endDate?: string;
     deck: string;
+    reviews: string[];
   };
   SRSDeck: {
     __typename: "SRSDeck";

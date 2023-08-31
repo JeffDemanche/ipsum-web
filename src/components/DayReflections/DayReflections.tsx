@@ -24,7 +24,7 @@ export const DayReflections: React.FunctionComponent<DayReflectionsProps> = ({
 }) => {
   const { data } = useQuery(DayReflectionsQuery, {});
 
-  const cards = data?.srsCardsForDay;
+  const cards = data?.srsCardsForToday;
 
   const numCards = cards?.length ?? 0;
 
