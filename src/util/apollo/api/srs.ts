@@ -2,7 +2,7 @@ import { UnhydratedType, vars } from "../client";
 import { v4 as uuidv4 } from "uuid";
 import { autosave } from "../autosave";
 import { calculateNextInterval } from "util/srs";
-import { IpsumDay } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 
 export const createSRSCard = ({
   subjectType,
@@ -28,6 +28,11 @@ export const createSRSCard = ({
     reviews: [],
     subjectType,
     subject: subjectId,
+    lastReviewed: IpsumDay.today().toString(),
+    history: {
+      __typename: "History",
+      dateCreated: IpsumDateTime.today().toString("iso"),
+    },
   };
 
   vars.srsCards({ ...vars.srsCards(), [srsCardId]: result });
@@ -42,7 +47,10 @@ export const reviewSRSCard = ({
 }: {
   cardId: string;
   rating: number;
-}): UnhydratedType["SRSCard"] => {
+}): {
+  srsCard: UnhydratedType["SRSCard"];
+  srsCardReview: UnhydratedType["SRSCardReview"];
+} => {
   if (!vars.srsCards()[cardId])
     throw new Error("reviewSRSCard: Card not found");
 
@@ -51,37 +59,105 @@ export const reviewSRSCard = ({
 
   const card = vars.srsCards()[cardId];
 
-  const newCardValues = calculateNextInterval(card.interval, card.ef, rating);
+  const dayKey = IpsumDay.today().toString();
 
-  const cardReviewId = uuidv4();
+  const hydratedCardReviews = card.reviews.map(
+    (reviewId) => vars.srsCardReviews()[reviewId]
+  );
 
-  const newCardReview: UnhydratedType["SRSCardReview"] = {
-    __typename: "SRSCardReview",
-    id: cardReviewId,
-    rating,
-    beforeEF: card.ef,
-    beforeInterval: card.interval,
-    afterEF: newCardValues.nextEF,
-    afterInterval: newCardValues.nextInterval,
-    day: IpsumDay.today().toString(),
-    card: cardId,
-  };
+  const cardAlreadyReviewedToday = hydratedCardReviews
+    .map((review) => review.day)
+    .includes(dayKey);
 
-  vars.srsCardReviews({
-    ...vars.srsCardReviews(),
-    [cardReviewId]: newCardReview,
-  });
+  if (cardAlreadyReviewedToday) {
+    // Update review rather than creating
+    const existingReview = hydratedCardReviews.find(
+      (review) => review.day === dayKey
+    );
 
-  const newCard: UnhydratedType["SRSCard"] = {
-    ...card,
-    interval: newCardValues.nextInterval,
-    ef: newCardValues.nextEF,
-    reviews: [...card.reviews, cardReviewId],
-  };
+    const newCardValues = calculateNextInterval(
+      existingReview.beforeInterval,
+      existingReview.beforeEF,
+      rating
+    );
 
-  vars.srsCards({ ...vars.srsCards(), [cardId]: newCard });
-  autosave();
-  return newCard;
+    const updatedCardReview: UnhydratedType["SRSCardReview"] = {
+      ...existingReview,
+      rating,
+      afterEF: newCardValues.nextEF,
+      afterInterval: newCardValues.nextInterval,
+    };
+
+    vars.srsCardReviews({
+      ...vars.srsCardReviews(),
+      [existingReview.id]: updatedCardReview,
+    });
+
+    const updatedCard: UnhydratedType["SRSCard"] = {
+      ...card,
+      interval: newCardValues.nextInterval,
+      ef: newCardValues.nextEF,
+    };
+
+    vars.srsCards({ ...vars.srsCards(), [cardId]: updatedCard });
+    autosave();
+
+    return {
+      srsCard: updatedCard,
+      srsCardReview: updatedCardReview,
+    };
+  } else {
+    // Create review
+    const newCardValues = calculateNextInterval(card.interval, card.ef, rating);
+
+    const cardReviewId = uuidv4();
+
+    const newCardReview: UnhydratedType["SRSCardReview"] = {
+      __typename: "SRSCardReview",
+      id: cardReviewId,
+      rating,
+      beforeEF: card.ef,
+      beforeInterval: card.interval,
+      afterEF: newCardValues.nextEF,
+      afterInterval: newCardValues.nextInterval,
+      day: IpsumDay.today().toString(),
+      card: cardId,
+    };
+
+    vars.srsCardReviews({
+      ...vars.srsCardReviews(),
+      [cardReviewId]: newCardReview,
+    });
+
+    // Add review to day object
+    if (!vars.days()[dayKey]?.srsCardReviews?.includes(cardReviewId)) {
+      vars.days({
+        ...vars.days(),
+        [dayKey]: {
+          ...vars.days()[dayKey],
+          srsCardReviews: [
+            ...(vars.days()[dayKey]?.srsCardReviews ?? []),
+            cardReviewId,
+          ],
+        },
+      });
+    }
+
+    const newCard: UnhydratedType["SRSCard"] = {
+      ...card,
+      interval: newCardValues.nextInterval,
+      ef: newCardValues.nextEF,
+      reviews: [...card.reviews, cardReviewId],
+    };
+
+    vars.srsCards({ ...vars.srsCards(), [cardId]: newCard });
+
+    autosave();
+    return {
+      srsCard: newCard,
+      srsCardReview: newCardReview,
+    };
+  }
 };
 
 export const deleteSRSCard = ({ cardId }: { cardId: string }) => {

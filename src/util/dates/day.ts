@@ -14,6 +14,16 @@ export class IpsumDay {
     this._year = year;
   }
 
+  add(days: number): IpsumDay {
+    const jsDate = new Date(this._year, this._month, this._day);
+    jsDate.setDate(jsDate.getDate() + days);
+    return new IpsumDay(
+      jsDate.getDate(),
+      jsDate.getMonth(),
+      jsDate.getFullYear()
+    );
+  }
+
   toString(format?: IpsumDateFormatTo): string {
     return this.toIpsumDateTime().toString(format ?? "stored-day");
   }
@@ -22,6 +32,10 @@ export class IpsumDay {
     return IpsumDateTime.fromJsDate(
       new Date(this._year, this._month, this._day)
     );
+  }
+
+  toJsDate(): Date {
+    return new Date(this._year, this._month, this._day);
   }
 
   static fromIpsumDateTime(ipsumDateTime: IpsumDateTime): IpsumDay {

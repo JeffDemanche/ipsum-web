@@ -1,13 +1,20 @@
 import { initializeState, vars } from "util/apollo/client";
-import { IpsumDay } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 import { createHighlight } from "../highlights";
 import { createSRSCard, deleteSRSCard, reviewSRSCard } from "../srs";
 
 jest.mock("../../autosave");
 
 describe("apollo srs API", () => {
+  let todaySpy = jest.spyOn(IpsumDay, "today");
+
   beforeEach(() => {
     initializeState();
+    todaySpy = jest.spyOn(IpsumDay, "today");
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe("createSRSCard", () => {
@@ -28,6 +35,9 @@ describe("apollo srs API", () => {
       expect(vars.srsCards()[id].subjectType).toEqual("Highlight");
       expect(vars.srsCards()[id].id).toEqual(id);
       expect(vars.srsCards()[id].endDate).not.toBeDefined();
+      expect(vars.srsCards()[id].history.dateCreated).toEqual(
+        IpsumDateTime.today().toString("iso")
+      );
     });
 
     it("should throw an error if the subject does not exist", () => {
@@ -119,7 +129,9 @@ describe("apollo srs API", () => {
         subjectType: "Highlight",
         subjectId: highlightId,
       });
-      const { reviews } = reviewSRSCard({
+      const {
+        srsCard: { reviews },
+      } = reviewSRSCard({
         cardId: id,
         rating: 0,
       });
@@ -130,6 +142,171 @@ describe("apollo srs API", () => {
       expect(vars.srsCardReviews()[reviews[0]].day).toEqual(
         IpsumDay.today().toString()
       );
+    });
+
+    it("should create or update a day object for the day of the review", () => {
+      const { id: highlightId } = createHighlight({
+        entry: "entry",
+      });
+      const { id: card1Id } = createSRSCard({
+        subjectType: "Highlight",
+        subjectId: highlightId,
+      });
+      const { id: card2Id } = createSRSCard({
+        subjectType: "Highlight",
+        subjectId: highlightId,
+      });
+      const dateKey = IpsumDay.today().toString();
+
+      expect(vars.days()[dateKey]).not.toBeDefined();
+      const {
+        srsCardReview: { id: review1Id },
+      } = reviewSRSCard({
+        cardId: card1Id,
+        rating: 0,
+      });
+      expect(vars.days()[dateKey]).toBeDefined();
+      expect(vars.days()[dateKey].srsCardReviews.length).toEqual(1);
+      const {
+        srsCardReview: { id: review2Id },
+      } = reviewSRSCard({
+        cardId: card2Id,
+        rating: 4,
+      });
+      expect(vars.days()[dateKey].srsCardReviews.length).toEqual(2);
+      expect(vars.days()[dateKey].srsCardReviews).toEqual([
+        review1Id,
+        review2Id,
+      ]);
+    });
+
+    it("should update ef, interval, and rating after rereviewing a card on the same day", () => {
+      const { id: highlightId } = createHighlight({
+        entry: "entry",
+      });
+      const { id: cardId } = createSRSCard({
+        subjectType: "Highlight",
+        subjectId: highlightId,
+      });
+      const dateKey = IpsumDay.today().toString();
+
+      const {
+        srsCardReview: { id: review1Id },
+      } = reviewSRSCard({
+        cardId,
+        rating: 1,
+      });
+
+      expect(vars.days()[dateKey].srsCardReviews.length).toEqual(1);
+      expect(vars.srsCardReviews()[review1Id].beforeEF).toEqual(2.5);
+      expect(vars.srsCardReviews()[review1Id].afterEF).toEqual(1.96);
+      expect(vars.srsCardReviews()[review1Id].rating).toEqual(1);
+      expect(vars.srsCards()[cardId].ef).toEqual(1.96);
+      expect(vars.srsCards()[cardId].interval).toEqual(1.96);
+
+      const {
+        srsCardReview: { id: review2Id },
+      } = reviewSRSCard({
+        cardId,
+        rating: 3,
+      });
+
+      expect(vars.days()[dateKey].srsCardReviews.length).toEqual(1);
+      expect(vars.srsCardReviews()[review2Id].beforeEF).toEqual(2.5);
+      expect(vars.srsCardReviews()[review2Id].afterEF).toEqual(2.36);
+      expect(vars.srsCardReviews()[review2Id].rating).toEqual(3);
+      expect(vars.srsCards()[cardId].ef).toEqual(2.36);
+      expect(vars.srsCards()[cardId].interval).toEqual(2.36);
+    });
+
+    it("should not duplicate a rereview on the same day", () => {
+      const { id: highlightId } = createHighlight({
+        entry: "entry",
+      });
+      const { id } = createSRSCard({
+        subjectType: "Highlight",
+        subjectId: highlightId,
+      });
+      const dateKey = IpsumDay.today().toString();
+
+      expect(vars.days()[dateKey]).not.toBeDefined();
+      reviewSRSCard({
+        cardId: id,
+        rating: 0,
+      });
+      expect(vars.days()[dateKey]).toBeDefined();
+      expect(vars.days()[dateKey].srsCardReviews.length).toEqual(1);
+      const {
+        srsCardReview: { id: review2Id },
+      } = reviewSRSCard({
+        cardId: id,
+        rating: 4,
+      });
+      expect(vars.days()[dateKey].srsCardReviews.length).toEqual(1);
+      expect(vars.days()[dateKey].srsCardReviews).toEqual([review2Id]);
+    });
+
+    it("should add multiple reviews for cards reviewed on multiple days", () => {
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("2021-01-01"));
+
+      const { id: highlightId } = createHighlight({
+        entry: "entry",
+      });
+      const { id: cardId } = createSRSCard({
+        subjectType: "Highlight",
+        subjectId: highlightId,
+      });
+
+      expect(vars.srsCards()[cardId].reviews.length).toEqual(0);
+      expect(Object.values(vars.srsCardReviews()).length).toEqual(0);
+      expect(vars.srsCards()[cardId].ef).toEqual(2.5);
+      expect(vars.srsCards()[cardId].interval).toEqual(1);
+
+      reviewSRSCard({
+        cardId,
+        rating: 0,
+      });
+
+      expect(vars.srsCards()[cardId].reviews.length).toEqual(1);
+      expect(Object.values(vars.srsCardReviews()).length).toEqual(1);
+      expect(vars.srsCards()[cardId].ef).toBeCloseTo(1.7);
+      expect(vars.srsCards()[cardId].interval).toBeCloseTo(1.7);
+
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("2021-01-02"));
+
+      reviewSRSCard({
+        cardId,
+        rating: 0,
+      });
+
+      expect(vars.srsCards()[cardId].reviews.length).toEqual(2);
+      expect(Object.values(vars.srsCardReviews()).length).toEqual(2);
+      expect(vars.srsCards()[cardId].ef).toBeCloseTo(0.9);
+      expect(vars.srsCards()[cardId].interval).toBeCloseTo(1.53);
+
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("2021-01-03"));
+
+      reviewSRSCard({
+        cardId,
+        rating: 5,
+      });
+
+      expect(vars.srsCards()[cardId].reviews.length).toEqual(3);
+      expect(Object.values(vars.srsCardReviews()).length).toEqual(3);
+      expect(vars.srsCards()[cardId].ef).toBeCloseTo(1);
+      expect(vars.srsCards()[cardId].interval).toBeCloseTo(1.53);
+
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("2021-01-04"));
+
+      reviewSRSCard({
+        cardId,
+        rating: 5,
+      });
+
+      expect(vars.srsCards()[cardId].reviews.length).toEqual(4);
+      expect(Object.values(vars.srsCardReviews()).length).toEqual(4);
+      expect(vars.srsCards()[cardId].ef).toBeCloseTo(1.1);
+      expect(vars.srsCards()[cardId].interval).toBeCloseTo(1.68);
     });
   });
 

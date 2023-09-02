@@ -6,7 +6,7 @@ import {
   gql,
   makeVar,
 } from "@apollo/client";
-import { parseIpsumDateTime } from "util/dates";
+import { IpsumDay, parseIpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -135,7 +135,7 @@ const typeDefs = gql`
 
   type SRSCard {
     id: ID!
-    lastReviewed: String
+    lastReviewed: String!
     interval: Float!
     ef: Float!
     subject: SRSCardSubject!
@@ -228,6 +228,10 @@ export type UnhydratedType = {
   Day: {
     __typename: "Day";
     day: string;
+    journalEntry?: string;
+    changedArcEntries: string[];
+    comments: string[];
+    srsCardReviews: string[];
   };
   SRSCardReview: {
     __typename: "SRSCardReview";
@@ -243,7 +247,7 @@ export type UnhydratedType = {
   SRSCard: {
     __typename: "SRSCard";
     id: string;
-    lastReviewed?: string;
+    lastReviewed: string;
     interval: number;
     ef: number;
     subjectType: "Arc" | "Highlight";
@@ -251,6 +255,7 @@ export type UnhydratedType = {
     endDate?: string;
     deck: string;
     reviews: string[];
+    history: UnhydratedType["History"];
   };
   SRSDeck: {
     __typename: "SRSDeck";
@@ -317,7 +322,9 @@ export const initializeState = () => {
   vars.commentEntries({});
   vars.highlights({});
   vars.relations({});
+  vars.days({});
   vars.srsCards({});
+  vars.srsCardReviews({});
   vars.srsDecks({
     default: {
       __typename: "SRSDeck",
@@ -465,12 +472,26 @@ const typePolicies: TypePolicies = {
         return Object.values(vars.relations());
       },
       srsCardsForToday() {
-        // TODO
-        // return Object.values(vars.srsCards()).filter(
-        //   (card) =>
-        //     new Date(card.lastReviewed).toDateString() ===
-        //     new Date().toDateString()
-        // );
+        const today = IpsumDay.today();
+
+        return Object.values(vars.srsCards())
+          .filter((card) => {
+            const lastReviewed = IpsumDay.fromString(card.lastReviewed);
+            return (
+              lastReviewed.add(Math.floor(card.interval)).toJsDate() <
+              today.toJsDate()
+            );
+          })
+          .sort((a, b) => {
+            const aVal = IpsumDay.fromString(a.lastReviewed)
+              .add(a.interval)
+              .toJsDate();
+            const bVal = IpsumDay.fromString(b.lastReviewed)
+              .add(b.interval)
+              .toJsDate();
+
+            return aVal.getTime() - bVal.getTime();
+          });
       },
       srsReviewsFromDay(_, { args }) {
         // TODO
