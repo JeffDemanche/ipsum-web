@@ -1,14 +1,9 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  // eslint-disable-next-line import/named
-  TypePolicies,
-  gql,
-  makeVar,
-} from "@apollo/client";
-import { IpsumDay, parseIpsumDateTime } from "util/dates";
+import { ApolloClient, InMemoryCache, gql, makeVar } from "@apollo/client";
+import { parseIpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { v4 as uuidv4 } from "uuid";
+import { SRSResolvers } from "./resolvers/srs-resolvers";
+import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import {
   QueryArcEntriesArgs,
   QueryArcsArgs,
@@ -335,7 +330,7 @@ export const initializeState = () => {
   vars.comments({});
 };
 
-const typePolicies: TypePolicies = {
+const typePolicies: StrictTypedTypePolicies = {
   Query: {
     fields: {
       journalId() {
@@ -471,45 +466,7 @@ const typePolicies: TypePolicies = {
         }
         return Object.values(vars.relations());
       },
-      srsCardsForReview(_, { args }) {
-        const deck = args.deckId ?? "default";
-        const argDay = IpsumDay.fromString(args.day);
-        const today = IpsumDay.today();
-
-        if (today.toJsDate() > argDay.toJsDate()) {
-          throw new Error("srsCardsForReview: Day must be today or later");
-        }
-
-        return Object.values(vars.srsCards())
-          .filter((card) => {
-            if (card.deck !== deck) return false;
-
-            const lastReviewed = IpsumDay.fromString(card.lastReviewed);
-
-            return (
-              lastReviewed.add(Math.floor(card.interval)).toJsDate() <
-              argDay.toJsDate()
-            );
-          })
-          .sort((a, b) => {
-            const aVal = IpsumDay.fromString(a.lastReviewed)
-              .add(a.interval)
-              .toJsDate();
-            const bVal = IpsumDay.fromString(b.lastReviewed)
-              .add(b.interval)
-              .toJsDate();
-
-            return aVal.getTime() - bVal.getTime();
-          });
-      },
-      srsReviewsFromDay(_, { args }) {
-        // TODO
-        // return Object.values(vars.srsCardReviews()).filter(
-        //   (review) =>
-        //     new Date(review.day).toDateString() ===
-        //     new Date(args.day).toDateString()
-        // );
-      },
+      ...SRSResolvers.Query.fields,
     },
   },
   Entry: {
@@ -542,7 +499,7 @@ const typePolicies: TypePolicies = {
     },
   },
   ArcEntry: {
-    keyFields: ["entryKey"],
+    keyFields: ["entry"],
     fields: {
       arc(arcId) {
         return vars.arcs()[arcId];

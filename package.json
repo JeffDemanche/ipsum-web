@@ -89,6 +89,7 @@
     "webpack-dev-server": "^4.8.1"
   },
   "devDependencies": {
+    "@graphql-codegen/typescript-apollo-client-helpers": "^2.2.6",
     "@testing-library/jest-dom": "^5.16.4",
     "@types/jest": "^27.5.0",
     "@types/react-infinite-calendar": "^2.3.6",

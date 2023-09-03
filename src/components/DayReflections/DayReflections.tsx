@@ -11,8 +11,8 @@ interface DayReflectionsProps {
 }
 
 const DayReflectionsQuery = gql(`
-  query DayReflections {
-    srsCardsForToday {
+  query DayReflections($deckId: ID, $day: String!) {
+    srsCardsForReview(deckId: $deckId, day: $day) {
       id
       lastReviewed
     }
@@ -22,9 +22,11 @@ const DayReflectionsQuery = gql(`
 export const DayReflections: React.FunctionComponent<DayReflectionsProps> = ({
   day,
 }) => {
-  const { data } = useQuery(DayReflectionsQuery, {});
+  const { data } = useQuery(DayReflectionsQuery, {
+    variables: { day: day.toString(), deckId: "default" },
+  });
 
-  const cards = data?.srsCardsForToday;
+  const cards = data?.srsCardsForReview ?? [];
 
   const numCards = cards?.length ?? 0;
 
