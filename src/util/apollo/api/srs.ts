@@ -160,6 +160,14 @@ export const reviewSRSCard = ({
   }
 };
 
+export const deleteSRSCardReview = ({
+  reviewId,
+}: {
+  reviewId: string;
+}): void => {
+  // todo
+};
+
 export const deleteSRSCard = ({ cardId }: { cardId: string }) => {
   if (!vars.srsCards()[cardId]) return;
 

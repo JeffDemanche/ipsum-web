@@ -1,4 +1,9 @@
-import { ArrowLeftRounded, Comment, Delete } from "@mui/icons-material";
+import {
+  ArrowLeftRounded,
+  Comment,
+  Delete,
+  ThreeSixty,
+} from "@mui/icons-material";
 import { Card, IconButton, Tooltip, Typography } from "@mui/material";
 import { ArcTag } from "components/ArcTag";
 import { DiptychContext } from "components/DiptychContext";
@@ -207,7 +212,6 @@ export const MedianHighlightBox: React.FunctionComponent<
       }}
       onClick={onCardClick}
       className={cx(highlightBoxSelected && styles["selected"], styles["box"])}
-      sx={{ backgroundColor: cardColor }}
       ref={boxRef}
     >
       {highlightBoxSelected ? (
@@ -219,20 +223,21 @@ export const MedianHighlightBox: React.FunctionComponent<
         >
           <div className={styles["details-options"]}>
             <Tooltip title="Close highlight">
-              <IconButton size="small" color="secondary" onClick={onCloseClick}>
+              <IconButton size="small" color="default" onClick={onCloseClick}>
                 <ArrowLeftRounded />
               </IconButton>
             </Tooltip>
-            <Typography
-              variant="h6"
-              color={theme.palette.onPrimaryHighEmphasis}
-              className={styles["highlight-title"]}
-            >
+            <Typography variant="h6" className={styles["highlight-title"]}>
               {entryDate}
             </Typography>
             <div className={styles["options-buttons"]}>
+              <Tooltip title="Reflections">
+                <IconButton color="default" size="small">
+                  <ThreeSixty />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Comment">
-                <IconButton color="secondary" size="small">
+                <IconButton color="default" size="small">
                   <Comment />
                 </IconButton>
               </Tooltip>
@@ -241,7 +246,7 @@ export const MedianHighlightBox: React.FunctionComponent<
                 title="Delete highlight"
               >
                 <IconButton
-                  color="secondary"
+                  color="default"
                   size="small"
                   onClick={onDeleteClick}
                 >
@@ -265,11 +270,7 @@ export const MedianHighlightBox: React.FunctionComponent<
         </div>
       ) : (
         <div className={cx(styles["top-controls-container"])}>
-          <Typography
-            variant="h6"
-            color={theme.palette.onPrimaryHighEmphasis}
-            className={styles["highlight-title"]}
-          >
+          <Typography variant="h6" className={styles["highlight-title"]}>
             {entryDate}
           </Typography>
         </div>
