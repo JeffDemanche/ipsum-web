@@ -48,7 +48,7 @@ const typeDefs = gql`
     relations(ids: [ID!]): [Relation]
 
     srsCard(id: ID!): SRSCard
-    srsCardsForToday: [SRSCard!]!
+    srsCardsForReview(deckId: ID, day: String!): [SRSCard!]!
     srsReviewsFromDay(day: String!): [SRSCardReview!]!
   }
 
@@ -471,15 +471,24 @@ const typePolicies: TypePolicies = {
         }
         return Object.values(vars.relations());
       },
-      srsCardsForToday() {
+      srsCardsForReview(_, { args }) {
+        const deck = args.deckId ?? "default";
+        const argDay = IpsumDay.fromString(args.day);
         const today = IpsumDay.today();
+
+        if (today.toJsDate() > argDay.toJsDate()) {
+          throw new Error("srsCardsForReview: Day must be today or later");
+        }
 
         return Object.values(vars.srsCards())
           .filter((card) => {
+            if (card.deck !== deck) return false;
+
             const lastReviewed = IpsumDay.fromString(card.lastReviewed);
+
             return (
               lastReviewed.add(Math.floor(card.interval)).toJsDate() <
-              today.toJsDate()
+              argDay.toJsDate()
             );
           })
           .sort((a, b) => {

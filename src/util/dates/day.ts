@@ -29,9 +29,7 @@ export class IpsumDay {
   }
 
   toIpsumDateTime(): IpsumDateTime {
-    return IpsumDateTime.fromJsDate(
-      new Date(this._year, this._month, this._day)
-    );
+    return IpsumDateTime.fromJsDate(this.toJsDate());
   }
 
   toJsDate(): Date {
@@ -39,10 +37,11 @@ export class IpsumDay {
   }
 
   static fromIpsumDateTime(ipsumDateTime: IpsumDateTime): IpsumDay {
+    const jsDate = ipsumDateTime.dateTime.toJSDate();
     return new IpsumDay(
-      ipsumDateTime.dateTime.day,
-      ipsumDateTime.dateTime.month,
-      ipsumDateTime.dateTime.year
+      jsDate.getDate(),
+      jsDate.getMonth(),
+      jsDate.getFullYear()
     );
   }
 

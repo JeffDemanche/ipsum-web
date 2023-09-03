@@ -17,6 +17,10 @@ describe("apollo client", () => {
     initializeState();
   });
 
+  afterEach(async () => {
+    await client.clearStore();
+  });
+
   describe("root queries", () => {
     it("queries entries with specified entry keys", () => {
       createEntry({

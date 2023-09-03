@@ -247,7 +247,7 @@ describe("apollo srs API", () => {
     });
 
     it("should add multiple reviews for cards reviewed on multiple days", () => {
-      todaySpy.mockReturnValueOnce(IpsumDay.fromString("2021-01-01"));
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("1/1/2021"));
 
       const { id: highlightId } = createHighlight({
         entry: "entry",
@@ -272,7 +272,7 @@ describe("apollo srs API", () => {
       expect(vars.srsCards()[cardId].ef).toBeCloseTo(1.7);
       expect(vars.srsCards()[cardId].interval).toBeCloseTo(1.7);
 
-      todaySpy.mockReturnValueOnce(IpsumDay.fromString("2021-01-02"));
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("1/2/2021"));
 
       reviewSRSCard({
         cardId,
@@ -284,7 +284,7 @@ describe("apollo srs API", () => {
       expect(vars.srsCards()[cardId].ef).toBeCloseTo(0.9);
       expect(vars.srsCards()[cardId].interval).toBeCloseTo(1.53);
 
-      todaySpy.mockReturnValueOnce(IpsumDay.fromString("2021-01-03"));
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("1/3/2021"));
 
       reviewSRSCard({
         cardId,
@@ -296,7 +296,7 @@ describe("apollo srs API", () => {
       expect(vars.srsCards()[cardId].ef).toBeCloseTo(1);
       expect(vars.srsCards()[cardId].interval).toBeCloseTo(1.53);
 
-      todaySpy.mockReturnValueOnce(IpsumDay.fromString("2021-01-04"));
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("1/4/2021"));
 
       reviewSRSCard({
         cardId,
