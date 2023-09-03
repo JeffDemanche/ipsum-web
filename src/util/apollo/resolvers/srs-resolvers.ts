@@ -1,7 +1,10 @@
 import { IpsumDay } from "util/dates";
 import { vars } from "../client";
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
-import { QuerySrsCardsForReviewArgs } from "../__generated__/graphql";
+import {
+  QuerySrsCardsForReviewArgs,
+  QuerySrsReviewsFromDayArgs,
+} from "../__generated__/graphql";
 
 export const SRSResolvers: StrictTypedTypePolicies = {
   Query: {
@@ -40,13 +43,18 @@ export const SRSResolvers: StrictTypedTypePolicies = {
             return aVal.getTime() - bVal.getTime();
           });
       },
-      srsReviewsFromDay(_, { args }) {
-        // TODO
-        // return Object.values(vars.srsCardReviews()).filter(
-        //   (review) =>
-        //     new Date(review.day).toDateString() ===
-        //     new Date(args.day).toDateString()
-        // );
+      srsReviewsFromDay(
+        _,
+        { args }: { args: Partial<QuerySrsReviewsFromDayArgs> }
+      ) {
+        if (
+          IpsumDay.fromString(args.day).toJsDate() > IpsumDay.today().toJsDate()
+        ) {
+          throw new Error("srsReviewsFromDay: Day must be today or earlier");
+        }
+
+        const reviewIdsFromDay = vars.days()[args.day]?.srsCardReviews ?? [];
+        return reviewIdsFromDay.map((id) => vars.srsCardReviews()[id]);
       },
     },
   },
