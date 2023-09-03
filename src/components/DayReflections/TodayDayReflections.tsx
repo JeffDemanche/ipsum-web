@@ -10,8 +10,8 @@ interface DayReflectionsProps {
   day: IpsumDay;
 }
 
-const DayReflectionsQuery = gql(`
-  query DayReflections($deckId: ID, $day: String!) {
+const TodayDayReflectionsQuery = gql(`
+  query TodayDayReflections($deckId: ID, $day: String!) {
     srsCardsForReview(deckId: $deckId, day: $day) {
       id
       lastReviewed
@@ -19,10 +19,10 @@ const DayReflectionsQuery = gql(`
   }
 `);
 
-export const DayReflections: React.FunctionComponent<DayReflectionsProps> = ({
-  day,
-}) => {
-  const { data } = useQuery(DayReflectionsQuery, {
+export const TodayDayReflections: React.FunctionComponent<
+  DayReflectionsProps
+> = ({ day }) => {
+  const { data } = useQuery(TodayDayReflectionsQuery, {
     variables: { day: day.toString(), deckId: "default" },
   });
 
@@ -32,7 +32,9 @@ export const DayReflections: React.FunctionComponent<DayReflectionsProps> = ({
 
   return (
     <div className={styles["day-reflections"]}>
-      <Typography variant="caption">Reflections (0 / {numCards})</Typography>
+      <Typography variant="caption">
+        Today&apos;s reflections (0 / {numCards})
+      </Typography>
       {cards?.length && <ReflectionCard cardId={cards[0].id} />}
     </div>
   );

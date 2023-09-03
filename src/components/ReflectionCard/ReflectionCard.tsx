@@ -4,6 +4,7 @@ import { gql } from "util/apollo";
 import styles from "./ReflectionCard.less";
 
 interface ReflectionCardProps {
+  locked?: boolean;
   cardId: string;
 }
 
@@ -16,6 +17,7 @@ const ReflectionCardQuery = gql(`
 `);
 
 export const ReflectionCard: React.FunctionComponent<ReflectionCardProps> = ({
+  locked = false,
   cardId,
 }) => {
   const { data } = useQuery(ReflectionCardQuery, { variables: { cardId } });

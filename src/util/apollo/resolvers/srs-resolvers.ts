@@ -47,6 +47,8 @@ export const SRSResolvers: StrictTypedTypePolicies = {
         _,
         { args }: { args: Partial<QuerySrsReviewsFromDayArgs> }
       ) {
+        const deck = args?.deckId ?? "default";
+
         if (
           IpsumDay.fromString(args.day).toJsDate() > IpsumDay.today().toJsDate()
         ) {
@@ -54,7 +56,13 @@ export const SRSResolvers: StrictTypedTypePolicies = {
         }
 
         const reviewIdsFromDay = vars.days()[args.day]?.srsCardReviews ?? [];
-        return reviewIdsFromDay.map((id) => vars.srsCardReviews()[id]);
+        return reviewIdsFromDay
+          .map((id) => vars.srsCardReviews()[id])
+          .filter((review) => {
+            const cardId = review.card;
+            const card = vars.srsCards()[cardId];
+            return card.deck === deck;
+          });
       },
     },
   },

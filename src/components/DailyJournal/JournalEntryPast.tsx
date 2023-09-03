@@ -81,6 +81,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
           )}
         </Typography>
         <ReflectionAccordion
+          isToday={false}
           day={IpsumDay.fromString(entryKey, "stored-day")}
         ></ReflectionAccordion>
         {editorState && (

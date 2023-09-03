@@ -1,1 +1,2 @@
-export { DayReflections } from "./DayReflections";
+export { TodayDayReflections } from "./TodayDayReflections";
+export { PastDayReflections } from "./PastDayReflections";

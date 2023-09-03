@@ -44,7 +44,7 @@ const typeDefs = gql`
 
     srsCard(id: ID!): SRSCard
     srsCardsForReview(deckId: ID, day: String!): [SRSCard!]!
-    srsReviewsFromDay(day: String!): [SRSCardReview!]!
+    srsReviewsFromDay(deckId: ID, day: String!): [SRSCardReview!]!
   }
 
   # Generalized type that can be used on objects that have a history

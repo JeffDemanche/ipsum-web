@@ -101,6 +101,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
           )}
         </Typography>
         <ReflectionAccordion
+          isToday={true}
           day={IpsumDay.fromString(entryKey, "stored-day")}
         ></ReflectionAccordion>
         {editorState && (
