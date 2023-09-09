@@ -304,6 +304,9 @@ export const serializeVars: (keyof typeof vars)[] = [
   "commentEntries",
   "highlights",
   "relations",
+  "srsCards",
+  "srsCardReviews",
+  "srsDecks",
   "comments",
 ];
 
