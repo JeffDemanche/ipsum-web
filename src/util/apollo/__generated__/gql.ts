@@ -30,6 +30,7 @@ const documents = {
     "\n  query JournalDateRange($entryKeys: [ID!]!) {\n    entryKeys\n  }\n": types.JournalDateRangeDocument,
     "\n  query JournalTitle {\n    journalTitle\n  }\n": types.JournalTitleDocument,
     "\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n": types.LinkerDocument,
+    "\n  query HighlightAddReflectionForm($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      srsCards {\n        id\n      }\n    }\n  }\n": types.HighlightAddReflectionFormDocument,
     "\n  query MedianHighlightBox($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.MedianHighlightBoxDocument,
     "\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n    }\n  }\n": types.ReflectionCardDocument,
     "\n  query VisibleEntries {\n    journalEntries {\n      entryKey\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n": types.VisibleEntriesDocument,
@@ -119,6 +120,10 @@ export function gql(source: "\n  query JournalTitle {\n    journalTitle\n  }\n")
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n"): (typeof documents)["\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query HighlightAddReflectionForm($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      srsCards {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query HighlightAddReflectionForm($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      srsCards {\n        id\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

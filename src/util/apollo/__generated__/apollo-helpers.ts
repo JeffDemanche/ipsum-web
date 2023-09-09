@@ -44,14 +44,15 @@ export type EntryFieldPolicy = {
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
 	trackedContentState?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type HighlightKeySpecifier = ('arc' | 'arcs' | 'entry' | 'history' | 'id' | 'outgoingRelations' | HighlightKeySpecifier)[];
+export type HighlightKeySpecifier = ('arc' | 'arcs' | 'entry' | 'history' | 'id' | 'outgoingRelations' | 'srsCards' | HighlightKeySpecifier)[];
 export type HighlightFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcs?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	outgoingRelations?: FieldPolicy<any> | FieldReadFunction<any>
+	outgoingRelations?: FieldPolicy<any> | FieldReadFunction<any>,
+	srsCards?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type HistoryKeySpecifier = ('dateCreated' | HistoryKeySpecifier)[];
 export type HistoryFieldPolicy = {

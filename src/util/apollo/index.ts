@@ -12,6 +12,7 @@ export {
 export * from "./api/highlights";
 export * from "./api/journalTitle";
 export * from "./api/relations";
+export * from "./api/srs";
 export {
   ApolloSerializationProvider,
   ApolloSerializationContext,

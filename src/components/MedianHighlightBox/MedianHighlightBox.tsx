@@ -4,7 +4,7 @@ import {
   Delete,
   ThreeSixty,
 } from "@mui/icons-material";
-import { Card, IconButton, Tooltip, Typography } from "@mui/material";
+import { Card, IconButton, Popover, Tooltip, Typography } from "@mui/material";
 import { ArcTag } from "components/ArcTag";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightExcerpt } from "components/HighlightExcerpt";
@@ -14,6 +14,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import { IpsumArcColor } from "util/colors";
 import styles from "./MedianHighlightBox.less";
@@ -32,6 +33,7 @@ import { theme } from "styles/styles";
 import { dataToSearchParams, urlToData } from "util/url";
 import { useNavigate } from "react-router";
 import { Linker } from "components/Linker";
+import { HighlightAddReflectionForm } from "./HighlightAddReflectionForm";
 
 interface MedianHighlightBoxProps {
   highlightId: string;
@@ -197,6 +199,15 @@ export const MedianHighlightBox: React.FunctionComponent<
     [highlightRelations, onArcClick]
   );
 
+  const [reflectionPopoverOpen, setReflectionPopoverOpen] = useState(false);
+
+  const reflectionButtonRef = useRef<HTMLButtonElement>(null);
+
+  const onReflectionClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setReflectionPopoverOpen((open) => !open);
+  }, []);
+
   return (
     <Card
       onMouseEnter={() => {
@@ -231,8 +242,23 @@ export const MedianHighlightBox: React.FunctionComponent<
               {entryDate}
             </Typography>
             <div className={styles["options-buttons"]}>
+              <Popover
+                open={reflectionPopoverOpen}
+                anchorEl={reflectionButtonRef.current}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                onClose={() => setReflectionPopoverOpen(false)}
+              >
+                <HighlightAddReflectionForm
+                  highlightId={highlightId}
+                ></HighlightAddReflectionForm>
+              </Popover>
               <Tooltip title="Reflections">
-                <IconButton color="default" size="small">
+                <IconButton
+                  color="default"
+                  size="small"
+                  onClick={onReflectionClick}
+                  ref={reflectionButtonRef}
+                >
                   <ThreeSixty />
                 </IconButton>
               </Tooltip>

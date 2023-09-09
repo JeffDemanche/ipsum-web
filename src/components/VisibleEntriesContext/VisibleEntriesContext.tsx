@@ -122,7 +122,8 @@ export const VisibleEntriesProvider: React.FC<{
     (count: number) => {
       const datesAfterEnd = sortedEntryDateTimes.filter((dateTime) => {
         return (
-          dateTime.dateTime.toJSDate() > visibleDateRangeEnd.dateTime.toJSDate()
+          dateTime?.dateTime.toJSDate() >
+          visibleDateRangeEnd?.dateTime.toJSDate()
         );
       });
       const newEndDate = datesAfterEnd[count - 1] ?? datesAfterEnd.slice(-1)[0];
@@ -138,7 +139,7 @@ export const VisibleEntriesProvider: React.FC<{
         );
       }
     },
-    [layer.index, navigate, sortedEntryDateTimes, visibleDateRangeEnd.dateTime]
+    [layer.index, navigate, sortedEntryDateTimes, visibleDateRangeEnd?.dateTime]
   );
 
   const loadMorePrevious = useCallback(
@@ -146,8 +147,8 @@ export const VisibleEntriesProvider: React.FC<{
       const datesBeforeStart = sortedEntryDateTimes
         .filter((dateTime) => {
           return (
-            dateTime.dateTime.toJSDate() <
-            visibleDateRangeStart.dateTime.toJSDate()
+            dateTime?.dateTime.toJSDate() <
+            visibleDateRangeStart?.dateTime.toJSDate()
           );
         })
         .reverse();
@@ -169,7 +170,7 @@ export const VisibleEntriesProvider: React.FC<{
       layer.index,
       navigate,
       sortedEntryDateTimes,
-      visibleDateRangeStart.dateTime,
+      visibleDateRangeStart?.dateTime,
     ]
   );
 
