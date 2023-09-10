@@ -3,7 +3,7 @@ import { Digest } from "components/Digest";
 import { DraftEditorCommand, EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
 import { stringifyContentState } from "util/content-state";
-import { IpsumDateTime } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 import { useDebouncedCallback } from "util/hooks";
 import { placeholderForDate } from "util/placeholders";
 import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
@@ -100,7 +100,10 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
             "entry-printed-date-nice"
           )}
         </Typography>
-        <ReflectionAccordion></ReflectionAccordion>
+        <ReflectionAccordion
+          isToday={true}
+          day={IpsumDay.fromString(entryKey, "stored-day")}
+        ></ReflectionAccordion>
         {editorState && (
           <>
             <Digest entryKey={entryKey} />

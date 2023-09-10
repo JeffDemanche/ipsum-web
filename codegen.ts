@@ -11,6 +11,9 @@ const config: CodegenConfig = {
         gqlTagName: "gql",
       },
     },
+    "./src/util/apollo/__generated__/apollo-helpers.ts": {
+      plugins: ["typescript-apollo-client-helpers"],
+    },
   },
   ignoreNoDocuments: true,
 };

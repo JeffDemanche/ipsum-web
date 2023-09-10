@@ -1,19 +1,14 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  // eslint-disable-next-line import/named
-  TypePolicies,
-  gql,
-  makeVar,
-} from "@apollo/client";
+import { ApolloClient, InMemoryCache, gql, makeVar } from "@apollo/client";
 import { parseIpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { v4 as uuidv4 } from "uuid";
+import { HighlightResolvers } from "./resolvers/highlight-resolvers";
+import { SRSResolvers } from "./resolvers/srs-resolvers";
+import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import {
   QueryArcEntriesArgs,
   QueryArcsArgs,
   QueryEntriesArgs,
-  QueryHighlightsArgs,
   QueryRelationsArgs,
   QueryJournalEntriesArgs,
 } from "./__generated__/graphql";
@@ -46,6 +41,10 @@ const typeDefs = gql`
 
     relation(id: ID!): Relation
     relations(ids: [ID!]): [Relation]
+
+    srsCard(id: ID!): SRSCard
+    srsCardsForReview(deckId: ID, day: String!): [SRSCard!]!
+    srsReviewsFromDay(deckId: ID, day: String!): [SRSCardReview!]!
   }
 
   # Generalized type that can be used on objects that have a history
@@ -108,6 +107,7 @@ const typeDefs = gql`
     arc: Arc
     arcs: [Arc!]!
     outgoingRelations: [Relation!]!
+    srsCards: [SRSCard!]!
   }
 
   union RelationSubject = Arc | Highlight
@@ -117,6 +117,43 @@ const typeDefs = gql`
     subject: RelationSubject!
     predicate: String!
     object: Arc!
+  }
+
+  type Day {
+    day: String!
+    journalEntry: JournalEntry
+    changedArcEntries: [ArcEntry!]
+    comments: [Comment!]
+    srsCardReviews: [SRSCardReview!]
+  }
+
+  union SRSCardSubject = Arc | Highlight
+
+  type SRSCard {
+    id: ID!
+    lastReviewed: String!
+    interval: Float!
+    ef: Float!
+    subject: SRSCardSubject!
+    endDate: String
+    deck: SRSDeck!
+    reviews: [SRSCardReview!]!
+  }
+
+  type SRSCardReview {
+    id: ID!
+    card: SRSCard!
+    day: Day!
+    rating: Int!
+    beforeInterval: Float!
+    beforeEF: Float!
+    afterInterval: Float!
+    afterEF: Float!
+  }
+
+  type SRSDeck {
+    id: ID!
+    cards: [SRSCard!]!
   }
 
   # TODO
@@ -184,6 +221,43 @@ export type UnhydratedType = {
     objectType: "Arc";
     object: string;
   };
+  Day: {
+    __typename: "Day";
+    day: string;
+    journalEntry?: string;
+    changedArcEntries: string[];
+    comments: string[];
+    srsCardReviews: string[];
+  };
+  SRSCardReview: {
+    __typename: "SRSCardReview";
+    id: string;
+    card: string;
+    day: string;
+    rating: number;
+    beforeInterval: number;
+    beforeEF: number;
+    afterInterval: number;
+    afterEF: number;
+  };
+  SRSCard: {
+    __typename: "SRSCard";
+    id: string;
+    lastReviewed: string;
+    interval: number;
+    ef: number;
+    subjectType: "Arc" | "Highlight";
+    subject: string;
+    endDate?: string;
+    deck: string;
+    reviews: string[];
+    history: UnhydratedType["History"];
+  };
+  SRSDeck: {
+    __typename: "SRSDeck";
+    id: string;
+    cards: string[];
+  };
   Comment: {
     __typename: "Comment";
     id: string;
@@ -207,6 +281,12 @@ export const vars = {
   arcs: makeVar<{ [id in string]: UnhydratedType["Arc"] }>({}),
   highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
   relations: makeVar<{ [id in string]: UnhydratedType["Relation"] }>({}),
+  days: makeVar<{ [day in string]: UnhydratedType["Day"] }>({}),
+  srsCardReviews: makeVar<{ [id in string]: UnhydratedType["SRSCardReview"] }>(
+    {}
+  ),
+  srsCards: makeVar<{ [id in string]: UnhydratedType["SRSCard"] }>({}),
+  srsDecks: makeVar<{ [id in string]: UnhydratedType["SRSDeck"] }>({}),
   comments: makeVar<{ [id in string]: UnhydratedType["Comment"] }>({}),
 };
 
@@ -224,6 +304,9 @@ export const serializeVars: (keyof typeof vars)[] = [
   "commentEntries",
   "highlights",
   "relations",
+  "srsCards",
+  "srsCardReviews",
+  "srsDecks",
   "comments",
 ];
 
@@ -238,10 +321,20 @@ export const initializeState = () => {
   vars.commentEntries({});
   vars.highlights({});
   vars.relations({});
+  vars.days({});
+  vars.srsCards({});
+  vars.srsCardReviews({});
+  vars.srsDecks({
+    default: {
+      __typename: "SRSDeck",
+      id: "default",
+      cards: [],
+    },
+  });
   vars.comments({});
 };
 
-const typePolicies: TypePolicies = {
+const typePolicies: StrictTypedTypePolicies = {
   Query: {
     fields: {
       journalId() {
@@ -338,33 +431,6 @@ const typePolicies: TypePolicies = {
         }
         return Object.values(vars.arcEntries());
       },
-      highlight(_, { args }) {
-        if (args?.id) {
-          return vars.highlights()[args.id];
-        }
-        return undefined;
-      },
-      highlights(_, { args }: { args?: QueryHighlightsArgs }) {
-        if (args?.ids && !args?.entries) {
-          return args.ids.map((id) => vars.highlights()[id]);
-        } else if (args?.ids || args?.entries || args?.arcs) {
-          return Object.values(vars.highlights()).filter((highlight) => {
-            const highlightRelations = highlight.outgoingRelations
-              .map((relation) => vars.relations()[relation])
-              .filter((relation) => relation.objectType === "Arc");
-            const arcsIntersection = highlightRelations.filter((relation) =>
-              args.arcs?.includes(relation.object)
-            );
-
-            return (
-              (!args.ids || args.ids.includes(highlight.id)) &&
-              (!args.entries || args.entries.includes(highlight.entry)) &&
-              (!args.arcs || arcsIntersection.length > 0)
-            );
-          });
-        }
-        return Object.values(vars.highlights());
-      },
       relation(_, { args }) {
         if (args?.id) {
           return vars.relations()[args.id];
@@ -377,6 +443,8 @@ const typePolicies: TypePolicies = {
         }
         return Object.values(vars.relations());
       },
+      ...HighlightResolvers.Query.fields,
+      ...SRSResolvers.Query.fields,
     },
   },
   Entry: {
@@ -409,7 +477,7 @@ const typePolicies: TypePolicies = {
     },
   },
   ArcEntry: {
-    keyFields: ["entryKey"],
+    keyFields: ["entry"],
     fields: {
       arc(arcId) {
         return vars.arcs()[arcId];
@@ -440,35 +508,6 @@ const typePolicies: TypePolicies = {
       },
     },
   },
-  Highlight: {
-    keyFields: ["id"],
-    fields: {
-      arc(_, { readField }) {
-        const outgoingRelations =
-          readField<{ __typename: "Relation"; object: string }[]>(
-            "outgoingRelations"
-          );
-        return outgoingRelations.length
-          ? vars.arcs()[outgoingRelations[0].object]
-          : null;
-      },
-      arcs(_, { readField }) {
-        const outgoingRelations =
-          readField<{ __typename: "Relation"; object: string }[]>(
-            "outgoingRelations"
-          );
-        return outgoingRelations.map(
-          (relation) => vars.arcs()[relation.object]
-        );
-      },
-      entry(entryKey) {
-        return vars.entries()[entryKey];
-      },
-      outgoingRelations(relationIds: string[]) {
-        return relationIds.map((id) => vars.relations()[id]);
-      },
-    },
-  },
   Relation: {
     keyFields: ["id"],
     fields: {
@@ -491,8 +530,12 @@ const typePolicies: TypePolicies = {
       },
     },
   },
+  Highlight: HighlightResolvers.Highlight,
 };
 
 const cache = new InMemoryCache({ typePolicies, addTypename: true });
 
-export const client = new ApolloClient({ cache, typeDefs });
+export const client = new ApolloClient({
+  cache,
+  typeDefs,
+});

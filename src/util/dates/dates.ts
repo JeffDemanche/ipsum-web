@@ -6,7 +6,7 @@ import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 
 /** Date formats we can create a string of from a DateTime. */
-type IpsumDateFormatTo =
+export type IpsumDateFormatTo =
   | "stored-day"
   | "entry-printed-date"
   | "entry-printed-date-nice"
@@ -15,7 +15,7 @@ type IpsumDateFormatTo =
   | "iso";
 
 /** Date formats we can create a DateTime of from a string. */
-type IpsumDateFormatFrom =
+export type IpsumDateFormatFrom =
   | "stored-day"
   | "entry-printed-date"
   | "entry-printed-date-nice"

@@ -3,7 +3,7 @@ import { decorator } from "components/Decorator";
 import { Digest } from "components/Digest";
 import { EditorState, RichUtils } from "draft-js";
 import React, { useCallback, useContext } from "react";
-import { IpsumDateTime } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
 import { EditorContext } from "../EditorWrapper/EditorContext";
@@ -80,7 +80,10 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
             "entry-printed-date-nice"
           )}
         </Typography>
-        <ReflectionAccordion></ReflectionAccordion>
+        <ReflectionAccordion
+          isToday={false}
+          day={IpsumDay.fromString(entryKey, "stored-day")}
+        ></ReflectionAccordion>
         {editorState && (
           <>
             <Digest entryKey={entryKey} />

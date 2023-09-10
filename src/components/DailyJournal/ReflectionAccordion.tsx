@@ -7,15 +7,31 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
+import {
+  TodayDayReflections,
+  PastDayReflections,
+} from "components/DayReflections";
+import { IpsumDay } from "util/dates";
 
-export const ReflectionAccordion: React.FunctionComponent = () => {
+interface ReflectionAccordionProps {
+  isToday: boolean;
+  day: IpsumDay;
+}
+
+export const ReflectionAccordion: React.FunctionComponent<
+  ReflectionAccordionProps
+> = ({ isToday, day }) => {
   return (
     <Accordion className={styles["reflection-accordion"]} variant="outlined">
       <AccordionSummary expandIcon={<ExpandMore />} id="panel1a-header">
         <Typography variant="caption">Reflect (0)</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Typography>0 reflections</Typography>
+        {isToday ? (
+          <TodayDayReflections day={day} />
+        ) : (
+          <PastDayReflections day={day} />
+        )}
       </AccordionDetails>
     </Accordion>
   );

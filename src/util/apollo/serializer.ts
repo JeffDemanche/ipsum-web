@@ -39,6 +39,9 @@ export const loadApolloState = (serialized: string): string[] | undefined => {
     vars.arcs(parsed.right.arcs);
     vars.highlights(parsed.right.highlights);
     vars.relations(parsed.right.relations);
+    vars.srsCardReviews(parsed.right.srsCardReviews);
+    vars.srsCards(parsed.right.srsCards);
+    vars.srsDecks(parsed.right.srsDecks);
     vars.comments(parsed.right.comments);
   }
 };
