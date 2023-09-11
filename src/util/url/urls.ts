@@ -1,4 +1,6 @@
 import qs from "qs";
+import { useMemo } from "react";
+import { useNavigate } from "react-router";
 import { View, IpsumURLSearch } from "./types";
 
 /**
@@ -23,6 +25,21 @@ export const dataToSearchParams = <V extends View>(
   data: IpsumURLSearch<V>
 ): string => {
   return qs.stringify(data, { encode: false });
+};
+
+/**
+ * Hook that accepts a function that transforms the current search params into
+ * new ones, and handles navigating to the new URL.
+ */
+export const useModifySearchParams = <V extends View>() => {
+  const searchParams = useMemo(
+    () => urlToData<V>(window.location.href),
+    [location]
+  );
+  const navigate = useNavigate();
+  return (modifyFn: (data: IpsumURLSearch<V>) => IpsumURLSearch<V>) => {
+    navigate(`?${dataToSearchParams(modifyFn(searchParams))}`);
+  };
 };
 
 export class IpsumURL {

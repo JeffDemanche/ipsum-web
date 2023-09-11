@@ -70,7 +70,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
   }, [entryKey, onEditorBlur]);
 
   return (
-    <div className={styles["journal-entry"]}>
+    <div className={styles["journal-entry"]} data-entry-key={entryKey}>
       <div className={styles["entry-text-vertical"]}>
         <Typography
           variant="h3"

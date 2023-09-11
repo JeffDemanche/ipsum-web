@@ -28,6 +28,7 @@ const typeDefs = gql`
     journalEntryDates: [String!]!
 
     journalEntry(entryKey: ID!): JournalEntry
+    journalEntryKeys: [ID!]!
     journalEntries(entryKeys: [ID!]): [JournalEntry]
 
     arcEntry(arcId: ID!): ArcEntry
@@ -378,6 +379,9 @@ const typePolicies: StrictTypedTypePolicies = {
           return vars.journalEntries()[args.entryKey] ?? null;
         }
         return null;
+      },
+      journalEntryKeys() {
+        return Object.keys(vars.journalEntries());
       },
       journalEntries(_, { args }: { args: QueryJournalEntriesArgs }) {
         if (args?.entryKeys) {

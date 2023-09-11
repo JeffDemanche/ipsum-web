@@ -59,6 +59,7 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
               type: "DailyJournal",
               index,
               urlLayer,
+              focusedDate: urlLayer.focusedDate,
               startDate: urlLayer.startDate,
               endDate: urlLayer.endDate,
               diptychMedian: {

@@ -14,6 +14,10 @@ interface ConnectionOnlyLayer extends BaseURLLayer {
 
 export interface DailyJournalURLLayer extends BaseURLLayer {
   type: "daily_journal";
+
+  focusedDate?: string;
+
+  // Deprecated
   startDate?: string;
   endDate?: string;
 }

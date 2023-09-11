@@ -15,6 +15,7 @@ import { write } from "./write";
 import { SerializedSchema } from "../../src/util/apollo/serializer-schema";
 import { PathReporter } from "io-ts/lib/PathReporter";
 import { migrateArcEntries } from "./migrations/arc-entries-migration";
+import { migrateSRS } from "./migrations/srs-migration";
 
 const inputFileArg = process.env.npm_config_input_file;
 const outputFileArg = process.env.npm_config_output_file;
@@ -120,5 +121,10 @@ replServer.defineCommand("add_typenames", {
 replServer.defineCommand("migrate_arc_entries", {
   action() {
     migrateArcEntries(modifiedData);
+  },
+});
+replServer.defineCommand("migrate_srs", {
+  action() {
+    migrateSRS(modifiedData);
   },
 });

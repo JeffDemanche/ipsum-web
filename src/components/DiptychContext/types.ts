@@ -21,6 +21,7 @@ export interface ConnectionOnlyLayer extends BaseDiptychLayer {
 export interface DailyJournalLayer extends BaseDiptychLayer {
   type: "DailyJournal";
   index: number;
+  focusedDate?: string;
   startDate?: string;
   endDate?: string;
   urlLayer: DailyJournalURLLayer;
