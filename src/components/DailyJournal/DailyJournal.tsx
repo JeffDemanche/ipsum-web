@@ -1,6 +1,5 @@
 import { Paper } from "@mui/material";
 import { DailyJournalLayer } from "components/DiptychContext";
-import { VisibleEntriesProvider } from "components/VisibleEntriesContext";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import SimpleBar from "simplebar-react";
 import styles from "./DailyJournal.less";
@@ -92,6 +91,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
                 "entry-printed-date"
               ).toString("url-format"),
             },
+            ...searchParams.layers.slice(1),
           ],
         };
       });
@@ -150,16 +150,14 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
       });
 
   return (
-    <VisibleEntriesProvider layer={layer}>
-      <Paper variant="outlined" className={styles["daily-journal"]}>
-        <SimpleBar
-          className={styles["daily-journal-scroller"]}
-          scrollableNodeProps={{ onScroll, ref: scrollRef }}
-        >
-          {todayEntryComponent}
-          <div className={styles["past-entries"]}>{entryEditorComponents}</div>
-        </SimpleBar>
-      </Paper>
-    </VisibleEntriesProvider>
+    <Paper variant="outlined" className={styles["daily-journal"]}>
+      <SimpleBar
+        className={styles["daily-journal-scroller"]}
+        scrollableNodeProps={{ onScroll, ref: scrollRef }}
+      >
+        {todayEntryComponent}
+        <div className={styles["past-entries"]}>{entryEditorComponents}</div>
+      </SimpleBar>
+    </Paper>
   );
 };

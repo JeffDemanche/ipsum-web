@@ -67,6 +67,7 @@ export const JournalDateRangePicker: React.FunctionComponent = () => {
             ...searchParams.layers[0],
             focusedDate: day.toString("url-format"),
           },
+          ...searchParams.layers.slice(1),
         ],
       }));
     },
