@@ -2,13 +2,19 @@ import { IpsumDay } from "util/dates";
 import { vars } from "../client";
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
 import {
+  QuerySrsCardArgs,
   QuerySrsCardsForReviewArgs,
   QuerySrsReviewsFromDayArgs,
+  SrsCardSubject,
+  SrsCardSubjectType,
 } from "../__generated__/graphql";
 
 export const SRSResolvers: StrictTypedTypePolicies = {
   Query: {
     fields: {
+      srsCard(_, { args }: { args: Partial<QuerySrsCardArgs> }) {
+        return vars.srsCards()[args.id];
+      },
       srsCardsForReview(
         _,
         { args }: { args: Partial<QuerySrsCardsForReviewArgs> }
@@ -63,6 +69,43 @@ export const SRSResolvers: StrictTypedTypePolicies = {
             const card = vars.srsCards()[cardId];
             return card.deck === deck;
           });
+      },
+    },
+  },
+  SRSDeck: {
+    keyFields: ["id"],
+    fields: {
+      cards(cardIds: string[]) {
+        const cards = vars.srsCards();
+        return cardIds.map((id) => cards[id]);
+      },
+    },
+  },
+  SRSCard: {
+    keyFields: ["id"],
+    fields: {
+      subject(subjectId, { readField }) {
+        const subjectType = readField<SrsCardSubjectType>("subjectType");
+        if (subjectType === "Highlight") {
+          return vars.highlights()[subjectId];
+        } else if (subjectType === "Arc") {
+          return vars.arcs()[subjectId];
+        }
+      },
+      deck(deckId: string) {
+        return vars.srsDecks()[deckId];
+      },
+      reviews(reviewIds: string[]) {
+        const reviews = vars.srsCardReviews();
+        return reviewIds.map((id) => reviews[id]);
+      },
+    },
+  },
+  SRSCardReview: {
+    keyFields: ["id"],
+    fields: {
+      card(cardId: string) {
+        return vars.srsCards()[cardId];
       },
     },
   },

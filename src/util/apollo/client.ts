@@ -130,12 +130,18 @@ const typeDefs = gql`
 
   union SRSCardSubject = Arc | Highlight
 
+  enum SRSCardSubjectType {
+    Arc
+    Highlight
+  }
+
   type SRSCard {
     id: ID!
     lastReviewed: String!
     interval: Float!
     ef: Float!
     subject: SRSCardSubject!
+    subjectType: SRSCardSubjectType!
     endDate: String
     deck: SRSDeck!
     reviews: [SRSCardReview!]!
@@ -535,6 +541,9 @@ const typePolicies: StrictTypedTypePolicies = {
     },
   },
   Highlight: HighlightResolvers.Highlight,
+  SRSDeck: SRSResolvers.SRSDeck,
+  SRSCard: SRSResolvers.SRSCard,
+  SRSCardReview: SRSResolvers.SRSCardReview,
 };
 
 const cache = new InMemoryCache({ typePolicies, addTypename: true });

@@ -99,7 +99,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
     200
   );
 
-  const focusedDateURLFormat = layer.focusedDate;
+  const focusedDateURLFormat = layer?.focusedDate ?? today;
   const focusedDateEntryKeyFormat = IpsumDay.fromString(
     focusedDateURLFormat,
     "url-format"

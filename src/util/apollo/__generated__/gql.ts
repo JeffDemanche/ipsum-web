@@ -32,7 +32,7 @@ const documents = {
     "\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n": types.LinkerDocument,
     "\n  query HighlightAddReflectionForm($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      srsCards {\n        id\n      }\n    }\n  }\n": types.HighlightAddReflectionFormDocument,
     "\n  query MedianHighlightBox($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.MedianHighlightBoxDocument,
-    "\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n    }\n  }\n": types.ReflectionCardDocument,
+    "\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n      subject {\n        __typename\n        ... on Highlight {\n          id\n          entry {\n            entryKey\n          }\n        }\n        ... on Arc {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.ReflectionCardDocument,
     "\n  query VisibleEntries {\n    journalEntries {\n      entryKey\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n": types.VisibleEntriesDocument,
     "\n  query UseHighlightSearch($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      outgoingRelations {\n        id\n        predicate\n        object {\n          id\n          incomingRelations {\n            id\n            predicate\n            subject {\n              __typename\n              ... on Highlight {\n                id\n                entry {\n                  entryKey\n                  date\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n": types.UseHighlightSearchDocument,
     "\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n": types.UseSearchArcsDocument,
@@ -131,7 +131,7 @@ export function gql(source: "\n  query MedianHighlightBox($highlightId: ID!) {\n
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n    }\n  }\n"): (typeof documents)["\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n    }\n  }\n"];
+export function gql(source: "\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n      subject {\n        __typename\n        ... on Highlight {\n          id\n          entry {\n            entryKey\n          }\n        }\n        ... on Arc {\n          id\n          name\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n      subject {\n        __typename\n        ... on Highlight {\n          id\n          entry {\n            entryKey\n          }\n        }\n        ... on Arc {\n          id\n          name\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

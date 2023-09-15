@@ -100,7 +100,7 @@ export type RelationFieldPolicy = {
 	predicate?: FieldPolicy<any> | FieldReadFunction<any>,
 	subject?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type SRSCardKeySpecifier = ('deck' | 'ef' | 'endDate' | 'id' | 'interval' | 'lastReviewed' | 'reviews' | 'subject' | SRSCardKeySpecifier)[];
+export type SRSCardKeySpecifier = ('deck' | 'ef' | 'endDate' | 'id' | 'interval' | 'lastReviewed' | 'reviews' | 'subject' | 'subjectType' | SRSCardKeySpecifier)[];
 export type SRSCardFieldPolicy = {
 	deck?: FieldPolicy<any> | FieldReadFunction<any>,
 	ef?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -109,7 +109,8 @@ export type SRSCardFieldPolicy = {
 	interval?: FieldPolicy<any> | FieldReadFunction<any>,
 	lastReviewed?: FieldPolicy<any> | FieldReadFunction<any>,
 	reviews?: FieldPolicy<any> | FieldReadFunction<any>,
-	subject?: FieldPolicy<any> | FieldReadFunction<any>
+	subject?: FieldPolicy<any> | FieldReadFunction<any>,
+	subjectType?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type SRSCardReviewKeySpecifier = ('afterEF' | 'afterInterval' | 'beforeEF' | 'beforeInterval' | 'card' | 'day' | 'id' | 'rating' | SRSCardReviewKeySpecifier)[];
 export type SRSCardReviewFieldPolicy = {
