@@ -315,6 +315,7 @@ export const serializeVars: (keyof typeof vars)[] = [
   "srsCardReviews",
   "srsDecks",
   "comments",
+  "days",
 ];
 
 export const initializeState = () => {

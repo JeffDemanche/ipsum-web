@@ -16,6 +16,7 @@ import { SerializedSchema } from "../../src/util/apollo/serializer-schema";
 import { PathReporter } from "io-ts/lib/PathReporter";
 import { migrateArcEntries } from "./migrations/arc-entries-migration";
 import { migrateSRS } from "./migrations/srs-migration";
+import { createDayObject } from "./migrations/create-day-object";
 
 const inputFileArg = process.env.npm_config_input_file;
 const outputFileArg = process.env.npm_config_output_file;
@@ -126,5 +127,10 @@ replServer.defineCommand("migrate_arc_entries", {
 replServer.defineCommand("migrate_srs", {
   action() {
     migrateSRS(modifiedData);
+  },
+});
+replServer.defineCommand("create_days", {
+  action() {
+    createDayObject(modifiedData);
   },
 });

@@ -16,6 +16,15 @@ const TodayDayReflectionsQuery = gql(`
       id
       lastReviewed
     }
+    srsReviewsFromDay(deckId: $deckId, day: $day) {
+      id
+      rating
+      beforeEF
+      beforeInterval
+      card {
+        id
+      }
+    }
   }
 `);
 
@@ -26,16 +35,33 @@ export const TodayDayReflections: React.FunctionComponent<
     variables: { day: day.toString(), deckId: "default" },
   });
 
-  const cards = data?.srsCardsForReview ?? [];
+  const unreviewedCards = data?.srsCardsForReview ?? [];
 
-  const numCards = cards?.length ?? 0;
+  const reviewedCards = data?.srsReviewsFromDay ?? [];
+
+  const numUnreviewedCards = unreviewedCards?.length ?? 0;
+  const numReviewedCards = reviewedCards?.length ?? 0;
 
   return (
     <div className={styles["day-reflections"]}>
+      <Typography variant="h4">Today&apos;s reflections</Typography>
       <Typography variant="caption">
-        Today&apos;s reflections (0 / {numCards})
+        ({numReviewedCards} rated / {numUnreviewedCards} unrated)
       </Typography>
-      {cards?.length && <ReflectionCard cardId={cards[0].id} />}
+      {unreviewedCards?.length > 0 && (
+        <ReflectionCard cardId={unreviewedCards[0].id} />
+      )}
+      {reviewedCards?.map((review) => (
+        <ReflectionCard
+          key={review.id}
+          cardId={review.card.id}
+          beforeReview={{
+            ef: review.beforeEF,
+            rating: review.rating,
+            interval: review.beforeInterval,
+          }}
+        />
+      ))}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { ContentState } from "draft-js";
 import { vars, initializeState } from "util/apollo/client";
 import { EntryType } from "util/apollo/__generated__/graphql";
 import { parseContentState, stringifyContentState } from "util/content-state";
-import { IpsumDateTime } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
 import {
@@ -17,11 +17,15 @@ import { createHighlight } from "../highlights";
 jest.mock("../../autosave");
 
 describe("apollo entries API", () => {
+  let todaySpy = jest.spyOn(IpsumDay, "today");
+
   beforeEach(() => {
     initializeState();
+    todaySpy = jest.spyOn(IpsumDay, "today");
   });
 
   afterEach(() => {
+    todaySpy.mockRestore();
     jest.clearAllMocks();
   });
 
@@ -80,6 +84,25 @@ describe("apollo entries API", () => {
         expect.objectContaining({
           entryKey: "1/2/2020",
           trackedContentState: IpsumTimeMachine.create(entry1CS).toString(),
+        })
+      );
+    });
+
+    it("should create a day object if it doesn't exist", () => {
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("1/2/2020"));
+      const entry1CS = stringifyContentState(
+        ContentState.createFromText("Hello, world!")
+      );
+      createEntry({
+        entryKey: "1/2/2020",
+        stringifiedContentState: entry1CS,
+        entryType: EntryType.Journal,
+      });
+      expect(vars.days()).toEqual(
+        expect.objectContaining({
+          "1/2/2020": expect.objectContaining({
+            day: "1/2/2020",
+          }),
         })
       );
     });

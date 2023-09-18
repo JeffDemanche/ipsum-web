@@ -150,7 +150,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
       });
 
   return (
-    <Paper variant="outlined" className={styles["daily-journal"]}>
+    <Paper variant="shadowed" className={styles["daily-journal"]}>
       <SimpleBar
         className={styles["daily-journal-scroller"]}
         scrollableNodeProps={{ onScroll, ref: scrollRef }}

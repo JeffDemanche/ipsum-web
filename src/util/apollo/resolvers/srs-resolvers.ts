@@ -5,7 +5,6 @@ import {
   QuerySrsCardArgs,
   QuerySrsCardsForReviewArgs,
   QuerySrsReviewsFromDayArgs,
-  SrsCardSubject,
   SrsCardSubjectType,
 } from "../__generated__/graphql";
 

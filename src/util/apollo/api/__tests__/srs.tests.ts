@@ -308,6 +308,29 @@ describe("apollo srs API", () => {
       expect(vars.srsCards()[cardId].ef).toBeCloseTo(1.1);
       expect(vars.srsCards()[cardId].interval).toBeCloseTo(1.68);
     });
+
+    it("should update the lastReviewed field of the card", () => {
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("1/1/2021"));
+
+      const { id: highlightId } = createHighlight({
+        entry: "entry",
+      });
+      const { id: cardId } = createSRSCard({
+        subjectType: "Highlight",
+        subjectId: highlightId,
+      });
+
+      expect(vars.srsCards()[cardId].lastReviewed).toEqual("1/1/2021");
+
+      todaySpy.mockReturnValueOnce(IpsumDay.fromString("1/2/2021"));
+
+      reviewSRSCard({
+        cardId,
+        rating: 0,
+      });
+
+      expect(vars.srsCards()[cardId].lastReviewed).toEqual("1/2/2021");
+    });
   });
 
   describe("deleteSRSCard", () => {

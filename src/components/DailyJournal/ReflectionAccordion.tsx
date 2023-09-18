@@ -22,9 +22,13 @@ export const ReflectionAccordion: React.FunctionComponent<
   ReflectionAccordionProps
 > = ({ isToday, day }) => {
   return (
-    <Accordion className={styles["reflection-accordion"]} variant="outlined">
+    <Accordion
+      className={styles["reflection-accordion"]}
+      defaultExpanded={isToday}
+      variant="outlined"
+    >
       <AccordionSummary expandIcon={<ExpandMore />} id="panel1a-header">
-        <Typography variant="caption">Reflect</Typography>
+        <Typography variant="caption">Reflections</Typography>
       </AccordionSummary>
       <AccordionDetails>
         {isToday ? (

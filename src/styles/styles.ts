@@ -46,7 +46,13 @@ declare module "@mui/material/styles" {
 
 declare module "@mui/material/Paper" {
   interface PaperPropsVariantOverrides {
-    onSurface: true;
+    shadowed: true;
+  }
+}
+
+declare module "@mui/material/Card" {
+  interface CardPropsVariantOverrides {
+    shadowed: true;
   }
 }
 
@@ -93,7 +99,30 @@ export const theme = createTheme({
     MuiDrawer: {
       styleOverrides: { paper: { backgroundColor: brown[100] } },
     },
-    MuiPaper: {},
+    MuiCard: {
+      variants: [
+        {
+          props: { variant: "shadowed" },
+          style: {
+            borderRadius: "0px",
+            background: "linear-gradient(225deg, #e6e6e6, #ffffff)",
+            boxShadow: "-20px 20px 60px #d9d9d9, 20px -20px 60px #ffffff",
+          },
+        },
+      ],
+    },
+    MuiPaper: {
+      variants: [
+        {
+          props: { variant: "shadowed" },
+          style: {
+            borderRadius: "0px",
+            background: "linear-gradient(225deg, #e6e6e6, #ffffff)",
+            boxShadow: "-20px 20px 60px #d9d9d9, 20px -20px 60px #ffffff",
+          },
+        },
+      ],
+    },
     MuiOutlinedInput: {},
     MuiTextField: {},
     MuiDivider: {},

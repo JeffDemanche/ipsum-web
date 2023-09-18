@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { autosave } from "../autosave";
 import { calculateNextInterval } from "util/srs";
 import { IpsumDateTime, IpsumDay } from "util/dates";
+import { upsertDayForToday } from "./day";
 
 export const createSRSCard = ({
   subjectType,
@@ -97,6 +98,7 @@ export const reviewSRSCard = ({
       ...card,
       interval: newCardValues.nextInterval,
       ef: newCardValues.nextEF,
+      lastReviewed: dayKey,
     };
 
     vars.srsCards({ ...vars.srsCards(), [cardId]: updatedCard });
@@ -129,28 +131,18 @@ export const reviewSRSCard = ({
       [cardReviewId]: newCardReview,
     });
 
-    // Add review to day object
-    if (!vars.days()[dayKey]?.srsCardReviews?.includes(cardReviewId)) {
-      vars.days({
-        ...vars.days(),
-        [dayKey]: {
-          ...vars.days()[dayKey],
-          srsCardReviews: [
-            ...(vars.days()[dayKey]?.srsCardReviews ?? []),
-            cardReviewId,
-          ],
-        },
-      });
-    }
-
     const newCard: UnhydratedType["SRSCard"] = {
       ...card,
       interval: newCardValues.nextInterval,
       ef: newCardValues.nextEF,
       reviews: [...card.reviews, cardReviewId],
+      lastReviewed: dayKey,
     };
 
     vars.srsCards({ ...vars.srsCards(), [cardId]: newCard });
+
+    // Handles creating the day if it doesn't exist or updating it if it does
+    upsertDayForToday();
 
     autosave();
     return {

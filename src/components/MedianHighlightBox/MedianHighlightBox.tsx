@@ -221,6 +221,7 @@ export const MedianHighlightBox: React.FunctionComponent<
           highlightIds?.filter((id) => id !== highlightId)
         );
       }}
+      variant="shadowed"
       onClick={onCardClick}
       className={cx(highlightBoxSelected && styles["selected"], styles["box"])}
       ref={boxRef}

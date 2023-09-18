@@ -6,6 +6,7 @@ import { autosave } from "../autosave";
 import { IpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { EntryType } from "../__generated__/graphql";
+import { upsertDayForToday } from "./day";
 
 export const createEntry = (entry: {
   entryKey: string;
@@ -30,6 +31,8 @@ export const createEntry = (entry: {
     ...vars.entries(),
     [entry.entryKey]: newEntry,
   });
+
+  upsertDayForToday();
   autosave();
   return newEntry;
 };
@@ -66,6 +69,8 @@ export const updateEntry = (entry: {
   const entriesCopy = { ...vars.entries() };
   entriesCopy[entry.entryKey] = entryUpdate;
   vars.entries(entriesCopy);
+
+  upsertDayForToday();
   autosave();
   return entryUpdate;
 };
