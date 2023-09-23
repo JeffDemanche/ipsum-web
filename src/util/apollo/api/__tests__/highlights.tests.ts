@@ -1,9 +1,11 @@
 import { vars, initializeState } from "util/apollo/client";
+import { createArc } from "../arcs";
 import {
   createHighlight,
   deleteHighlight,
   updateHighlight,
 } from "../highlights";
+import { createRelation } from "../relations";
 
 jest.mock("../../autosave");
 
@@ -66,6 +68,21 @@ describe("apollo highlights API", () => {
       });
       deleteHighlight(highlight1.id);
       expect(vars.highlights()).toEqual({ [highlight2.id]: highlight2 });
+    });
+
+    it("should remove relations that connect to or from the highlight", () => {
+      const highlight = createHighlight({ entry: "1/2/2020" });
+      const arc = createArc({ name: "arc" });
+      const relation = createRelation({
+        subject: highlight.id,
+        subjectType: "Highlight",
+        predicate: "relates to",
+        object: arc.id,
+        objectType: "Arc",
+      });
+      expect(vars.relations()).toEqual({ [relation.id]: relation });
+      deleteHighlight(highlight.id);
+      expect(vars.relations()).toEqual({});
     });
   });
 });

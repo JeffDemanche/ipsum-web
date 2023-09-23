@@ -28,10 +28,9 @@ import {
   removeHighlightFromEntry,
 } from "util/apollo";
 import { useQuery } from "@apollo/client";
-import { parseIpsumDateTime } from "util/dates";
+import { IpsumDay, parseIpsumDateTime } from "util/dates";
 import { theme } from "styles/styles";
-import { dataToSearchParams, urlToData } from "util/url";
-import { useNavigate } from "react-router";
+import { useModifySearchParams } from "util/url";
 import { Linker } from "components/Linker";
 import { HighlightAddReflectionForm } from "./HighlightAddReflectionForm";
 
@@ -93,21 +92,24 @@ export const MedianHighlightBox: React.FunctionComponent<
     setHoveredHighlightIds,
   } = useContext(HighlightSelectionContext);
 
-  const navigate = useNavigate();
+  const modifySearchParams = useModifySearchParams<"journal">();
 
   const onCardClick = useCallback(() => {
-    setSelectedHighlightIds([highlightId]);
+    const highlightDay = IpsumDay.fromIpsumDateTime(
+      parseIpsumDateTime(highlight.entry.date)
+    );
 
-    const searchParams = urlToData<"journal">(window.location.href);
-    if (searchParams.layers[0]?.type === "daily_journal") {
-      const highlightEntryDate = parseIpsumDateTime(highlight.entry.date);
-      searchParams.layers[0].startDate =
-        highlightEntryDate.toString("url-format");
-      searchParams.layers[0].endDate =
-        highlightEntryDate.toString("url-format");
-    }
-    navigate({ search: dataToSearchParams(searchParams) }, { replace: true });
-  }, [highlight.entry.date, highlightId, navigate, setSelectedHighlightIds]);
+    modifySearchParams((searchParams) => ({
+      ...searchParams,
+      layers: [
+        {
+          ...searchParams.layers[0],
+          focusedDate: highlightDay.toString("url-format"),
+        },
+        ...searchParams.layers.slice(1),
+      ],
+    }));
+  }, [highlight.entry.date, modifySearchParams]);
 
   const highlightHovered = hoveredHighlightIds?.includes(highlightId);
   const highlightBoxSelected = selectedHighlightIds.includes(highlightId);

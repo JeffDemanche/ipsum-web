@@ -35,6 +35,9 @@ export const UseHighlightSearchQuery = gql(`
                   date
                 }
               }
+              ... on Arc {
+                id
+              }
             }
           }
         }

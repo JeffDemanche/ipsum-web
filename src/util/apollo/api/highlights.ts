@@ -46,6 +46,14 @@ export const updateHighlight = (
 export const deleteHighlight = (id: string) => {
   if (!vars.highlights()[id]) return;
 
+  const highlight = vars.highlights()[id];
+
+  const newRelations = { ...vars.relations() };
+  highlight.outgoingRelations.forEach((relation) => {
+    delete newRelations[relation];
+  });
+  vars.relations(newRelations);
+
   const newHighlights = { ...vars.highlights() };
   delete newHighlights[id];
   vars.highlights(newHighlights);

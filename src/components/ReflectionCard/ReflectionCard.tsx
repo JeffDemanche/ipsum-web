@@ -65,9 +65,9 @@ export const ReflectionCard: React.FunctionComponent<ReflectionCardProps> = ({
 
   const submitRating = useCallback(
     (rating: number) => {
-      reviewSRSCard({ cardId: srsCard.id, rating });
+      reviewSRSCard({ cardId: srsCard?.id, rating });
     },
-    [srsCard.id]
+    [srsCard?.id]
   );
 
   const subjectType = data?.srsCard.subject.__typename;

@@ -49,6 +49,15 @@ export const deleteArc = (id: string) => {
   const arcEntryKey = vars.arcs()[id].arcEntry;
   deleteArcEntry(arcEntryKey);
 
+  const newRelations = { ...vars.relations() };
+  vars.arcs()[id].outgoingRelations.forEach((relation) => {
+    delete newRelations[relation];
+  });
+  vars.arcs()[id].incomingRelations.forEach((relation) => {
+    delete newRelations[relation];
+  });
+  vars.relations(newRelations);
+
   const newArcs = { ...vars.arcs() };
   delete newArcs[id];
   vars.arcs(newArcs);

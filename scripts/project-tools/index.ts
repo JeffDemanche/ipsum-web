@@ -134,3 +134,40 @@ replServer.defineCommand("create_days", {
     createDayObject(modifiedData);
   },
 });
+/**
+ * Removes relations with undefined subjects or objects.
+ */
+replServer.defineCommand("cull_relations", {
+  action() {
+    const relationsCopy = { ...modifiedData.relations };
+
+    Object.values(relationsCopy).forEach((relation: any) => {
+      if (relation.objectType === "Arc") {
+        const arc = modifiedData.arcs[relation.object];
+        if (!arc) {
+          delete relationsCopy[relation.id];
+        }
+      }
+      if (relation.objectType === "Highlight") {
+        const highlight = modifiedData.highlights[relation.object];
+        if (!highlight) {
+          delete relationsCopy[relation.id];
+        }
+      }
+      if (relation.subjectType === "Arc") {
+        const arc = modifiedData.arcs[relation.subject];
+        if (!arc) {
+          delete relationsCopy[relation.id];
+        }
+      }
+      if (relation.subjectType === "Highlight") {
+        const highlight = modifiedData.highlights[relation.subject];
+        if (!highlight) {
+          delete relationsCopy[relation.id];
+        }
+      }
+    });
+
+    modifiedData.relations = relationsCopy;
+  },
+});

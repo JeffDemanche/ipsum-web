@@ -1,6 +1,7 @@
 import { initializeState, vars } from "util/apollo/client";
 import { IpsumDateTime } from "util/dates";
 import { createArc, deleteArc } from "../arcs";
+import { createRelation } from "../relations";
 
 jest.mock("../../autosave");
 
@@ -50,6 +51,22 @@ describe("apollo arcs API", () => {
 
       expect(vars.arcs()[arc.id]).toBeUndefined();
       expect(vars.arcEntries()[arcEntryKey]).toBeUndefined();
+    });
+
+    it("should delete any relations associated with the arc", () => {
+      const arc1 = createArc({ name: "test" });
+      const arc2 = createArc({ name: "test" });
+      const relation = createRelation({
+        subject: arc1.id,
+        subjectType: "Arc",
+        predicate: "relates to",
+        object: arc2.id,
+        objectType: "Arc",
+      });
+
+      expect(vars.relations()[relation.id]).toBeDefined();
+      deleteArc(arc1.id);
+      expect(vars.relations()[relation.id]).toBeUndefined();
     });
   });
 });

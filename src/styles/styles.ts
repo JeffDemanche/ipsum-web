@@ -106,7 +106,7 @@ export const theme = createTheme({
           style: {
             borderRadius: "0px",
             background: "linear-gradient(225deg, #e6e6e6, #ffffff)",
-            boxShadow: "-20px 20px 60px #d9d9d9, 20px -20px 60px #ffffff",
+            boxShadow: "-20px 20px 60px black, 20px -20px 60px white",
           },
         },
       ],
@@ -118,7 +118,7 @@ export const theme = createTheme({
           style: {
             borderRadius: "0px",
             background: "linear-gradient(225deg, #e6e6e6, #ffffff)",
-            boxShadow: "-20px 20px 60px #d9d9d9, 20px -20px 60px #ffffff",
+            boxShadow: "-20px 20px 60px black, 20px -20px 60px white",
           },
         },
       ],
