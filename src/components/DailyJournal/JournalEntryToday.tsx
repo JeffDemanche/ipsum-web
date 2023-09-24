@@ -10,13 +10,12 @@ import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
 import { EditorContext } from "../EditorWrapper/EditorContext";
 import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
-import { Divider, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { ReflectionAccordion } from "./ReflectionAccordion";
 import { EntryType } from "util/apollo";
 
 interface JournalEntryTodayProps {
   entryKey: string;
-  showDivider?: boolean;
 }
 
 /**
@@ -24,7 +23,6 @@ interface JournalEntryTodayProps {
  */
 export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   entryKey,
-  showDivider,
 }: JournalEntryTodayProps) => {
   const { editorRef, editorState, empty, saveEntry, setEditorState } =
     useEntryEditor({
@@ -125,11 +123,6 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
               editorRef={editorRef}
             ></EditorWrapper>
           </>
-        )}
-        {showDivider && (
-          <div className={styles["divider-container"]}>
-            <Divider></Divider>
-          </div>
         )}
       </div>
     </div>

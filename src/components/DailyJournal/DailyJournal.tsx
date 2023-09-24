@@ -131,11 +131,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
   }, [dontScrollTo, focusedDateEntryKeyFormat, loadAroundDay]);
 
   const todayEntryComponent = (
-    <JournalEntryToday
-      entryKey={today}
-      showDivider={!!visibleEntryKeys.length}
-      key={today}
-    ></JournalEntryToday>
+    <JournalEntryToday entryKey={today} key={today}></JournalEntryToday>
   );
 
   const entryEditorComponents =
