@@ -47,12 +47,14 @@ declare module "@mui/material/styles" {
 declare module "@mui/material/Paper" {
   interface PaperPropsVariantOverrides {
     shadowed: true;
+    translucent: true;
   }
 }
 
 declare module "@mui/material/Card" {
   interface CardPropsVariantOverrides {
     shadowed: true;
+    translucent: true;
   }
 }
 
@@ -106,7 +108,15 @@ export const theme = createTheme({
           style: {
             borderRadius: "0px",
             background: "linear-gradient(225deg, #e6e6e6, #ffffff)",
-            boxShadow: "-20px 20px 60px black, 20px -20px 60px white",
+            boxShadow: "-20px 20px 60px black, 20px -20px 60px black",
+          },
+        },
+        {
+          props: { variant: "translucent" },
+          style: {
+            borderRadius: "0px",
+            backgroundColor: "rgba(255, 255, 255, .55)",
+            backdropFilter: "blur(5px)",
           },
         },
       ],
@@ -118,7 +128,16 @@ export const theme = createTheme({
           style: {
             borderRadius: "0px",
             background: "linear-gradient(225deg, #e6e6e6, #ffffff)",
-            boxShadow: "-20px 20px 60px black, 20px -20px 60px white",
+            boxShadow:
+              "-20px 20px 40px rgba(0, 0, 0, 0.5), 20px -20px 40px rgba(255, 255, 255, 0.5)",
+          },
+        },
+        {
+          props: { variant: "translucent" },
+          style: {
+            borderRadius: "0px",
+            backgroundColor: "rgba(255, 255, 255, .55)",
+            backdropFilter: "blur(5px)",
           },
         },
       ],

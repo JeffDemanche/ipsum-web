@@ -2,12 +2,13 @@
 
 .daily-journal {
   position: absolute;
-  overflow: hidden;
   min-height: 500px;
   bottom: 0;
   top: 0;
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 
   .daily-journal-scroller {
     position: absolute;
@@ -17,6 +18,29 @@
     right: 0;
     margin: 3px;
     margin-left: 20px;
+  }
+
+  .today-paper {
+    transition: flex-grow 0.5 ease-in-out;
+    &.focused {
+      flex-grow: 1;
+    }
+
+    overflow: hidden;
+    min-height: 30%;
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  .past-paper {
+    transition: flex-grow 0.5 ease-in-out;
+    &.focused {
+      flex-grow: 1;
+    }
+
+    overflow: hidden;
+    min-height: 30%;
+    position: relative;
   }
 }
 

@@ -10,6 +10,7 @@ import { JournalEntryToday } from "./JournalEntryToday";
 import { JournalEntryPast } from "./JournalEntryPast";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
+import cx from "classnames";
 
 const DailyJournalQuery = gql(`
   query DailyJournal {
@@ -19,10 +20,12 @@ const DailyJournalQuery = gql(`
 
 interface DailyJournalProps {
   layer: DailyJournalLayer;
+  showToday?: boolean;
 }
 
 export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
   layer,
+  showToday = true,
 }) => {
   const { data } = useQuery(DailyJournalQuery);
 
@@ -149,15 +152,46 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
         );
       });
 
+  const todayPaperRef = React.useRef<HTMLDivElement>(null);
+  const pastPaperRef = React.useRef<HTMLDivElement>(null);
+
+  const [todayHasFocus, setTodayHasFocus] = useState(false);
+  const [pastHasFocus, setPastHasFocus] = useState(true);
+
   return (
-    <Paper variant="shadowed" className={styles["daily-journal"]}>
-      <SimpleBar
-        className={styles["daily-journal-scroller"]}
-        scrollableNodeProps={{ onScroll, ref: scrollRef }}
+    <div className={styles["daily-journal"]}>
+      <Paper
+        ref={todayPaperRef}
+        onMouseDown={() => {
+          setTodayHasFocus(true);
+          setPastHasFocus(false);
+        }}
+        className={cx(
+          styles["today-paper"],
+          todayHasFocus && styles["focused"]
+        )}
+        variant="shadowed"
       >
-        {todayEntryComponent}
-        <div className={styles["past-entries"]}>{entryEditorComponents}</div>
-      </SimpleBar>
-    </Paper>
+        <SimpleBar className={styles["daily-journal-scroller"]}>
+          {todayEntryComponent}
+        </SimpleBar>
+      </Paper>
+      <Paper
+        ref={pastPaperRef}
+        onMouseDown={() => {
+          setTodayHasFocus(false);
+          setPastHasFocus(true);
+        }}
+        className={cx(styles["past-paper"], pastHasFocus && styles["focused"])}
+        variant="shadowed"
+      >
+        <SimpleBar
+          className={styles["daily-journal-scroller"]}
+          scrollableNodeProps={{ onScroll, ref: scrollRef }}
+        >
+          <div className={styles["past-entries"]}>{entryEditorComponents}</div>
+        </SimpleBar>
+      </Paper>
+    </div>
   );
 };

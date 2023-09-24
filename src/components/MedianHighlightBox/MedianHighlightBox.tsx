@@ -185,7 +185,7 @@ export const MedianHighlightBox: React.FunctionComponent<
           <Typography
             variant="body2"
             display="flex"
-            color={theme.palette.onPrimaryHighEmphasis}
+            color={theme.palette.onSurfaceMediumEmphasis}
           >
             {relation.predicate}&nbsp;
           </Typography>
@@ -223,7 +223,7 @@ export const MedianHighlightBox: React.FunctionComponent<
           highlightIds?.filter((id) => id !== highlightId)
         );
       }}
-      variant="shadowed"
+      variant="translucent"
       onClick={onCardClick}
       className={cx(highlightBoxSelected && styles["selected"], styles["box"])}
       ref={boxRef}
