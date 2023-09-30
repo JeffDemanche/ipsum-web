@@ -12,8 +12,6 @@ export const MedianSelectionSection: React.FunctionComponent = () => {
     highlightId: selectedHighlightIds[0],
   });
 
-  console.log(selectedHighlightIds[0]);
-
   const highlightBoxes = useMemo(() => {
     if (!searchResults || selectedHighlightIds.length !== 1) {
       return null;

@@ -1,10 +1,9 @@
 import { Paper } from "@mui/material";
-import { DailyJournalLayer } from "components/DiptychContext";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import SimpleBar from "simplebar-react";
 import styles from "./DailyJournal.less";
 import { useDebouncedCallback } from "util/hooks";
-import { useModifySearchParams } from "util/url";
+import { DailyJournalURLLayer, useModifySearchParams } from "util/url";
 import { IpsumDay, useDateString } from "util/dates";
 import { JournalEntryToday } from "./JournalEntryToday";
 import { JournalEntryPast } from "./JournalEntryPast";
@@ -19,7 +18,7 @@ const DailyJournalQuery = gql(`
 `);
 
 interface DailyJournalProps {
-  layer: DailyJournalLayer;
+  layer: DailyJournalURLLayer;
   showToday?: boolean;
 }
 

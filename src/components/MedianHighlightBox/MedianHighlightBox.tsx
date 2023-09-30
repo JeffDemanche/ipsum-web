@@ -74,15 +74,14 @@ export const MedianHighlightBox: React.FunctionComponent<
     "entry-printed-date-nice"
   );
 
-  const { setTopLayer, setTopConnection } = useContext(DiptychContext);
+  const { pushLayer } = useContext(DiptychContext);
 
   const onArcClick = useCallback(
     (arcId?: string, e?: React.MouseEvent) => {
       e.stopPropagation();
-      arcId &&
-        setTopLayer({ type: "arc_detail", connectionId: highlightId, arcId });
+      arcId && pushLayer({ type: "arc_detail", arcId });
     },
-    [highlightId, setTopLayer]
+    [pushLayer]
   );
 
   const {
@@ -135,15 +134,6 @@ export const MedianHighlightBox: React.FunctionComponent<
       ? new IpsumArcColor(firstArc.color).toIpsumColor(colorParams).toRgbaCSS()
       : "white";
   }, [firstArc.color, firstArc?.id, highlightBoxSelected, highlightHovered]);
-
-  const onCloseClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setSelectedHighlightIds([]);
-      setTopConnection(undefined);
-    },
-    [setSelectedHighlightIds, setTopConnection]
-  );
 
   const onDeleteClick = useCallback(
     (e: React.MouseEvent) => {
@@ -237,7 +227,7 @@ export const MedianHighlightBox: React.FunctionComponent<
         >
           <div className={styles["details-options"]}>
             <Tooltip title="Close highlight">
-              <IconButton size="small" color="default" onClick={onCloseClick}>
+              <IconButton size="small" color="default">
                 <ArrowLeftRounded />
               </IconButton>
             </Tooltip>

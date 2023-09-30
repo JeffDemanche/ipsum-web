@@ -1,13 +1,13 @@
 import { ArcDetail } from "components/ArcDetail";
-import { DiptychContext, DiptychLayer } from "components/DiptychContext";
+import { DiptychContext } from "components/DiptychContext";
 import { DailyJournal } from "components/DailyJournal";
 import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./DiptychColumn.less";
-import { LayerContextProvider } from "./LayerContext";
+import { URLLayer } from "util/url";
 
 interface DiptychColumnProps {
   diptychIndex: number;
-  layers: DiptychLayer[];
+  layers: URLLayer[];
 }
 
 export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
@@ -15,33 +15,21 @@ export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
   layers,
 }) => {
   const topMostLayer = layers[layers.length - 1];
-
-  const { setLayer } = useContext(DiptychContext);
-
-  const closeColumn = useCallback(() => {
-    setLayer(diptychIndex, undefined);
-  }, [diptychIndex, setLayer]);
+  const secondTopMostLayer = layers[layers.length - 2];
 
   const content = useMemo(() => {
     switch (topMostLayer.type) {
-      case "DailyJournal":
+      case "daily_journal":
         return <DailyJournal layer={topMostLayer}></DailyJournal>;
-      case "ArcDetail":
+      case "arc_detail":
         return (
           <ArcDetail
             arcId={topMostLayer.arcId}
-            incomingHighlightId={topMostLayer.diptychMedian.connectionId}
-            closeColumn={closeColumn}
+            incomingHighlightId={secondTopMostLayer?.highlightTo}
           ></ArcDetail>
         );
-      case "ConnectionOnly":
-        return null;
     }
-  }, [closeColumn, topMostLayer]);
+  }, [secondTopMostLayer?.highlightTo, topMostLayer]);
 
-  return (
-    <LayerContextProvider diptychLayer={topMostLayer}>
-      <div className={styles["diptych-layer"]}>{content}</div>
-    </LayerContextProvider>
-  );
+  return <div className={styles["diptych-layer"]}>{content}</div>;
 };

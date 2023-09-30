@@ -1,20 +1,14 @@
 import { DiptychContext } from "components/DiptychContext";
-import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import { Median } from "components/Median";
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import styles from "./Diptych.less";
 import { DiptychColumn } from "./DiptychColumn";
 
 export const Diptych: React.FunctionComponent = () => {
-  const { selectedHighlightIds } = useContext(HighlightSelectionContext);
-  const { layersBySide, layers } = useContext(DiptychContext);
+  const { layers } = useContext(DiptychContext);
 
-  const showMedian = useMemo(
-    () =>
-      selectedHighlightIds?.length === 1 ||
-      (layers[1]?.type === "ArcDetail" && layers[1]?.diptychMedian),
-    [layers, selectedHighlightIds?.length]
-  );
+  const leftHandLayer = layers.at(-2) ?? layers[0];
+  const rightHandLayer = layers.length > 1 ? layers.at(-1) : undefined;
 
   return (
     <div className={styles["diptych-container"]}>
@@ -22,19 +16,19 @@ export const Diptych: React.FunctionComponent = () => {
         <div className={styles["column-1"]}>
           <DiptychColumn
             diptychIndex={0}
-            layers={layersBySide[0]}
+            layers={[leftHandLayer]}
           ></DiptychColumn>
         </div>
       )}
-      {showMedian && <Median></Median>}
-      {layers[1]?.type === "ArcDetail" && layers[1]?.arcId && (
+      {rightHandLayer && (
         <div className={styles["column-2"]}>
           <DiptychColumn
             diptychIndex={1}
-            layers={layersBySide[1]}
+            layers={[rightHandLayer]}
           ></DiptychColumn>
         </div>
       )}
+      <Median />
     </div>
   );
 };

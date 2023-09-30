@@ -10,35 +10,23 @@ import { ArcDetailProvider } from "./ArcDetailContext";
 interface ArcDetailProps {
   arcId: string;
   incomingHighlightId?: string;
-  closeColumn: () => void;
 }
 
 export const ArcDetail: React.FunctionComponent<ArcDetailProps> = ({
   arcId,
   incomingHighlightId,
-  closeColumn,
 }) => {
   return (
     <ArcDetailProvider arcId={arcId} incomingHighlightId={incomingHighlightId}>
-      <ArcDetailWithProvider closeColumn={closeColumn}></ArcDetailWithProvider>
+      <ArcDetailWithProvider></ArcDetailWithProvider>
     </ArcDetailProvider>
   );
 };
 
-interface ArcDetailWithProviderProps {
-  closeColumn: () => void;
-}
-
-const ArcDetailWithProvider: React.FunctionComponent<
-  ArcDetailWithProviderProps
-> = ({ closeColumn }) => {
+const ArcDetailWithProvider: React.FunctionComponent = () => {
   return (
     <Paper className={styles["arc-detail"]} variant="shadowed">
-      <IconButton
-        onClick={() => {
-          closeColumn();
-        }}
-      >
+      <IconButton onClick={() => {}}>
         <Close></Close>
       </IconButton>
       <ArcDetailPrefsBox></ArcDetailPrefsBox>
