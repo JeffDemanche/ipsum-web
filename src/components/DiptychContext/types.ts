@@ -1,16 +1,16 @@
 import { URLLayer } from "util/url";
 
-interface HighlightBreadcrumb {
+export interface HighlightBreadcrumb {
   type: "highlight";
   highlightId: string;
 }
 
-interface ArcBreadcrumb {
+export interface ArcBreadcrumb {
   type: "arc";
   arcId: string;
 }
 
-interface JournalEntryBreadcrumb {
+export interface JournalEntryBreadcrumb {
   type: "journal_entry";
   journalEntryId?: string;
 }

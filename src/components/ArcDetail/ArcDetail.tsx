@@ -3,35 +3,32 @@ import { IconButton, Paper } from "@mui/material";
 import { ArcDetailOntologySection } from "components/ArcDetailOntologySection";
 import { ArcDetailPrefsBox } from "components/ArcDetailPrefsBox";
 import { ArcDetailWikiSection } from "components/ArcDetailWikiSection";
-import React from "react";
+import { LayerContext } from "components/Diptych";
+import React, { useContext } from "react";
 import styles from "./ArcDetail.less";
 import { ArcDetailProvider } from "./ArcDetailContext";
 
-interface ArcDetailProps {
-  arcId: string;
-  incomingHighlightId?: string;
-}
+export const ArcDetail: React.FunctionComponent = () => {
+  const { layer, previousLayer } = useContext(LayerContext);
+  if (layer.type !== "arc_detail") {
+    throw new Error("ArcDetail component used outside of arc_detail layer");
+  }
 
-export const ArcDetail: React.FunctionComponent<ArcDetailProps> = ({
-  arcId,
-  incomingHighlightId,
-}) => {
   return (
-    <ArcDetailProvider arcId={arcId} incomingHighlightId={incomingHighlightId}>
-      <ArcDetailWithProvider></ArcDetailWithProvider>
+    <ArcDetailProvider
+      arcId={layer.arcId}
+      incomingHighlightId={
+        previousLayer?.highlightTo ?? previousLayer?.highlightFrom
+      }
+    >
+      <Paper className={styles["arc-detail"]} variant="shadowed">
+        <IconButton onClick={() => {}}>
+          <Close></Close>
+        </IconButton>
+        <ArcDetailPrefsBox></ArcDetailPrefsBox>
+        <ArcDetailOntologySection></ArcDetailOntologySection>
+        <ArcDetailWikiSection></ArcDetailWikiSection>
+      </Paper>
     </ArcDetailProvider>
-  );
-};
-
-const ArcDetailWithProvider: React.FunctionComponent = () => {
-  return (
-    <Paper className={styles["arc-detail"]} variant="shadowed">
-      <IconButton onClick={() => {}}>
-        <Close></Close>
-      </IconButton>
-      <ArcDetailPrefsBox></ArcDetailPrefsBox>
-      <ArcDetailOntologySection></ArcDetailOntologySection>
-      <ArcDetailWikiSection></ArcDetailWikiSection>
-    </Paper>
   );
 };

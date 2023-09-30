@@ -1,15 +1,22 @@
 import { Paper } from "@mui/material";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import SimpleBar from "simplebar-react";
 import styles from "./DailyJournal.less";
 import { useDebouncedCallback } from "util/hooks";
-import { DailyJournalURLLayer, useModifySearchParams } from "util/url";
+import { useModifySearchParams } from "util/url";
 import { IpsumDay, useDateString } from "util/dates";
 import { JournalEntryToday } from "./JournalEntryToday";
 import { JournalEntryPast } from "./JournalEntryPast";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 import cx from "classnames";
+import { LayerContext } from "components/Diptych";
 
 const DailyJournalQuery = gql(`
   query DailyJournal {
@@ -18,14 +25,17 @@ const DailyJournalQuery = gql(`
 `);
 
 interface DailyJournalProps {
-  layer: DailyJournalURLLayer;
   showToday?: boolean;
 }
 
 export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
-  layer,
   showToday = true,
 }) => {
+  const { layer } = useContext(LayerContext);
+  if (layer.type !== "daily_journal") {
+    throw new Error("DailyJournal must be used in a DailyJournal layer");
+  }
+
   const { data } = useQuery(DailyJournalQuery);
 
   const allEntryKeys = useMemo(() => {

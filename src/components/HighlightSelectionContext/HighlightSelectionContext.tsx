@@ -5,9 +5,8 @@
 
 import { useQuery } from "@apollo/client";
 import React, { useCallback, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
 import { gql } from "util/apollo";
-import { dataToSearchParams, urlToData } from "util/url";
+import { urlToData, useModifySearchParams } from "util/url";
 
 interface HighlightSelectionContextValue {
   hoveredHighlightIds: string[] | undefined;
@@ -44,9 +43,7 @@ const HighlightSelectionProviderQuery = gql(`
 export const HighlightSelectionProvider: React.FC<
   HighlightSelectionProviderProps
 > = ({ children }) => {
-  const navigate = useNavigate();
-
-  const location = useLocation();
+  const modifySearchParams = useModifySearchParams<"journal">();
 
   const { data } = useQuery(HighlightSelectionProviderQuery, {
     variables: {
@@ -63,13 +60,11 @@ export const HighlightSelectionProvider: React.FC<
 
   const setSelectedHighlightIds = useCallback(
     (highlights: string[]) => {
-      const newParams = dataToSearchParams<"journal">({
-        ...urlToData<"journal">(window.location.href),
-        highlight: highlights,
+      modifySearchParams((searchParams) => {
+        return { ...searchParams, highlight: highlights };
       });
-      navigate({ search: newParams }, { replace: false });
     },
-    [navigate]
+    [modifySearchParams]
   );
 
   const [hoveredHighlightIds, setHoveredHighlightIds] =
