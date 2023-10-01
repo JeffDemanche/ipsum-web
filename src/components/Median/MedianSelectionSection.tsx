@@ -6,21 +6,21 @@ import { useHighlightSearch } from "util/highlight-search";
 import SimpleBar from "simplebar-react";
 
 export const MedianSelectionSection: React.FunctionComponent = () => {
-  const { selectedHighlightIds } = useContext(HighlightSelectionContext);
+  const { selectedHighlightId } = useContext(HighlightSelectionContext);
 
   const { searchResults } = useHighlightSearch({
-    highlightId: selectedHighlightIds[0],
+    highlightId: selectedHighlightId,
   });
 
   const highlightBoxes = useMemo(() => {
-    if (!searchResults || selectedHighlightIds.length !== 1) {
+    if (!searchResults || !selectedHighlightId) {
       return null;
     } else {
       return searchResults.map((highlight, i) => (
         <MedianHighlightBox key={i} highlightId={highlight.id} />
       ));
     }
-  }, [searchResults, selectedHighlightIds]);
+  }, [searchResults, selectedHighlightId]);
 
   return (
     <SimpleBar className={styles["selection-section"]}>

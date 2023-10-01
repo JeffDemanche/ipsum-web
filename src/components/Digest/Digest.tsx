@@ -4,6 +4,7 @@ import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./Digest.less";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
+import { LayerContext } from "components/Diptych";
 
 interface DigestProps {
   entryKey: string;
@@ -22,6 +23,7 @@ const DigestQuery = gql(`
 
 export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
   const { data } = useQuery(DigestQuery, { variables: { entryKey } });
+  const { layerIndex } = useContext(LayerContext);
 
   const highlights = useMemo(
     () => data?.entry?.highlights ?? [],
@@ -29,22 +31,22 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
   );
 
   const {
-    selectedHighlightIds,
-    setSelectedHighlightIds,
+    selectedHighlightId,
+    setSelectedHighlightId,
     hoveredHighlightIds,
     setHoveredHighlightIds,
   } = useContext(HighlightSelectionContext);
 
   const tokenSelected = useCallback(
-    (highlightId: string) => selectedHighlightIds?.includes(highlightId),
-    [selectedHighlightIds]
+    (highlightId: string) => selectedHighlightId === highlightId,
+    [selectedHighlightId]
   );
 
   const tokenHighlighted = useCallback(
     (highlightId: string) =>
-      selectedHighlightIds?.includes(highlightId) ||
+      selectedHighlightId === highlightId ||
       hoveredHighlightIds?.includes(highlightId),
-    [hoveredHighlightIds, selectedHighlightIds]
+    [hoveredHighlightIds, selectedHighlightId]
   );
 
   const entryDigests = useMemo(() => {
@@ -64,7 +66,8 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
                   setHoveredHighlightIds(undefined);
                 }}
                 onClick={() => {
-                  setSelectedHighlightIds([highlight.id]);
+                  console.log(highlight.id);
+                  setSelectedHighlightId(highlight.id, layerIndex, entryKey);
                 }}
               ></HighlightTag>
             </React.Fragment>
@@ -73,9 +76,11 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
       </div>
     );
   }, [
+    entryKey,
     highlights,
+    layerIndex,
     setHoveredHighlightIds,
-    setSelectedHighlightIds,
+    setSelectedHighlightId,
     tokenHighlighted,
   ]);
 

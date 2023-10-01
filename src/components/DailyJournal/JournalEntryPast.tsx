@@ -49,7 +49,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
         const onlySelectionChanges = EditorState.forceSelection(
           EditorState.createWithContent(
             editorState.getCurrentContent(),
-            decorator
+            decorator(entryKey)
           ),
           newEditorState.getSelection()
         );
@@ -58,7 +58,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
         setEditorState(newEditorState);
       }
     },
-    [editorState, setEditorState]
+    [editorState, entryKey, setEditorState]
   );
 
   const onFocus = useCallback(() => {

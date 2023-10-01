@@ -9,10 +9,12 @@ import { IpsumArcColor, IpsumColor, multiplyIpsumArcColors } from "util/colors";
 import { IpsumEntityData } from "util/entities";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
+import { LayerContext } from "components/Diptych";
 
 // Draft doesn't provide this type, this is inferred from logging the props
 // value.
 interface DecoratorProps {
+  entryKey: string;
   blockKey: string;
   contentState: ContentState;
   decoratedText: string;
@@ -66,6 +68,8 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     variables: { highlightIds: entityHighlightIds },
   });
 
+  const { layerIndex } = useContext(LayerContext);
+
   const highlights = useMemo(() => data?.highlights ?? [], [data?.highlights]);
 
   const arcs = useMemo(
@@ -80,8 +84,10 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
   const {
     hoveredHighlightIds,
     setHoveredHighlightIds,
-    selectedHighlightIds,
-    setSelectedHighlightIds,
+    selectedHighlightId,
+    setSelectedHighlightId,
+    ambiguouslySelectedHighlightIds,
+    setAmbiguouslySelectedHighlightIds,
   } = useContext(HighlightSelectionContext);
 
   const hoveredHighlights = useMemo(
@@ -92,12 +98,9 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     [highlights, hoveredHighlightIds]
   );
 
-  const selectedHighlights = useMemo(
-    () =>
-      highlights.filter((highlight) =>
-        selectedHighlightIds?.includes(highlight.id)
-      ),
-    [highlights, selectedHighlightIds]
+  const selectedHighlight = useMemo(
+    () => highlights.find((highlight) => selectedHighlightId === highlight.id),
+    [highlights, selectedHighlightId]
   );
 
   const isHovered = useMemo(
@@ -107,12 +110,11 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     [entityHighlightIds, hoveredHighlightIds]
   );
 
-  const someHighlightsSelected = !!selectedHighlights?.length;
-
   const multipleHighlightsSelected =
-    selectedHighlights && selectedHighlights.length > 1;
+    ambiguouslySelectedHighlightIds &&
+    ambiguouslySelectedHighlightIds.length > 1;
 
-  const isHighlighted = isHovered || someHighlightsSelected;
+  const isHighlighted = isHovered || !!selectedHighlight;
 
   const allArcsIpsumColor = multiplyIpsumArcColors(
     Object.values(highlights)
@@ -127,9 +129,7 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     { saturation: 100, lightness: 50 }
   );
   const selectedArcsIpsumColor = multiplyIpsumArcColors(
-    selectedHighlights
-      ?.filter((h) => !!h?.arc?.id)
-      .map((highlight) => arcs.find((a) => a.id === highlight.arc.id)?.color),
+    [arcs.find((a) => a.id === selectedHighlight?.arc.id)?.color],
     { saturation: 100, lightness: 50 }
   );
 
@@ -137,7 +137,7 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
   if (isHovered) {
     appliedIpsumColor = hoveredArcsIpsumColor;
   } else {
-    if (someHighlightsSelected) {
+    if (selectedHighlight) {
       appliedIpsumColor = selectedArcsIpsumColor;
     } else {
       appliedIpsumColor = allArcsIpsumColor;
@@ -177,7 +177,7 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
         }}
         onClick={() => {
           if (ctrlKey && entityHighlightIds) {
-            setSelectedHighlightIds(entityHighlightIds);
+            setAmbiguouslySelectedHighlightIds(entityHighlightIds);
           }
         }}
         className={styles.highlight}
@@ -189,12 +189,12 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
         <HighlightDisambiguator
           highlightIds={entityHighlightIds}
           onHighlightSelected={(highlightId: string) => {
-            setSelectedHighlightIds([highlightId]);
+            setSelectedHighlightId(highlightId, layerIndex, props.entryKey);
           }}
           open={disambiguatorOpen}
           anchorEl={ref.current}
           onClickAway={() => {
-            setSelectedHighlightIds(undefined);
+            setSelectedHighlightId(undefined, layerIndex, props.entryKey);
           }}
         ></HighlightDisambiguator>
       )}

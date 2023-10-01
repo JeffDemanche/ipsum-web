@@ -147,7 +147,10 @@ export const useEntryEditor = ({
         stringifyContentState(editorState?.getCurrentContent())
     ) {
       setEditorState(() =>
-        EditorState.createWithContent(contentStateFromState, decorator)
+        EditorState.createWithContent(
+          contentStateFromState,
+          decorator(entryKey)
+        )
       );
     }
   }, [contentStateFromState, editorState, entry, entryKey, focusedEditorKey]);

@@ -1,12 +1,37 @@
+import { Typography } from "@mui/material";
 import { JournalEntryBreadcrumb } from "components/DiptychContext";
 import React from "react";
+import { useQuery } from "@apollo/client";
+import { gql } from "util/apollo";
+import styles from "./Breadcrumb.less";
+import cx from "classnames";
 
 interface BreadcrumbJournalEntryProps {
   breadcrumb: JournalEntryBreadcrumb;
 }
 
+const BreadcrumbJournalEntryQuery = gql(`
+  query BreadcrumbJournalEntryQuery($journalEntryId: ID!) {
+    journalEntry(entryKey: $journalEntryId) {
+      entryKey
+    }
+  }
+`);
+
 export const BreadcrumbJournalEntry: React.FunctionComponent<
   BreadcrumbJournalEntryProps
 > = ({ breadcrumb }) => {
-  return <div>journal entry</div>;
+  const { data } = useQuery(BreadcrumbJournalEntryQuery, {
+    variables: {
+      journalEntryId: breadcrumb.journalEntryId,
+    },
+  });
+
+  return (
+    <div
+      className={cx(styles["breadcrumb"], styles["highlight-journal-entry"])}
+    >
+      <Typography>{data.journalEntry.entryKey}</Typography>
+    </div>
+  );
 };

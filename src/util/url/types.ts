@@ -58,7 +58,7 @@ interface URLSearchParams {
 interface URLJournalView {
   layers?: URLLayer[];
   searchResults?: URLSearchParams;
-  highlight?: string[];
+  highlight?: string;
 }
 
 type EmptySearchData = unknown;

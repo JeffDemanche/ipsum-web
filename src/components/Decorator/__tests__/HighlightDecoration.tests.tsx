@@ -59,6 +59,7 @@ describe("HighlightDecoration", () => {
     const { unmount } = render(
       <ApolloProvider client={client}>
         <HighlightDecoration
+          entryKey="01-01-2020"
           blockKey={contentStateWithArc.getFirstBlock().getKey()}
           contentState={contentStateWithArc}
           decoratedText="brown fox"

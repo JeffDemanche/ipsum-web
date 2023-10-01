@@ -84,12 +84,8 @@ export const MedianHighlightBox: React.FunctionComponent<
     [pushLayer]
   );
 
-  const {
-    selectedHighlightIds,
-    setSelectedHighlightIds,
-    hoveredHighlightIds,
-    setHoveredHighlightIds,
-  } = useContext(HighlightSelectionContext);
+  const { selectedHighlightId, hoveredHighlightIds, setHoveredHighlightIds } =
+    useContext(HighlightSelectionContext);
 
   const modifySearchParams = useModifySearchParams<"journal">();
 
@@ -111,7 +107,7 @@ export const MedianHighlightBox: React.FunctionComponent<
   }, [highlight.entry.date, modifySearchParams]);
 
   const highlightHovered = hoveredHighlightIds?.includes(highlightId);
-  const highlightBoxSelected = selectedHighlightIds.includes(highlightId);
+  const highlightBoxSelected = selectedHighlightId === highlightId;
 
   const boxRef = useRef<HTMLDivElement>(null);
 

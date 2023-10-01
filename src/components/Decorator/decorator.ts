@@ -15,6 +15,7 @@ const strategy = (
   }, callback);
 };
 
-export const decorator = new CompositeDecorator([
-  { strategy, component: HighlightDecoration },
-]);
+export const decorator = (entryKey: string) =>
+  new CompositeDecorator([
+    { strategy, component: HighlightDecoration, props: { entryKey } },
+  ]);

@@ -1,5 +1,6 @@
 import { ArcBreadcrumb } from "components/DiptychContext";
 import React from "react";
+import styles from "./Breadcrumb.less";
 
 interface BreadcrumbArcProps {
   breadcrumb: ArcBreadcrumb;
@@ -8,5 +9,5 @@ interface BreadcrumbArcProps {
 export const BreadcrumbArc: React.FunctionComponent<BreadcrumbArcProps> = ({
   breadcrumb,
 }) => {
-  return <div>arc</div>;
+  return <div className={styles["breadcrumb"]}>arc</div>;
 };

@@ -75,6 +75,8 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
       }
     });
 
+    breadcrumbs.pop();
+
     return breadcrumbs;
   }, [breadcrumbForLayer, urlLayers]);
 

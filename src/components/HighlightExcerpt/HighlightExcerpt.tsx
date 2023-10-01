@@ -44,8 +44,12 @@ export const HighlightExcerpt: React.FunctionComponent<
   });
 
   const editorState = useMemo(
-    () => EditorState.createWithContent(excerptContentState, decorator),
-    [excerptContentState]
+    () =>
+      EditorState.createWithContent(
+        excerptContentState,
+        decorator(entry.entryKey)
+      ),
+    [entry.entryKey, excerptContentState]
   );
 
   const onEditorChange = useCallback(() => {}, []);

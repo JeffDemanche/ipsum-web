@@ -12,15 +12,26 @@ interface HighlightSelectionContextValue {
   hoveredHighlightIds: string[] | undefined;
   setHoveredHighlightIds: React.Dispatch<React.SetStateAction<string[]>>;
 
-  selectedHighlightIds: string[] | undefined;
-  setSelectedHighlightIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedHighlightId: string | undefined;
+  setSelectedHighlightId: (
+    highlight: string,
+    layerIndex: number,
+    entryKey?: string
+  ) => void;
+
+  ambiguouslySelectedHighlightIds: string[] | undefined;
+  setAmbiguouslySelectedHighlightIds: React.Dispatch<
+    React.SetStateAction<string[]>
+  >;
 }
 
 const defaultHighlightSelectionContext: HighlightSelectionContextValue = {
   hoveredHighlightIds: undefined,
   setHoveredHighlightIds: () => {},
-  selectedHighlightIds: undefined,
-  setSelectedHighlightIds: () => {},
+  selectedHighlightId: undefined,
+  setSelectedHighlightId: () => {},
+  ambiguouslySelectedHighlightIds: undefined,
+  setAmbiguouslySelectedHighlightIds: () => {},
 };
 
 export const HighlightSelectionContext =
@@ -33,8 +44,8 @@ interface HighlightSelectionProviderProps {
 }
 
 const HighlightSelectionProviderQuery = gql(`
-  query HighlightSelectionProvider($highlightIds: [ID!]) {
-    highlights(ids: $highlightIds) {
+  query HighlightSelectionProvider($highlightId: ID!) {
+    highlight(id: $highlightId) {
       id
     }
   }
@@ -47,21 +58,33 @@ export const HighlightSelectionProvider: React.FC<
 
   const { data } = useQuery(HighlightSelectionProviderQuery, {
     variables: {
-      highlightIds: urlToData<"journal">(window.location.href).highlight,
+      highlightId: urlToData<"journal">(window.location.href).highlight,
     },
     skip: !urlToData<"journal">(window.location.href).highlight,
   });
 
-  const selectedHighlights = data?.highlights ?? [];
+  const selectedHighlight = data?.highlight;
 
-  const selectedHighlightIds = selectedHighlights?.map(
-    (highlight) => highlight.id
-  );
+  const selectedHighlightId = selectedHighlight?.id;
 
-  const setSelectedHighlightIds = useCallback(
-    (highlights: string[]) => {
+  const setSelectedHighlightId = useCallback(
+    (highlight: string, layerIndex: number, entryKey?: string) => {
       modifySearchParams((searchParams) => {
-        return { ...searchParams, highlight: highlights };
+        return {
+          ...searchParams,
+          layers: [
+            ...searchParams.layers.slice(0, layerIndex),
+            {
+              ...searchParams.layers[layerIndex],
+              highlightFrom: highlight,
+              highlightFromEntryKey: entryKey,
+            },
+            ...searchParams.layers.slice(layerIndex + 1),
+          ],
+          // TODO
+          searchResults: { and: [{ or: [{}] }] },
+          highlight,
+        };
       });
     },
     [modifySearchParams]
@@ -70,13 +93,18 @@ export const HighlightSelectionProvider: React.FC<
   const [hoveredHighlightIds, setHoveredHighlightIds] =
     useState<string[]>(undefined);
 
+  const [ambiguouslySelectedHighlightIds, setAmbiguouslySelectedHighlightIds] =
+    useState(undefined);
+
   return (
     <HighlightSelectionContext.Provider
       value={{
         hoveredHighlightIds,
         setHoveredHighlightIds,
-        selectedHighlightIds,
-        setSelectedHighlightIds,
+        selectedHighlightId,
+        setSelectedHighlightId,
+        ambiguouslySelectedHighlightIds,
+        setAmbiguouslySelectedHighlightIds,
       }}
     >
       {children}
