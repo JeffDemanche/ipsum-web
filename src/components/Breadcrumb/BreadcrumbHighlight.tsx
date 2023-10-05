@@ -2,7 +2,7 @@ import { HighlightBreadcrumb } from "components/DiptychContext";
 import React from "react";
 import styles from "./Breadcrumb.less";
 import cx from "classnames";
-import { Typography } from "@mui/material";
+import { Card, Typography } from "@mui/material";
 
 interface BreadcrumbHighlightProps {
   breadcrumb: HighlightBreadcrumb;
@@ -13,7 +13,9 @@ export const BreadcrumbHighlight: React.FunctionComponent<
 > = ({ breadcrumb }) => {
   return (
     <div className={cx(styles["breadcrumb"], styles["highlight-breadcrumb"])}>
-      <Typography>highlight</Typography>
+      <Card variant="translucent">
+        <Typography>highlight</Typography>
+      </Card>
     </div>
   );
 };

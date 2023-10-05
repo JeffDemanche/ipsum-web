@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client";
 import { gql } from "util/apollo";
 import styles from "./Breadcrumb.less";
 import cx from "classnames";
+import { parseIpsumDateTime } from "util/dates";
 
 interface BreadcrumbJournalEntryProps {
   breadcrumb: JournalEntryBreadcrumb;
@@ -14,6 +15,9 @@ const BreadcrumbJournalEntryQuery = gql(`
   query BreadcrumbJournalEntryQuery($journalEntryId: ID!) {
     journalEntry(entryKey: $journalEntryId) {
       entryKey
+      entry {
+        date
+      }
     }
   }
 `);
@@ -27,11 +31,17 @@ export const BreadcrumbJournalEntry: React.FunctionComponent<
     },
   });
 
+  const niceDate = parseIpsumDateTime(data.journalEntry.entry.date).toString(
+    "entry-printed-date-nice"
+  );
+
   return (
     <div
       className={cx(styles["breadcrumb"], styles["highlight-journal-entry"])}
     >
-      <Typography>{data.journalEntry.entryKey}</Typography>
+      <Typography variant="caption">
+        <a href="#">{niceDate}</a>
+      </Typography>
     </div>
   );
 };
