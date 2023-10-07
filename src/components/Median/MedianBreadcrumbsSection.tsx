@@ -9,7 +9,6 @@ export const MedianBreadcrumbsSection: React.FunctionComponent = () => {
   return (
     <div className={styles["breadcrumbs-section"]}>
       {orderedBreadcrumbs.map((breadcrumb, i) => {
-        console.log(breadcrumb);
         return <Breadcrumb key={i} breadcrumb={breadcrumb} />;
       })}
     </div>

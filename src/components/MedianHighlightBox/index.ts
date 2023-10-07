@@ -1,1 +1,0 @@
-export { MedianHighlightBox } from "./MedianHighlightBox";

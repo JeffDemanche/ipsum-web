@@ -17,8 +17,7 @@ import React, {
   useState,
 } from "react";
 import { IpsumArcColor } from "util/colors";
-import styles from "./MedianHighlightBox.less";
-import { HighlightSelectionContext } from "components/HighlightSelectionContext";
+import styles from "./HighlightBox.less";
 import cx from "classnames";
 import {
   createArc,
@@ -30,16 +29,22 @@ import {
 import { useQuery } from "@apollo/client";
 import { IpsumDay, parseIpsumDateTime } from "util/dates";
 import { theme } from "styles/styles";
-import { useModifySearchParams } from "util/url";
 import { Linker } from "components/Linker";
 import { HighlightAddReflectionForm } from "./HighlightAddReflectionForm";
 
-interface MedianHighlightBoxProps {
+interface HighlightBoxProps {
   highlightId: string;
+  variant?: "collapsed" | "expanded";
+
+  selected?: boolean;
+  onSelect?: (selected: boolean, day: IpsumDay) => void;
+
+  hovered?: boolean;
+  onHover?: (hovered: boolean) => void;
 }
 
-const MedianHighlightBoxQuery = gql(`
-  query MedianHighlightBox($highlightId: ID!) {
+const HighlightBoxQuery = gql(`
+  query HighlightBox($highlightId: ID!) {
     highlights(ids: [$highlightId]) {
       id
       entry {
@@ -60,10 +65,15 @@ const MedianHighlightBoxQuery = gql(`
   }
 `);
 
-export const MedianHighlightBox: React.FunctionComponent<
-  MedianHighlightBoxProps
-> = ({ highlightId }) => {
-  const { data } = useQuery(MedianHighlightBoxQuery, {
+export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
+  highlightId,
+  variant = "expanded",
+  selected,
+  onSelect,
+  hovered,
+  onHover,
+}) => {
+  const { data } = useQuery(HighlightBoxQuery, {
     variables: { highlightId },
   });
   const highlight = data?.highlights?.[0];
@@ -84,52 +94,35 @@ export const MedianHighlightBox: React.FunctionComponent<
     [pushLayer]
   );
 
-  const { selectedHighlightId, hoveredHighlightIds, setHoveredHighlightIds } =
-    useContext(HighlightSelectionContext);
-
-  const modifySearchParams = useModifySearchParams<"journal">();
-
   const onCardClick = useCallback(() => {
     const highlightDay = IpsumDay.fromIpsumDateTime(
       parseIpsumDateTime(highlight.entry.date)
     );
 
-    modifySearchParams((searchParams) => ({
-      ...searchParams,
-      layers: [
-        {
-          ...searchParams.layers[0],
-          focusedDate: highlightDay.toString("url-format"),
-        },
-        ...searchParams.layers.slice(1),
-      ],
-    }));
-  }, [highlight.entry.date, modifySearchParams]);
-
-  const highlightHovered = hoveredHighlightIds?.includes(highlightId);
-  const highlightBoxSelected = selectedHighlightId === highlightId;
+    onSelect?.(!selected, highlightDay);
+  }, [highlight.entry.date, onSelect, selected]);
 
   const boxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (highlightBoxSelected) {
+    if (selected) {
       boxRef.current.scrollIntoView({ behavior: "auto", block: "start" });
     }
-  }, [highlightBoxSelected]);
+  }, [selected]);
 
   const cardColor = useMemo(() => {
     let colorParams = { saturation: 30, lightness: 40 };
-    if (highlightHovered) {
+    if (hovered) {
       colorParams = { saturation: 30, lightness: 30 };
     }
-    if (highlightBoxSelected) {
+    if (selected) {
       colorParams = { saturation: 20, lightness: 20 };
     }
 
     return firstArc?.id
       ? new IpsumArcColor(firstArc.color).toIpsumColor(colorParams).toRgbaCSS()
       : "white";
-  }, [firstArc.color, firstArc?.id, highlightBoxSelected, highlightHovered]);
+  }, [firstArc.color, firstArc?.id, hovered, selected]);
 
   const onDeleteClick = useCallback(
     (e: React.MouseEvent) => {
@@ -199,22 +192,17 @@ export const MedianHighlightBox: React.FunctionComponent<
   return (
     <Card
       onMouseEnter={() => {
-        setHoveredHighlightIds((highlightIds) => [
-          ...(highlightIds ?? []),
-          highlightId,
-        ]);
+        onHover?.(true);
       }}
       onMouseLeave={() => {
-        setHoveredHighlightIds((highlightIds) =>
-          highlightIds?.filter((id) => id !== highlightId)
-        );
+        onHover?.(false);
       }}
       variant="translucent"
       onClick={onCardClick}
-      className={cx(highlightBoxSelected && styles["selected"], styles["box"])}
+      className={cx(selected && styles["selected"], styles["box"])}
       ref={boxRef}
     >
-      {highlightBoxSelected ? (
+      {selected ? (
         <div
           className={cx(
             styles["selected"],
@@ -291,7 +279,9 @@ export const MedianHighlightBox: React.FunctionComponent<
         </div>
       )}
 
-      <HighlightExcerpt highlightId={highlightId} />
+      {variant !== "collapsed" && (
+        <HighlightExcerpt highlightId={highlightId} />
+      )}
     </Card>
   );
 };
