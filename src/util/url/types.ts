@@ -12,7 +12,7 @@ export type BaseURLLayer = {
    * The entry key of the highlight linked to from this layer. Only valid if
    * `highlightFrom` is defined.
    */
-  highlightFromEntryKey?: string;
+  highlightFromUrlDate?: string;
 
   /**
    * The highlight which links *to* the next layer. This can be different from
@@ -24,7 +24,7 @@ export type BaseURLLayer = {
    * The entry key of the highlight which links to the next layer. Only valid if
    * `highlightFrom` and `highlightTo` are defined.
    */
-  highlightToEntryKey?: string;
+  highlightToUrlDate?: string;
 };
 
 export interface DailyJournalURLLayer extends BaseURLLayer {

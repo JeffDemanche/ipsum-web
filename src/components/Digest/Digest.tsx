@@ -5,6 +5,8 @@ import styles from "./Digest.less";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 import { LayerContext } from "components/Diptych";
+import { DiptychContext } from "components/DiptychContext";
+import { IpsumDay } from "util/dates";
 
 interface DigestProps {
   entryKey: string;
@@ -14,6 +16,7 @@ const DigestQuery = gql(`
   query Digest($entryKey: ID!) {
     entry(entryKey: $entryKey) {
       entryKey
+      date
       highlights {
         id
       }
@@ -30,12 +33,12 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
     [data?.entry?.highlights]
   );
 
-  const {
-    selectedHighlightId,
-    setSelectedHighlightId,
-    hoveredHighlightIds,
-    setHoveredHighlightIds,
-  } = useContext(HighlightSelectionContext);
+  const { hoveredHighlightIds, setHoveredHighlightIds } = useContext(
+    HighlightSelectionContext
+  );
+
+  const { setTopHighlightFrom, selectedHighlightId } =
+    useContext(DiptychContext);
 
   const tokenSelected = useCallback(
     (highlightId: string) => selectedHighlightId === highlightId,
@@ -66,8 +69,12 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
                   setHoveredHighlightIds(undefined);
                 }}
                 onClick={() => {
-                  console.log(highlight.id);
-                  setSelectedHighlightId(highlight.id, layerIndex, entryKey);
+                  setTopHighlightFrom(
+                    highlight.id,
+                    IpsumDay.fromString(data.entry?.date, "iso").toString(
+                      "url-format"
+                    )
+                  );
                 }}
               ></HighlightTag>
             </React.Fragment>
@@ -76,11 +83,10 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
       </div>
     );
   }, [
-    entryKey,
+    data.entry?.date,
     highlights,
-    layerIndex,
     setHoveredHighlightIds,
-    setSelectedHighlightId,
+    setTopHighlightFrom,
     tokenHighlighted,
   ]);
 

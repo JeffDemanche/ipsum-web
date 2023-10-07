@@ -9,7 +9,8 @@ import { IpsumArcColor, IpsumColor, multiplyIpsumArcColors } from "util/colors";
 import { IpsumEntityData } from "util/entities";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
-import { LayerContext } from "components/Diptych";
+import { DiptychContext } from "components/DiptychContext";
+import { IpsumDay } from "util/dates";
 
 // Draft doesn't provide this type, this is inferred from logging the props
 // value.
@@ -26,9 +27,17 @@ interface DecoratorProps {
 }
 
 const HighlightDecorationQuery = gql(`
-  query HighlightDecoration($highlightIds: [ID!]!) {
+  query HighlightDecoration($entryKey: ID!, $highlightIds: [ID!]!) {
+    entry(entryKey: $entryKey) {
+      entryKey
+      date
+    }
     highlights(ids: $highlightIds) {
       id
+      entry {
+        entryKey
+        date
+      }
       arc {
         id
         name
@@ -56,19 +65,14 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     [entityData.textArcAssignments]
   );
 
-  // const arcIds = useMemo(
-  //   () =>
-  //     entityData.textArcAssignments?.map((a) => a.arcId) ??
-  //     entityData.arcIds ??
-  //     [],
-  //   [entityData.arcIds, entityData.textArcAssignments]
-  // );
-
   const { data } = useQuery(HighlightDecorationQuery, {
-    variables: { highlightIds: entityHighlightIds },
+    variables: { entryKey: props.entryKey, highlightIds: entityHighlightIds },
   });
 
-  const { layerIndex } = useContext(LayerContext);
+  const entryDateUrlFormat = IpsumDay.fromString(
+    data.entry.date,
+    "iso"
+  ).toString("url-format");
 
   const highlights = useMemo(() => data?.highlights ?? [], [data?.highlights]);
 
@@ -84,11 +88,12 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
   const {
     hoveredHighlightIds,
     setHoveredHighlightIds,
-    selectedHighlightId,
-    setSelectedHighlightId,
     ambiguouslySelectedHighlightIds,
     setAmbiguouslySelectedHighlightIds,
   } = useContext(HighlightSelectionContext);
+
+  const { setTopHighlightFrom, selectedHighlightId } =
+    useContext(DiptychContext);
 
   const hoveredHighlights = useMemo(
     () =>
@@ -189,12 +194,12 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
         <HighlightDisambiguator
           highlightIds={entityHighlightIds}
           onHighlightSelected={(highlightId: string) => {
-            setSelectedHighlightId(highlightId, layerIndex, props.entryKey);
+            setTopHighlightFrom(highlightId, entryDateUrlFormat);
           }}
           open={disambiguatorOpen}
           anchorEl={ref.current}
           onClickAway={() => {
-            setSelectedHighlightId(undefined, layerIndex, props.entryKey);
+            setTopHighlightFrom(undefined, undefined);
           }}
         ></HighlightDisambiguator>
       )}

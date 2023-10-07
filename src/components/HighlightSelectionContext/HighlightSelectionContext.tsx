@@ -73,13 +73,12 @@ export const HighlightSelectionProvider: React.FC<
         return {
           ...searchParams,
           layers: [
-            ...searchParams.layers.slice(0, layerIndex),
+            ...searchParams.layers.slice(0, -1),
             {
               ...searchParams.layers[layerIndex],
               highlightFrom: highlight,
-              highlightFromEntryKey: entryKey,
+              highlightFromUrlDate: entryKey,
             },
-            ...searchParams.layers.slice(layerIndex + 1),
           ],
           // TODO
           searchResults: { and: [{ or: [{}] }] },

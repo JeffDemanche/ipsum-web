@@ -4,9 +4,11 @@ import React from "react";
 import { client } from "util/apollo";
 import {
   mockArcs,
+  mockEntries,
   mockHighlights,
   mockRelations,
 } from "util/apollo/__tests__/apollo-test-utils";
+import { IpsumDateTime } from "util/dates";
 import { IpsumEntityTransformer } from "util/entities";
 import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
 import { HighlightDecoration } from "../HighlightDecoration";
@@ -23,11 +25,24 @@ describe("HighlightDecoration", () => {
         outgoingRelations: [],
       },
     });
+    mockEntries({
+      "1/1/2020": {
+        __typename: "Entry",
+        entryKey: "1/1/2020",
+        history: {
+          __typename: "History",
+          dateCreated: IpsumDateTime.fromString(
+            "1/1/2020",
+            "entry-printed-date"
+          ).toString("iso"),
+        },
+      },
+    });
     mockHighlights({
       highlight_id: {
         __typename: "Highlight",
         id: "highlight_id",
-        entry: "",
+        entry: "1/1/2020",
         outgoingRelations: ["relation_id"],
       },
     });
@@ -59,7 +74,7 @@ describe("HighlightDecoration", () => {
     const { unmount } = render(
       <ApolloProvider client={client}>
         <HighlightDecoration
-          entryKey="01-01-2020"
+          entryKey="1/1/2020"
           blockKey={contentStateWithArc.getFirstBlock().getKey()}
           contentState={contentStateWithArc}
           decoratedText="brown fox"

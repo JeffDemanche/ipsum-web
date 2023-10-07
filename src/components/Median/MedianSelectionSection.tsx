@@ -4,16 +4,14 @@ import styles from "./MedianSelectionSection.less";
 import { HighlightBox } from "components/HighlightBox";
 import { useHighlightSearch } from "util/highlight-search";
 import SimpleBar from "simplebar-react";
-import { useModifySearchParams } from "util/url";
+import { DiptychContext } from "components/DiptychContext";
 
 export const MedianSelectionSection: React.FunctionComponent = () => {
-  const { selectedHighlightId } = useContext(HighlightSelectionContext);
+  const { setTopHighlightTo, selectedHighlightId } = useContext(DiptychContext);
 
   const { searchResults } = useHighlightSearch({
     highlightId: selectedHighlightId,
   });
-
-  const modifySearchParams = useModifySearchParams<"journal">();
 
   const { hoveredHighlightIds, setHoveredHighlightIds } = useContext(
     HighlightSelectionContext
@@ -40,17 +38,10 @@ export const MedianSelectionSection: React.FunctionComponent = () => {
           selected={highlight.id === selectedHighlightId}
           onSelect={(selected, highlightDay) => {
             if (selected) {
-              modifySearchParams((searchParams) => ({
-                ...searchParams,
-                layers: [
-                  {
-                    ...searchParams.layers[0],
-                    focusedDate: highlightDay.toString("url-format"),
-                  },
-                  ...searchParams.layers.slice(1),
-                ],
-                highlight: highlight.id,
-              }));
+              setTopHighlightTo(
+                highlight.id,
+                highlightDay.toString("url-format")
+              );
             }
           }}
         />
@@ -58,10 +49,10 @@ export const MedianSelectionSection: React.FunctionComponent = () => {
     }
   }, [
     hoveredHighlightIds,
-    modifySearchParams,
     searchResults,
     selectedHighlightId,
     setHoveredHighlightIds,
+    setTopHighlightTo,
   ]);
 
   return (

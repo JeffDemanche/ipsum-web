@@ -17,13 +17,13 @@ const documents = {
     "\n  query ArcDetailContext($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n      arcEntry {\n        entry {\n          entryKey\n        }\n      }\n    }\n  }\n": types.ArcDetailContextDocument,
     "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n    }\n  } \n": types.ArcDetailPrefsBoxDocument,
     "\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n      name\n    }\n  }\n": types.ArcTagDocument,
-    "\n  query BreadcrumbHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n": types.BreadcrumbHighlightDocument,
+    "\n  query BreadcrumbHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n      }\n    }\n  }\n": types.BreadcrumbHighlightDocument,
     "\n  query BreadcrumbJournalEntryQuery($journalEntryId: ID!) {\n    journalEntry(entryKey: $journalEntryId) {\n      entryKey\n      entry {\n        date\n      }\n    }\n  }\n": types.BreadcrumbJournalEntryQueryDocument,
     "\n  query DailyJournal {\n    journalEntryKeys\n  }\n": types.DailyJournalDocument,
     "\n  query PastDayReflections($deckId: ID, $day: String!) {\n    srsReviewsFromDay(deckId: $deckId, day: $day) {\n      id\n    }\n  }\n": types.PastDayReflectionsDocument,
     "\n  query TodayDayReflections($deckId: ID, $day: String!) {\n    srsCardsForReview(deckId: $deckId, day: $day) {\n      id\n      lastReviewed\n    }\n    srsReviewsFromDay(deckId: $deckId, day: $day) {\n      id\n      rating\n      beforeEF\n      beforeInterval\n      card {\n        id\n      }\n    }\n  }\n": types.TodayDayReflectionsDocument,
-    "\n  query HighlightDecoration($highlightIds: [ID!]!) {\n    highlights(ids: $highlightIds) {\n      id\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n": types.HighlightDecorationDocument,
-    "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      highlights {\n        id\n      }\n    }\n  }\n": types.DigestDocument,
+    "\n  query HighlightDecoration($entryKey: ID!, $highlightIds: [ID!]!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n    }\n    highlights(ids: $highlightIds) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n": types.HighlightDecorationDocument,
+    "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n      highlights {\n        id\n      }\n    }\n  }\n": types.DigestDocument,
     "\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n": types.UseJournalEntryEditorDocument,
     "\n  query HighlightAddReflectionForm($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      srsCards {\n        id\n      }\n    }\n  }\n": types.HighlightAddReflectionFormDocument,
     "\n  query HighlightBox($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightBoxDocument,
@@ -71,7 +71,7 @@ export function gql(source: "\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query BreadcrumbHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n"): (typeof documents)["\n  query BreadcrumbHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query BreadcrumbHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n      }\n    }\n  }\n"): (typeof documents)["\n  query BreadcrumbHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -91,11 +91,11 @@ export function gql(source: "\n  query TodayDayReflections($deckId: ID, $day: St
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query HighlightDecoration($highlightIds: [ID!]!) {\n    highlights(ids: $highlightIds) {\n      id\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n"): (typeof documents)["\n  query HighlightDecoration($highlightIds: [ID!]!) {\n    highlights(ids: $highlightIds) {\n      id\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query HighlightDecoration($entryKey: ID!, $highlightIds: [ID!]!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n    }\n    highlights(ids: $highlightIds) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n"): (typeof documents)["\n  query HighlightDecoration($entryKey: ID!, $highlightIds: [ID!]!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n    }\n    highlights(ids: $highlightIds) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      highlights {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      highlights {\n        id\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n      highlights {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n      highlights {\n        id\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
