@@ -280,7 +280,10 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
       )}
 
       {variant !== "collapsed" && (
-        <HighlightExcerpt highlightId={highlightId} />
+        <HighlightExcerpt
+          className={styles["excerpt"]}
+          highlightId={highlightId}
+        />
       )}
     </Card>
   );

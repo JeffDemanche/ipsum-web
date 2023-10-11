@@ -1,13 +1,35 @@
+import { useQuery } from "@apollo/client";
+import { Card } from "@mui/material";
 import { ArcBreadcrumb } from "components/DiptychContext";
 import React from "react";
+import { gql } from "util/apollo";
 import styles from "./Breadcrumb.less";
 
 interface BreadcrumbArcProps {
   breadcrumb: ArcBreadcrumb;
 }
 
+const BreadcrumbArcQuery = gql(`
+  query BreadcrumbArcQuery($arcId: ID!) {
+    arc(id: $arcId) {
+      id
+      color
+    }
+  }
+`);
+
 export const BreadcrumbArc: React.FunctionComponent<BreadcrumbArcProps> = ({
   breadcrumb,
 }) => {
-  return <div className={styles["breadcrumb"]}>arc</div>;
+  const { data } = useQuery(BreadcrumbArcQuery, {
+    variables: {
+      arcId: breadcrumb.arcId,
+    },
+  });
+
+  return (
+    <div className={styles["breadcrumb"]}>
+      <Card variant="translucent"></Card>
+    </div>
+  );
 };

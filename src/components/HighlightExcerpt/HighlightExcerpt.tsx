@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { useQuery } from "@apollo/client";
 import { Paper } from "@mui/material";
 import { decorator } from "components/Decorator";
@@ -11,6 +12,8 @@ import { useExcerptContentState } from "./useExcerpt";
 
 interface HighlightExcerptProps {
   highlightId: string;
+  className?: string;
+  maxWords?: number;
 }
 
 export const HighlightExcerptQuery = gql(`
@@ -27,7 +30,7 @@ export const HighlightExcerptQuery = gql(`
 
 export const HighlightExcerpt: React.FunctionComponent<
   HighlightExcerptProps
-> = ({ highlightId }) => {
+> = ({ highlightId, className, maxWords }) => {
   const {
     data: { highlights },
   } = useQuery(HighlightExcerptQuery, { variables: { highlightId } });
@@ -55,7 +58,10 @@ export const HighlightExcerpt: React.FunctionComponent<
   const onEditorChange = useCallback(() => {}, []);
 
   return (
-    <Paper sx={{ borderRadius: "0" }} className={styles["excerpt"]}>
+    <Paper
+      sx={{ borderRadius: "0" }}
+      className={cx(className, styles["excerpt"])}
+    >
       <Editor
         editorState={editorState}
         blockStyleFn={blockStyleFn}

@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Card, Typography } from "@mui/material";
 import { JournalEntryBreadcrumb } from "components/DiptychContext";
 import React from "react";
 import { useQuery } from "@apollo/client";
@@ -39,9 +39,11 @@ export const BreadcrumbJournalEntry: React.FunctionComponent<
     <div
       className={cx(styles["breadcrumb"], styles["highlight-journal-entry"])}
     >
-      <Typography variant="caption">
-        <a href="#">{niceDate}</a>
-      </Typography>
+      <Card variant="translucent">
+        <Typography variant="caption">
+          <a href="#">{niceDate}</a>
+        </Typography>
+      </Card>
     </div>
   );
 };
