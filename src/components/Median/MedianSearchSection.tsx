@@ -1,24 +1,22 @@
 import React, { useContext, useMemo } from "react";
 import { HighlightSelectionContext } from "components/HighlightSelectionContext";
-import styles from "./MedianSelectionSection.less";
+import styles from "./MedianSearchSection.less";
 import { HighlightBox } from "components/HighlightBox";
-import { useHighlightSearch } from "util/highlight-search";
+import { useHighlightSearch } from "util/search";
 import SimpleBar from "simplebar-react";
 import { DiptychContext } from "components/DiptychContext";
 
-export const MedianSelectionSection: React.FunctionComponent = () => {
+export const MedianSearchSection: React.FunctionComponent = () => {
   const { setTopHighlightTo, selectedHighlightId } = useContext(DiptychContext);
 
-  const { searchResults } = useHighlightSearch({
-    highlightId: selectedHighlightId,
-  });
+  const { searchResults } = useHighlightSearch();
 
   const { hoveredHighlightIds, setHoveredHighlightIds } = useContext(
     HighlightSelectionContext
   );
 
   const highlightBoxes = useMemo(() => {
-    if (!searchResults || !selectedHighlightId) {
+    if (!searchResults) {
       return null;
     } else {
       return searchResults.map((highlight, i) => (
@@ -56,8 +54,6 @@ export const MedianSelectionSection: React.FunctionComponent = () => {
   ]);
 
   return (
-    <SimpleBar className={styles["selection-section"]}>
-      {highlightBoxes}
-    </SimpleBar>
+    <SimpleBar className={styles["search-section"]}>{highlightBoxes}</SimpleBar>
   );
 };

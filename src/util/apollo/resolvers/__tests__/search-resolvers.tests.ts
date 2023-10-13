@@ -1,0 +1,175 @@
+import { gql } from "@apollo/client";
+import { ContentState } from "draft-js";
+import { createArc, createRelation, EntryType } from "util/apollo";
+import { createEntry } from "util/apollo/api/entries";
+import { createHighlight } from "util/apollo/api/highlights";
+import { client, initializeState } from "util/apollo/client";
+import { stringifyContentState } from "util/content-state";
+
+jest.mock("../../autosave");
+
+describe("Search resolvers", () => {
+  beforeEach(() => {
+    initializeState();
+  });
+
+  afterEach(async () => {
+    await client.clearStore();
+  });
+
+  describe("root queries", () => {
+    it("should return highlight with outgoing relation to relatesToArc for single and clause", () => {
+      const arc = createArc({ name: "test arc 1" });
+      const entry = createEntry({
+        entryKey: "1/2/2020",
+        stringifiedContentState: stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        ),
+        entryType: EntryType.Journal,
+      });
+      createHighlight({
+        entry: entry.entryKey,
+        outgoingRelations: [],
+      });
+      const highlight1 = createHighlight({
+        entry: entry.entryKey,
+        outgoingRelations: [],
+      });
+      createRelation({
+        subject: highlight1.id,
+        object: arc.id,
+        predicate: "relatesTo",
+        subjectType: "Highlight",
+        objectType: "Arc",
+      });
+
+      const result = client.readQuery({
+        query: gql(`
+          query SearchHighlights($criteria: SearchCriteria!) {
+            searchHighlights(criteria: $criteria) {
+              id
+            }
+          }
+        `),
+        variables: {
+          criteria: {
+            and: [
+              {
+                or: [
+                  {
+                    relatesToArc: {
+                      arcId: arc.id,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      });
+
+      expect(result.searchHighlights).toHaveLength(1);
+      expect(result.searchHighlights[0].id).toEqual(highlight1.id);
+    });
+
+    it("should return highlights with relatesToHighlight for multiple and clauses", () => {
+      const entry = createEntry({
+        entryKey: "1/2/2020",
+        stringifiedContentState: stringifyContentState(
+          ContentState.createFromText("Hello, world!")
+        ),
+        entryType: EntryType.Journal,
+      });
+      const highlight1 = createHighlight({
+        entry: entry.entryKey,
+        outgoingRelations: [],
+      });
+      createHighlight({
+        entry: entry.entryKey,
+        outgoingRelations: [],
+      });
+      const highlight3 = createHighlight({
+        entry: entry.entryKey,
+        outgoingRelations: [],
+      });
+      const arc = createArc({ name: "test arc 1" });
+      createRelation({
+        subject: highlight1.id,
+        object: arc.id,
+        predicate: "relates to",
+        subjectType: "Highlight",
+        objectType: "Arc",
+      });
+      createRelation({
+        subject: highlight3.id,
+        object: arc.id,
+        predicate: "relates to",
+        subjectType: "Highlight",
+        objectType: "Arc",
+      });
+
+      const result = client.readQuery({
+        query: gql(`
+          query SearchHighlights($criteria: SearchCriteria!) {
+            searchHighlights(criteria: $criteria) {
+              id
+            }
+          }
+        `),
+        variables: {
+          criteria: {
+            and: [
+              {
+                or: [
+                  {
+                    relatesToHighlight: {
+                      highlightId: highlight1.id,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      });
+
+      expect(result.searchHighlights).toHaveLength(1);
+      expect(result.searchHighlights[0].id).toEqual(highlight3.id);
+    });
+
+    it("should return highlight with correct entry date for single and clause", () => {
+      const entry1 = createEntry({
+        entryKey: "1/2/2020",
+        stringifiedContentState: "",
+        entryType: EntryType.Journal,
+      });
+      const entry2 = createEntry({
+        entryKey: "1/3/2020",
+        stringifiedContentState: "",
+        entryType: EntryType.Journal,
+      });
+      const highlight1 = createHighlight({
+        entry: entry1.entryKey,
+      });
+      createHighlight({
+        entry: entry2.entryKey,
+      });
+
+      const result = client.readQuery({
+        query: gql(`
+          query SearchHighlights($criteria: SearchCriteria!) {
+            searchHighlights(criteria: $criteria) {
+              id
+            }
+          }
+        `),
+        variables: {
+          criteria: { and: [{ or: [{ days: { days: ["01-02-2020"] } }] }] },
+        },
+      });
+
+      expect(result.searchHighlights).toHaveLength(1);
+      expect(result.searchHighlights[0].id).toEqual(highlight1.id);
+    });
+  });
+});

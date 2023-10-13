@@ -34,8 +34,8 @@ const documents = {
     "\n  query JournalTitle {\n    journalTitle\n  }\n": types.JournalTitleDocument,
     "\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n": types.LinkerDocument,
     "\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n      interval\n      ef\n      subject {\n        __typename\n        ... on Highlight {\n          id\n          entry {\n            entryKey\n          }\n        }\n        ... on Arc {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.ReflectionCardDocument,
-    "\n  query UseHighlightSearch($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      outgoingRelations {\n        id\n        predicate\n        object {\n          id\n          incomingRelations {\n            id\n            predicate\n            subject {\n              __typename\n              ... on Highlight {\n                id\n                entry {\n                  entryKey\n                  date\n                }\n              }\n              ... on Arc {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n": types.UseHighlightSearchDocument,
     "\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n": types.UseSearchArcsDocument,
+    "\n  query UseHighlightSearch($searchCriteria: SearchCriteria!) {\n    searchHighlights(criteria: $searchCriteria) {\n      id\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n": types.UseHighlightSearchDocument,
 };
 
 /**
@@ -139,11 +139,11 @@ export function gql(source: "\n  query ReflectionCard($cardId: ID!) {\n    srsCa
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query UseHighlightSearch($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      outgoingRelations {\n        id\n        predicate\n        object {\n          id\n          incomingRelations {\n            id\n            predicate\n            subject {\n              __typename\n              ... on Highlight {\n                id\n                entry {\n                  entryKey\n                  date\n                }\n              }\n              ... on Arc {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query UseHighlightSearch($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      outgoingRelations {\n        id\n        predicate\n        object {\n          id\n          incomingRelations {\n            id\n            predicate\n            subject {\n              __typename\n              ... on Highlight {\n                id\n                entry {\n                  entryKey\n                  date\n                }\n              }\n              ... on Arc {\n                id\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n"): (typeof documents)["\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n"): (typeof documents)["\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n"];
+export function gql(source: "\n  query UseHighlightSearch($searchCriteria: SearchCriteria!) {\n    searchHighlights(criteria: $searchCriteria) {\n      id\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n"): (typeof documents)["\n  query UseHighlightSearch($searchCriteria: SearchCriteria!) {\n    searchHighlights(criteria: $searchCriteria) {\n      id\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

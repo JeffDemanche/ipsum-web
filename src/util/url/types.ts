@@ -12,7 +12,7 @@ export type BaseURLLayer = {
    * The entry key of the highlight linked to from this layer. Only valid if
    * `highlightFrom` is defined.
    */
-  highlightFromUrlDate?: string;
+  highlightFromEntryKey?: string;
 
   /**
    * The highlight which links *to* the next layer. This can be different from
@@ -24,7 +24,7 @@ export type BaseURLLayer = {
    * The entry key of the highlight which links to the next layer. Only valid if
    * `highlightFrom` and `highlightTo` are defined.
    */
-  highlightToUrlDate?: string;
+  highlightToEntryKey?: string;
 };
 
 export interface DailyJournalURLLayer extends BaseURLLayer {
@@ -40,24 +40,27 @@ export interface ArcDetailURLLayer extends BaseURLLayer {
 export type URLLayer = DailyJournalURLLayer | ArcDetailURLLayer;
 
 interface URLHighlightCriterion {
-  onDays?: {
+  days?: {
     days: string[];
   };
-  relatesTo?: {
+  relatesToArc?: {
     arcId: string;
     predicates?: string[];
   };
+  relatesToHighlight?: {
+    highlightId: string;
+  };
 }
 
-interface URLSearchParams {
-  and: {
+export interface URLSearchCriteria {
+  and?: {
     or: URLHighlightCriterion[];
   }[];
 }
 
 interface URLJournalView {
   layers?: URLLayer[];
-  searchResults?: URLSearchParams;
+  searchCriteria?: URLSearchCriteria;
   highlight?: string;
 }
 

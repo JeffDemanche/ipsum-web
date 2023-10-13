@@ -3,7 +3,9 @@ import { parseIpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { v4 as uuidv4 } from "uuid";
 import { HighlightResolvers } from "./resolvers/highlight-resolvers";
+import { SearchResolvers } from "./resolvers/search-resolvers";
 import { SRSResolvers } from "./resolvers/srs-resolvers";
+import { searchTypeDef } from "./schemas/search-schema";
 import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import {
   QueryArcEntriesArgs,
@@ -456,6 +458,7 @@ const typePolicies: StrictTypedTypePolicies = {
       },
       ...HighlightResolvers.Query.fields,
       ...SRSResolvers.Query.fields,
+      ...SearchResolvers.Query.fields,
     },
   },
   Entry: {
@@ -551,5 +554,5 @@ const cache = new InMemoryCache({ typePolicies, addTypename: true });
 
 export const client = new ApolloClient({
   cache,
-  typeDefs,
+  typeDefs: [typeDefs, searchTypeDef],
 });

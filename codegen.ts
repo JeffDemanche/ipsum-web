@@ -1,7 +1,7 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
-  schema: "./src/util/apollo/client.ts",
+  schema: ["./src/util/apollo/client.ts", "./src/util/apollo/schemas/*.ts"],
   documents: ["src/**/!(*.tests).tsx", "src/**/!(*.tests).ts"],
   generates: {
     "./src/util/apollo/__generated__/": {

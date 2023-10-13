@@ -23,7 +23,10 @@ export const createEntry = (entry: {
     ).toString(),
     history: {
       __typename: "History",
-      dateCreated: IpsumDateTime.today().toString("iso"),
+      dateCreated: IpsumDateTime.fromString(
+        entry.entryKey,
+        "entry-printed-date"
+      ).toString("iso"),
     },
     entryType: entry.entryType,
   };

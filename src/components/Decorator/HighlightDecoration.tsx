@@ -69,11 +69,6 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
     variables: { entryKey: props.entryKey, highlightIds: entityHighlightIds },
   });
 
-  const entryDateUrlFormat = IpsumDay.fromString(
-    data.entry.date,
-    "iso"
-  ).toString("url-format");
-
   const highlights = useMemo(() => data?.highlights ?? [], [data?.highlights]);
 
   const arcs = useMemo(
@@ -194,7 +189,7 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
         <HighlightDisambiguator
           highlightIds={entityHighlightIds}
           onHighlightSelected={(highlightId: string) => {
-            setTopHighlightFrom(highlightId, entryDateUrlFormat);
+            setTopHighlightFrom(highlightId, props.entryKey);
           }}
           open={disambiguatorOpen}
           anchorEl={ref.current}

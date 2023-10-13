@@ -26,7 +26,6 @@ const DigestQuery = gql(`
 
 export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
   const { data } = useQuery(DigestQuery, { variables: { entryKey } });
-  const { layerIndex } = useContext(LayerContext);
 
   const highlights = useMemo(
     () => data?.entry?.highlights ?? [],
@@ -69,12 +68,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
                   setHoveredHighlightIds(undefined);
                 }}
                 onClick={() => {
-                  setTopHighlightFrom(
-                    highlight.id,
-                    IpsumDay.fromString(data.entry?.date, "iso").toString(
-                      "url-format"
-                    )
-                  );
+                  setTopHighlightFrom(highlight.id, data.entry?.entryKey);
                 }}
               ></HighlightTag>
             </React.Fragment>
@@ -83,7 +77,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
       </div>
     );
   }, [
-    data.entry?.date,
+    data.entry?.entryKey,
     highlights,
     setHoveredHighlightIds,
     setTopHighlightFrom,

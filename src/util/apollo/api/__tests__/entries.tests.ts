@@ -54,7 +54,10 @@ describe("apollo entries API", () => {
           trackedContentState: IpsumTimeMachine.create(entry1CS).toString(),
           history: {
             __typename: "History",
-            dateCreated: IpsumDateTime.today().toString("iso"),
+            dateCreated: IpsumDateTime.fromString(
+              "1/2/2020",
+              "entry-printed-date"
+            ).toString("iso"),
           },
         })
       );
@@ -65,7 +68,10 @@ describe("apollo entries API", () => {
           trackedContentState: IpsumTimeMachine.create(entry2CS).toString(),
           history: {
             __typename: "History",
-            dateCreated: IpsumDateTime.today().toString("iso"),
+            dateCreated: IpsumDateTime.fromString(
+              "4/2/2020",
+              "entry-printed-date"
+            ).toString("iso"),
           },
         })
       );

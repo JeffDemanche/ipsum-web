@@ -22,16 +22,17 @@ export type Breadcrumb =
 
 export interface Diptych {
   layers: URLLayer[];
+  topLayer: URLLayer;
   orderedBreadcrumbs: Breadcrumb[];
 
   pushLayer: (layer: URLLayer) => void;
   setTopHighlightFrom: (
     highlightFrom: string,
-    highlightFromUrlDate: string
+    highlightFromEntryKey: string
   ) => void;
   setTopHighlightTo: (
     highlightTo: string,
-    highlightFromUrlDate: string
+    highlightFromEntryKey: string
   ) => void;
 
   selectedHighlightId?: string;

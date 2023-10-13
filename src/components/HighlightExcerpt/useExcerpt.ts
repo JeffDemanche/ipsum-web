@@ -30,10 +30,6 @@ const contentStateFromSelection = ({
   selectedBlocks.forEach((block, key) => {
     if (block) {
       if (key === startKey && key === endKey) {
-        console.log(
-          selectionState.getStartOffset(),
-          selectionState.getEndOffset()
-        );
         const newText = block
           .getText()
           .slice(

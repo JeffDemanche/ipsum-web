@@ -27,17 +27,18 @@ export const dataToSearchParams = <V extends View>(
   return qs.stringify(data, { encode: false });
 };
 
+export const useIpsumSearchParams = <V extends View>() => {
+  const location = useLocation();
+
+  return useMemo(() => urlToData<V>(window.location.href), [location]);
+};
+
 /**
  * Hook that accepts a function that transforms the current search params into
  * new ones, and handles navigating to the new URL.
  */
 export const useModifySearchParams = <V extends View>() => {
-  const location = useLocation();
-
-  const searchParams = useMemo(
-    () => urlToData<V>(window.location.href),
-    [location]
-  );
+  const searchParams = useIpsumSearchParams<V>();
 
   const navigate = useNavigate();
   return (modifyFn: (data: IpsumURLSearch<V>) => IpsumURLSearch<V>) => {

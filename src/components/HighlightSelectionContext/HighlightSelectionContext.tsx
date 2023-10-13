@@ -81,7 +81,7 @@ export const HighlightSelectionProvider: React.FC<
             },
           ],
           // TODO
-          searchResults: { and: [{ or: [{}] }] },
+          searchCriteria: { and: [{ or: [{}] }] },
           highlight,
         };
       });

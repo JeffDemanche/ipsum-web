@@ -2,7 +2,7 @@ import React from "react";
 
 import { ApolloProvider } from "@apollo/client";
 import { renderHook } from "@testing-library/react";
-import { useHighlightSearch } from "../highlight-search";
+import { useSearchResults } from "../search";
 import { client } from "util/apollo";
 import {
   mockArcs,
@@ -14,6 +14,11 @@ import {
 function wrapper({ children }: { children: React.ReactNode }) {
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }
+
+jest.mock("react-router", () => ({
+  ...jest.requireActual("react-router"),
+  useLocation: jest.fn(),
+}));
 
 describe("HighlightSearch", () => {
   it("returns sorted incoming highlights from each outgoing arc for the specified highlight when no criteria is provided", () => {
@@ -88,10 +93,7 @@ describe("HighlightSearch", () => {
       },
     });
 
-    const { result } = renderHook(
-      () => useHighlightSearch({ highlightId: "highlight_1" }),
-      { wrapper }
-    );
+    const { result } = renderHook(() => useSearchResults(), { wrapper });
 
     expect(result.current.searchResults.length).toBe(2);
     expect(result.current.searchResults[0].id).toBe("highlight_2");

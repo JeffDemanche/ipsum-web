@@ -67,7 +67,7 @@ export type JournalMetadataKeySpecifier = ('lastArcHue' | JournalMetadataKeySpec
 export type JournalMetadataFieldPolicy = {
 	lastArcHue?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('arc' | 'arcEntries' | 'arcEntry' | 'arcs' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'srsCard' | 'srsCardsForReview' | 'srsReviewsFromDay' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('arc' | 'arcEntries' | 'arcEntry' | 'arcs' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'searchHighlights' | 'srsCard' | 'srsCardsForReview' | 'srsReviewsFromDay' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcEntries?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -89,6 +89,7 @@ export type QueryFieldPolicy = {
 	recentJournalEntries?: FieldPolicy<any> | FieldReadFunction<any>,
 	relation?: FieldPolicy<any> | FieldReadFunction<any>,
 	relations?: FieldPolicy<any> | FieldReadFunction<any>,
+	searchHighlights?: FieldPolicy<any> | FieldReadFunction<any>,
 	srsCard?: FieldPolicy<any> | FieldReadFunction<any>,
 	srsCardsForReview?: FieldPolicy<any> | FieldReadFunction<any>,
 	srsReviewsFromDay?: FieldPolicy<any> | FieldReadFunction<any>

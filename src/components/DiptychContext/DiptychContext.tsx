@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useLocation } from "react-router";
 import { IpsumDay } from "util/dates";
-import { URLLayer, urlToData, useModifySearchParams } from "util/url";
+import {
+  URLLayer,
+  useIpsumSearchParams,
+  useModifySearchParams,
+} from "util/url";
 import { Breadcrumb, Diptych } from "./types";
 
 export const DiptychContext = React.createContext<Diptych>({
@@ -11,6 +14,7 @@ export const DiptychContext = React.createContext<Diptych>({
   setTopHighlightFrom: () => {},
   setTopHighlightTo: () => {},
   selectedHighlightId: undefined,
+  topLayer: undefined,
 });
 
 interface DiptychProviderProps {
@@ -20,11 +24,7 @@ interface DiptychProviderProps {
 export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   children,
 }) => {
-  const location = useLocation();
-  const urlData = useMemo(
-    () => urlToData<"journal">(window.location.href),
-    [location]
-  );
+  const urlData = useIpsumSearchParams<"journal">();
 
   const urlLayers = useMemo(() => urlData.layers ?? [], [urlData.layers]);
 
@@ -48,10 +48,10 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
       case "daily_journal":
         return {
           type: "journal_entry",
-          journalEntryId: layer.highlightFromUrlDate
+          journalEntryId: layer.highlightFromEntryKey
             ? IpsumDay.fromString(
-                layer.highlightFromUrlDate,
-                "url-format"
+                layer.highlightFromEntryKey,
+                "entry-printed-date"
               ).toString("stored-day")
             : undefined,
         };
@@ -90,7 +90,7 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   }, [breadcrumbForLayer, urlLayers]);
 
   const setTopHighlightFrom = useCallback(
-    (highlightFrom: string, highlightFromUrlDate: string) => {
+    (highlightFrom: string, highlightFromEntryKey: string) => {
       modifySearchParams((searchParams) => ({
         ...searchParams,
         layers: [
@@ -98,7 +98,7 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
           {
             ...searchParams.layers[searchParams.layers.length - 1],
             highlightFrom,
-            highlightFromUrlDate,
+            highlightFromEntryKey,
             highlightTo: undefined,
             highlightToEntryKey: undefined,
           },
@@ -153,6 +153,7 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
     <DiptychContext.Provider
       value={{
         layers: urlLayers,
+        topLayer: urlLayers[urlLayers.length - 1],
         pushLayer,
         orderedBreadcrumbs,
         setTopHighlightFrom,

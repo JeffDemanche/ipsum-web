@@ -195,7 +195,9 @@ describe("apollo client", () => {
           },
         });
         expect(result.entry.date).toEqual(
-          IpsumDateTime.today().toString("iso")
+          IpsumDateTime.fromString("1/2/2020", "entry-printed-date").toString(
+            "iso"
+          )
         );
       });
 

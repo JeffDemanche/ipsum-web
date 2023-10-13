@@ -85,7 +85,7 @@ describe("DiptychContext", () => {
       setup({
         initialUrlLayers: [{ type: "daily_journal" }],
         onValue: (value) => {
-          value.setTopHighlightFrom("highlight_id", "01-01-2021");
+          value.setTopHighlightFrom("highlight_id", "1/1/2021");
         },
       });
       expect(navigateSpy).toHaveBeenCalledTimes(1);
@@ -94,7 +94,7 @@ describe("DiptychContext", () => {
           {
             type: "daily_journal",
             highlightFrom: "highlight_id",
-            highlightFromUrlDate: "01-01-2021",
+            highlightFromEntryKey: "1/1/2021",
           },
         ],
       });
@@ -106,11 +106,11 @@ describe("DiptychContext", () => {
           {
             type: "daily_journal",
             highlightFrom: "highlight_from_id",
-            highlightFromUrlDate: "01-01-2021",
+            highlightFromEntryKey: "1/1/2021",
           },
         ],
         onValue: (value) => {
-          value.setTopHighlightTo("highlight_to_id", "01-02-2021");
+          value.setTopHighlightTo("highlight_to_id", "1/2/2021");
         },
       });
       expect(navigateSpy).toHaveBeenCalledTimes(1);
@@ -119,9 +119,9 @@ describe("DiptychContext", () => {
           {
             type: "daily_journal",
             highlightFrom: "highlight_from_id",
-            highlightFromUrlDate: "01-01-2021",
+            highlightFromEntryKey: "1/1/2021",
             highlightTo: "highlight_to_id",
-            highlightToUrlDate: "01-02-2021",
+            highlightToEntryKey: "1/2/2021",
           },
         ],
       });
@@ -144,9 +144,9 @@ describe("DiptychContext", () => {
           {
             type: "daily_journal",
             highlightFrom: "highlight_from_id",
-            highlightFromUrlDate: "01-01-2021",
+            highlightFromEntryKey: "1/1/2021",
             highlightTo: "highlight_to_id",
-            highlightToUrlDate: "01-02-2021",
+            highlightToEntryKey: "1/2/2021",
           },
           {
             type: "arc_detail",
