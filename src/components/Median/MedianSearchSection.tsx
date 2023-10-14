@@ -1,18 +1,35 @@
-import React, { useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import styles from "./MedianSearchSection.less";
 import { HighlightBox } from "components/HighlightBox";
 import { useHighlightSearch } from "util/search";
 import SimpleBar from "simplebar-react";
 import { DiptychContext } from "components/DiptychContext";
+import { IpsumDay } from "util/dates";
 
 export const MedianSearchSection: React.FunctionComponent = () => {
-  const { setTopHighlightTo, selectedHighlightId } = useContext(DiptychContext);
+  const {
+    topLayer,
+    setTopHighlightFrom,
+    setTopHighlightTo,
+    selectedHighlightId,
+  } = useContext(DiptychContext);
 
   const { searchResults } = useHighlightSearch();
 
   const { hoveredHighlightIds, setHoveredHighlightIds } = useContext(
     HighlightSelectionContext
+  );
+
+  const onHighlightSelected = useCallback(
+    (selected: boolean, highlightDay: IpsumDay, highlightId: string) => {
+      if (topLayer?.highlightFrom) {
+        setTopHighlightTo(highlightId, highlightDay.toString("url-format"));
+      } else if (topLayer) {
+        setTopHighlightFrom(highlightId, highlightDay.toString("url-format"));
+      }
+    },
+    [setTopHighlightFrom, setTopHighlightTo, topLayer]
   );
 
   const highlightBoxes = useMemo(() => {
@@ -35,22 +52,17 @@ export const MedianSearchSection: React.FunctionComponent = () => {
           }}
           selected={highlight.id === selectedHighlightId}
           onSelect={(selected, highlightDay) => {
-            if (selected) {
-              setTopHighlightTo(
-                highlight.id,
-                highlightDay.toString("url-format")
-              );
-            }
+            onHighlightSelected(selected, highlightDay, highlight.id);
           }}
         />
       ));
     }
   }, [
     hoveredHighlightIds,
+    onHighlightSelected,
     searchResults,
     selectedHighlightId,
     setHoveredHighlightIds,
-    setTopHighlightTo,
   ]);
 
   return (
