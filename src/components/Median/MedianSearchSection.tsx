@@ -3,9 +3,9 @@ import { HighlightSelectionContext } from "components/HighlightSelectionContext"
 import styles from "./MedianSearchSection.less";
 import { HighlightBox } from "components/HighlightBox";
 import { useHighlightSearch } from "util/search";
-import SimpleBar from "simplebar-react";
 import { DiptychContext } from "components/DiptychContext";
 import { IpsumDay } from "util/dates";
+import { PaginatedList } from "components/PaginatedList";
 
 export const MedianSearchSection: React.FunctionComponent = () => {
   const {
@@ -36,9 +36,9 @@ export const MedianSearchSection: React.FunctionComponent = () => {
     if (!searchResults) {
       return null;
     } else {
-      return searchResults.map((highlight, i) => (
+      return searchResults.map((highlight) => (
         <HighlightBox
-          key={i}
+          key={highlight.id}
           highlightId={highlight.id}
           hovered={(hoveredHighlightIds ?? []).includes(highlight.id)}
           onHover={(hovered) => {
@@ -66,6 +66,15 @@ export const MedianSearchSection: React.FunctionComponent = () => {
   ]);
 
   return (
-    <SimpleBar className={styles["search-section"]}>{highlightBoxes}</SimpleBar>
+    <PaginatedList
+      className={styles["search-section"]}
+      numVisibleAroundFocusedElement={8}
+      amountToLoad={10}
+      elements={highlightBoxes.map((box, i) => ({
+        index: i,
+        key: box.key.toString(),
+        content: box,
+      }))}
+    />
   );
 };

@@ -1,11 +1,5 @@
 import { Paper } from "@mui/material";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import SimpleBar from "simplebar-react";
 import styles from "./DailyJournal.less";
 import { useDebouncedCallback } from "util/hooks";
@@ -17,6 +11,7 @@ import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 import cx from "classnames";
 import { LayerContext } from "components/Diptych";
+import { PaginatedList } from "components/PaginatedList";
 
 const DailyJournalQuery = gql(`
   query DailyJournal {
@@ -117,28 +112,6 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
     "url-format"
   ).toString("entry-printed-date");
 
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    loadAroundDay(
-      IpsumDay.fromString(focusedDateEntryKeyFormat, "entry-printed-date")
-    );
-
-    if (
-      focusedDateEntryKeyFormat &&
-      !dontScrollTo.includes(focusedDateEntryKeyFormat)
-    ) {
-      const scrollerNode = scrollRef.current;
-      const focusedElement = scrollerNode.querySelector(
-        `[data-entry-key="${focusedDateEntryKeyFormat}"]`
-      ) as HTMLDivElement;
-
-      if (focusedElement) {
-        scrollerNode.scrollTo(0, focusedElement.offsetTop - 10);
-      }
-    }
-  }, [dontScrollTo, focusedDateEntryKeyFormat, loadAroundDay]);
-
   const todayEntryComponent = (
     <JournalEntryToday entryKey={today} key={today}></JournalEntryToday>
   );
@@ -148,13 +121,17 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
     visibleEntryKeys
       .filter((entryKey) => entryKey !== today)
       .map((sortedEntryKey, i) => {
-        return (
-          <JournalEntryPast
-            entryKey={sortedEntryKey}
-            showDivider={i !== visibleEntryKeys.length - 1}
-            key={sortedEntryKey}
-          ></JournalEntryPast>
-        );
+        return {
+          index: i,
+          key: sortedEntryKey,
+          content: (
+            <JournalEntryPast
+              entryKey={sortedEntryKey}
+              showDivider={i !== visibleEntryKeys.length - 1}
+              key={sortedEntryKey}
+            ></JournalEntryPast>
+          ),
+        };
       });
 
   const todayPaperRef = React.useRef<HTMLDivElement>(null);
@@ -190,12 +167,35 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
         className={cx(styles["past-paper"], pastHasFocus && styles["focused"])}
         variant="shadowed"
       >
-        <SimpleBar
+        <PaginatedList
           className={styles["daily-journal-scroller"]}
-          scrollableNodeProps={{ onScroll, ref: scrollRef }}
-        >
-          <div className={styles["past-entries"]}>{entryEditorComponents}</div>
-        </SimpleBar>
+          defaultFocusedElement={{
+            index: entryEditorComponents.findIndex(
+              (element) => element.key === focusedDateEntryKeyFormat
+            ),
+            key: focusedDateEntryKeyFormat,
+          }}
+          numVisibleAroundFocusedElement={5}
+          amountToLoad={10}
+          elements={entryEditorComponents}
+          onFocusedElementChanged={(focusedElement) => {
+            modifySearchParams((searchParams) => {
+              return {
+                ...searchParams,
+                layers: [
+                  {
+                    ...searchParams.layers[0],
+                    focusedDate: IpsumDay.fromString(
+                      focusedElement.key,
+                      "entry-printed-date"
+                    ).toString("url-format"),
+                  },
+                  ...searchParams.layers.slice(1),
+                ],
+              };
+            });
+          }}
+        />
       </Paper>
     </div>
   );

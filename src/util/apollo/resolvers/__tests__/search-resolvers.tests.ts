@@ -14,11 +14,14 @@ describe("Search resolvers", () => {
   });
 
   afterEach(async () => {
+    jest.useRealTimers();
     await client.clearStore();
   });
 
   describe("root queries", () => {
     it("should return highlight with outgoing relation to relatesToArc for single and clause", () => {
+      jest.useFakeTimers().setSystemTime(new Date("2020-01-02"));
+
       const arc = createArc({ name: "test arc 1" });
       const entry = createEntry({
         entryKey: "1/2/2020",
@@ -133,16 +136,19 @@ describe("Search resolvers", () => {
         },
       });
 
-      expect(result.searchHighlights).toHaveLength(1);
-      expect(result.searchHighlights[0].id).toEqual(highlight3.id);
+      expect(result.searchHighlights).toHaveLength(2);
+      expect(result.searchHighlights[0].id).toEqual(highlight1.id);
+      expect(result.searchHighlights[1].id).toEqual(highlight3.id);
     });
 
-    it("should return highlight with correct entry date for single and clause", () => {
+    it("should return highlights with correct entry date for single and clause", () => {
+      jest.useFakeTimers().setSystemTime(new Date(2020, 0, 2));
       const entry1 = createEntry({
         entryKey: "1/2/2020",
         stringifiedContentState: "",
         entryType: EntryType.Journal,
       });
+      jest.useFakeTimers().setSystemTime(new Date(2020, 0, 3));
       const entry2 = createEntry({
         entryKey: "1/3/2020",
         stringifiedContentState: "",

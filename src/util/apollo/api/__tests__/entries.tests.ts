@@ -47,6 +47,7 @@ describe("apollo entries API", () => {
         stringifiedContentState: entry2CS,
         entryType: EntryType.Journal,
       };
+      jest.useFakeTimers().setSystemTime(new Date(2020, 0, 2));
       createEntry(entry1);
       expect(vars.entries()["1/2/2020"]).toEqual(
         expect.objectContaining({
@@ -61,6 +62,7 @@ describe("apollo entries API", () => {
           },
         })
       );
+      jest.useFakeTimers().setSystemTime(new Date(2020, 3, 2));
       createEntry(entry2);
       expect(vars.entries()["4/2/2020"]).toEqual(
         expect.objectContaining({
@@ -99,6 +101,7 @@ describe("apollo entries API", () => {
       const entry1CS = stringifyContentState(
         ContentState.createFromText("Hello, world!")
       );
+      jest.useFakeTimers().setSystemTime(new Date(2020, 0, 2));
       createEntry({
         entryKey: "1/2/2020",
         stringifiedContentState: entry1CS,

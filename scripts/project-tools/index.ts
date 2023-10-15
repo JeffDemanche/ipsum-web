@@ -97,43 +97,17 @@ replServer.defineCommand("validate", {
     }
   },
 });
-replServer.defineCommand("add_typenames", {
-  action() {
-    const highlightsCopy = { ...modifiedData.highlights };
-    Object.keys(highlightsCopy).forEach((key) => {
-      highlightsCopy[key].__typename = "Highlight";
-    });
+replServer.defineCommand("run_script", {
+  action(arg) {
+    try {
+      const script = require(`./migrations/${arg}`);
+      script.default(modifiedData);
+    } catch (e) {
+      console.error(e);
+    }
+  },
+});
 
-    const entriesCopy = { ...modifiedData.entries };
-    Object.keys(entriesCopy).forEach((key) => {
-      entriesCopy[key].__typename = "Entry";
-    });
-
-    const arcsCopy = { ...modifiedData.arcs };
-    Object.keys(arcsCopy).forEach((key) => {
-      arcsCopy[key].__typename = "Arc";
-    });
-
-    modifiedData.highlights = highlightsCopy;
-    modifiedData.entries = entriesCopy;
-    modifiedData.arcs = arcsCopy;
-  },
-});
-replServer.defineCommand("migrate_arc_entries", {
-  action() {
-    migrateArcEntries(modifiedData);
-  },
-});
-replServer.defineCommand("migrate_srs", {
-  action() {
-    migrateSRS(modifiedData);
-  },
-});
-replServer.defineCommand("create_days", {
-  action() {
-    createDayObject(modifiedData);
-  },
-});
 /**
  * Removes relations with undefined subjects or objects.
  */

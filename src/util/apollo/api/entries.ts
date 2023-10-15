@@ -3,7 +3,7 @@ import { IpsumEntityTransformer } from "util/entities";
 import { SelectionState } from "draft-js";
 import { parseContentState, stringifyContentState } from "util/content-state";
 import { autosave } from "../autosave";
-import { IpsumDateTime } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { EntryType } from "../__generated__/graphql";
 import { upsertDayForToday } from "./day";
@@ -23,10 +23,7 @@ export const createEntry = (entry: {
     ).toString(),
     history: {
       __typename: "History",
-      dateCreated: IpsumDateTime.fromString(
-        entry.entryKey,
-        "entry-printed-date"
-      ).toString("iso"),
+      dateCreated: IpsumDay.today().toString("iso"),
     },
     entryType: entry.entryType,
   };

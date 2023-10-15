@@ -173,6 +173,8 @@ describe("apollo client", () => {
       });
 
       it("should hydrate date from history", () => {
+        jest.useFakeTimers().setSystemTime(new Date(2020, 0, 2));
+
         createEntry({
           entryKey: "1/2/2020",
           stringifiedContentState: stringifyContentState(
