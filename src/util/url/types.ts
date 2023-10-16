@@ -29,6 +29,7 @@ export type BaseURLLayer = {
 
 export interface DailyJournalURLLayer extends BaseURLLayer {
   type: "daily_journal";
+  mode?: "today" | "past";
   focusedDate?: string;
 }
 

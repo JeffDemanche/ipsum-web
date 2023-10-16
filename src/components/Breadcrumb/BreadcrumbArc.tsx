@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Card } from "@mui/material";
+import { ArcTag } from "components/ArcTag";
 import { ArcBreadcrumb } from "components/DiptychContext";
 import React from "react";
 import { gql } from "util/apollo";
@@ -29,7 +30,9 @@ export const BreadcrumbArc: React.FunctionComponent<BreadcrumbArcProps> = ({
 
   return (
     <div className={styles["breadcrumb"]}>
-      <Card variant="translucent"></Card>
+      <Card variant="translucent" className={styles["breadcrumb-card"]}>
+        <ArcTag arcForToken={{ type: "from id", id: breadcrumb.arcId }} />
+      </Card>
     </div>
   );
 };

@@ -20,7 +20,6 @@ export const Diptych: React.FunctionComponent = () => {
           ></DiptychColumn>
         </div>
       )}
-      <Median />
       {rightHandLayer && (
         <div className={styles["column-2"]}>
           <DiptychColumn
@@ -29,6 +28,7 @@ export const Diptych: React.FunctionComponent = () => {
           ></DiptychColumn>
         </div>
       )}
+      <Median />
     </div>
   );
 };

@@ -36,13 +36,9 @@ export const BreadcrumbJournalEntry: React.FunctionComponent<
   );
 
   return (
-    <div
-      className={cx(styles["breadcrumb"], styles["highlight-journal-entry"])}
-    >
-      <Card variant="translucent">
-        <Typography variant="caption">
-          <a href="#">{niceDate}</a>
-        </Typography>
+    <div className={cx(styles["breadcrumb"])}>
+      <Card variant="translucent" className={styles["breadcrumb-card"]}>
+        <Typography variant="caption">{niceDate}</Typography>
       </Card>
     </div>
   );

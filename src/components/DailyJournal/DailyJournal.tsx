@@ -1,9 +1,14 @@
-import { Paper } from "@mui/material";
+import {
+  IconButton,
+  Paper,
+  ToggleButton,
+  ToggleButtonGroup,
+  Tooltip,
+} from "@mui/material";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import SimpleBar from "simplebar-react";
 import styles from "./DailyJournal.less";
-import { useDebouncedCallback } from "util/hooks";
-import { useModifySearchParams } from "util/url";
+import { DailyJournalURLLayer, useModifySearchParams } from "util/url";
 import { IpsumDay, useDateString } from "util/dates";
 import { JournalEntryToday } from "./JournalEntryToday";
 import { JournalEntryPast } from "./JournalEntryPast";
@@ -12,6 +17,7 @@ import { useQuery } from "@apollo/client";
 import cx from "classnames";
 import { LayerContext } from "components/Diptych";
 import { PaginatedList } from "components/PaginatedList";
+import { CalendarMonth, Close, Today } from "@mui/icons-material";
 
 const DailyJournalQuery = gql(`
   query DailyJournal {
@@ -26,7 +32,7 @@ interface DailyJournalProps {
 export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
   showToday = true,
 }) => {
-  const { layer } = useContext(LayerContext);
+  const { layer, layerIndex } = useContext(LayerContext);
   if (layer.type !== "daily_journal") {
     throw new Error("DailyJournal must be used in a DailyJournal layer");
   }
@@ -39,72 +45,11 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
     return ascendingKeys;
   }, [data]);
 
-  // This is used to prevent the scroll focus from jumping arounds when the
-  // focusedDate is set as a result of scroll changes.
-  const [dontScrollTo, setDontScrollTo] = React.useState<string[]>([]);
-
   const [visibleEntryKeys, setVisibleEntryKeys] = useState(allEntryKeys);
-
-  const loadAroundDay = useCallback(
-    (day: IpsumDay, buffer = 4) => {
-      const dayIndex = allEntryKeys.findIndex(
-        (entryKey) => entryKey === day.toString("entry-printed-date")
-      );
-
-      const visibleEntryKeys = allEntryKeys.slice(
-        Math.max(0, dayIndex - buffer),
-        Math.min(allEntryKeys.length, dayIndex + buffer)
-      );
-
-      setVisibleEntryKeys(visibleEntryKeys);
-    },
-    [allEntryKeys]
-  );
 
   const today = useDateString(30000, "entry-printed-date");
 
   const modifySearchParams = useModifySearchParams<"journal">();
-
-  const onScroll = useDebouncedCallback(
-    (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-      const target = e.target as HTMLDivElement;
-
-      const elements = target.querySelector(
-        `.${styles["past-entries"]}`
-      ).children;
-
-      const parentRect = target.getBoundingClientRect();
-
-      const allElementsInView: HTMLDivElement[] = [...elements].filter(
-        (element: HTMLDivElement) => {
-          const divRect = element.getBoundingClientRect();
-          const isPartiallyVisible =
-            divRect.top < parentRect.bottom && divRect.bottom > parentRect.top;
-          return isPartiallyVisible;
-        }
-      ) as HTMLDivElement[];
-
-      if (!allElementsInView.length) return;
-
-      setDontScrollTo([allElementsInView[0].dataset.entryKey]);
-      modifySearchParams((searchParams) => {
-        return {
-          ...searchParams,
-          layers: [
-            {
-              ...searchParams.layers[0],
-              focusedDate: IpsumDay.fromString(
-                allElementsInView[0].dataset.entryKey,
-                "entry-printed-date"
-              ).toString("url-format"),
-            },
-            ...searchParams.layers.slice(1),
-          ],
-        };
-      });
-    },
-    200
-  );
 
   const focusedDateURLFormat = layer?.focusedDate ?? today;
   const focusedDateEntryKeyFormat = IpsumDay.fromString(
@@ -134,68 +79,99 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
         };
       });
 
-  const todayPaperRef = React.useRef<HTMLDivElement>(null);
-  const pastPaperRef = React.useRef<HTMLDivElement>(null);
+  const paperRef = React.useRef<HTMLDivElement>(null);
 
-  const [todayHasFocus, setTodayHasFocus] = useState(false);
-  const [pastHasFocus, setPastHasFocus] = useState(true);
+  const setMode = useCallback(
+    (mode: "today" | "past") => {
+      modifySearchParams((searchParams) => {
+        const newLayers = [...searchParams.layers];
+        if (newLayers[layerIndex].type === "daily_journal") {
+          newLayers[layerIndex] = {
+            ...newLayers[layerIndex],
+            mode,
+          } as DailyJournalURLLayer;
+        }
+
+        return {
+          ...searchParams,
+          layers: newLayers,
+        };
+      });
+    },
+    [layerIndex, modifySearchParams]
+  );
+
+  const currentMode = !layer.mode ? "today" : layer.mode;
 
   return (
     <div className={styles["daily-journal"]}>
-      <Paper
-        ref={todayPaperRef}
-        onMouseDown={() => {
-          setTodayHasFocus(true);
-          setPastHasFocus(false);
-        }}
-        className={cx(
-          styles["today-paper"],
-          todayHasFocus && styles["focused"]
+      <Paper ref={paperRef} className={cx(styles["paper"])} variant="shadowed">
+        <div className={styles["toolbar"]}>
+          {layerIndex !== 0 && (
+            <IconButton>
+              <Close></Close>
+            </IconButton>
+          )}
+          <ToggleButtonGroup>
+            <Tooltip title="Previous entries">
+              <ToggleButton
+                onClick={() => {
+                  setMode("today");
+                }}
+                value="today"
+                selected={currentMode === "today"}
+              >
+                <Today></Today>
+              </ToggleButton>
+            </Tooltip>
+            <Tooltip title="Today's entry">
+              <ToggleButton
+                onClick={() => {
+                  setMode("past");
+                }}
+                value="past"
+                selected={currentMode === "past"}
+              >
+                <CalendarMonth></CalendarMonth>
+              </ToggleButton>
+            </Tooltip>
+          </ToggleButtonGroup>
+        </div>
+        {currentMode === "today" ? (
+          <SimpleBar className={styles["daily-journal-scroller"]}>
+            {todayEntryComponent}
+          </SimpleBar>
+        ) : (
+          <PaginatedList
+            className={styles["daily-journal-scroller"]}
+            defaultFocusedElement={{
+              index: entryEditorComponents.findIndex(
+                (element) => element.key === focusedDateEntryKeyFormat
+              ),
+              key: focusedDateEntryKeyFormat,
+            }}
+            numVisibleAroundFocusedElement={5}
+            amountToLoad={10}
+            elements={entryEditorComponents}
+            onFocusedElementChanged={(focusedElement) => {
+              modifySearchParams((searchParams) => {
+                return {
+                  ...searchParams,
+                  layers: [
+                    {
+                      ...searchParams.layers[0],
+                      focusedDate: IpsumDay.fromString(
+                        focusedElement.key,
+                        "entry-printed-date"
+                      ).toString("url-format"),
+                    },
+                    ...searchParams.layers.slice(1),
+                  ],
+                };
+              });
+            }}
+          />
         )}
-        variant="shadowed"
-      >
-        <SimpleBar className={styles["daily-journal-scroller"]}>
-          {todayEntryComponent}
-        </SimpleBar>
-      </Paper>
-      <Paper
-        ref={pastPaperRef}
-        onMouseDown={() => {
-          setTodayHasFocus(false);
-          setPastHasFocus(true);
-        }}
-        className={cx(styles["past-paper"], pastHasFocus && styles["focused"])}
-        variant="shadowed"
-      >
-        <PaginatedList
-          className={styles["daily-journal-scroller"]}
-          defaultFocusedElement={{
-            index: entryEditorComponents.findIndex(
-              (element) => element.key === focusedDateEntryKeyFormat
-            ),
-            key: focusedDateEntryKeyFormat,
-          }}
-          numVisibleAroundFocusedElement={5}
-          amountToLoad={10}
-          elements={entryEditorComponents}
-          onFocusedElementChanged={(focusedElement) => {
-            modifySearchParams((searchParams) => {
-              return {
-                ...searchParams,
-                layers: [
-                  {
-                    ...searchParams.layers[0],
-                    focusedDate: IpsumDay.fromString(
-                      focusedElement.key,
-                      "entry-printed-date"
-                    ).toString("url-format"),
-                  },
-                  ...searchParams.layers.slice(1),
-                ],
-              };
-            });
-          }}
-        />
       </Paper>
     </div>
   );
