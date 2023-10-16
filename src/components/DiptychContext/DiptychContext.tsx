@@ -10,9 +10,11 @@ import { Breadcrumb, Diptych } from "./types";
 export const DiptychContext = React.createContext<Diptych>({
   layers: [],
   pushLayer: () => {},
+  popLayer: () => {},
   orderedBreadcrumbs: [],
   setTopHighlightFrom: () => {},
   setTopHighlightTo: () => {},
+  popHighlights: () => {},
   selectedHighlightId: undefined,
   topLayer: undefined,
 });
@@ -42,6 +44,17 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
     },
     [modifySearchParams, urlLayers]
   );
+
+  const popLayer = useCallback(() => {
+    modifySearchParams((searchParams) => {
+      const newUrlLayers = [...urlLayers];
+      newUrlLayers.pop();
+      return {
+        ...searchParams,
+        layers: newUrlLayers,
+      };
+    });
+  }, [modifySearchParams, urlLayers]);
 
   const breadcrumbForLayer = useCallback((layer: URLLayer): Breadcrumb => {
     switch (layer.type) {
@@ -83,8 +96,6 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
         }
       }
     });
-
-    breadcrumbs.pop();
 
     return breadcrumbs;
   }, [breadcrumbForLayer, urlLayers]);
@@ -135,6 +146,24 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
     [modifySearchParams]
   );
 
+  const popHighlights = useCallback(() => {
+    modifySearchParams((searchParams) => {
+      return {
+        ...searchParams,
+        layers: [
+          ...searchParams.layers.slice(0, -1),
+          {
+            ...searchParams.layers[searchParams.layers.length - 1],
+            highlightFrom: undefined,
+            highlightFromEntryKey: undefined,
+            highlightTo: undefined,
+            highlightToEntryKey: undefined,
+          },
+        ],
+      };
+    });
+  }, [modifySearchParams]);
+
   /**
    * Equivalent to the hightlightFrom on the topmost layer.
    */
@@ -155,9 +184,11 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
         layers: urlLayers,
         topLayer: urlLayers[urlLayers.length - 1],
         pushLayer,
+        popLayer,
         orderedBreadcrumbs,
         setTopHighlightFrom,
         setTopHighlightTo,
+        popHighlights,
         selectedHighlightId,
       }}
     >

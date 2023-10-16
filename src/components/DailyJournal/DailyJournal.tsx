@@ -1,10 +1,4 @@
-import {
-  IconButton,
-  Paper,
-  ToggleButton,
-  ToggleButtonGroup,
-  Tooltip,
-} from "@mui/material";
+import { Paper, ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import SimpleBar from "simplebar-react";
 import styles from "./DailyJournal.less";
@@ -17,7 +11,8 @@ import { useQuery } from "@apollo/client";
 import cx from "classnames";
 import { LayerContext } from "components/Diptych";
 import { PaginatedList } from "components/PaginatedList";
-import { CalendarMonth, Close, Today } from "@mui/icons-material";
+import { CalendarMonth, Today } from "@mui/icons-material";
+import { LayerHeader } from "components/LayerHeader";
 
 const DailyJournalQuery = gql(`
   query DailyJournal {
@@ -106,12 +101,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
   return (
     <div className={styles["daily-journal"]}>
       <Paper ref={paperRef} className={cx(styles["paper"])} variant="shadowed">
-        <div className={styles["toolbar"]}>
-          {layerIndex !== 0 && (
-            <IconButton>
-              <Close></Close>
-            </IconButton>
-          )}
+        <LayerHeader>
           <ToggleButtonGroup>
             <Tooltip title="Previous entries">
               <ToggleButton
@@ -136,7 +126,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
               </ToggleButton>
             </Tooltip>
           </ToggleButtonGroup>
-        </div>
+        </LayerHeader>
         {currentMode === "today" ? (
           <SimpleBar className={styles["daily-journal-scroller"]}>
             {todayEntryComponent}

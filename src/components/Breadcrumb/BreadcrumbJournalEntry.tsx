@@ -31,14 +31,16 @@ export const BreadcrumbJournalEntry: React.FunctionComponent<
     },
   });
 
-  const niceDate = parseIpsumDateTime(data.journalEntry.entry.date).toString(
-    "entry-printed-date-nice"
-  );
+  const text = data.journalEntry?.entry
+    ? parseIpsumDateTime(data.journalEntry.entry.date).toString(
+        "entry-printed-date-nice"
+      )
+    : "Daily journal";
 
   return (
     <div className={cx(styles["breadcrumb"])}>
       <Card variant="translucent" className={styles["breadcrumb-card"]}>
-        <Typography variant="caption">{niceDate}</Typography>
+        <Typography variant="caption">{text}</Typography>
       </Card>
     </div>
   );

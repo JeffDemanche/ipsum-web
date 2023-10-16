@@ -6,44 +6,30 @@ import { URLLayer } from "util/url";
 import { LayerProvider } from "./LayerContext";
 
 interface DiptychColumnProps {
-  diptychIndex: number;
-  layers: URLLayer[];
+  layer: URLLayer;
+  layerIndex: number;
 }
 
 export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
-  diptychIndex,
-  layers,
+  layer,
+  layerIndex,
 }) => {
-  const topMostLayerIndex = layers.length - 1;
-  const topMostLayer = layers[topMostLayerIndex];
-
-  const secondTopMostLayerIndex = layers.length - 2;
-  const secondTopMostLayer = layers[secondTopMostLayerIndex];
-
   const content = useMemo(() => {
-    switch (topMostLayer.type) {
+    switch (layer.type) {
       case "daily_journal":
         return (
-          <LayerProvider
-            layer={topMostLayer}
-            previousLayer={secondTopMostLayer}
-            layerIndex={topMostLayerIndex}
-          >
+          <LayerProvider layer={layer} layerIndex={layerIndex}>
             <DailyJournal />
           </LayerProvider>
         );
       case "arc_detail":
         return (
-          <LayerProvider
-            layer={topMostLayer}
-            previousLayer={secondTopMostLayer}
-            layerIndex={topMostLayerIndex}
-          >
+          <LayerProvider layer={layer} layerIndex={layerIndex}>
             <ArcDetail />
           </LayerProvider>
         );
     }
-  }, [secondTopMostLayer, topMostLayer, topMostLayerIndex]);
+  }, [layer, layerIndex]);
 
   return <div className={styles["diptych-layer"]}>{content}</div>;
 };

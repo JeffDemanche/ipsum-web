@@ -84,7 +84,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
     "entry-printed-date-nice"
   );
 
-  const { pushLayer } = useContext(DiptychContext);
+  const { pushLayer, popHighlights } = useContext(DiptychContext);
 
   const onArcClick = useCallback(
     (arcId?: string, e?: React.MouseEvent) => {
@@ -210,7 +210,15 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
           )}
         >
           <div className={styles["details-options"]}>
-            <Tooltip title="Close highlight">
+            <Tooltip
+              title="Deselect highlight"
+              onClick={(e) => {
+                // TODO make this smarter once the highlights have been fleshed
+                // out.
+                e.stopPropagation();
+                popHighlights();
+              }}
+            >
               <IconButton size="small" color="default">
                 <ArrowLeftRounded />
               </IconButton>

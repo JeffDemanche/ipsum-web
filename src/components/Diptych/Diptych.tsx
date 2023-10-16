@@ -7,24 +7,27 @@ import { DiptychColumn } from "./DiptychColumn";
 export const Diptych: React.FunctionComponent = () => {
   const { layers } = useContext(DiptychContext);
 
-  const leftHandLayer = layers.at(-2) ?? layers[0];
-  const rightHandLayer = layers.length > 1 ? layers.at(-1) : undefined;
+  const leftHandLayerIndex = layers.length <= 1 ? 0 : layers.length - 2;
+  const rightHandLayerIndex = layers.length > 1 ? layers.length - 1 : undefined;
+
+  const leftHandLayer = layers[leftHandLayerIndex];
+  const rightHandLayer = layers[rightHandLayerIndex];
 
   return (
     <div className={styles["diptych-container"]}>
-      {layers.length >= 1 && (
+      {leftHandLayer && (
         <div className={styles["column-1"]}>
           <DiptychColumn
-            diptychIndex={0}
-            layers={[leftHandLayer]}
+            layer={leftHandLayer}
+            layerIndex={leftHandLayerIndex}
           ></DiptychColumn>
         </div>
       )}
       {rightHandLayer && (
         <div className={styles["column-2"]}>
           <DiptychColumn
-            diptychIndex={1}
-            layers={[rightHandLayer]}
+            layer={rightHandLayer}
+            layerIndex={rightHandLayerIndex}
           ></DiptychColumn>
         </div>
       )}

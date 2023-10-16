@@ -6,7 +6,6 @@ import { ArcDetailContextValue } from "./types";
 export const ArcDetailContext = React.createContext<ArcDetailContextValue>({
   arcId: undefined,
   arc: undefined,
-  incomingHighlightId: undefined,
 });
 
 const ArcDetailContextQuery = gql(`
@@ -26,19 +25,16 @@ const ArcDetailContextQuery = gql(`
 
 interface ArcDetailProviderProps {
   arcId: string;
-  incomingHighlightId?: string;
   children: React.ReactNode;
 }
 
 export const ArcDetailProvider: React.FunctionComponent<
   ArcDetailProviderProps
-> = ({ arcId, incomingHighlightId, children }) => {
+> = ({ arcId, children }) => {
   const { data } = useQuery(ArcDetailContextQuery, { variables: { arcId } });
 
   return (
-    <ArcDetailContext.Provider
-      value={{ arcId, arc: data.arc, incomingHighlightId }}
-    >
+    <ArcDetailContext.Provider value={{ arcId, arc: data.arc }}>
       {children}
     </ArcDetailContext.Provider>
   );

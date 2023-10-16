@@ -26,6 +26,7 @@ export interface Diptych {
   orderedBreadcrumbs: Breadcrumb[];
 
   pushLayer: (layer: URLLayer) => void;
+  popLayer: () => void;
   setTopHighlightFrom: (
     highlightFrom: string,
     highlightFromEntryKey: string
@@ -34,6 +35,7 @@ export interface Diptych {
     highlightTo: string,
     highlightFromEntryKey: string
   ) => void;
+  popHighlights: () => void;
 
   selectedHighlightId?: string;
 }
