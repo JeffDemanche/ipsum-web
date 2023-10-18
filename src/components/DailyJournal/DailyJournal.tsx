@@ -59,7 +59,16 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
   const entryEditorComponents =
     visibleEntryKeys &&
     visibleEntryKeys
-      .filter((entryKey) => entryKey !== today)
+      .filter(
+        (entryKey) =>
+          entryKey !== today &&
+          (!layer.visibleDates ||
+            layer.visibleDates.includes(
+              IpsumDay.fromString(entryKey, "entry-printed-date").toString(
+                "url-format"
+              )
+            ))
+      )
       .map((sortedEntryKey, i) => {
         return {
           index: i,
@@ -148,14 +157,15 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
                 return {
                   ...searchParams,
                   layers: [
+                    ...searchParams.layers.slice(0, layerIndex),
                     {
-                      ...searchParams.layers[0],
+                      ...searchParams.layers[layerIndex],
                       focusedDate: IpsumDay.fromString(
                         focusedElement.key,
                         "entry-printed-date"
                       ).toString("url-format"),
                     },
-                    ...searchParams.layers.slice(1),
+                    ...searchParams.layers.slice(layerIndex + 1),
                   ],
                 };
               });

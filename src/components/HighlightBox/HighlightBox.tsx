@@ -27,7 +27,7 @@ import {
   removeHighlightFromEntry,
 } from "util/apollo";
 import { useQuery } from "@apollo/client";
-import { IpsumDay, parseIpsumDateTime } from "util/dates";
+import { IpsumDateTime, IpsumDay, parseIpsumDateTime } from "util/dates";
 import { theme } from "styles/styles";
 import { Linker } from "components/Linker";
 import { HighlightAddReflectionForm } from "./HighlightAddReflectionForm";
@@ -189,6 +189,22 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
     setReflectionPopoverOpen((open) => !open);
   }, []);
 
+  const onDateClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      pushLayer({
+        type: "daily_journal",
+        mode: "past",
+        visibleDates: [
+          IpsumDateTime.fromString(highlight.entry.date, "iso").toString(
+            "url-format"
+          ),
+        ],
+      });
+    },
+    [highlight.entry.date, pushLayer]
+  );
+
   return (
     <Card
       onMouseEnter={() => {
@@ -224,7 +240,9 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
               </IconButton>
             </Tooltip>
             <Typography variant="h6" className={styles["highlight-title"]}>
-              {entryDate}
+              <a onClick={onDateClick} href="#">
+                {entryDate}
+              </a>
             </Typography>
             <div className={styles["options-buttons"]}>
               <Popover
@@ -282,7 +300,9 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
       ) : (
         <div className={cx(styles["top-controls-container"])}>
           <Typography variant="h6" className={styles["highlight-title"]}>
-            {entryDate}
+            <a onClick={onDateClick} href="#">
+              {entryDate}
+            </a>
           </Typography>
         </div>
       )}

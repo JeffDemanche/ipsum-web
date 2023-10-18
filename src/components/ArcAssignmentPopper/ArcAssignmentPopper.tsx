@@ -146,7 +146,6 @@ export const ArcAssignmentPopper: React.FunctionComponent<
   return (
     <Popper
       id="arc-assignment-popper"
-      disablePortal
       open={open}
       anchorEl={anchorEl}
       popperOptions={{ strategy: "absolute" }}

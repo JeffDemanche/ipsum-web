@@ -13,7 +13,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { HighlightExcerpt } from "components/HighlightExcerpt";
+import { HighlightBox } from "components/HighlightBox";
 import React, { useCallback } from "react";
 import { gql, reviewSRSCard } from "util/apollo";
 import { calculateNextInterval } from "util/srs";
@@ -77,7 +77,7 @@ export const ReflectionCard: React.FunctionComponent<ReflectionCardProps> = ({
   if (subjectType === "Highlight") {
     return (
       <Paper className={styles["reflection-card"]}>
-        <HighlightExcerpt highlightId={data.srsCard.subject.id} />
+        <HighlightBox highlightId={data.srsCard.subject.id} selected />
         <div className={styles["rating-container"]}>
           <ToggleButtonGroup className={styles["rating-button-group"]}>
             {ratings.map((i) => {

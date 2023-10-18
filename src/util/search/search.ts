@@ -48,15 +48,24 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
           },
         ],
       };
-    } else if (topLayer?.type === "daily_journal" && topLayer.focusedDate) {
-      const date = IpsumDay.fromString(topLayer.focusedDate, "url-format");
+    } else if (
+      topLayer?.type === "daily_journal" &&
+      (topLayer.focusedDate || topLayer.visibleDates)
+    ) {
+      const dates = topLayer.focusedDate
+        ? [IpsumDay.fromString(topLayer.focusedDate, "url-format")]
+        : topLayer.visibleDates
+            .map((date) => IpsumDay.fromString(date, "url-format"))
+            .sort((a, b) =>
+              compareDatesDesc(a.toIpsumDateTime(), b.toIpsumDateTime())
+            );
       return {
         and: [
           {
             or: [
               {
                 days: {
-                  days: [date.toString("url-format")],
+                  days: dates.map((date) => date.toString("url-format")),
                 },
               },
             ],
