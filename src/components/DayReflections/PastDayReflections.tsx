@@ -1,5 +1,11 @@
 import { useQuery } from "@apollo/client";
-import { Typography } from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@mui/material";
 import { ReflectionCard } from "components/ReflectionCard";
 import React from "react";
 import { gql } from "util/apollo";
@@ -14,6 +20,10 @@ const PastDayReflectionsQuery = gql(`
   query PastDayReflections($deckId: ID, $day: String!) {
     srsReviewsFromDay(deckId: $deckId, day: $day) {
       id
+      rating
+      card {
+        id
+      }
     }
   }
 `);
@@ -25,14 +35,33 @@ export const PastDayReflections: React.FunctionComponent<
     variables: { day: day.toString(), deckId: "default" },
   });
 
-  const cards = data?.srsReviewsFromDay ?? [];
+  const reviews = data?.srsReviewsFromDay ?? [];
 
-  const numCards = cards?.length ?? 0;
+  const numReviews = reviews?.length ?? 0;
 
   return (
-    <div className={styles["day-reflections"]}>
-      <Typography variant="caption">Reviewed on day</Typography>
-      {cards?.length && <ReflectionCard locked cardId={cards[0].id} />}
-    </div>
+    <Accordion
+      className={styles["reflection-accordion"]}
+      defaultExpanded={false}
+      variant="outlined"
+    >
+      <AccordionSummary expandIcon={<ExpandMore />} id="panel1a-header">
+        <Typography variant="caption">
+          Reflections ({numReviews} rated)
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <div className={styles["day-reflections"]}>
+          {reviews.map((review) => (
+            <ReflectionCard
+              key={review.card.id}
+              locked
+              lockedRating={review.rating}
+              cardId={review.card.id}
+            />
+          ))}
+        </div>
+      </AccordionDetails>
+    </Accordion>
   );
 };

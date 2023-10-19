@@ -8,8 +8,8 @@ import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
 import { EditorContext } from "../EditorWrapper/EditorContext";
 import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
-import { ReflectionAccordion } from "./ReflectionAccordion";
 import { EntryType } from "util/apollo";
+import { PastDayReflections } from "components/DayReflections";
 
 interface JournalEntryProps {
   entryKey: string;
@@ -80,10 +80,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
             "entry-printed-date-nice"
           )}
         </Typography>
-        <ReflectionAccordion
-          isToday={false}
-          day={IpsumDay.fromString(entryKey, "stored-day")}
-        ></ReflectionAccordion>
+        <PastDayReflections day={IpsumDay.fromString(entryKey, "stored-day")} />
         {editorState && (
           <>
             <Digest entryKey={entryKey} className={styles["digest"]} />

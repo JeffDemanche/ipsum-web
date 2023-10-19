@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { IpsumDay } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 import {
   URLLayer,
   useIpsumSearchParams,
@@ -66,7 +66,12 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
                 layer.highlightFromEntryKey,
                 "entry-printed-date"
               ).toString("stored-day")
-            : undefined,
+            : layer.focusedDate
+            ? IpsumDateTime.fromString(
+                layer.focusedDate,
+                "url-format"
+              ).toString("entry-printed-date")
+            : IpsumDay.today().toString("entry-printed-date"),
         };
       case "arc_detail":
         return {

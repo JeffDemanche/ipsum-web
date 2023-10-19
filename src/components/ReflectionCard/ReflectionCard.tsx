@@ -21,6 +21,7 @@ import styles from "./ReflectionCard.less";
 
 interface ReflectionCardProps {
   locked?: boolean;
+  lockedRating?: number;
   cardId: string;
   beforeReview?: {
     ef: number;
@@ -54,6 +55,7 @@ const ReflectionCardQuery = gql(`
 
 export const ReflectionCard: React.FunctionComponent<ReflectionCardProps> = ({
   locked = false,
+  lockedRating,
   cardId,
   beforeReview,
 }) => {
@@ -92,8 +94,11 @@ export const ReflectionCard: React.FunctionComponent<ReflectionCardProps> = ({
                 <ToggleButton
                   key={i}
                   value={i}
-                  selected={beforeReview?.rating === i}
+                  selected={
+                    locked ? lockedRating === i : beforeReview?.rating === i
+                  }
                   onClick={() => submitRating(i)}
+                  disabled={locked}
                   className={styles["rating-button"]}
                 >
                   {

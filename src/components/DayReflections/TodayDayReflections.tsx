@@ -1,5 +1,11 @@
 import { useQuery } from "@apollo/client";
-import { Typography } from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@mui/material";
 import { ReflectionCard } from "components/ReflectionCard";
 import React from "react";
 import { gql } from "util/apollo";
@@ -43,25 +49,38 @@ export const TodayDayReflections: React.FunctionComponent<
   const numReviewedCards = reviewedCards?.length ?? 0;
 
   return (
-    <div className={styles["day-reflections"]}>
-      <Typography variant="h4">Today&apos;s reflections</Typography>
-      <Typography variant="caption">
-        ({numReviewedCards} rated / {numUnreviewedCards} unrated)
-      </Typography>
-      {unreviewedCards?.length > 0 && (
-        <ReflectionCard cardId={unreviewedCards[0].id} />
-      )}
-      {reviewedCards?.map((review) => (
-        <ReflectionCard
-          key={review.id}
-          cardId={review.card.id}
-          beforeReview={{
-            ef: review.beforeEF,
-            rating: review.rating,
-            interval: review.beforeInterval,
-          }}
-        />
-      ))}
-    </div>
+    <Accordion
+      className={styles["reflection-accordion"]}
+      defaultExpanded
+      variant="outlined"
+    >
+      <AccordionSummary expandIcon={<ExpandMore />} id="panel1a-header">
+        <Typography variant="caption">
+          Reflections ({numReviewedCards} rated / {numUnreviewedCards} unrated)
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <div className={styles["day-reflections"]}>
+          <Typography variant="h4">Today&apos;s reflections</Typography>
+          <Typography variant="caption">
+            ({numReviewedCards} rated / {numUnreviewedCards} unrated)
+          </Typography>
+          {unreviewedCards?.length > 0 && (
+            <ReflectionCard cardId={unreviewedCards[0].id} />
+          )}
+          {reviewedCards?.map((review) => (
+            <ReflectionCard
+              key={review.id}
+              cardId={review.card.id}
+              beforeReview={{
+                ef: review.beforeEF,
+                rating: review.rating,
+                interval: review.beforeInterval,
+              }}
+            />
+          ))}
+        </div>
+      </AccordionDetails>
+    </Accordion>
   );
 };

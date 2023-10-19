@@ -129,11 +129,18 @@ describe("DiptychContext", () => {
   });
 
   describe("orderedBreadcrumbs", () => {
-    it("should be empty list if there is only one layer", () => {
+    it("should show a single daily_journal layer in breadcrumb", () => {
       setup({
-        initialUrlLayers: [{ type: "daily_journal" }],
+        initialUrlLayers: [
+          { type: "daily_journal", focusedDate: "01-01-2021" },
+        ],
         onValue: (value) => {
-          expect(value.orderedBreadcrumbs).toEqual([]);
+          expect(value.orderedBreadcrumbs).toEqual([
+            {
+              type: "journal_entry",
+              journalEntryId: "1/1/2021",
+            },
+          ]);
         },
       });
     });
@@ -147,10 +154,6 @@ describe("DiptychContext", () => {
             highlightFromEntryKey: "1/1/2021",
             highlightTo: "highlight_to_id",
             highlightToEntryKey: "1/2/2021",
-          },
-          {
-            type: "arc_detail",
-            arcId: "arc-id",
           },
         ],
         onValue: (value) => {

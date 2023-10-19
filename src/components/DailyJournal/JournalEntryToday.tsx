@@ -11,8 +11,8 @@ import styles from "./JournalEntry.less";
 import { EditorContext } from "../EditorWrapper/EditorContext";
 import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
 import { Typography } from "@mui/material";
-import { ReflectionAccordion } from "./ReflectionAccordion";
 import { EntryType } from "util/apollo";
+import { TodayDayReflections } from "components/DayReflections";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -98,10 +98,9 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
             "entry-printed-date-nice"
           )}
         </Typography>
-        <ReflectionAccordion
-          isToday={true}
+        <TodayDayReflections
           day={IpsumDay.fromString(entryKey, "stored-day")}
-        ></ReflectionAccordion>
+        />
         {editorState && (
           <>
             <Digest entryKey={entryKey} className={styles["digest"]} />
