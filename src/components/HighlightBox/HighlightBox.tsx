@@ -311,6 +311,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
         <HighlightExcerpt
           className={styles["excerpt"]}
           highlightId={highlightId}
+          charLimit={selected ? undefined : 200}
         />
       )}
     </Card>

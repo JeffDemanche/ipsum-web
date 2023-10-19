@@ -13,7 +13,7 @@ import { useExcerptContentState } from "./useExcerpt";
 interface HighlightExcerptProps {
   highlightId: string;
   className?: string;
-  maxWords?: number;
+  charLimit?: number;
 }
 
 export const HighlightExcerptQuery = gql(`
@@ -30,7 +30,7 @@ export const HighlightExcerptQuery = gql(`
 
 export const HighlightExcerpt: React.FunctionComponent<
   HighlightExcerptProps
-> = ({ highlightId, className, maxWords }) => {
+> = ({ highlightId, className, charLimit }) => {
   const {
     data: { highlights },
   } = useQuery(HighlightExcerptQuery, { variables: { highlightId } });
@@ -41,9 +41,10 @@ export const HighlightExcerpt: React.FunctionComponent<
     ? parseContentState(entry.contentState)
     : undefined;
 
-  const excerptContentState = useExcerptContentState({
+  const { excerptContentState } = useExcerptContentState({
     entryContentState,
     highlightId,
+    charLimit,
   });
 
   const editorState = useMemo(

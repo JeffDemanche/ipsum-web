@@ -1,5 +1,5 @@
 import { ApolloProvider } from "@apollo/client";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import React from "react";
 import { client } from "util/apollo";
 import {
@@ -23,6 +23,16 @@ describe("HighlightExcerpt", () => {
     entry_1_editor.getCurrentContent()
   ).applyEntityData(entry_1_editor.getSelection(), "textArcAssignments", {
     arcAssignmentId: "highlight_1",
+    arcId: "arc_1",
+  }).contentState;
+
+  const entry_2_editor = createEditorStateFromFormat(
+    "<p>first [block</p><p>second block</p><p>third block]</p>"
+  );
+  const entry_2_content = new IpsumEntityTransformer(
+    entry_2_editor.getCurrentContent()
+  ).applyEntityData(entry_2_editor.getSelection(), "textArcAssignments", {
+    arcAssignmentId: "highlight_2",
     arcId: "arc_1",
   }).contentState;
 
@@ -52,12 +62,32 @@ describe("HighlightExcerpt", () => {
           ).toString("iso"),
         },
       },
+      "1/2/2020": {
+        __typename: "Entry",
+        entryKey: "1/2/2020",
+        trackedContentState: IpsumTimeMachine.create(
+          stringifyContentState(entry_2_content)
+        ).toString(),
+        history: {
+          __typename: "History",
+          dateCreated: IpsumDateTime.fromString(
+            "1/1/2020",
+            "entry-printed-date"
+          ).toString("iso"),
+        },
+      },
     });
     mockHighlights({
       highlight_1: {
         __typename: "Highlight",
         id: "highlight_1",
         entry: "1/1/2020",
+        outgoingRelations: ["relation_1"],
+      },
+      highlight_2: {
+        __typename: "Highlight",
+        id: "highlight_2",
+        entry: "1/2/2020",
         outgoingRelations: ["relation_1"],
       },
     });
@@ -80,5 +110,40 @@ describe("HighlightExcerpt", () => {
         <HighlightExcerpt highlightId="highlight_1" />
       </ApolloProvider>
     );
+  });
+
+  it("truncate the text of a highlight to a maximum number of chars (single block)", () => {
+    render(
+      <ApolloProvider client={client}>
+        <HighlightExcerpt charLimit={12} highlightId="highlight_1" />
+      </ApolloProvider>
+    );
+
+    expect(screen.getByText("this text is")).toBeInTheDocument();
+    expect(screen.getByText("...")).toBeInTheDocument();
+  });
+
+  it("truncate the text of a highlight to a maximum number of chars (multi block)", () => {
+    render(
+      <ApolloProvider client={client}>
+        <HighlightExcerpt charLimit={8} highlightId="highlight_2" />
+      </ApolloProvider>
+    );
+
+    expect(screen.getByText("block")).toBeInTheDocument();
+    expect(screen.getByText("sec")).toBeInTheDocument();
+    expect(screen.getByText("...")).toBeInTheDocument();
+  });
+
+  it("don't truncate the text of a highlight if charLimit isn't defined", () => {
+    render(
+      <ApolloProvider client={client}>
+        <HighlightExcerpt highlightId="highlight_2" />
+      </ApolloProvider>
+    );
+
+    expect(screen.getByText("block")).toBeInTheDocument();
+    expect(screen.getByText("second block")).toBeInTheDocument();
+    expect(screen.getByText("third block")).toBeInTheDocument();
   });
 });
