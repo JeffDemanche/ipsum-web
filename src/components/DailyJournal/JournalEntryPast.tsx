@@ -86,7 +86,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
         ></ReflectionAccordion>
         {editorState && (
           <>
-            <Digest entryKey={entryKey} />
+            <Digest entryKey={entryKey} className={styles["digest"]} />
             <EditorWrapper
               enableControls={false}
               editorKey={entryKey}

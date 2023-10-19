@@ -4,12 +4,12 @@ import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./Digest.less";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
-import { LayerContext } from "components/Diptych";
 import { DiptychContext } from "components/DiptychContext";
-import { IpsumDay } from "util/dates";
+import cx from "classnames";
 
 interface DigestProps {
   entryKey: string;
+  className?: string;
 }
 
 const DigestQuery = gql(`
@@ -24,7 +24,10 @@ const DigestQuery = gql(`
   }
 `);
 
-export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
+export const Digest: React.FunctionComponent<DigestProps> = ({
+  entryKey,
+  className,
+}) => {
   const { data } = useQuery(DigestQuery, { variables: { entryKey } });
 
   const highlights = useMemo(
@@ -53,7 +56,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
 
   const entryDigests = useMemo(() => {
     return (
-      <div className={styles["digest-for-entry"]}>
+      <div className={cx(className, styles["digest-for-entry"])}>
         {highlights.map((highlight, i) => {
           return (
             <React.Fragment key={i}>
@@ -77,6 +80,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({ entryKey }) => {
       </div>
     );
   }, [
+    className,
     data.entry?.entryKey,
     highlights,
     setHoveredHighlightIds,

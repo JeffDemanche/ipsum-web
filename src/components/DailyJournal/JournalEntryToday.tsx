@@ -104,7 +104,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
         ></ReflectionAccordion>
         {editorState && (
           <>
-            <Digest entryKey={entryKey} />
+            <Digest entryKey={entryKey} className={styles["digest"]} />
             <EditorWrapper
               enableControls
               placeholder={placeholderForDate(

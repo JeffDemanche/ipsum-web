@@ -77,7 +77,7 @@ export const ReflectionCard: React.FunctionComponent<ReflectionCardProps> = ({
   if (subjectType === "Highlight") {
     return (
       <Paper className={styles["reflection-card"]}>
-        <HighlightBox highlightId={data.srsCard.subject.id} selected />
+        <HighlightBox highlightId={data.srsCard.subject.id} />
         <div className={styles["rating-container"]}>
           <ToggleButtonGroup className={styles["rating-button-group"]}>
             {ratings.map((i) => {

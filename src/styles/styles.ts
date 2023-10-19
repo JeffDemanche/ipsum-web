@@ -106,17 +106,15 @@ export const theme = createTheme({
         {
           props: { variant: "shadowed" },
           style: {
-            borderRadius: "0px",
-            background: "linear-gradient(225deg, #e6e6e6, #ffffff)",
-            boxShadow: "-20px 20px 60px black, 20px -20px 60px black",
+            borderRadius: "4px",
+            backgroundColor: "rgba(210, 210, 210, .55)",
           },
         },
         {
           props: { variant: "translucent" },
           style: {
-            borderRadius: "0px",
-            backgroundColor: "rgba(255, 255, 255, .55)",
-            backdropFilter: "blur(5px)",
+            borderRadius: "4px",
+            backgroundColor: "rgba(210, 210, 210, .55)",
           },
         },
       ],
@@ -127,9 +125,7 @@ export const theme = createTheme({
           props: { variant: "shadowed" },
           style: {
             borderRadius: "0px",
-            background: "linear-gradient(225deg, #e6e6e6, #ffffff)",
-            boxShadow:
-              "-20px 20px 40px rgba(0, 0, 0, 0.5), 20px -20px 40px rgba(255, 255, 255, 0.5)",
+            backgroundColor: "white",
           },
         },
         {
