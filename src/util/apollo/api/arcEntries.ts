@@ -19,6 +19,7 @@ export const createArcEntry = ({
     stringifiedContentState: stringifyContentState(
       ContentState.createFromText("")
     ),
+    htmlString: "",
     entryType: EntryType.Arc,
   });
 

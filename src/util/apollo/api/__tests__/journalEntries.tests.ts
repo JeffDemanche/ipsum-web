@@ -17,6 +17,7 @@ describe("apollo journalEntries API", () => {
       createJournalEntry({
         entryKey: "1/1/20",
         entryType: EntryType.Journal,
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("hello world!")
         ),
@@ -32,6 +33,7 @@ describe("apollo journalEntries API", () => {
       createJournalEntry({
         entryKey: "1/1/20",
         entryType: EntryType.Journal,
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("hello world!")
         ),

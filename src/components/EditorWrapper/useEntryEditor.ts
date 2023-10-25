@@ -119,6 +119,7 @@ export const useEntryEditor = ({
         const entry = {
           entryKey,
           stringifiedContentState: stringifyContentState(contentState),
+          htmlString: "",
           entryType: metadata.entryType,
         };
         const attemptedUpdate = updateEntry(entry);

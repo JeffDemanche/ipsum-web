@@ -13,6 +13,7 @@ import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
 import { Typography } from "@mui/material";
 import { EntryType } from "util/apollo";
 import { TodayDayReflections } from "components/DayReflections";
+import { IpsumEditor } from "util/editor";
 
 interface JournalEntryTodayProps {
   entryKey: string;
@@ -104,7 +105,11 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
         {editorState && (
           <>
             <Digest entryKey={entryKey} className={styles["digest"]} />
-            <EditorWrapper
+            <IpsumEditor
+              entryKey={entryKey}
+              metadata={{ entryType: EntryType.Journal }}
+            />
+            {/* <EditorWrapper
               enableControls
               placeholder={placeholderForDate(
                 IpsumDateTime.fromString(entryKey, "entry-printed-date")
@@ -120,7 +125,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
               onChange={onEditorChange}
               ref={editorRef}
               editorRef={editorRef}
-            ></EditorWrapper>
+            ></EditorWrapper> */}
           </>
         )}
       </div>

@@ -71,6 +71,7 @@ const typeDefs = gql`
     # Resolves to most recent tracked contentState
     contentState: String!
     trackedContentState: String!
+    trackedHTMLString: String!
     highlights: [Highlight!]!
     entryType: EntryType!
     history: History!
@@ -186,6 +187,7 @@ export type UnhydratedType = {
     __typename: "Entry";
     entryKey: string;
     trackedContentState: string;
+    trackedHTMLString: string;
     history: UnhydratedType["History"];
     entryType: "JOURNAL" | "ARC" | "COMMENT";
   };

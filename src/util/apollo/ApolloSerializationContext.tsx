@@ -77,7 +77,12 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
   useEffect(() => {
     if (idbWrapper !== undefined && stateFromAutosave === undefined) {
       idbWrapper.getAutosaveValue().then((state) => {
-        setStateFromAutosave(state);
+        if (!state) {
+          initializeState();
+          setHasLoadedAutosave(true);
+        } else {
+          setStateFromAutosave(state);
+        }
       });
     }
   }, [idbWrapper, stateFromAutosave]);

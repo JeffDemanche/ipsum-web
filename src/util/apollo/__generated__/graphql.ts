@@ -63,6 +63,7 @@ export type Entry = {
   highlights: Array<Highlight>;
   history: History;
   trackedContentState: Scalars['String'];
+  trackedHTMLString: Scalars['String'];
 };
 
 export enum EntryType {
