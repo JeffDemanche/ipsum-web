@@ -1,11 +1,9 @@
 import styles from "./HighlightAssignmentPlugin.less";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { HighlightAssignmentPopper } from "components/HighlightAssignmentPopper";
 import {
   $getSelection,
   SELECTION_CHANGE_COMMAND,
   COMMAND_PRIORITY_HIGH,
-  BLUR_COMMAND,
   $isRangeSelection,
 } from "lexical";
 import React, {
@@ -93,11 +91,6 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
         style={selectionAnchorStyle}
         className={styles["editor-text-selection"]}
       ></div>
-      <HighlightAssignmentPopper
-        open={showPopover}
-        anchorEl={selectionAnchorRef.current}
-        entryKey={entryKey}
-      />
     </div>
   );
 };
