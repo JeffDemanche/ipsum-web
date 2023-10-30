@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDebouncedCallback } from "util/hooks";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import { $generateHtmlFromNodes } from "@lexical/html";
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 import { $getRoot, EditorState, LexicalEditor } from "lexical";
 import { IpsumEditorMetadata } from "../IpsumEditor";
 import {
@@ -10,20 +10,57 @@ import {
   deleteArcEntry,
   deleteJournalEntry,
   EntryType,
+  gql,
   updateEntry,
 } from "util/apollo";
 import { ContentState } from "draft-js";
 import { stringifyContentState } from "util/content-state";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { useQuery } from "@apollo/client";
 
-interface DebouncedSavePluginProps {
+interface LoadSavePluginProps {
   timeout?: number;
   entryKey: string;
   metadata: IpsumEditorMetadata;
 }
 
-export const DebouncedSavePlugin: React.FunctionComponent<
-  DebouncedSavePluginProps
-> = ({ timeout = 500, entryKey, metadata }) => {
+const IpsumEditorQuery = gql(`
+  query IpsumEditor($entryKey: ID!) {
+    entry(entryKey: $entryKey) {
+      entryKey
+      htmlString
+      entryType
+    }
+  }
+`);
+
+export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
+  timeout = 500,
+  entryKey,
+  metadata,
+}) => {
+  const { data } = useQuery(IpsumEditorQuery, { variables: { entryKey } });
+
+  const htmlString = data?.entry?.htmlString ?? "";
+
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    editor.update(() => {
+      const parser = new DOMParser();
+      const dom = parser.parseFromString(htmlString, "text/html");
+
+      const nodes = $generateNodesFromDOM(editor, dom);
+
+      const root = $getRoot();
+      root.clear();
+
+      nodes.forEach((node) => {
+        root.append(node);
+      });
+    });
+  }, []);
+
   const debouncedOnChange = useDebouncedCallback(
     (editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {
       editor.getEditorState().read(() => {

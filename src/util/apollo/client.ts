@@ -71,6 +71,7 @@ const typeDefs = gql`
     # Resolves to most recent tracked contentState
     contentState: String!
     trackedContentState: String!
+    htmlString: String!
     trackedHTMLString: String!
     highlights: [Highlight!]!
     entryType: EntryType!
@@ -477,6 +478,11 @@ const typePolicies: StrictTypedTypePolicies = {
       contentState(_, { readField }) {
         const trackedContentState = readField<string>("trackedContentState");
         const timeMachine = IpsumTimeMachine.fromString(trackedContentState);
+        return timeMachine.currentValue;
+      },
+      htmlString(_, { readField }) {
+        const trackedHTMLString = readField<string>("trackedHTMLString");
+        const timeMachine = IpsumTimeMachine.fromString(trackedHTMLString);
         return timeMachine.currentValue;
       },
       history(h) {

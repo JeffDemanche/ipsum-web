@@ -9,8 +9,16 @@ import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { ToolbarPlugin } from "./plugins";
 import { placeholderForDate } from "util/placeholders";
 import { IpsumDateTime } from "util/dates";
-import { DebouncedSavePlugin } from "./plugins/DebouncedSavePlugin";
+import { LoadSavePlugin } from "./plugins/LoadSavePlugin";
 import { EntryType } from "util/apollo";
+import { HighlightAssignmentNode } from "./plugins/HighlightAssignmentNode";
+import { HighlightAssignmentPlugin } from "./plugins/HighlightAssignmentPlugin";
+import { editorTheme } from "./editor-theme";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { ListItemNode, ListNode } from "@lexical/list";
+import { LinkNode } from "@lexical/link";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 
 interface MetadataJournal {
   entryType: EntryType.Journal;
@@ -40,7 +48,23 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
   }, []);
 
   return (
-    <LexicalComposer initialConfig={{ namespace: entryKey, onError, editable }}>
+    <LexicalComposer
+      initialConfig={{
+        theme: editorTheme,
+        namespace: entryKey,
+        onError,
+        editable,
+        nodes: [
+          HeadingNode,
+          HeadingNode,
+          ListNode,
+          ListItemNode,
+          QuoteNode,
+          LinkNode,
+          HighlightAssignmentNode,
+        ],
+      }}
+    >
       <div className={styles["editor-container"]}>
         <ToolbarPlugin />
         <div className={styles["editor-inner"]}>
@@ -53,7 +77,10 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
               </div>
             }
           />
-          <DebouncedSavePlugin entryKey={entryKey} metadata={metadata} />
+          <LoadSavePlugin entryKey={entryKey} metadata={metadata} />
+          <HighlightAssignmentPlugin entryKey={entryKey} />
+          <ListPlugin />
+          <LinkPlugin />
           <HistoryPlugin />
         </div>
       </div>

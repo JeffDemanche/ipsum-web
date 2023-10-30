@@ -4,6 +4,7 @@
 
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
+import { IpsumDay } from "./day";
 
 /** Date formats we can create a string of from a DateTime. */
 export type IpsumDateFormatTo =
@@ -56,7 +57,9 @@ export const useDateString = (
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDateString(new IpsumDateTime(getCurrentLocalDateTime()));
+      if (IpsumDay.today().toString("iso") !== dateString.toString("iso")) {
+        setDateString(IpsumDay.today().toIpsumDateTime());
+      }
     }, refreshRate);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
