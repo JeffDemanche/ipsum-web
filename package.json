@@ -48,6 +48,7 @@
     "@types/underscore": "^1.11.4",
     "@types/uuid": "^8.3.4",
     "@types/wicg-file-system-access": "^2020.9.5",
+    "bootstrap-icons": "^1.11.1",
     "classnames": "^2.3.1",
     "color-convert": "^2.0.1",
     "css-loader": "^6.7.1",

@@ -159,5 +159,26 @@ export const theme = createTheme({
     },
     MuiPopover: {},
     MuiToggleButton: {},
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          color: grey[700],
+          fontSize: "15px",
+          fontFamily: "Inria Sans",
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          i: {
+            color: grey[900],
+          },
+          color: grey[700],
+          fontSize: "15px",
+          fontFamily: "Inria Sans",
+        },
+      },
+    },
   },
 });
