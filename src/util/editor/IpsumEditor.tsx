@@ -47,6 +47,8 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
     console.error(error, editor);
   }, []);
 
+  console.log(editable);
+
   return (
     <LexicalComposer
       initialConfig={{
@@ -66,7 +68,7 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
       }}
     >
       <div className={styles["editor-container"]}>
-        <ToolbarPlugin />
+        {editable && <ToolbarPlugin />}
         <div className={styles["editor-inner"]}>
           <RichTextPlugin
             contentEditable={<ContentEditable style={{ outline: "none" }} />}
