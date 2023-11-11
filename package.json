@@ -93,7 +93,9 @@
   },
   "devDependencies": {
     "@graphql-codegen/typescript-apollo-client-helpers": "^2.2.6",
+    "@testing-library/dom": "^9.3.3",
     "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/user-event": "^14.5.1",
     "@types/jest": "^27.5.0",
     "@types/react-infinite-calendar": "^2.3.6",
     "@typescript-eslint/eslint-plugin": "^5.22.0",

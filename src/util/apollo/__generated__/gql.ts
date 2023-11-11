@@ -35,6 +35,7 @@ const documents = {
     "\n  query JournalTitle {\n    journalTitle\n  }\n": types.JournalTitleDocument,
     "\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n": types.LinkerDocument,
     "\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n      interval\n      ef\n      subject {\n        __typename\n        ... on Highlight {\n          id\n          entry {\n            entryKey\n          }\n        }\n        ... on Arc {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.ReflectionCardDocument,
+    "\n  query ArcChooser {\n    arcs {\n      id\n      color\n      name\n    }\n  }\n": types.ArcChooserDocument,
     "\n  query IpsumEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      htmlString\n      entryType\n    }\n  }\n": types.IpsumEditorDocument,
     "\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n": types.UseSearchArcsDocument,
     "\n  query UseHighlightSearch($searchCriteria: SearchCriteria!) {\n    searchHighlights(criteria: $searchCriteria) {\n      id\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n": types.UseHighlightSearchDocument,
@@ -142,6 +143,10 @@ export function gql(source: "\n  query Linker {\n    journalMetadata {\n      la
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n      interval\n      ef\n      subject {\n        __typename\n        ... on Highlight {\n          id\n          entry {\n            entryKey\n          }\n        }\n        ... on Arc {\n          id\n          name\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n      interval\n      ef\n      subject {\n        __typename\n        ... on Highlight {\n          id\n          entry {\n            entryKey\n          }\n        }\n        ... on Arc {\n          id\n          name\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query ArcChooser {\n    arcs {\n      id\n      color\n      name\n    }\n  }\n"): (typeof documents)["\n  query ArcChooser {\n    arcs {\n      id\n      color\n      name\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

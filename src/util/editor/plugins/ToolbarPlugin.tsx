@@ -6,7 +6,6 @@ import {
   $isRangeSelection,
   COMMAND_PRIORITY_LOW,
   FORMAT_TEXT_COMMAND,
-  LexicalEditor,
   RangeSelection,
   SELECTION_CHANGE_COMMAND,
 } from "lexical";
@@ -33,6 +32,7 @@ import {
   FormatStrikethrough,
   FormatUnderlined,
 } from "@mui/icons-material";
+import { ArcChooser } from "./ArcChooser";
 
 function getSelectedNode(selection: RangeSelection) {
   const anchor = selection.anchor;
@@ -50,30 +50,13 @@ function getSelectedNode(selection: RangeSelection) {
   }
 }
 
-const supportedBlockTypes = new Set([
-  "paragraph",
-  "quote",
-  "code",
-  "h1",
-  "h2",
-  "ul",
-  "ol",
-]);
+interface ToolbarPluginProps {
+  entryKey: string;
+}
 
-const blockTypeToBlockName: Record<string, string> = {
-  code: "Code Block",
-  h1: "Large Heading",
-  h2: "Small Heading",
-  h3: "Heading",
-  h4: "Heading",
-  h5: "Heading",
-  ol: "Numbered List",
-  paragraph: "Normal",
-  quote: "Quote",
-  ul: "Bulleted List",
-};
-
-export const ToolbarPlugin: React.FunctionComponent = () => {
+export const ToolbarPlugin: React.FunctionComponent<ToolbarPluginProps> = ({
+  entryKey,
+}) => {
   const [editor] = useLexicalComposerContext();
 
   const toolbarRef = useRef<HTMLDivElement>(null);
@@ -214,6 +197,7 @@ export const ToolbarPlugin: React.FunctionComponent = () => {
     <div className={styles["toolbar"]} ref={toolbarRef}>
       <ToggleButton
         className={styles["inline-format-button"]}
+        aria-label="bold"
         value="check"
         selected={isBold}
         onClick={() => {
@@ -224,6 +208,7 @@ export const ToolbarPlugin: React.FunctionComponent = () => {
       </ToggleButton>
       <ToggleButton
         className={styles["inline-format-button"]}
+        aria-label="italic"
         value="check"
         selected={isItalic}
         onClick={() => {
@@ -234,6 +219,7 @@ export const ToolbarPlugin: React.FunctionComponent = () => {
       </ToggleButton>
       <ToggleButton
         className={styles["inline-format-button"]}
+        aria-label="underline"
         value="check"
         selected={isUnderline}
         onClick={() => {
@@ -244,6 +230,7 @@ export const ToolbarPlugin: React.FunctionComponent = () => {
       </ToggleButton>
       <ToggleButton
         className={styles["inline-format-button"]}
+        aria-label="strikethrough"
         value="check"
         selected={isStrikethrough}
         onClick={() => {
@@ -252,75 +239,74 @@ export const ToolbarPlugin: React.FunctionComponent = () => {
       >
         <FormatStrikethrough />
       </ToggleButton>
-      {
-        <Select
-          value={blockType}
-          variant="outlined"
-          className={styles["block-format-select"]}
-          aria-label="Formatting Options"
+      <Select
+        value={blockType}
+        variant="outlined"
+        className={styles["block-format-select"]}
+        aria-label="Formatting Options"
+      >
+        <MenuItem
+          className={styles["menu-item"]}
+          value={"paragraph"}
+          key={"paragraph"}
+          selected={blockType === "paragraph"}
+          onClick={formatParagraph}
         >
-          <MenuItem
-            className={styles["menu-item"]}
-            value={"paragraph"}
-            key={"paragraph"}
-            selected={blockType === "paragraph"}
-            onClick={formatParagraph}
-          >
-            <i className="bi bi-text-paragraph"></i>
-            <span>Normal</span>
-          </MenuItem>
-          <MenuItem
-            className={styles["menu-item"]}
-            value={"h1"}
-            key={"h1"}
-            selected={blockType === "h1"}
-            onClick={formatLargeHeading}
-          >
-            <i className="bi bi-type-h1"></i>
-            <span>Large Heading</span>
-          </MenuItem>
-          <MenuItem
-            className={styles["menu-item"]}
-            value={"h2"}
-            key={"h2"}
-            selected={blockType === "h2"}
-            onClick={formatSmallHeading}
-          >
-            <i className="bi bi-type-h2"></i>
-            <span>Small Heading</span>
-          </MenuItem>
-          <MenuItem
-            className={styles["menu-item"]}
-            value={"ul"}
-            key={"ul"}
-            selected={blockType === "ul"}
-            onClick={formatBulletList}
-          >
-            <i className="bi bi-list-task"></i>
-            <span>Bullet List</span>
-          </MenuItem>
-          <MenuItem
-            className={styles["menu-item"]}
-            value={"ol"}
-            key={"ol"}
-            selected={blockType === "ol"}
-            onClick={formatNumberedList}
-          >
-            <i className="bi bi-list-ol"></i>
-            <span className="text">Numbered List</span>
-          </MenuItem>
-          <MenuItem
-            className={styles["menu-item"]}
-            value={"quote"}
-            key={"quote"}
-            selected={blockType === "quote"}
-            onClick={formatQuote}
-          >
-            <i className="bi bi-blockquote-left"></i>
-            <span className="text">Quote</span>
-          </MenuItem>
-        </Select>
-      }
+          <i className="bi bi-text-paragraph"></i>
+          <span>Normal</span>
+        </MenuItem>
+        <MenuItem
+          className={styles["menu-item"]}
+          value={"h1"}
+          key={"h1"}
+          selected={blockType === "h1"}
+          onClick={formatLargeHeading}
+        >
+          <i className="bi bi-type-h1"></i>
+          <span>Large Heading</span>
+        </MenuItem>
+        <MenuItem
+          className={styles["menu-item"]}
+          value={"h2"}
+          key={"h2"}
+          selected={blockType === "h2"}
+          onClick={formatSmallHeading}
+        >
+          <i className="bi bi-type-h2"></i>
+          <span>Small Heading</span>
+        </MenuItem>
+        <MenuItem
+          className={styles["menu-item"]}
+          value={"ul"}
+          key={"ul"}
+          selected={blockType === "ul"}
+          onClick={formatBulletList}
+        >
+          <i className="bi bi-list-task"></i>
+          <span>Bullet List</span>
+        </MenuItem>
+        <MenuItem
+          className={styles["menu-item"]}
+          value={"ol"}
+          key={"ol"}
+          selected={blockType === "ol"}
+          onClick={formatNumberedList}
+        >
+          <i className="bi bi-list-ol"></i>
+          <span className="text">Numbered List</span>
+        </MenuItem>
+        <MenuItem
+          className={styles["menu-item"]}
+          value={"quote"}
+          key={"quote"}
+          selected={blockType === "quote"}
+          onClick={formatQuote}
+        >
+          <i className="bi bi-blockquote-left"></i>
+          <span className="text">Quote</span>
+        </MenuItem>
+      </Select>
+      <ArcChooser entryKey={entryKey} editor={editor} />
     </div>
   );
 };

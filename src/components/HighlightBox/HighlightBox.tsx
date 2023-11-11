@@ -78,7 +78,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
   });
   const highlight = data?.highlights?.[0];
   const highlightRelations = highlight.outgoingRelations;
-  const firstArc = highlightRelations[0].object;
+  const firstArc = highlightRelations[0]?.object;
 
   const entryDate = parseIpsumDateTime(data.highlights[0].entry.date).toString(
     "entry-printed-date-nice"
@@ -122,7 +122,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
     return firstArc?.id
       ? new IpsumArcColor(firstArc.color).toIpsumColor(colorParams).toRgbaCSS()
       : "white";
-  }, [firstArc.color, firstArc?.id, hovered, selected]);
+  }, [firstArc?.color, firstArc?.id, hovered, selected]);
 
   const onDeleteClick = useCallback(
     (e: React.MouseEvent) => {

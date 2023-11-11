@@ -1,9 +1,9 @@
-.editor-text-selection-wrapper {
-  position: absolute;
-  top: 0;
+:root {
+  --hue: 0;
+  --lightness: 0%;
+}
 
-  .editor-text-selection {
-    pointer-events: none;
-    position: absolute;
-  }
+.highlight {
+  background-color: hsla(var(--hue), 90%, var(--lightness), 0.1);
+  box-shadow: 0 2px 0 0 hsla(var(--hue), 90%, var(--lightness), 0.35);
 }

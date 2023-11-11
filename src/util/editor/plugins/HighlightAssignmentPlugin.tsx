@@ -1,96 +1,40 @@
-import styles from "./HighlightAssignmentPlugin.less";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { mergeRegister } from "@lexical/utils";
 import {
-  $getSelection,
-  SELECTION_CHANGE_COMMAND,
-  COMMAND_PRIORITY_HIGH,
-  $isRangeSelection,
+  COMMAND_PRIORITY_NORMAL,
+  createCommand,
+  LexicalCommand,
 } from "lexical";
-import React, {
-  CSSProperties,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect } from "react";
+import {
+  HighlightAssignmentNodeAttributes,
+  toggleHighlightAssignment,
+} from "./HighlightAssignmentNode";
 
 interface HighlightAssignmentPluginProps {
   entryKey: string;
 }
+
+export const TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND: LexicalCommand<HighlightAssignmentNodeAttributes | null> =
+  createCommand("toggle-highlight-assignment");
 
 export const HighlightAssignmentPlugin: React.FunctionComponent<
   HighlightAssignmentPluginProps
 > = ({ entryKey }) => {
   const [editor] = useLexicalComposerContext();
 
-  const [showPopover, setShowPopover] = useState(false);
-
-  const [selectionDomRect, setSelectionDomRect] = useState<DOMRect | null>(
-    null
-  );
-
-  const selectionWrapperRef = useRef<HTMLDivElement>(null);
-  const selectionAnchorRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    return editor.registerCommand(
-      SELECTION_CHANGE_COMMAND,
-      () => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection) && !selection.isCollapsed()) {
-          const documentSelection = document.getSelection();
-          const selectionRect = documentSelection
-            .getRangeAt(0)
-            ?.getBoundingClientRect();
-
-          setShowPopover(true);
-          setSelectionDomRect(selectionRect);
-        } else {
-          setShowPopover(false);
-          setSelectionDomRect(null);
-        }
-
-        return true;
-      },
-      COMMAND_PRIORITY_HIGH
+    return mergeRegister(
+      editor.registerCommand(
+        TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND,
+        (payload) => {
+          toggleHighlightAssignment(payload);
+          return true;
+        },
+        COMMAND_PRIORITY_NORMAL
+      )
     );
   }, [editor]);
 
-  // useEffect(() => {
-  //   return editor.registerCommand(
-  //     BLUR_COMMAND,
-  //     () => {
-  //       setShowPopover(false);
-  //       return true;
-  //     },
-  //     COMMAND_PRIORITY_HIGH
-  //   );
-  // }, [editor]);
-
-  const selectionAnchorStyle = useMemo((): CSSProperties => {
-    const wrapperRect = selectionWrapperRef.current?.getBoundingClientRect();
-
-    return selectionDomRect
-      ? {
-          top: `${selectionDomRect?.top - wrapperRect?.top}px`,
-          left: `${selectionDomRect?.left - wrapperRect?.left}px`,
-          width: `${selectionDomRect?.width}px`,
-          height: `${selectionDomRect?.height}px`,
-        }
-      : {};
-  }, [selectionDomRect]);
-
-  return (
-    <div
-      ref={selectionWrapperRef}
-      className={styles["editor-text-selection-wrapper"]}
-    >
-      <div
-        ref={selectionAnchorRef}
-        style={selectionAnchorStyle}
-        className={styles["editor-text-selection"]}
-      ></div>
-    </div>
-  );
+  return null;
 };

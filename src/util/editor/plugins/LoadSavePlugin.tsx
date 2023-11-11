@@ -68,7 +68,7 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
 
         const root = $getRoot();
         const isEmpty =
-          root.getFirstChild().isEmpty() && root.getChildrenSize() === 1;
+          root.getFirstChild()?.isEmpty() && root.getChildrenSize() === 1;
 
         if (isEmpty) {
           switch (metadata.entryType) {
