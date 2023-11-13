@@ -36,7 +36,7 @@ export const MedianSearchSection: React.FunctionComponent = () => {
     if (!searchResults) {
       return null;
     } else {
-      return searchResults.map((highlight) => (
+      return searchResults?.map((highlight) => (
         <HighlightBox
           key={highlight.id}
           highlightId={highlight.id}
@@ -70,7 +70,7 @@ export const MedianSearchSection: React.FunctionComponent = () => {
       className={styles["search-section"]}
       numVisibleAroundFocusedElement={8}
       amountToLoad={10}
-      elements={highlightBoxes.map((box, i) => ({
+      elements={highlightBoxes?.map((box, i) => ({
         index: i,
         key: box.key.toString(),
         content: box,

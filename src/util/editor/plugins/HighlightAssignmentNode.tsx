@@ -10,6 +10,8 @@ import {
   SerializedElementNode,
   $getSelection,
   $isRangeSelection,
+  RangeSelection,
+  $createParagraphNode,
 } from "lexical";
 import {} from "@lexical/utils";
 import styles from "./HighlightAssignmentPlugin.less";
@@ -181,12 +183,28 @@ export class HighlightAssignmentNode extends ElementNode {
     writable.__attributes = attributes;
   }
 
-  canInsertTextBefore(): true {
-    return true;
+  insertNewAfter(
+    _: RangeSelection,
+    restoreSelection = true
+  ): null | ElementNode {
+    const newElement = $createParagraphNode();
+    newElement.append($createHighlightAssignmentNode(this.__attributes));
+    const direction = this.getDirection();
+    newElement.setDirection(direction);
+    this.insertAfter(newElement, restoreSelection);
+    return newElement;
   }
 
-  canInsertTextAfter(): true {
-    return true;
+  canInsertTextBefore(): false {
+    return false;
+  }
+
+  canInsertTextAfter(): false {
+    return false;
+  }
+
+  canBeEmpty(): boolean {
+    return false;
   }
 
   static importJSON(_serializedNode: SerializedHighlightAssignmentNode) {
@@ -240,10 +258,6 @@ export class HighlightAssignmentNode extends ElementNode {
       }
     }
 
-    return false;
-  }
-
-  canBeEmpty(): boolean {
     return false;
   }
 

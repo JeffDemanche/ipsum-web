@@ -2,7 +2,13 @@ import React, { useEffect } from "react";
 import { useDebouncedCallback } from "util/hooks";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
-import { $getRoot, EditorState, LexicalEditor } from "lexical";
+import {
+  $getRoot,
+  $getSelection,
+  EditorState,
+  LexicalEditor,
+  RangeSelection,
+} from "lexical";
 import { IpsumEditorMetadata } from "../IpsumEditor";
 import {
   createArcEntry,
@@ -59,6 +65,7 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
         root.append(node);
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const debouncedOnChange = useDebouncedCallback(

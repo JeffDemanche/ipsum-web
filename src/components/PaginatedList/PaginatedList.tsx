@@ -77,10 +77,10 @@ export const PaginatedList: React.FC<PaginatedListProps> = ({
   useEffect(() => {
     if (
       prevFocusedElementIndex !== focusedElementIndex &&
-      elements[focusedElementIndex]
+      elements?.[focusedElementIndex]
     ) {
       onFocusedElementChanged?.({
-        key: elements[focusedElementIndex].key,
+        key: elements?.[focusedElementIndex].key,
         index: focusedElementIndex,
       });
     }
@@ -112,7 +112,7 @@ export const PaginatedList: React.FC<PaginatedListProps> = ({
   }, []);
 
   const visibleElements = useMemo(() => {
-    return elements.slice(
+    return elements?.slice(
       Math.max(focusedElementIndex - numVisibleAroundFocusedElement, 0),
       Math.min(
         focusedElementIndex + numVisibleAroundFocusedElement,
@@ -128,7 +128,7 @@ export const PaginatedList: React.FC<PaginatedListProps> = ({
       className={cx(className, styles["infinite-scroller"])}
     >
       <div ref={contentRef}>
-        {visibleElements.map((elem) => (
+        {visibleElements?.map((elem) => (
           <div
             key={elem.key}
             data-elementindex={elem.index}

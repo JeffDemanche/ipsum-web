@@ -72,6 +72,7 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
             contentEditable={
               <ContentEditable
                 data-testid={`editor-${entryKey}`}
+                autoCorrect="off"
                 style={{ outline: "none" }}
               />
             }

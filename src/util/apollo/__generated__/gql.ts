@@ -28,7 +28,7 @@ const documents = {
     "\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n": types.UseJournalEntryEditorDocument,
     "\n  query HighlightAddReflectionForm($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      srsCards {\n        id\n      }\n    }\n  }\n": types.HighlightAddReflectionFormDocument,
     "\n  query HighlightBox($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightBoxDocument,
-    "\n  query HighlightExcerpt($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        contentState\n      }\n    }\n  }\n": types.HighlightExcerptDocument,
+    "\n  query HighlightExcerpt($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        htmlString\n      }\n    }\n  }\n": types.HighlightExcerptDocument,
     "\n  query HighlightSelectionProvider($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n    }\n  }\n": types.HighlightSelectionProviderDocument,
     "\n  query HighlightTag($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      outgoingRelations {\n        id\n        object {\n          __typename\n          ... on Arc {\n            id\n            name\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightTagDocument,
     "\n  query JournalDateRangeEntryKeys {\n    journalEntryKeys\n  }\n": types.JournalDateRangeEntryKeysDocument,
@@ -118,7 +118,7 @@ export function gql(source: "\n  query HighlightBox($highlightId: ID!) {\n    hi
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query HighlightExcerpt($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        contentState\n      }\n    }\n  }\n"): (typeof documents)["\n  query HighlightExcerpt($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        contentState\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query HighlightExcerpt($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        htmlString\n      }\n    }\n  }\n"): (typeof documents)["\n  query HighlightExcerpt($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        htmlString\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

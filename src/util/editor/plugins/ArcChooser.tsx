@@ -74,7 +74,7 @@ export const ArcChooser: React.FunctionComponent<ArcChooserProps> = ({
 
   const onChange = useCallback(
     (value: ArcOption) => {
-      if (persistedSelection.isCollapsed()) {
+      if (persistedSelection?.isCollapsed() || !value || !persistedSelection) {
         return;
       }
 

@@ -112,7 +112,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
       <Paper ref={paperRef} className={cx(styles["paper"])} variant="shadowed">
         <LayerHeader>
           <ToggleButtonGroup>
-            <Tooltip title="Previous entries">
+            <Tooltip title="Today's entry">
               <ToggleButton
                 onClick={() => {
                   setMode("today");
@@ -123,7 +123,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
                 <Today></Today>
               </ToggleButton>
             </Tooltip>
-            <Tooltip title="Today's entry">
+            <Tooltip title="Previous entries">
               <ToggleButton
                 onClick={() => {
                   setMode("past");

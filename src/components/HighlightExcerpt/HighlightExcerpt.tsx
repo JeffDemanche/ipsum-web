@@ -1,14 +1,10 @@
 import cx from "classnames";
 import { useQuery } from "@apollo/client";
 import { Paper } from "@mui/material";
-import { decorator } from "components/Decorator";
-import { blockStyleFn } from "components/EditorWrapper";
-import { Editor, EditorState } from "draft-js";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { gql } from "util/apollo";
-import { parseContentState } from "util/content-state";
 import styles from "./HighlightExcerpt.less";
-import { useExcerptContentState } from "./useExcerpt";
+import { useExcerpt } from "./useExcerpt";
 
 interface HighlightExcerptProps {
   highlightId: string;
@@ -22,7 +18,7 @@ export const HighlightExcerptQuery = gql(`
       id
       entry {
         entryKey
-        contentState
+        htmlString
       }
     }
   }
@@ -37,37 +33,19 @@ export const HighlightExcerpt: React.FunctionComponent<
   const highlight = highlights?.[0];
 
   const entry = highlight?.entry;
-  const entryContentState = entry
-    ? parseContentState(entry.contentState)
-    : undefined;
 
-  const { excerptContentState } = useExcerptContentState({
-    entryContentState,
-    highlightId,
+  const { ref } = useExcerpt({
+    domString: entry?.htmlString,
+    highlightId: highlight.id,
     charLimit,
   });
-
-  const editorState = useMemo(
-    () =>
-      EditorState.createWithContent(
-        excerptContentState,
-        decorator(entry.entryKey)
-      ),
-    [entry.entryKey, excerptContentState]
-  );
-
-  const onEditorChange = useCallback(() => {}, []);
 
   return (
     <Paper
       sx={{ borderRadius: "0" }}
       className={cx(className, styles["excerpt"])}
     >
-      <Editor
-        editorState={editorState}
-        blockStyleFn={blockStyleFn}
-        onChange={onEditorChange}
-      ></Editor>
+      <div ref={ref} />
     </Paper>
   );
 };
