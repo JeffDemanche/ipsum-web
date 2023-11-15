@@ -9,7 +9,6 @@ const contentStateToLexicalHTML = (contentState: ContentState) => {
       const highlightIds: string[] = entity
         .getData()
         .textArcAssignments.map((taa: any) => taa.arcAssignmentId);
-      console.log(highlightIds);
       return {
         element: "span",
         attributes: { "data-highlight-ids": highlightIds },
@@ -17,7 +16,7 @@ const contentStateToLexicalHTML = (contentState: ContentState) => {
     },
   });
 
-  console.log(html);
+  return html;
 };
 
 export default function lexical(modifiedData: any) {
@@ -25,15 +24,15 @@ export default function lexical(modifiedData: any) {
 
   Object.entries(modifiedData.entries).forEach(
     ([key, value]: [string, any]) => {
-      // const newEntry = { ...value };
-      // newEntry.trackedHTMLString = IpsumTimeMachine.create("").toString();
-      // newEntries[key] = newEntry;
-
-      contentStateToLexicalHTML(
-        parseContentState(
-          IpsumTimeMachine.fromString(value.trackedContentState).currentValue
+      const newEntry = { ...value };
+      newEntry.trackedHTMLString = IpsumTimeMachine.create(
+        contentStateToLexicalHTML(
+          parseContentState(
+            IpsumTimeMachine.fromString(value.trackedContentState).currentValue
+          )
         )
-      );
+      ).toString();
+      newEntries[key] = newEntry;
     }
   );
 
