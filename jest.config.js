@@ -15,4 +15,9 @@ module.exports = {
   },
   setupFiles: ["fake-indexeddb/auto"],
   setupFilesAfterEnv: ["<rootDir>/src/test/setupTests.ts"],
+  globals: {
+    "ts-jest": {
+      isolatedModules: true,
+    },
+  },
 };

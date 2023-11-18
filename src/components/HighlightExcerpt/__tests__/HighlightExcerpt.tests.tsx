@@ -8,34 +8,11 @@ import {
   mockHighlights,
   mockRelations,
 } from "util/apollo/__tests__/apollo-test-utils";
-import { stringifyContentState } from "util/content-state";
 import { IpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { IpsumEntityTransformer } from "util/entities";
-import { createEditorStateFromFormat } from "util/__tests__/editor-utils";
 import { HighlightExcerpt } from "../HighlightExcerpt";
 
 describe("HighlightExcerpt", () => {
-  const entry_1_editor = createEditorStateFromFormat(
-    "<p>this text is unselected</p><p>[this text is highlighted]</p>"
-  );
-  const entry_1_content = new IpsumEntityTransformer(
-    entry_1_editor.getCurrentContent()
-  ).applyEntityData(entry_1_editor.getSelection(), "textArcAssignments", {
-    arcAssignmentId: "highlight_1",
-    arcId: "arc_1",
-  }).contentState;
-
-  const entry_2_editor = createEditorStateFromFormat(
-    "<p>first [block</p><p>second block</p><p>third block]</p>"
-  );
-  const entry_2_content = new IpsumEntityTransformer(
-    entry_2_editor.getCurrentContent()
-  ).applyEntityData(entry_2_editor.getSelection(), "textArcAssignments", {
-    arcAssignmentId: "highlight_2",
-    arcId: "arc_1",
-  }).contentState;
-
   beforeEach(() => {
     mockArcs({
       arc_id: {
@@ -51,8 +28,8 @@ describe("HighlightExcerpt", () => {
       "1/1/2020": {
         __typename: "Entry",
         entryKey: "1/1/2020",
-        trackedContentState: IpsumTimeMachine.create(
-          stringifyContentState(entry_1_content)
+        trackedHTMLString: IpsumTimeMachine.create(
+          '<div data-highlight-ids="highlight_1"><p>this text is highlighted</p><p>on both lines</p></div>'
         ).toString(),
         history: {
           __typename: "History",
@@ -65,8 +42,8 @@ describe("HighlightExcerpt", () => {
       "1/2/2020": {
         __typename: "Entry",
         entryKey: "1/2/2020",
-        trackedContentState: IpsumTimeMachine.create(
-          stringifyContentState(entry_2_content)
+        trackedHTMLString: IpsumTimeMachine.create(
+          '<p>first block</p><div data-highlight-ids="highlight_2"><p>second block</p></div><p>third block</p>'
         ).toString(),
         history: {
           __typename: "History",
@@ -104,46 +81,15 @@ describe("HighlightExcerpt", () => {
     });
   });
 
-  it("displays the entire text of a highlight in a DraftJS editor", () => {
+  it("only shows highlighted block when there are other blocks present", () => {
     render(
       <ApolloProvider client={client}>
-        <HighlightExcerpt highlightId="highlight_1" />
-      </ApolloProvider>
-    );
-  });
-
-  it("truncate the text of a highlight to a maximum number of chars (single block)", () => {
-    render(
-      <ApolloProvider client={client}>
-        <HighlightExcerpt charLimit={12} highlightId="highlight_1" />
+        <HighlightExcerpt charLimit={12} highlightId="highlight_2" />
       </ApolloProvider>
     );
 
-    expect(screen.getByText("this text is")).toBeInTheDocument();
-    expect(screen.getByText("...")).toBeInTheDocument();
-  });
-
-  it("truncate the text of a highlight to a maximum number of chars (multi block)", () => {
-    render(
-      <ApolloProvider client={client}>
-        <HighlightExcerpt charLimit={8} highlightId="highlight_2" />
-      </ApolloProvider>
-    );
-
-    expect(screen.getByText("block")).toBeInTheDocument();
-    expect(screen.getByText("sec")).toBeInTheDocument();
-    expect(screen.getByText("...")).toBeInTheDocument();
-  });
-
-  it("don't truncate the text of a highlight if charLimit isn't defined", () => {
-    render(
-      <ApolloProvider client={client}>
-        <HighlightExcerpt highlightId="highlight_2" />
-      </ApolloProvider>
-    );
-
-    expect(screen.getByText("block")).toBeInTheDocument();
     expect(screen.getByText("second block")).toBeInTheDocument();
-    expect(screen.getByText("third block")).toBeInTheDocument();
+    expect(screen.queryByText("first block")).not.toBeInTheDocument();
+    expect(screen.queryByText("third block")).not.toBeInTheDocument();
   });
 });
