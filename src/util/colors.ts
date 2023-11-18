@@ -27,14 +27,12 @@ interface SaturationLightness {
   lightness: number;
 }
 
-export const multiplyIpsumArcColors = (
-  arcColors: number[],
+export const multiplyHues = (
+  hues: number[],
   { saturation, lightness }: SaturationLightness,
   alpha?: number
 ): IpsumColor => {
-  const ipsumArcColors = arcColors.map(
-    (arcColor) => new IpsumArcColor(arcColor)
-  );
+  const ipsumArcColors = hues.map((arcColor) => new IpsumArcColor(arcColor));
   const rgbColors = ipsumArcColors.map((c) =>
     c.toRgb({ saturation, lightness })
   );

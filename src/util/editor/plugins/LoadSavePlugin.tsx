@@ -2,13 +2,7 @@ import React, { useEffect } from "react";
 import { useDebouncedCallback } from "util/hooks";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
-import {
-  $getRoot,
-  $getSelection,
-  EditorState,
-  LexicalEditor,
-  RangeSelection,
-} from "lexical";
+import { $getRoot, EditorState, LexicalEditor } from "lexical";
 import { IpsumEditorMetadata } from "../IpsumEditor";
 import {
   createArcEntry,
@@ -96,7 +90,7 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
             entryType: metadata.entryType,
           };
           const attemptedUpdate = updateEntry(entry);
-          if (!attemptedUpdate) {
+          if (!attemptedUpdate && !isEmpty) {
             switch (metadata.entryType) {
               case EntryType.Journal:
                 createJournalEntry(entry);

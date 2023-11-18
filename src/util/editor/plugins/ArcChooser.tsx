@@ -98,7 +98,6 @@ export const ArcChooser: React.FunctionComponent<ArcChooserProps> = ({
 
         editor.dispatchCommand(TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND, {
           highlightId: highlight.id,
-          hue: arcHue,
         });
       });
     },

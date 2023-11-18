@@ -1,27 +1,72 @@
+import { useQuery } from "@apollo/client";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { mergeRegister } from "@lexical/utils";
 import {
+  $getNodeByKey,
+  $nodesOfType,
   COMMAND_PRIORITY_NORMAL,
   createCommand,
   LexicalCommand,
 } from "lexical";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
+import { gql } from "util/apollo";
 import {
+  $isHighlightAssignmentNode,
+  fixHues,
+  HighlightAssignmentNode,
   HighlightAssignmentNodeAttributes,
   toggleHighlightAssignment,
+  ToggleHighlightAssignmentPayload,
 } from "./HighlightAssignmentNode";
 
 interface HighlightAssignmentPluginProps {
   entryKey: string;
 }
 
-export const TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND: LexicalCommand<HighlightAssignmentNodeAttributes | null> =
+const HighlightAssignmentPluginQuery = gql(`
+  query HighlightAssignmentPlugin($entryKey: ID!) {
+    entry (entryKey: $entryKey) {
+      highlights {
+        id
+        entry {
+          entryKey
+          date
+        }
+        hue
+      }
+    }
+  }
+`);
+
+export const TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND: LexicalCommand<ToggleHighlightAssignmentPayload | null> =
   createCommand("toggle-highlight-assignment");
 
 export const HighlightAssignmentPlugin: React.FunctionComponent<
   HighlightAssignmentPluginProps
 > = ({ entryKey }) => {
   const [editor] = useLexicalComposerContext();
+
+  const { data } = useQuery(HighlightAssignmentPluginQuery, {
+    variables: {
+      entryKey,
+    },
+  });
+
+  const highlightHueMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const highlight of data?.entry?.highlights ?? []) {
+      map[highlight.id] = highlight.hue;
+    }
+    return map;
+  }, [data?.entry?.highlights]);
+
+  useEffect(() => {
+    editor.update(() => {
+      $nodesOfType(HighlightAssignmentNode).forEach((node) => {
+        fixHues(node.getKey(), highlightHueMap);
+      });
+    });
+  }, [editor, highlightHueMap]);
 
   useEffect(() => {
     return mergeRegister(
@@ -32,9 +77,16 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
           return true;
         },
         COMMAND_PRIORITY_NORMAL
-      )
+      ),
+      editor.registerUpdateListener(({ dirtyElements }) => {
+        for (const [nodeKey, intentionallyMarked] of dirtyElements) {
+          editor.update(() => {
+            fixHues(nodeKey, highlightHueMap);
+          });
+        }
+      })
     );
-  }, [editor]);
+  }, [editor, highlightHueMap]);
 
   return null;
 };

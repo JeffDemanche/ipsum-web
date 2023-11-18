@@ -40,8 +40,6 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
     return ascendingKeys;
   }, [data]);
 
-  const [visibleEntryKeys, setVisibleEntryKeys] = useState(allEntryKeys);
-
   const today = useDateString(30000, "entry-printed-date");
 
   const modifySearchParams = useModifySearchParams<"journal">();
@@ -57,8 +55,8 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
   );
 
   const entryEditorComponents =
-    visibleEntryKeys &&
-    visibleEntryKeys
+    allEntryKeys &&
+    allEntryKeys
       .filter(
         (entryKey) =>
           entryKey !== today &&
@@ -76,7 +74,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
           content: (
             <JournalEntryPast
               entryKey={sortedEntryKey}
-              showDivider={i !== visibleEntryKeys.length - 1}
+              showDivider={i !== allEntryKeys.length - 1}
               key={sortedEntryKey}
             ></JournalEntryPast>
           ),
@@ -94,6 +92,10 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
             ...newLayers[layerIndex],
             mode,
           } as DailyJournalURLLayer;
+          if (mode === "today") {
+            (newLayers[layerIndex] as DailyJournalURLLayer).focusedDate =
+              IpsumDay.today().toString("url-format");
+          }
         }
 
         return {

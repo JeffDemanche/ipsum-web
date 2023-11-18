@@ -12,13 +12,18 @@ import {
   $isRangeSelection,
   RangeSelection,
   $createParagraphNode,
+  $getNodeByKey,
 } from "lexical";
 import {} from "@lexical/utils";
 import styles from "./HighlightAssignmentPlugin.less";
 
 export interface HighlightAssignmentNodeAttributes {
-  highlightId?: string;
+  highlightIds?: string[];
   hue?: number;
+}
+
+export interface ToggleHighlightAssignmentPayload {
+  highlightId: string;
 }
 
 export type SerializedHighlightAssignmentNode = Spread<
@@ -41,13 +46,13 @@ export function $isHighlightAssignmentNode(
 function convertHighlightAssignmentElement(
   domNode: HTMLElement
 ): DOMConversionOutput | null {
-  const highlightId = domNode.getAttribute("data-highlight-ids");
+  const highlightIds = domNode.getAttribute("data-highlight-ids")?.split(",");
   const hue = Number.parseInt(domNode.getAttribute("data-hue") ?? "0");
 
-  if (highlightId !== null && domNode.hasChildNodes()) {
+  if (highlightIds !== null && highlightIds.length && domNode.hasChildNodes()) {
     return {
       node: $createHighlightAssignmentNode({
-        highlightId,
+        highlightIds,
         hue,
       }),
     };
@@ -67,15 +72,34 @@ export function $getAncestor<NodeType extends LexicalNode = LexicalNode>(
   return predicate(parent) ? parent : null;
 }
 
+export function fixHues(nodeKey: string, hueMap: Record<string, number>) {
+  const node = $getNodeByKey(nodeKey);
+  if ($isHighlightAssignmentNode(node)) {
+    const attributes = node.getAttributes();
+    const hue =
+      attributes.highlightIds.length === 0
+        ? 0
+        : attributes.highlightIds.reduce((a, c) => a + hueMap[c], 0) /
+          attributes.highlightIds.length;
+
+    if (!isNaN(hue) && hue !== attributes.hue) {
+      node.setAttributes({
+        ...attributes,
+        hue,
+      });
+    }
+  }
+}
+
 /**
  * This is initially copied directly from the Lexical LinkNode implementation.
  * It handles transforming the editor selection into a new Lexical node tree
  * with highlights properly applied.
  */
 export function toggleHighlightAssignment(
-  attributes: HighlightAssignmentNodeAttributes | null
+  attributes: ToggleHighlightAssignmentPayload | null
 ) {
-  const { highlightId, hue } = attributes;
+  const { highlightId } = attributes;
   const selection = $getSelection();
 
   if (!$isRangeSelection(selection)) {
@@ -85,7 +109,7 @@ export function toggleHighlightAssignment(
   const nodes = selection.extract();
 
   // Un-highlight
-  if (highlightId === null) {
+  if (attributes === null) {
     nodes.forEach((node) => {
       const parent = node.getParent();
 
@@ -105,7 +129,7 @@ export function toggleHighlightAssignment(
     const firstNode = nodes[0];
     const highlightNode = $getAncestor(firstNode, $isHighlightAssignmentNode);
     if (highlightNode !== null) {
-      highlightNode.setAttributes({ highlightId, hue });
+      highlightNode.addHighlightId(highlightId);
     }
   }
 
@@ -125,15 +149,14 @@ export function toggleHighlightAssignment(
 
     if ($isHighlightAssignmentNode(parent)) {
       highlightAssignmentNode = parent;
-      parent.setAttributes({ highlightId, hue });
+      parent.setAttributes({ highlightIds: [highlightId] });
       return;
     }
 
     if (!parent.is(prevParent)) {
       prevParent = parent;
       highlightAssignmentNode = $createHighlightAssignmentNode({
-        highlightId,
-        hue,
+        highlightIds: [highlightId],
       });
 
       if ($isHighlightAssignmentNode(parent)) {
@@ -178,9 +201,19 @@ export class HighlightAssignmentNode extends ElementNode {
     this.__attributes = attributes;
   }
 
+  getAttributes(): HighlightAssignmentNodeAttributes {
+    return this.__attributes;
+  }
+
   setAttributes(attributes: HighlightAssignmentNodeAttributes) {
     const writable = this.getWritable();
     writable.__attributes = attributes;
+  }
+
+  addHighlightId(highlightId: string) {
+    const writable = this.getWritable();
+    const highlightIds = writable.__attributes.highlightIds ?? [];
+    writable.__attributes.highlightIds = [...highlightIds, highlightId];
   }
 
   insertNewAfter(
@@ -209,7 +242,7 @@ export class HighlightAssignmentNode extends ElementNode {
 
   static importJSON(_serializedNode: SerializedHighlightAssignmentNode) {
     const node = $createHighlightAssignmentNode({
-      highlightId: _serializedNode.highlightId,
+      highlightIds: _serializedNode.highlightIds,
       hue: _serializedNode.hue,
     });
 
@@ -222,7 +255,7 @@ export class HighlightAssignmentNode extends ElementNode {
   exportJSON() {
     return {
       ...super.exportJSON(),
-      highlightId: this.__attributes.highlightId,
+      highlightIds: this.__attributes.highlightIds,
       hue: this.__attributes.hue,
       type: HighlightAssignmentNode.getType(),
       version: 1,
@@ -231,7 +264,10 @@ export class HighlightAssignmentNode extends ElementNode {
 
   createDOM(_config: EditorConfig): HTMLElement {
     const element = document.createElement("span");
-    element.setAttribute("data-highlight-ids", this.__attributes.highlightId);
+    element.setAttribute(
+      "data-highlight-ids",
+      this.__attributes.highlightIds.join(",")
+    );
     element.setAttribute("data-hue", `${this.__attributes.hue ?? 0}`);
     element.classList.add(styles.highlight);
     element.style.setProperty("--hue", `${this.__attributes.hue ?? 0}`);
@@ -247,9 +283,14 @@ export class HighlightAssignmentNode extends ElementNode {
     _dom: HTMLElement,
     _config: EditorConfig
   ): boolean {
-    if (this.__attributes.highlightId !== _prevNode.__attributes.highlightId) {
-      if (this.__attributes.highlightId !== null) {
-        _dom.setAttribute("data-highlight-ids", this.__attributes.highlightId);
+    if (
+      this.__attributes.highlightIds !== _prevNode.__attributes.highlightIds
+    ) {
+      if (this.__attributes.highlightIds) {
+        _dom.setAttribute(
+          "data-highlight-ids",
+          this.__attributes.highlightIds.join(",")
+        );
         _dom.setAttribute("data-hue", `${this.__attributes.hue}`);
       } else {
         _dom.removeAttribute("data-highlight-ids");
@@ -273,8 +314,6 @@ export class HighlightAssignmentNode extends ElementNode {
         };
       },
     };
-    // TODO this will let us import a span with a highlight id as a highlight assignment node.
-    // https://lexical.dev/docs/concepts/serialization
   }
 
   static clone(_data: HighlightAssignmentNode): HighlightAssignmentNode {

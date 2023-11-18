@@ -1,3 +1,4 @@
+import { multiplyHues } from "util/colors";
 import { vars } from "../client";
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
 import { QueryHighlightsArgs } from "../__generated__/graphql";
@@ -65,6 +66,18 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
         return Object.values(vars.srsCards()).filter(
           (srsCard) => srsCard.subject === readField("id")
         );
+      },
+      hue(_, { readField }) {
+        const arcs = readField<
+          {
+            __typename: "Arc";
+            id: string;
+            color: number;
+          }[]
+        >("arcs");
+        const averageHue =
+          arcs.reduce((acc, cur) => acc + cur.color, 0) / arcs.length;
+        return Math.floor(averageHue);
       },
     },
   },

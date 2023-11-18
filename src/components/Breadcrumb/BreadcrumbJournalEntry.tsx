@@ -27,12 +27,12 @@ export const BreadcrumbJournalEntry: React.FunctionComponent<
 > = ({ breadcrumb }) => {
   const { data } = useQuery(BreadcrumbJournalEntryQuery, {
     variables: {
-      journalEntryId: breadcrumb.journalEntryId,
+      journalEntryId: breadcrumb?.journalEntryId,
     },
   });
 
-  const text = data.journalEntry?.entry
-    ? parseIpsumDateTime(data.journalEntry.entry.date).toString(
+  const text = data?.journalEntry?.entry
+    ? parseIpsumDateTime(data?.journalEntry?.entry.date).toString(
         "entry-printed-date-nice"
       )
     : "Daily journal";

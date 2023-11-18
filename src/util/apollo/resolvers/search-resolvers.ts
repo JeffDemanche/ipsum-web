@@ -9,10 +9,10 @@ const highlightMatchesDays = (
 ) => {
   if (!highlight) return false;
 
-  const highlightEntryDay = IpsumDay.fromString(
-    vars.entries()[highlight.entry].history.dateCreated,
-    "iso"
-  );
+  const entry = vars.entries()[highlight.entry];
+
+  const highlightEntryDay =
+    entry && IpsumDay.fromString(entry.history.dateCreated, "iso");
 
   if (!highlightEntryDay) return false;
 

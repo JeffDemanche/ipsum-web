@@ -63,9 +63,9 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
   const navigate = useNavigate();
 
   const resetToInitial = useCallback(() => {
+    navigate({ search: "" });
     initializeState();
     autosave();
-    navigate({ search: "" });
   }, [navigate]);
 
   // Autosave stuff

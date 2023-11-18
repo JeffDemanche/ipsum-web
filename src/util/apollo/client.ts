@@ -113,6 +113,7 @@ const typeDefs = gql`
     arcs: [Arc!]!
     outgoingRelations: [Relation!]!
     srsCards: [SRSCard!]!
+    hue: Int!
   }
 
   union RelationSubject = Arc | Highlight

@@ -34,6 +34,7 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
   const searchCriteria: URLSearchCriteria = useMemo(() => {
     if (searchCriteriaFromUrl) return searchCriteriaFromUrl;
 
+    // If highlight is selected
     if (topLayer?.highlightFrom) {
       return {
         and: [
@@ -48,9 +49,13 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
           },
         ],
       };
-    } else if (
+    }
+    // If no highlight is selected and user is browsing daily journal.
+    else if (
       topLayer?.type === "daily_journal" &&
-      (topLayer.focusedDate || topLayer.visibleDates)
+      ((topLayer.focusedDate &&
+        topLayer.focusedDate !== IpsumDay.today().toString("url-format")) ||
+        topLayer.visibleDates)
     ) {
       const dates = topLayer.focusedDate
         ? [IpsumDay.fromString(topLayer.focusedDate, "url-format")]
@@ -72,7 +77,9 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
           },
         ],
       };
-    } else if (topLayer?.type === "arc_detail") {
+    }
+    // If on arc detail page.
+    else if (topLayer?.type === "arc_detail") {
       return {
         and: [
           {

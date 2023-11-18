@@ -5,12 +5,11 @@ import { HighlightSelectionContext } from "components/HighlightSelectionContext"
 import { isSubset } from "util/set";
 import { JournalHotkeysContext } from "components/JournalHotkeys";
 import { HighlightDisambiguator } from "components/HighlightDisambiguator";
-import { IpsumArcColor, IpsumColor, multiplyIpsumArcColors } from "util/colors";
+import { IpsumArcColor, IpsumColor, multiplyHues } from "util/colors";
 import { IpsumEntityData } from "util/entities";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 import { DiptychContext } from "components/DiptychContext";
-import { IpsumDay } from "util/dates";
 
 // Draft doesn't provide this type, this is inferred from logging the props
 // value.
@@ -116,19 +115,19 @@ export const HighlightDecoration: React.FC<DecoratorProps> = (props) => {
 
   const isHighlighted = isHovered || !!selectedHighlight;
 
-  const allArcsIpsumColor = multiplyIpsumArcColors(
+  const allArcsIpsumColor = multiplyHues(
     Object.values(highlights)
       .filter((h) => !!h?.arc?.id)
       .map((highlight) => arcs.find((a) => a.id === highlight.arc.id)?.color),
     { saturation: 100, lightness: 50 }
   );
-  const hoveredArcsIpsumColor = multiplyIpsumArcColors(
+  const hoveredArcsIpsumColor = multiplyHues(
     hoveredHighlights
       ?.filter((h) => !!h?.arc?.id)
       .map((highlight) => arcs.find((a) => a.id === highlight.arc.id)?.color),
     { saturation: 100, lightness: 50 }
   );
-  const selectedArcsIpsumColor = multiplyIpsumArcColors(
+  const selectedArcsIpsumColor = multiplyHues(
     [arcs.find((a) => a.id === selectedHighlight?.arc.id)?.color],
     { saturation: 100, lightness: 50 }
   );
