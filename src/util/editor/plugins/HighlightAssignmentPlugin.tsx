@@ -2,7 +2,6 @@ import { useQuery } from "@apollo/client";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { mergeRegister } from "@lexical/utils";
 import {
-  $getNodeByKey,
   $nodesOfType,
   COMMAND_PRIORITY_NORMAL,
   createCommand,
@@ -11,10 +10,8 @@ import {
 import React, { useEffect, useMemo } from "react";
 import { gql } from "util/apollo";
 import {
-  $isHighlightAssignmentNode,
   fixHues,
   HighlightAssignmentNode,
-  HighlightAssignmentNodeAttributes,
   toggleHighlightAssignment,
   ToggleHighlightAssignmentPayload,
 } from "./HighlightAssignmentNode";
