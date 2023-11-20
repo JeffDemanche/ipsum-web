@@ -43,6 +43,8 @@ const highlightMatchesHighlight = (
 ) => {
   if (!highlightNeedle) return false;
 
+  if (highlightNeedle.id === highlightIdInHaystack) return true;
+
   const arcsRelatedToByHighlightNeedle = highlightNeedle.outgoingRelations
     .filter((relation) => {
       const relationObj = vars.relations()[relation];
@@ -56,7 +58,7 @@ const highlightMatchesHighlight = (
     .map((relation) => vars.relations()[relation].object);
 
   const highlightInHaystack = vars.highlights()[highlightIdInHaystack];
-  return highlightInHaystack.outgoingRelations.some((relation) => {
+  return highlightInHaystack?.outgoingRelations.some((relation) => {
     const relationObj = vars.relations()[relation];
     if (!relationObj) return false;
 

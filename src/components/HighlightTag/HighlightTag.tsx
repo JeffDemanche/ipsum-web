@@ -54,13 +54,13 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   const maxArcsInName = 3;
 
   const name = React.useMemo(() => {
-    return outgoingRelations
-      .slice(0, maxArcsInName)
-      .reduce((acc, relation, i) => {
-        return i === 0
-          ? `${relation.object.name}`
-          : `${acc}/${relation.object.name}`;
-      }, "");
+    return outgoingRelations.length
+      ? outgoingRelations.slice(0, maxArcsInName).reduce((acc, relation, i) => {
+          return i === 0
+            ? `${relation.object.name}`
+            : `${acc}/${relation.object.name}`;
+        }, "")
+      : "(no arcs)";
   }, [outgoingRelations]);
 
   const firstArc = outgoingRelations[0]?.object;

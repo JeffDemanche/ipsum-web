@@ -81,7 +81,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
   const firstArc = highlightRelations?.[0]?.object;
 
   const entryDate = parseIpsumDateTime(
-    data?.highlights?.[0].entry.date
+    data?.highlights?.[0]?.entry.date
   ).toString("entry-printed-date-nice");
 
   const { pushLayer, popHighlights } = useContext(DiptychContext);

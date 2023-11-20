@@ -1,4 +1,3 @@
-import { multiplyHues } from "util/colors";
 import { vars } from "../client";
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
 import { QueryHighlightsArgs } from "../__generated__/graphql";
@@ -7,10 +6,10 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
   Query: {
     fields: {
       highlight(_, { args }) {
-        if (args?.id) {
-          return vars.highlights()[args.id];
+        if (!args?.id) {
+          return null;
         }
-        return undefined;
+        return vars.highlights()[args.id] ?? null;
       },
       highlights(_, { args }: { args?: QueryHighlightsArgs }) {
         if (args?.ids && !args?.entries) {
@@ -52,9 +51,9 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
           readField<{ __typename: "Relation"; object: string }[]>(
             "outgoingRelations"
           );
-        return outgoingRelations.map(
-          (relation) => vars.arcs()[relation.object]
-        );
+        return outgoingRelations
+          .map((relation) => vars.arcs()[relation?.object])
+          .filter(Boolean);
       },
       entry(entryKey) {
         return vars.entries()[entryKey];

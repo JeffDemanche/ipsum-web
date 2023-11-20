@@ -1,4 +1,6 @@
+import { useQuery } from "@apollo/client";
 import React, { useCallback, useEffect, useMemo } from "react";
+import { gql } from "util/apollo";
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import {
   URLLayer,
@@ -22,6 +24,14 @@ export const DiptychContext = React.createContext<Diptych>({
 interface DiptychProviderProps {
   children: React.ReactNode;
 }
+
+const DiptychContextHighlightQuery = gql(`
+  query DiptychContextHighlight($highlightId: ID!) {
+    highlight(id: $highlightId) {
+      id
+    }
+  }
+`);
 
 export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   children,
@@ -168,6 +178,36 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
       };
     });
   }, [modifySearchParams]);
+
+  // This bit of logic deals with highlight deletion when the highlight is
+  // present in the URL.
+  const { data: topLayerHighlightFrom } = useQuery(
+    DiptychContextHighlightQuery,
+    {
+      variables: {
+        // TODO: We need to figure out how to handle deleting highlights with many
+        // layers open.
+        highlightId: urlLayers[urlLayers.length - 1]?.highlightFrom,
+      },
+    }
+  );
+
+  const { data: topLayerHighlightTo } = useQuery(DiptychContextHighlightQuery, {
+    variables: {
+      highlightId: urlLayers[urlLayers.length - 1]?.highlightTo,
+    },
+  });
+
+  useEffect(() => {
+    if (
+      (!topLayerHighlightFrom?.highlight &&
+        urlLayers[urlLayers.length - 1]?.highlightFrom) ||
+      (!topLayerHighlightTo?.highlight &&
+        urlLayers[urlLayers.length - 1]?.highlightTo)
+    ) {
+      popHighlights();
+    }
+  }, [popHighlights, topLayerHighlightFrom, topLayerHighlightTo, urlLayers]);
 
   /**
    * Equivalent to the hightlightFrom on the topmost layer.

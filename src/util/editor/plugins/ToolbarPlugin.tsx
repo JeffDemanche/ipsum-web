@@ -33,6 +33,7 @@ import {
   FormatUnderlined,
 } from "@mui/icons-material";
 import { ArcChooser } from "./ArcChooser";
+import { HighlightButton } from "./HighlightButton";
 
 function getSelectedNode(selection: RangeSelection) {
   const anchor = selection.anchor;
@@ -306,7 +307,8 @@ export const ToolbarPlugin: React.FunctionComponent<ToolbarPluginProps> = ({
           <span className="text">Quote</span>
         </MenuItem>
       </Select>
-      <ArcChooser entryKey={entryKey} editor={editor} />
+      <HighlightButton entryKey={entryKey}></HighlightButton>
+      {/* <ArcChooser entryKey={entryKey} editor={editor} /> */}
     </div>
   );
 };

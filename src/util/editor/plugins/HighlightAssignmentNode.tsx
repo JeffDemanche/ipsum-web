@@ -13,6 +13,14 @@ import {
   RangeSelection,
   $createParagraphNode,
   $getNodeByKey,
+  $nodesOfType,
+  $isRootNode,
+  $getRoot,
+  $createTextNode,
+  $selectAll,
+  $setSelection,
+  $createNodeSelection,
+  $createRangeSelection,
 } from "lexical";
 import {} from "@lexical/utils";
 import styles from "./HighlightAssignmentPlugin.less";
@@ -89,6 +97,40 @@ export function fixHues(nodeKey: string, hueMap: Record<string, number>) {
       });
     }
   }
+}
+
+export function removeHighlightAssignmentFromEditor(highlightId: string) {
+  const highlightAssignmentNodes = $nodesOfType(HighlightAssignmentNode);
+
+  if (highlightAssignmentNodes.length === 0) {
+    return;
+  }
+
+  highlightAssignmentNodes.forEach((node) => {
+    if (node.__attributes.highlightIds.includes(highlightId)) {
+      const newHighlightIds = node.__attributes.highlightIds.filter(
+        (id) => id !== highlightId
+      );
+
+      if (newHighlightIds.length === 0) {
+        // TODO: merge node back if no more highlightIds
+        const newNode = $createTextNode(node.getTextContent());
+        console.log(node);
+
+        const paragraph = $createParagraphNode();
+        paragraph.append(newNode);
+        node.replace(paragraph);
+
+        $selectAll();
+        return;
+      }
+
+      node.setAttributes({
+        ...node.getAttributes(),
+        highlightIds: newHighlightIds,
+      });
+    }
+  });
 }
 
 /**
@@ -216,17 +258,17 @@ export class HighlightAssignmentNode extends ElementNode {
     writable.__attributes.highlightIds = [...highlightIds, highlightId];
   }
 
-  insertNewAfter(
-    _: RangeSelection,
-    restoreSelection = true
-  ): null | ElementNode {
-    const newElement = $createParagraphNode();
-    newElement.append($createHighlightAssignmentNode(this.__attributes));
-    const direction = this.getDirection();
-    newElement.setDirection(direction);
-    this.insertAfter(newElement, restoreSelection);
-    return newElement;
-  }
+  // insertNewAfter(
+  //   _: RangeSelection,
+  //   restoreSelection = true
+  // ): null | ElementNode {
+  //   const newElement = $createParagraphNode();
+  //   newElement.append($createHighlightAssignmentNode(this.__attributes));
+  //   const direction = this.getDirection();
+  //   newElement.setDirection(direction);
+  //   this.insertAfter(newElement, restoreSelection);
+  //   return newElement;
+  // }
 
   canInsertTextBefore(): false {
     return false;
@@ -264,17 +306,19 @@ export class HighlightAssignmentNode extends ElementNode {
 
   createDOM(_config: EditorConfig): HTMLElement {
     const element = document.createElement("span");
-    element.setAttribute(
-      "data-highlight-ids",
-      this.__attributes.highlightIds.join(",")
-    );
-    element.setAttribute("data-hue", `${this.__attributes.hue ?? 0}`);
-    element.classList.add(styles.highlight);
-    element.style.setProperty("--hue", `${this.__attributes.hue ?? 0}`);
-    element.style.setProperty(
-      "--lightness",
-      `${this.__attributes.hue !== undefined ? "50%" : "0%"}`
-    );
+    if (this.__attributes.highlightIds?.length) {
+      element.setAttribute(
+        "data-highlight-ids",
+        this.__attributes.highlightIds.join(",")
+      );
+      element.setAttribute("data-hue", `${this.__attributes.hue ?? 0}`);
+      element.classList.add(styles.highlight);
+      element.style.setProperty("--hue", `${this.__attributes.hue ?? 0}`);
+      element.style.setProperty(
+        "--lightness",
+        `${this.__attributes.hue !== undefined ? "50%" : "0%"}`
+      );
+    }
     return element;
   }
 

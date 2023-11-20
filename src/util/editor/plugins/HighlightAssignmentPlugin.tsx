@@ -8,10 +8,13 @@ import {
   LexicalCommand,
 } from "lexical";
 import React, { useEffect, useMemo } from "react";
-import { gql } from "util/apollo";
+import { deleteHighlight, gql } from "util/apollo";
+import { usePrevious } from "util/hooks";
 import {
+  $isHighlightAssignmentNode,
   fixHues,
   HighlightAssignmentNode,
+  removeHighlightAssignmentFromEditor,
   toggleHighlightAssignment,
   ToggleHighlightAssignmentPayload,
 } from "./HighlightAssignmentNode";
@@ -38,6 +41,9 @@ const HighlightAssignmentPluginQuery = gql(`
 export const TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND: LexicalCommand<ToggleHighlightAssignmentPayload | null> =
   createCommand("toggle-highlight-assignment");
 
+export const REMOVE_HIGHLIGHT_ASSIGNMENT_COMMAND: LexicalCommand<ToggleHighlightAssignmentPayload | null> =
+  createCommand("remove-highlight-assignment");
+
 export const HighlightAssignmentPlugin: React.FunctionComponent<
   HighlightAssignmentPluginProps
 > = ({ entryKey }) => {
@@ -48,6 +54,28 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
       entryKey,
     },
   });
+
+  const highlights = useMemo(() => {
+    return data?.entry?.highlights ?? [];
+  }, [data?.entry?.highlights]);
+
+  const prevHighlights = usePrevious(highlights);
+
+  // Handles listening for deletion of highlights, which should remove all
+  // traces of the deleted highlight from the editor.
+  useEffect(() => {
+    const removedHighlights = prevHighlights?.filter(
+      (highlight) => !highlights.includes(highlight)
+    );
+
+    editor.update(() => {
+      removedHighlights?.forEach((highlight) => {
+        editor.dispatchCommand(REMOVE_HIGHLIGHT_ASSIGNMENT_COMMAND, {
+          highlightId: highlight.id,
+        });
+      });
+    });
+  }, [editor, highlights, prevHighlights]);
 
   const highlightHueMap = useMemo(() => {
     const map: Record<string, number> = {};
@@ -63,7 +91,18 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
         fixHues(node.getKey(), highlightHueMap);
       });
     });
-  }, [editor, highlightHueMap]);
+  }, [editor, highlightHueMap, data]);
+
+  useEffect(() => {
+    return editor.registerCommand(
+      REMOVE_HIGHLIGHT_ASSIGNMENT_COMMAND,
+      (payload) => {
+        removeHighlightAssignmentFromEditor(payload.highlightId);
+        return true;
+      },
+      COMMAND_PRIORITY_NORMAL
+    );
+  }, [editor]);
 
   useEffect(() => {
     return mergeRegister(
@@ -75,13 +114,49 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
         },
         COMMAND_PRIORITY_NORMAL
       ),
+      // This update listener listens for node changes and updates the hue
+      // values on the DOM if necessary.
       editor.registerUpdateListener(({ dirtyElements }) => {
         for (const [nodeKey, intentionallyMarked] of dirtyElements) {
           editor.update(() => {
             fixHues(nodeKey, highlightHueMap);
           });
         }
-      })
+      }),
+
+      editor.registerMutationListener(
+        HighlightAssignmentNode,
+        (mutations, { prevEditorState }) => {
+          for (const [nodeKey, mutation] of mutations) {
+            editor.update(() => {
+              if (mutation === "destroyed") {
+                const node = prevEditorState._nodeMap.get(nodeKey);
+                if ($isHighlightAssignmentNode(node)) {
+                  node.__attributes.highlightIds.forEach((highlightId) => {
+                    const allHighlightNodes = $nodesOfType(
+                      HighlightAssignmentNode
+                    );
+                    const otherNodesWithHighlight = allHighlightNodes.filter(
+                      (otherNode) => {
+                        return (
+                          otherNode.getKey() !== nodeKey &&
+                          otherNode.__attributes.highlightIds.includes(
+                            highlightId
+                          )
+                        );
+                      }
+                    );
+
+                    if (otherNodesWithHighlight.length === 0) {
+                      deleteHighlight(highlightId);
+                    }
+                  });
+                }
+              }
+            });
+          }
+        }
+      )
     );
   }, [editor, highlightHueMap]);
 
