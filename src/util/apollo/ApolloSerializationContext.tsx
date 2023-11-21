@@ -42,6 +42,14 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
 
   const [loadErrors, setLoadErrors] = useState<string[] | undefined>(undefined);
 
+  const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false);
+  const refreshDom = useCallback(() => {
+    setRefreshTrigger(true);
+  }, []);
+  useEffect(() => {
+    if (refreshTrigger) setRefreshTrigger(false);
+  }, [refreshTrigger]);
+
   const loadFromFile = useCallback(async () => {
     setLoadErrors(
       loadApolloState(
@@ -58,7 +66,8 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
       )
     );
     autosave();
-  }, []);
+    refreshDom();
+  }, [refreshDom]);
 
   const navigate = useNavigate();
 
@@ -66,7 +75,8 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
     navigate({ search: "" });
     initializeState();
     autosave();
-  }, [navigate]);
+    refreshDom();
+  }, [navigate, refreshDom]);
 
   // Autosave stuff
   const idbWrapper = useIpsumIDBWrapper();
@@ -105,7 +115,15 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
         loadErrors,
       }}
     >
-      {hasLoadedAutosave ? children : <p>loading autosave...</p>}
+      {hasLoadedAutosave ? (
+        refreshTrigger ? (
+          <></>
+        ) : (
+          children
+        )
+      ) : (
+        <p>loading autosave...</p>
+      )}
     </ApolloSerializationContext.Provider>
   );
 };

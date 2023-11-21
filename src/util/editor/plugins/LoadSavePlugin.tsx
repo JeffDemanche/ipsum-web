@@ -45,31 +45,33 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
 
   const [editor] = useLexicalComposerContext();
 
-  const loaded = useRef(false);
+  const skipNextUpdate = useRef(false);
 
   useEffect(() => {
-    editor.update(() => {
-      if (loaded.current) return;
+    if (skipNextUpdate.current) return;
 
+    skipNextUpdate.current = false;
+
+    editor.update(() => {
       const parser = new DOMParser();
       const dom = parser.parseFromString(htmlString, "text/html");
 
-      const nodes = $generateNodesFromDOM(editor, dom);
+      const nodes = htmlString ? $generateNodesFromDOM(editor, dom) : undefined;
 
       const root = $getRoot();
       root.clear();
 
+      if (!nodes) return;
+
       nodes.forEach((node) => {
         root.append(node);
       });
-
-      loaded.current = true;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.entry?.htmlString]);
+  }, [editor, htmlString]);
 
   const debouncedOnChange = useDebouncedCallback(
     (editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {
+      skipNextUpdate.current = true;
       editor.getEditorState().read(() => {
         const htmlString = $generateHtmlFromNodes(editor, null);
 

@@ -270,24 +270,24 @@ export class HighlightAssignmentNode extends ElementNode {
     writable.__attributes.highlightIds = [...highlightIds, highlightId];
   }
 
-  // insertNewAfter(
-  //   _: RangeSelection,
-  //   restoreSelection = true
-  // ): null | ElementNode {
-  //   const newElement = $createParagraphNode();
-  //   newElement.append($createHighlightAssignmentNode(this.__attributes));
-  //   const direction = this.getDirection();
-  //   newElement.setDirection(direction);
-  //   this.insertAfter(newElement, restoreSelection);
-  //   return newElement;
-  // }
+  insertNewAfter(
+    _: RangeSelection,
+    restoreSelection = true
+  ): null | ElementNode {
+    const newElement = $createParagraphNode();
+    newElement.append($createHighlightAssignmentNode(this.__attributes));
+    const direction = this.getDirection();
+    newElement.setDirection(direction);
+    this.insertAfter(newElement, restoreSelection);
+    return newElement;
+  }
 
   canInsertTextBefore(): false {
     return false;
   }
 
-  canInsertTextAfter(): false {
-    return false;
+  canInsertTextAfter(): true {
+    return true;
   }
 
   canBeEmpty(): boolean {
