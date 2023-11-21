@@ -57,20 +57,5 @@ export const deleteHighlight = (id: string) => {
   const newHighlights = { ...vars.highlights() };
   delete newHighlights[id];
   vars.highlights(newHighlights);
-  // client.refetchQueries({
-  //   updateCache: (cache) => {
-  //     console.log("refeching");
-  //     cache.modify({
-  //       fields: {
-  //         highlight(value, { INVALIDATE }) {
-  //           return INVALIDATE;
-  //         },
-  //         highlights(value, { INVALIDATE }) {
-  //           return INVALIDATE;
-  //         },
-  //       },
-  //     });
-  //   },
-  // });
   autosave();
 };

@@ -55,27 +55,27 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
     },
   });
 
-  const highlights = useMemo(() => {
-    return data?.entry?.highlights ?? [];
+  const highlightIds = useMemo(() => {
+    return data?.entry?.highlights.map((h) => h.id) ?? [];
   }, [data?.entry?.highlights]);
 
-  const prevHighlights = usePrevious(highlights);
+  const prevHighlightIds = usePrevious(highlightIds);
 
   // Handles listening for deletion of highlights, which should remove all
   // traces of the deleted highlight from the editor.
   useEffect(() => {
-    const removedHighlights = prevHighlights?.filter(
-      (highlight) => !highlights.includes(highlight)
+    const removedHighlights = prevHighlightIds?.filter(
+      (highlightId) => !highlightIds.includes(highlightId)
     );
 
     editor.update(() => {
-      removedHighlights?.forEach((highlight) => {
+      removedHighlights?.forEach((highlightId) => {
         editor.dispatchCommand(REMOVE_HIGHLIGHT_ASSIGNMENT_COMMAND, {
-          highlightId: highlight.id,
+          highlightId,
         });
       });
     });
-  }, [editor, highlights, prevHighlights]);
+  }, [editor, highlightIds, prevHighlightIds]);
 
   const highlightHueMap = useMemo(() => {
     const map: Record<string, number> = {};

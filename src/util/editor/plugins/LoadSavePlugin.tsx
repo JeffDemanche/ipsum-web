@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDebouncedCallback } from "util/hooks";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
@@ -41,12 +41,16 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
 }) => {
   const { data } = useQuery(IpsumEditorQuery, { variables: { entryKey } });
 
-  const htmlString = data?.entry?.htmlString ?? "";
+  const htmlString = data?.entry?.htmlString;
 
   const [editor] = useLexicalComposerContext();
 
+  const loaded = useRef(false);
+
   useEffect(() => {
     editor.update(() => {
+      if (loaded.current) return;
+
       const parser = new DOMParser();
       const dom = parser.parseFromString(htmlString, "text/html");
 
@@ -58,9 +62,11 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
       nodes.forEach((node) => {
         root.append(node);
       });
+
+      loaded.current = true;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data?.entry?.htmlString]);
 
   const debouncedOnChange = useDebouncedCallback(
     (editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {

@@ -86,15 +86,22 @@ export function fixHues(nodeKey: string, hueMap: Record<string, number>) {
     const attributes = node.getAttributes();
     const hue =
       attributes.highlightIds.length === 0
-        ? 0
+        ? undefined
         : attributes.highlightIds.reduce((a, c) => a + hueMap[c], 0) /
           attributes.highlightIds.length;
 
-    if (!isNaN(hue) && hue !== attributes.hue) {
-      node.setAttributes({
-        ...attributes,
-        hue,
-      });
+    if (hue && hue !== attributes.hue) {
+      if (!isNaN(hue)) {
+        node.setAttributes({
+          ...attributes,
+          hue,
+        });
+      } else {
+        node.setAttributes({
+          ...attributes,
+          hue: undefined,
+        });
+      }
     }
   }
 }
@@ -111,17 +118,12 @@ export function removeHighlightAssignmentFromEditor(highlightId: string) {
       const newHighlightIds = node.__attributes.highlightIds.filter(
         (id) => id !== highlightId
       );
-
       if (newHighlightIds.length === 0) {
-        // TODO: merge node back if no more highlightIds
-        const newNode = $createTextNode(node.getTextContent());
-        console.log(node);
-
-        const paragraph = $createParagraphNode();
-        paragraph.append(newNode);
-        node.replace(paragraph);
-
-        $selectAll();
+        const children = node.getChildren();
+        for (const child of children) {
+          node.insertBefore(child);
+        }
+        node.remove();
         return;
       }
 
@@ -131,6 +133,7 @@ export function removeHighlightAssignmentFromEditor(highlightId: string) {
       });
     }
   });
+  $selectAll();
 }
 
 /**
@@ -166,70 +169,79 @@ export function toggleHighlightAssignment(
       }
     });
   }
-  // Add/merge highlight
-  else {
-    const firstNode = nodes[0];
-    const highlightNode = $getAncestor(firstNode, $isHighlightAssignmentNode);
-    if (highlightNode !== null) {
-      highlightNode.addHighlightId(highlightId);
+
+  const isIdenticalHighlight = (node1: LexicalNode, node2: LexicalNode) => {
+    if (
+      !$isHighlightAssignmentNode(node1) ||
+      !$isHighlightAssignmentNode(node2)
+    ) {
+      return false;
     }
-  }
+
+    const highlights1 = node1.getAttributes().highlightIds ?? [];
+    const highlights2 = node2.getAttributes().highlightIds ?? [];
+
+    return (
+      highlights1.length === highlights2.length &&
+      highlights1.every((id) => highlights2.includes(id))
+    );
+  };
 
   let prevParent: ElementNode | HighlightAssignmentNode | null = null;
   let highlightAssignmentNode: HighlightAssignmentNode | null = null;
 
-  nodes.forEach((node) => {
-    const parent = node.getParent();
+  nodes.forEach((selectedNode) => {
+    const parent = selectedNode.getParent();
 
     if (
-      parent === highlightAssignmentNode ||
+      isIdenticalHighlight(parent, highlightAssignmentNode) ||
       parent === null ||
-      ($isHighlightAssignmentNode(node) && !node.isInline())
+      ($isHighlightAssignmentNode(selectedNode) && !selectedNode.isInline())
     ) {
       return;
     }
 
     if ($isHighlightAssignmentNode(parent)) {
-      highlightAssignmentNode = parent;
-      parent.setAttributes({ highlightIds: [highlightId] });
-      return;
+      if (isIdenticalHighlight(parent, highlightAssignmentNode)) {
+        return;
+      }
     }
 
     if (!parent.is(prevParent)) {
       prevParent = parent;
-      highlightAssignmentNode = $createHighlightAssignmentNode({
-        highlightIds: [highlightId],
-      });
 
       if ($isHighlightAssignmentNode(parent)) {
-        if (node.getPreviousSibling() === null) {
-          parent.insertBefore(highlightAssignmentNode);
-        } else {
-          parent.insertAfter(highlightAssignmentNode);
-        }
+        highlightAssignmentNode = $createHighlightAssignmentNode({
+          highlightIds: [...parent.getAttributes().highlightIds, highlightId],
+        });
       } else {
-        node.insertBefore(highlightAssignmentNode);
+        highlightAssignmentNode = $createHighlightAssignmentNode({
+          highlightIds: [highlightId],
+        });
       }
+
+      selectedNode.insertBefore(highlightAssignmentNode);
     }
 
-    if ($isHighlightAssignmentNode(node)) {
-      if (node.is(highlightAssignmentNode)) {
+    if ($isHighlightAssignmentNode(selectedNode)) {
+      if (selectedNode.is(highlightAssignmentNode)) {
         return;
       }
+      // This routine removes the highlight assignment node.
       if (highlightAssignmentNode !== null) {
-        const children = node.getChildren();
+        const children = selectedNode.getChildren();
 
         children.forEach((child) => {
           highlightAssignmentNode.append(child);
         });
       }
 
-      node.remove();
+      selectedNode.remove();
       return;
     }
 
     if (highlightAssignmentNode !== null) {
-      highlightAssignmentNode.append(node);
+      highlightAssignmentNode.append(selectedNode);
     }
   });
 }
@@ -311,13 +323,11 @@ export class HighlightAssignmentNode extends ElementNode {
         "data-highlight-ids",
         this.__attributes.highlightIds.join(",")
       );
-      element.setAttribute("data-hue", `${this.__attributes.hue ?? 0}`);
+      const hue = this.__attributes.hue;
+      hue && element.setAttribute("data-hue", `${hue}`);
       element.classList.add(styles.highlight);
-      element.style.setProperty("--hue", `${this.__attributes.hue ?? 0}`);
-      element.style.setProperty(
-        "--lightness",
-        `${this.__attributes.hue !== undefined ? "50%" : "0%"}`
-      );
+      hue && element.style.setProperty("--hue", `${hue}`);
+      element.style.setProperty("--lightness", `${hue ? "50%" : "0%"}`);
     }
     return element;
   }
