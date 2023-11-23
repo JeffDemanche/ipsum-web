@@ -11,16 +11,11 @@ import {
   $getSelection,
   $isRangeSelection,
   RangeSelection,
-  $createParagraphNode,
   $getNodeByKey,
   $nodesOfType,
-  $isRootNode,
-  $getRoot,
-  $createTextNode,
   $selectAll,
-  $setSelection,
-  $createNodeSelection,
-  $createRangeSelection,
+  $createParagraphNode,
+  $isElementNode,
 } from "lexical";
 import {} from "@lexical/utils";
 import styles from "./HighlightAssignmentPlugin.less";
@@ -136,6 +131,23 @@ export function removeHighlightAssignmentFromEditor(highlightId: string) {
   $selectAll();
 }
 
+const isIdenticalHighlight = (node1: LexicalNode, node2: LexicalNode) => {
+  if (
+    !$isHighlightAssignmentNode(node1) ||
+    !$isHighlightAssignmentNode(node2)
+  ) {
+    return false;
+  }
+
+  const highlights1 = node1.getAttributes().highlightIds ?? [];
+  const highlights2 = node2.getAttributes().highlightIds ?? [];
+
+  return (
+    highlights1.length === highlights2.length &&
+    highlights1.every((id) => highlights2.includes(id))
+  );
+};
+
 /**
  * This is initially copied directly from the Lexical LinkNode implementation.
  * It handles transforming the editor selection into a new Lexical node tree
@@ -169,23 +181,6 @@ export function toggleHighlightAssignment(
       }
     });
   }
-
-  const isIdenticalHighlight = (node1: LexicalNode, node2: LexicalNode) => {
-    if (
-      !$isHighlightAssignmentNode(node1) ||
-      !$isHighlightAssignmentNode(node2)
-    ) {
-      return false;
-    }
-
-    const highlights1 = node1.getAttributes().highlightIds ?? [];
-    const highlights2 = node2.getAttributes().highlightIds ?? [];
-
-    return (
-      highlights1.length === highlights2.length &&
-      highlights1.every((id) => highlights2.includes(id))
-    );
-  };
 
   let prevParent: ElementNode | HighlightAssignmentNode | null = null;
   let highlightAssignmentNode: HighlightAssignmentNode | null = null;
@@ -271,15 +266,30 @@ export class HighlightAssignmentNode extends ElementNode {
   }
 
   insertNewAfter(
-    _: RangeSelection,
+    selection: RangeSelection,
     restoreSelection = true
   ): null | ElementNode {
-    const newElement = $createParagraphNode();
-    newElement.append($createHighlightAssignmentNode(this.__attributes));
-    const direction = this.getDirection();
-    newElement.setDirection(direction);
-    this.insertAfter(newElement, restoreSelection);
-    return newElement;
+    const parent = this.getParent();
+
+    if (parent === null) {
+      return null;
+    }
+
+    if ($isElementNode(parent)) {
+      const newHighlight = $createHighlightAssignmentNode(this.getAttributes());
+      // TODO instead of creating a new paragraph, this should be whatever type
+      // of ElementNode `parent` is.
+      const newBlock = $createParagraphNode();
+      newBlock.append(newHighlight);
+      parent.insertAfter(newBlock, restoreSelection);
+      return newHighlight;
+    }
+
+    return null;
+  }
+
+  canMergeWith(node: ElementNode): boolean {
+    return $isHighlightAssignmentNode(node) && isIdenticalHighlight(this, node);
   }
 
   canInsertTextBefore(): false {
@@ -292,6 +302,10 @@ export class HighlightAssignmentNode extends ElementNode {
 
   canBeEmpty(): boolean {
     return false;
+  }
+
+  isInline(): boolean {
+    return true;
   }
 
   static importJSON(_serializedNode: SerializedHighlightAssignmentNode) {
