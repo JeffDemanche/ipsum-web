@@ -2,7 +2,13 @@ import React, { useEffect, useRef } from "react";
 import { useDebouncedCallback } from "util/hooks";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
-import { $getRoot, EditorState, LexicalEditor } from "lexical";
+import {
+  $createParagraphNode,
+  $createTextNode,
+  $getRoot,
+  EditorState,
+  LexicalEditor,
+} from "lexical";
 import { IpsumEditorMetadata } from "../IpsumEditor";
 import {
   createArcEntry,
@@ -61,11 +67,13 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
       const root = $getRoot();
       root.clear();
 
-      if (!nodes) return;
-
-      nodes.forEach((node) => {
-        root.append(node);
-      });
+      if (!nodes) {
+        return;
+      } else {
+        nodes.forEach((node) => {
+          root.append(node);
+        });
+      }
     });
   }, [editor, htmlString]);
 

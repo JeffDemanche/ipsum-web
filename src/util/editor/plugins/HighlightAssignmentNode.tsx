@@ -15,6 +15,7 @@ import {
   $nodesOfType,
   $selectAll,
   $isElementNode,
+  $getRoot,
 } from "lexical";
 import {} from "@lexical/utils";
 import styles from "./HighlightAssignmentPlugin.less";
@@ -142,10 +143,15 @@ const nodeHasHighlight = (node: LexicalNode, highlightId: string) => {
   );
 };
 
-export const ancestorWithHighlight = (
-  node: LexicalNode,
-  highlightId: string
-) => {
+/**
+ * Determines whether the node is a HighlightAssignmentNode and has if so
+ * whether it has an identical highlight ancestor.
+ */
+export const hasIdenticalHighlightAncestor = (node: LexicalNode) => {
+  if (!$isHighlightAssignmentNode(node)) {
+    return false;
+  }
+
   if (!node.getParent()) {
     return null;
   }
@@ -154,11 +160,38 @@ export const ancestorWithHighlight = (
   while (
     parent !== null &&
     parent.getParent() !== null &&
-    !nodeHasHighlight(parent, highlightId)
+    !nodeHasHighlight(parent, node.getAttributes().highlightId)
   ) {
     parent = parent.getParentOrThrow();
   }
-  return nodeHasHighlight(parent, highlightId) ? parent : null;
+
+  return parent !== null && parent.getType() !== "root";
+};
+
+const printLexicalTreeHelper = (node: LexicalNode, level: number) => {
+  const children = $isElementNode(node) ? node.getChildren() : [];
+  const indent = " ".repeat(level * 2);
+  const highlightId = $isHighlightAssignmentNode(node)
+    ? node.__attributes.highlightId
+    : "";
+  console.log(indent, node.getType(), node.getTextContent(), highlightId);
+  children.forEach((child) => {
+    printLexicalTreeHelper(child, level + 1);
+  });
+};
+
+const printLexicalTree = () => {
+  const root = $getRoot();
+
+  console.log("----");
+  console.log("Root", root.getType(), root.getTextContent());
+
+  const children = root.getChildren();
+  children.forEach((child) => {
+    printLexicalTreeHelper(child, 1);
+  });
+
+  console.log("----");
 };
 
 /**
@@ -166,65 +199,49 @@ export const ancestorWithHighlight = (
  * It handles transforming the editor selection into a new Lexical node tree
  * with highlights properly applied.
  */
-export function toggleHighlightAssignment(
-  attributes: ToggleHighlightAssignmentPayload | null
+export function applyHighlightAssignment(
+  attributes: ToggleHighlightAssignmentPayload
 ) {
+  // Highlight assignment invariants:
+  // - A highlight should only wrap a TextNode or another highlight.
+
   const { highlightId } = attributes;
   const selection = $getSelection();
-
-  // const highlightNode = $createHighlightAssignmentNode(attributes);
-
-  // const nodes = selection.extract();
-
-  // highlightNode.append(...nodes);
-
-  // console.log($getSelection());
-
-  // // highlightNode.append(...nodes);
-
-  // $insertNodes([highlightNode]);
 
   if (!$isRangeSelection(selection)) {
     return;
   }
 
+  // Extract "cuts out" the selected nodes, including parent element nodes.
   const nodes = selection.extract();
-
-  // Un-highlight
-  if (attributes === null) {
-    nodes.forEach((node) => {
-      const parent = node.getParent();
-
-      if ($isHighlightAssignmentNode(parent)) {
-        const children = parent.getChildren();
-
-        children.forEach((child) => {
-          parent.insertBefore(child);
-        });
-
-        parent.remove();
-      }
-    });
-  }
 
   let prevParent: ElementNode | HighlightAssignmentNode | null = null;
   let highlightAssignmentNode: HighlightAssignmentNode | null = null;
 
+  printLexicalTree();
+
   nodes.forEach((selectedNode) => {
     const parent = selectedNode.getParent();
 
+    console.log(
+      "Node",
+      selectedNode.getType(),
+      selectedNode.getTextContent(),
+      "\t\tParent",
+      parent?.getType(),
+      parent?.getTextContent()
+    );
+
     if (
-      isIdenticalHighlight(parent, highlightAssignmentNode) ||
+      hasIdenticalHighlightAncestor(highlightAssignmentNode) ||
       parent === null ||
-      ($isHighlightAssignmentNode(selectedNode) && !selectedNode.isInline())
+      ($isElementNode(selectedNode) && !selectedNode.isInline())
     ) {
       return;
     }
 
-    if ($isHighlightAssignmentNode(parent)) {
-      if (isIdenticalHighlight(parent, highlightAssignmentNode)) {
-        return;
-      }
+    if (hasIdenticalHighlightAncestor(selectedNode)) {
+      return;
     }
 
     if (!parent.is(prevParent)) {
@@ -234,30 +251,49 @@ export function toggleHighlightAssignment(
         highlightId,
       });
 
-      selectedNode.insertBefore(highlightAssignmentNode);
+      if (hasIdenticalHighlightAncestor(selectedNode)) {
+        if (selectedNode.getPreviousSibling() === null) {
+          console.log(
+            "\t^ create/insert highlight before parent",
+            highlightAssignmentNode,
+            highlightAssignmentNode.getTextContent()
+          );
+          parent.insertBefore(highlightAssignmentNode);
+        } else {
+          console.log(
+            "\t^ create/insert highlight after parent",
+            highlightAssignmentNode,
+            highlightAssignmentNode.getTextContent()
+          );
+          parent.insertAfter(highlightAssignmentNode);
+        }
+      } else {
+        console.log(
+          "\t^ create/insert highlight before selected node",
+          highlightAssignmentNode,
+          highlightAssignmentNode.getTextContent()
+        );
+        selectedNode.insertBefore(highlightAssignmentNode);
+      }
     }
 
     if ($isHighlightAssignmentNode(selectedNode)) {
-      if (selectedNode.is(highlightAssignmentNode)) {
-        return;
-      }
-      // This routine removes the highlight assignment node.
-      if (highlightAssignmentNode !== null) {
-        const children = selectedNode.getChildren();
+      // We've found a highlight node with part of the selection inside it. We
+      // will bypass this node. Whichever text nodes in this highlight are
+      // selected will be wrapped in a nested highlight at another point in the
+      // loop.
 
-        children.forEach((child) => {
-          highlightAssignmentNode.append(child);
-        });
-      }
-
-      selectedNode.remove();
       return;
     }
 
     if (highlightAssignmentNode !== null) {
+      // Add the selected node to the highlight.
+      console.log("\t^ appending", selectedNode);
       highlightAssignmentNode.append(selectedNode);
     }
   });
+
+  printLexicalTree();
 }
 
 export class HighlightAssignmentNode extends ElementNode {

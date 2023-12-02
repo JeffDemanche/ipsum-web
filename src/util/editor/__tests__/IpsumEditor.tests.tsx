@@ -1,6 +1,5 @@
 import { ApolloProvider } from "@apollo/client";
 import { render, screen, waitFor } from "@testing-library/react";
-import { $createParagraphNode, $createTextNode, $getRoot } from "lexical";
 import React from "react";
 import { client, EntryType } from "util/apollo";
 import { IpsumEditor } from "../IpsumEditor";
@@ -32,13 +31,6 @@ describe("IpsumEditor", () => {
       render(
         <ApolloProvider client={client}>
           <IpsumEditor
-            // https://github.com/facebook/lexical/issues/4595#issuecomment-1578872303
-            initializeState={() => {
-              const root = $getRoot();
-              const paragraph = $createParagraphNode();
-              paragraph.append($createTextNode(" "));
-              root.append(paragraph);
-            }}
             entryKey="test_entry"
             metadata={{ entryType: EntryType.Journal }}
           ></IpsumEditor>

@@ -36,14 +36,12 @@ interface IpsumEditorProps {
   entryKey: string;
   editable?: boolean;
   metadata: IpsumEditorMetadata;
-  initializeState?: () => void;
 }
 
 export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
   entryKey,
   editable = true,
   metadata,
-  initializeState,
 }) => {
   const onError = useCallback((error: Error, editor: LexicalEditor) => {
     console.error(error, editor);
@@ -52,7 +50,12 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
   return (
     <LexicalComposer
       initialConfig={{
-        editorState: initializeState,
+        // editorState: () => {
+        //   const root = $getRoot();
+        //   const paragraph = $createParagraphNode();
+        //   paragraph.append($createTextNode(" "));
+        //   root.append(paragraph);
+        // },
         theme: editorTheme,
         namespace: entryKey,
         onError,

@@ -13,13 +13,12 @@ import { deleteHighlight, gql } from "util/apollo";
 import { usePrevious } from "util/hooks";
 import {
   $isHighlightAssignmentNode,
-  ancestorWithHighlight,
   fixHues,
   HighlightAssignmentNode,
-  isIdenticalHighlight,
   removeHighlightAssignmentFromEditor,
-  toggleHighlightAssignment,
+  applyHighlightAssignment,
   ToggleHighlightAssignmentPayload,
+  isIdenticalHighlight,
 } from "./HighlightAssignmentNode";
 
 interface HighlightAssignmentPluginProps {
@@ -112,7 +111,7 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
       editor.registerCommand(
         TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND,
         (payload) => {
-          toggleHighlightAssignment(payload);
+          applyHighlightAssignment(payload);
           return true;
         },
         COMMAND_PRIORITY_NORMAL
@@ -173,10 +172,6 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
       ) {
         node.append(...nextSibling.getChildren());
         nextSibling.remove();
-      }
-
-      if (ancestorWithHighlight(node, node.getAttributes().highlightId)) {
-        node.getParent().insert;
       }
     });
   }, [editor]);

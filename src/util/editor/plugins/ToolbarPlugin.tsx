@@ -32,7 +32,6 @@ import {
   FormatStrikethrough,
   FormatUnderlined,
 } from "@mui/icons-material";
-import { ArcChooser } from "./ArcChooser";
 import { HighlightButton } from "./HighlightButton";
 
 function getSelectedNode(selection: RangeSelection) {
@@ -245,6 +244,7 @@ export const ToolbarPlugin: React.FunctionComponent<ToolbarPluginProps> = ({
         variant="outlined"
         className={styles["block-format-select"]}
         aria-label="Formatting Options"
+        data-testid="editor-toolbar-block-format-select"
       >
         <MenuItem
           className={styles["menu-item"]}
@@ -252,6 +252,7 @@ export const ToolbarPlugin: React.FunctionComponent<ToolbarPluginProps> = ({
           key={"paragraph"}
           selected={blockType === "paragraph"}
           onClick={formatParagraph}
+          data-testid="editor-toolbar-block-p-option"
         >
           <i className="bi bi-text-paragraph"></i>
           <span>Normal</span>
@@ -262,6 +263,7 @@ export const ToolbarPlugin: React.FunctionComponent<ToolbarPluginProps> = ({
           key={"h1"}
           selected={blockType === "h1"}
           onClick={formatLargeHeading}
+          data-testid="editor-toolbar-block-h1-option"
         >
           <i className="bi bi-type-h1"></i>
           <span>Large Heading</span>
