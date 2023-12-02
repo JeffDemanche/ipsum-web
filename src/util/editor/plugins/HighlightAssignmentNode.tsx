@@ -14,14 +14,13 @@ import {
   $getNodeByKey,
   $nodesOfType,
   $selectAll,
-  $createParagraphNode,
   $isElementNode,
 } from "lexical";
 import {} from "@lexical/utils";
 import styles from "./HighlightAssignmentPlugin.less";
 
 export interface HighlightAssignmentNodeAttributes {
-  highlightIds?: string[];
+  highlightId?: string;
   hue?: number;
 }
 
@@ -49,13 +48,13 @@ export function $isHighlightAssignmentNode(
 function convertHighlightAssignmentElement(
   domNode: HTMLElement
 ): DOMConversionOutput | null {
-  const highlightIds = domNode.getAttribute("data-highlight-ids")?.split(",");
+  const highlightId = domNode.getAttribute("data-highlight-id");
   const hue = Number.parseInt(domNode.getAttribute("data-hue") ?? "0");
 
-  if (highlightIds !== null && highlightIds.length && domNode.hasChildNodes()) {
+  if (highlightId !== null && highlightId.length && domNode.hasChildNodes()) {
     return {
       node: $createHighlightAssignmentNode({
-        highlightIds,
+        highlightId,
         hue,
       }),
     };
@@ -79,11 +78,9 @@ export function fixHues(nodeKey: string, hueMap: Record<string, number>) {
   const node = $getNodeByKey(nodeKey);
   if ($isHighlightAssignmentNode(node)) {
     const attributes = node.getAttributes();
-    const hue =
-      attributes.highlightIds.length === 0
-        ? undefined
-        : attributes.highlightIds.reduce((a, c) => a + hueMap[c], 0) /
-          attributes.highlightIds.length;
+    const hue = !attributes.highlightId
+      ? undefined
+      : hueMap[attributes.highlightId] ?? undefined;
 
     if (hue && hue !== attributes.hue) {
       if (!isNaN(hue)) {
@@ -109,29 +106,23 @@ export function removeHighlightAssignmentFromEditor(highlightId: string) {
   }
 
   highlightAssignmentNodes.forEach((node) => {
-    if (node.__attributes.highlightIds.includes(highlightId)) {
-      const newHighlightIds = node.__attributes.highlightIds.filter(
-        (id) => id !== highlightId
-      );
-      if (newHighlightIds.length === 0) {
+    if (node.__attributes.highlightId === highlightId) {
+      if ($isElementNode(node.getParent())) {
         const children = node.getChildren();
         for (const child of children) {
           node.insertBefore(child);
         }
         node.remove();
-        return;
       }
-
-      node.setAttributes({
-        ...node.getAttributes(),
-        highlightIds: newHighlightIds,
-      });
     }
   });
   $selectAll();
 }
 
-const isIdenticalHighlight = (node1: LexicalNode, node2: LexicalNode) => {
+export const isIdenticalHighlight = (
+  node1: LexicalNode,
+  node2: LexicalNode
+) => {
   if (
     !$isHighlightAssignmentNode(node1) ||
     !$isHighlightAssignmentNode(node2)
@@ -139,13 +130,35 @@ const isIdenticalHighlight = (node1: LexicalNode, node2: LexicalNode) => {
     return false;
   }
 
-  const highlights1 = node1.getAttributes().highlightIds ?? [];
-  const highlights2 = node2.getAttributes().highlightIds ?? [];
-
   return (
-    highlights1.length === highlights2.length &&
-    highlights1.every((id) => highlights2.includes(id))
+    node1.getAttributes().highlightId === node2.getAttributes().highlightId
   );
+};
+
+const nodeHasHighlight = (node: LexicalNode, highlightId: string) => {
+  return (
+    $isHighlightAssignmentNode(node) &&
+    node.getAttributes().highlightId === highlightId
+  );
+};
+
+export const ancestorWithHighlight = (
+  node: LexicalNode,
+  highlightId: string
+) => {
+  if (!node.getParent()) {
+    return null;
+  }
+
+  let parent = node.getParentOrThrow();
+  while (
+    parent !== null &&
+    parent.getParent() !== null &&
+    !nodeHasHighlight(parent, highlightId)
+  ) {
+    parent = parent.getParentOrThrow();
+  }
+  return nodeHasHighlight(parent, highlightId) ? parent : null;
 };
 
 /**
@@ -158,6 +171,18 @@ export function toggleHighlightAssignment(
 ) {
   const { highlightId } = attributes;
   const selection = $getSelection();
+
+  // const highlightNode = $createHighlightAssignmentNode(attributes);
+
+  // const nodes = selection.extract();
+
+  // highlightNode.append(...nodes);
+
+  // console.log($getSelection());
+
+  // // highlightNode.append(...nodes);
+
+  // $insertNodes([highlightNode]);
 
   if (!$isRangeSelection(selection)) {
     return;
@@ -205,15 +230,9 @@ export function toggleHighlightAssignment(
     if (!parent.is(prevParent)) {
       prevParent = parent;
 
-      if ($isHighlightAssignmentNode(parent)) {
-        highlightAssignmentNode = $createHighlightAssignmentNode({
-          highlightIds: [...parent.getAttributes().highlightIds, highlightId],
-        });
-      } else {
-        highlightAssignmentNode = $createHighlightAssignmentNode({
-          highlightIds: [highlightId],
-        });
-      }
+      highlightAssignmentNode = $createHighlightAssignmentNode({
+        highlightId,
+      });
 
       selectedNode.insertBefore(highlightAssignmentNode);
     }
@@ -259,32 +278,21 @@ export class HighlightAssignmentNode extends ElementNode {
     writable.__attributes = attributes;
   }
 
-  addHighlightId(highlightId: string) {
-    const writable = this.getWritable();
-    const highlightIds = writable.__attributes.highlightIds ?? [];
-    writable.__attributes.highlightIds = [...highlightIds, highlightId];
-  }
-
   insertNewAfter(
     selection: RangeSelection,
     restoreSelection = true
   ): null | ElementNode {
-    const parent = this.getParent();
-
-    if (parent === null) {
-      return null;
+    const element = this.getParentOrThrow().insertNewAfter(
+      selection,
+      restoreSelection
+    );
+    if ($isElementNode(element)) {
+      const highlightNode = $createHighlightAssignmentNode(
+        this.getAttributes()
+      );
+      element.append(highlightNode);
+      return highlightNode;
     }
-
-    if ($isElementNode(parent)) {
-      const newHighlight = $createHighlightAssignmentNode(this.getAttributes());
-      // TODO instead of creating a new paragraph, this should be whatever type
-      // of ElementNode `parent` is.
-      const newBlock = $createParagraphNode();
-      newBlock.append(newHighlight);
-      parent.insertAfter(newBlock, restoreSelection);
-      return newHighlight;
-    }
-
     return null;
   }
 
@@ -310,7 +318,7 @@ export class HighlightAssignmentNode extends ElementNode {
 
   static importJSON(_serializedNode: SerializedHighlightAssignmentNode) {
     const node = $createHighlightAssignmentNode({
-      highlightIds: _serializedNode.highlightIds,
+      highlightId: _serializedNode.highlightId,
       hue: _serializedNode.hue,
     });
 
@@ -323,7 +331,7 @@ export class HighlightAssignmentNode extends ElementNode {
   exportJSON() {
     return {
       ...super.exportJSON(),
-      highlightIds: this.__attributes.highlightIds,
+      highlightIds: this.__attributes.highlightId,
       hue: this.__attributes.hue,
       type: HighlightAssignmentNode.getType(),
       version: 1,
@@ -332,11 +340,8 @@ export class HighlightAssignmentNode extends ElementNode {
 
   createDOM(_config: EditorConfig): HTMLElement {
     const element = document.createElement("span");
-    if (this.__attributes.highlightIds?.length) {
-      element.setAttribute(
-        "data-highlight-ids",
-        this.__attributes.highlightIds.join(",")
-      );
+    if (this.__attributes.highlightId) {
+      element.setAttribute("data-highlight-id", this.__attributes.highlightId);
       const hue = this.__attributes.hue;
       hue && element.setAttribute("data-hue", `${hue}`);
       element.classList.add(styles.highlight);
@@ -351,17 +356,12 @@ export class HighlightAssignmentNode extends ElementNode {
     _dom: HTMLElement,
     _config: EditorConfig
   ): boolean {
-    if (
-      this.__attributes.highlightIds !== _prevNode.__attributes.highlightIds
-    ) {
-      if (this.__attributes.highlightIds) {
-        _dom.setAttribute(
-          "data-highlight-ids",
-          this.__attributes.highlightIds.join(",")
-        );
+    if (this.__attributes.highlightId !== _prevNode.__attributes.highlightId) {
+      if (this.__attributes.highlightId) {
+        _dom.setAttribute("data-highlight-id", this.__attributes.highlightId);
         _dom.setAttribute("data-hue", `${this.__attributes.hue}`);
       } else {
-        _dom.removeAttribute("data-highlight-ids");
+        _dom.removeAttribute("data-highlight-id");
         _dom.removeAttribute("data-hue");
         _dom.classList.remove(styles.highlight);
       }
@@ -373,7 +373,7 @@ export class HighlightAssignmentNode extends ElementNode {
   static importDOM(): DOMConversionMap {
     return {
       span: (domNode: HTMLElement) => {
-        if (!domNode.hasAttribute("data-highlight-ids")) {
+        if (!domNode.hasAttribute("data-highlight-id")) {
           return null;
         }
         return {

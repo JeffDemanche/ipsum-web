@@ -18,7 +18,7 @@ export const useExcerpt = ({
     const removeNonHighlightChildren = (element: HTMLElement): HTMLElement => {
       if (
         element
-          .getAttribute?.("data-highlight-ids")
+          .getAttribute?.("data-highlight-id")
           ?.split(",")
           ?.includes(highlightId)
       ) {

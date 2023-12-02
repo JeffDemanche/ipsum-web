@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { mergeRegister } from "@lexical/utils";
 import {
+  $isElementNode,
   $nodesOfType,
   COMMAND_PRIORITY_NORMAL,
   createCommand,
@@ -12,8 +13,10 @@ import { deleteHighlight, gql } from "util/apollo";
 import { usePrevious } from "util/hooks";
 import {
   $isHighlightAssignmentNode,
+  ancestorWithHighlight,
   fixHues,
   HighlightAssignmentNode,
+  isIdenticalHighlight,
   removeHighlightAssignmentFromEditor,
   toggleHighlightAssignment,
   ToggleHighlightAssignmentPayload,
@@ -132,25 +135,23 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
               if (mutation === "destroyed") {
                 const node = prevEditorState._nodeMap.get(nodeKey);
                 if ($isHighlightAssignmentNode(node)) {
-                  node.__attributes.highlightIds.forEach((highlightId) => {
-                    const allHighlightNodes = $nodesOfType(
-                      HighlightAssignmentNode
-                    );
-                    const otherNodesWithHighlight = allHighlightNodes.filter(
-                      (otherNode) => {
-                        return (
-                          otherNode.getKey() !== nodeKey &&
-                          otherNode.__attributes.highlightIds.includes(
-                            highlightId
-                          )
-                        );
-                      }
-                    );
+                  const highlightId = node.__attributes.highlightId;
 
-                    if (otherNodesWithHighlight.length === 0) {
-                      deleteHighlight(highlightId);
+                  const allHighlightNodes = $nodesOfType(
+                    HighlightAssignmentNode
+                  );
+                  const otherNodesWithHighlight = allHighlightNodes.filter(
+                    (otherNode) => {
+                      return (
+                        otherNode.getKey() !== nodeKey &&
+                        otherNode.__attributes.highlightId === highlightId
+                      );
                     }
-                  });
+                  );
+
+                  if (otherNodesWithHighlight.length === 0) {
+                    deleteHighlight(highlightId);
+                  }
                 }
               }
             });
@@ -159,6 +160,25 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
       )
     );
   }, [editor, highlightHueMap]);
+
+  useEffect(() => {
+    return editor.registerNodeTransform(HighlightAssignmentNode, (node) => {
+      // Merge two sibling highlight nodes if they are identical.
+      const nextSibling = node.getNextSibling();
+      if (
+        nextSibling &&
+        $isElementNode(nextSibling) &&
+        isIdenticalHighlight(node, nextSibling)
+      ) {
+        node.append(...nextSibling.getChildren());
+        nextSibling.remove();
+      }
+
+      if (ancestorWithHighlight(node, node.getAttributes().highlightId)) {
+        node.getParent().insert;
+      }
+    });
+  }, [editor]);
 
   return null;
 };

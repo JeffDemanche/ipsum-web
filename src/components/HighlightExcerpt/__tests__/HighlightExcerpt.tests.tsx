@@ -29,7 +29,7 @@ describe("HighlightExcerpt", () => {
         __typename: "Entry",
         entryKey: "1/1/2020",
         trackedHTMLString: IpsumTimeMachine.create(
-          '<div data-highlight-ids="highlight_1"><p>this text is highlighted</p><p>on both lines</p></div>'
+          '<div data-highlight-id="highlight_1"><p>this text is highlighted</p><p>on both lines</p></div>'
         ).toString(),
         history: {
           __typename: "History",
@@ -43,7 +43,7 @@ describe("HighlightExcerpt", () => {
         __typename: "Entry",
         entryKey: "1/2/2020",
         trackedHTMLString: IpsumTimeMachine.create(
-          '<p>first block</p><div data-highlight-ids="highlight_2"><p>second block</p></div><p>third block</p>'
+          '<p>first block</p><div data-highlight-id="highlight_2"><p>second block</p></div><p>third block</p>'
         ).toString(),
         history: {
           __typename: "History",
