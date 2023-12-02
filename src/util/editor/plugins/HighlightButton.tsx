@@ -25,7 +25,7 @@ export const HighlightButton: React.FunctionComponent<HighlightButtonProps> = ({
   }, [editor, entryKey]);
 
   return (
-    <IconButton onClick={onHighlightClick}>
+    <IconButton data-testid="apply-highlight-button" onClick={onHighlightClick}>
       <Highlight></Highlight>
     </IconButton>
   );

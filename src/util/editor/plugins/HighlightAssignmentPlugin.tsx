@@ -126,7 +126,8 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
           });
         }
       }),
-
+      // Deletes the highlight through API if all highlight nodes have been
+      // deleted.
       editor.registerMutationListener(
         HighlightAssignmentNode,
         (mutations, { prevEditorState }) => {

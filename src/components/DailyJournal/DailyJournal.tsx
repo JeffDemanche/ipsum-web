@@ -1,5 +1,5 @@
 import { Paper, ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import SimpleBar from "simplebar-react";
 import styles from "./DailyJournal.less";
 import { DailyJournalURLLayer, useModifySearchParams } from "util/url";
