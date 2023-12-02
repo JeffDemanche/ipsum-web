@@ -216,6 +216,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
       variant="translucent"
       onClick={onCardClick}
       className={cx(selected && styles["selected"], styles["box"])}
+      data-testid="median-highlight-box"
       ref={boxRef}
     >
       {selected ? (

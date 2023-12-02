@@ -1,4 +1,4 @@
-import { client, UnhydratedType, vars } from "../client";
+import { UnhydratedType, vars } from "../client";
 import { v4 as uuidv4 } from "uuid";
 import { autosave } from "../autosave";
 

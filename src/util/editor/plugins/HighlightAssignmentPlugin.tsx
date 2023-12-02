@@ -124,42 +124,43 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
             fixHues(nodeKey, highlightHueMap);
           });
         }
-      }),
-      // Deletes the highlight through API if all highlight nodes have been
-      // deleted.
-      editor.registerMutationListener(
-        HighlightAssignmentNode,
-        (mutations, { prevEditorState }) => {
-          for (const [nodeKey, mutation] of mutations) {
-            editor.update(() => {
-              if (mutation === "destroyed") {
-                const node = prevEditorState._nodeMap.get(nodeKey);
-                if ($isHighlightAssignmentNode(node)) {
-                  const highlightId = node.__attributes.highlightId;
-
-                  const allHighlightNodes = $nodesOfType(
-                    HighlightAssignmentNode
-                  );
-                  const otherNodesWithHighlight = allHighlightNodes.filter(
-                    (otherNode) => {
-                      return (
-                        otherNode.getKey() !== nodeKey &&
-                        otherNode.__attributes.highlightId === highlightId
-                      );
-                    }
-                  );
-
-                  if (otherNodesWithHighlight.length === 0) {
-                    deleteHighlight(highlightId);
-                  }
-                }
-              }
-            });
-          }
-        }
-      )
+      })
     );
   }, [editor, highlightHueMap]);
+
+  useEffect(() => {
+    // Deletes the highlight through API if all highlight nodes have been
+    // deleted.
+    return editor.registerMutationListener(
+      HighlightAssignmentNode,
+      (mutations, { prevEditorState }) => {
+        for (const [nodeKey, mutation] of mutations) {
+          editor.update(() => {
+            if (mutation === "destroyed") {
+              const node = prevEditorState._nodeMap.get(nodeKey);
+              if ($isHighlightAssignmentNode(node)) {
+                const highlightId = node.__attributes.highlightId;
+
+                const allHighlightNodes = $nodesOfType(HighlightAssignmentNode);
+                const otherNodesWithHighlight = allHighlightNodes.filter(
+                  (otherNode) => {
+                    return (
+                      otherNode.getKey() !== nodeKey &&
+                      otherNode.__attributes.highlightId === highlightId
+                    );
+                  }
+                );
+
+                if (otherNodesWithHighlight.length === 0) {
+                  deleteHighlight(highlightId);
+                }
+              }
+            }
+          });
+        }
+      }
+    );
+  }, [editor]);
 
   useEffect(() => {
     return editor.registerNodeTransform(HighlightAssignmentNode, (node) => {

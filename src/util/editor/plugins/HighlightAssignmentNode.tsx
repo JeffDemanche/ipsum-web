@@ -16,8 +16,8 @@ import {
   $selectAll,
   $isElementNode,
   $getRoot,
+  $createTextNode,
 } from "lexical";
-import {} from "@lexical/utils";
 import styles from "./HighlightAssignmentPlugin.less";
 
 export interface HighlightAssignmentNodeAttributes {
@@ -194,6 +194,8 @@ const printLexicalTree = () => {
   console.log("----");
 };
 
+const db = false;
+
 /**
  * This is initially copied directly from the Lexical LinkNode implementation.
  * It handles transforming the editor selection into a new Lexical node tree
@@ -218,19 +220,20 @@ export function applyHighlightAssignment(
   let prevParent: ElementNode | HighlightAssignmentNode | null = null;
   let highlightAssignmentNode: HighlightAssignmentNode | null = null;
 
-  printLexicalTree();
+  db && printLexicalTree();
 
   nodes.forEach((selectedNode) => {
     const parent = selectedNode.getParent();
 
-    console.log(
-      "Node",
-      selectedNode.getType(),
-      selectedNode.getTextContent(),
-      "\t\tParent",
-      parent?.getType(),
-      parent?.getTextContent()
-    );
+    db &&
+      console.log(
+        "Node",
+        selectedNode.getType(),
+        selectedNode.getTextContent(),
+        "\t\tParent",
+        parent?.getType(),
+        parent?.getTextContent()
+      );
 
     if (
       hasIdenticalHighlightAncestor(highlightAssignmentNode) ||
@@ -253,26 +256,29 @@ export function applyHighlightAssignment(
 
       if (hasIdenticalHighlightAncestor(selectedNode)) {
         if (selectedNode.getPreviousSibling() === null) {
-          console.log(
-            "\t^ create/insert highlight before parent",
-            highlightAssignmentNode,
-            highlightAssignmentNode.getTextContent()
-          );
+          db &&
+            console.log(
+              "\t^ create/insert highlight before parent",
+              highlightAssignmentNode,
+              highlightAssignmentNode.getTextContent()
+            );
           parent.insertBefore(highlightAssignmentNode);
         } else {
-          console.log(
-            "\t^ create/insert highlight after parent",
-            highlightAssignmentNode,
-            highlightAssignmentNode.getTextContent()
-          );
+          db &&
+            console.log(
+              "\t^ create/insert highlight after parent",
+              highlightAssignmentNode,
+              highlightAssignmentNode.getTextContent()
+            );
           parent.insertAfter(highlightAssignmentNode);
         }
       } else {
-        console.log(
-          "\t^ create/insert highlight before selected node",
-          highlightAssignmentNode,
-          highlightAssignmentNode.getTextContent()
-        );
+        db &&
+          console.log(
+            "\t^ create/insert highlight before selected node",
+            highlightAssignmentNode,
+            highlightAssignmentNode.getTextContent()
+          );
         selectedNode.insertBefore(highlightAssignmentNode);
       }
     }
@@ -288,12 +294,12 @@ export function applyHighlightAssignment(
 
     if (highlightAssignmentNode !== null) {
       // Add the selected node to the highlight.
-      console.log("\t^ appending", selectedNode);
+      db && console.log("\t^ appending", selectedNode);
       highlightAssignmentNode.append(selectedNode);
     }
   });
 
-  printLexicalTree();
+  db && printLexicalTree();
 }
 
 export class HighlightAssignmentNode extends ElementNode {
@@ -318,30 +324,22 @@ export class HighlightAssignmentNode extends ElementNode {
     selection: RangeSelection,
     restoreSelection = true
   ): null | ElementNode {
-    const element = this.getParentOrThrow().insertNewAfter(
-      selection,
-      restoreSelection
-    );
-    if ($isElementNode(element)) {
-      const highlightNode = $createHighlightAssignmentNode(
-        this.getAttributes()
-      );
-      element.append(highlightNode);
-      return highlightNode;
-    }
-    return null;
+    const highlightNode = $createHighlightAssignmentNode(this.getAttributes());
+    highlightNode.append($createTextNode(""));
+    this.insertAfter(highlightNode);
+    return highlightNode;
   }
 
   canMergeWith(node: ElementNode): boolean {
     return $isHighlightAssignmentNode(node) && isIdenticalHighlight(this, node);
   }
 
-  canInsertTextBefore(): false {
+  canInsertTextBefore(): boolean {
     return false;
   }
 
-  canInsertTextAfter(): true {
-    return true;
+  canInsertTextAfter(): boolean {
+    return false;
   }
 
   canBeEmpty(): boolean {
