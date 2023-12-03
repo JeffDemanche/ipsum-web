@@ -181,6 +181,14 @@ export class IpsumTimeMachine {
     return JSON.stringify(this.serialize());
   }
 
+  toRecord(): Record<string, string> {
+    const record: Record<string, string> = {};
+    this._sortedPatchKeys.forEach((dateString) => {
+      record[dateString] = `${this.valueAtDateString(dateString)}`;
+    });
+    return record;
+  }
+
   static fromString(stringifiedTimeMachine: string): IpsumTimeMachine {
     const parsed: StringifiedTimeMachine = JSON.parse(stringifiedTimeMachine);
 

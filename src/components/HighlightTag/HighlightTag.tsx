@@ -19,6 +19,7 @@ const HighlightTagQuery = gql(`
   query HighlightTag($highlightId: ID!) {
     highlight(id: $highlightId) {
       id
+      hue
       outgoingRelations {
         id
         object {

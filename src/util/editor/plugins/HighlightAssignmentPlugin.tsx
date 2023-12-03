@@ -23,6 +23,8 @@ import {
 
 interface HighlightAssignmentPluginProps {
   entryKey: string;
+  onHighlightClick?: (highlightId: string) => void;
+  onHighlightHover?: (highlightId: string, hovered: boolean) => void;
 }
 
 const HighlightAssignmentPluginQuery = gql(`
@@ -46,9 +48,18 @@ export const TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND: LexicalCommand<ToggleHighlight
 export const REMOVE_HIGHLIGHT_ASSIGNMENT_COMMAND: LexicalCommand<ToggleHighlightAssignmentPayload | null> =
   createCommand("remove-highlight-assignment");
 
+export const HIGHLIGHT_CLICK_COMMAND: LexicalCommand<{
+  highlightId: string;
+}> = createCommand("highlight-click");
+
+export const HIGHLIGHT_HOVER_COMMAND: LexicalCommand<{
+  highlightId: string;
+  hovered: boolean;
+}> = createCommand("highlight-hover");
+
 export const HighlightAssignmentPlugin: React.FunctionComponent<
   HighlightAssignmentPluginProps
-> = ({ entryKey }) => {
+> = ({ entryKey, onHighlightClick, onHighlightHover }) => {
   const [editor] = useLexicalComposerContext();
 
   const { data } = useQuery(HighlightAssignmentPluginQuery, {
@@ -94,6 +105,28 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
       });
     });
   }, [editor, highlightHueMap, data]);
+
+  useEffect(() => {
+    return editor.registerCommand(
+      HIGHLIGHT_CLICK_COMMAND,
+      (payload) => {
+        onHighlightClick?.(payload.highlightId);
+        return true;
+      },
+      COMMAND_PRIORITY_NORMAL
+    );
+  });
+
+  useEffect(() => {
+    return editor.registerCommand(
+      HIGHLIGHT_HOVER_COMMAND,
+      (payload) => {
+        onHighlightHover?.(payload.highlightId, payload.hovered);
+        return true;
+      },
+      COMMAND_PRIORITY_NORMAL
+    );
+  });
 
   useEffect(() => {
     return editor.registerCommand(

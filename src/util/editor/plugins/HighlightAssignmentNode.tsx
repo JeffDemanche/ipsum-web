@@ -381,6 +381,15 @@ export class HighlightAssignmentNode extends ElementNode {
       element.classList.add(styles.highlight);
       hue && element.style.setProperty("--hue", `${hue}`);
       element.style.setProperty("--lightness", `${hue ? "50%" : "0%"}`);
+      element.onmouseover = (e) => {
+        // TODO
+      };
+      element.onmouseout = (e) => {
+        // TODO
+      };
+      element.onclick = (e) => {
+        // TODO
+      };
     }
     return element;
   }

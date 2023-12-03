@@ -19,6 +19,7 @@ const DigestQuery = gql(`
       date
       highlights {
         id
+        hue
       }
     }
   }

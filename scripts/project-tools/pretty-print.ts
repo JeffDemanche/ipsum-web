@@ -1,4 +1,5 @@
 import util from "util";
+import { IpsumTimeMachine } from "util/diff";
 
 export const prettyPrint = (data: any, objectPathArg?: string) => {
   let selectedData = { ...data };
@@ -6,8 +7,14 @@ export const prettyPrint = (data: any, objectPathArg?: string) => {
   if (objectPathArg) {
     const objectPath = objectPathArg.split(" ");
     objectPath.forEach((field) => {
-      if (selectedData[field]) selectedData = selectedData[field];
-      else throw new Error("No object path");
+      if (selectedData[field]) {
+        if (field.startsWith("tracked")) {
+          const timeMachine = IpsumTimeMachine.fromString(selectedData[field]);
+          selectedData = timeMachine.toRecord();
+        } else {
+          selectedData = selectedData[field];
+        }
+      } else throw new Error("No object path");
     });
   }
 
