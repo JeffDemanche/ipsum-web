@@ -42,6 +42,12 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
 
   const [loadErrors, setLoadErrors] = useState<string[] | undefined>(undefined);
 
+  useEffect(() => {
+    if (loadErrors) {
+      console.error(loadErrors);
+    }
+  }, [loadErrors]);
+
   const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false);
   const refreshDom = useCallback(() => {
     setRefreshTrigger(true);
@@ -66,8 +72,7 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
       )
     );
     autosave();
-    refreshDom();
-  }, [refreshDom]);
+  }, []);
 
   const navigate = useNavigate();
 
