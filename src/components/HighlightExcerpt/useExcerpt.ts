@@ -54,7 +54,8 @@ export const useExcerpt = ({
           const newChild = removeNonHighlightChildren(child as HTMLElement);
           if (newChild) newElement.appendChild(newChild);
         });
-        return newElement;
+        if (newElement.hasChildNodes()) return newElement;
+        else return null;
       }
     };
 

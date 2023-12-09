@@ -26,7 +26,7 @@ const typeDefs = gql`
     recentEntries(count: Int!): [Entry!]!
     entryKeys: [String!]!
 
-    recentJournalEntries(count: Int!): [JournalEntry!]!
+    recentJournalEntries(count: Int): [JournalEntry!]!
     journalEntryDates: [String!]!
 
     journalEntry(entryKey: ID!): JournalEntry
@@ -419,7 +419,7 @@ const typePolicies: StrictTypedTypePolicies = {
                 .dateTime.toJSDate()
                 .getTime()
           )
-          .slice(0, args.count);
+          .slice(0, args?.count);
       },
       arc(_, { args }) {
         if (args?.id) {

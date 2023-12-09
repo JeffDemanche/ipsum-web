@@ -16,7 +16,9 @@ import { LayerHeader } from "components/LayerHeader";
 
 const DailyJournalQuery = gql(`
   query DailyJournal {
-    journalEntryKeys
+    recentJournalEntries {
+      entryKey
+    }
   }
 `);
 
@@ -34,11 +36,10 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
 
   const { data } = useQuery(DailyJournalQuery);
 
-  const allEntryKeys = useMemo(() => {
-    const ascendingKeys = [...(data?.journalEntryKeys ?? [])];
-    ascendingKeys.reverse();
-    return ascendingKeys;
-  }, [data]);
+  const allEntryKeys = useMemo(
+    () => data?.recentJournalEntries.map((e) => e.entryKey),
+    [data]
+  );
 
   const today = useDateString(30000, "entry-printed-date");
 

@@ -1,5 +1,7 @@
+import { ApolloProvider } from "@apollo/client";
 import { render } from "@testing-library/react";
 import React from "react";
+import { client } from "util/apollo";
 import { dataToSearchParams, URLLayer } from "util/url";
 import { searchParamsToData } from "util/url/urls";
 import { DiptychContext, DiptychProvider } from "../DiptychContext";
@@ -33,14 +35,16 @@ describe("DiptychContext", () => {
     window.location = { href: url.toString() };
 
     render(
-      <DiptychProvider>
-        <DiptychContext.Consumer>
-          {(value) => {
-            onValue?.(value);
-            return <></>;
-          }}
-        </DiptychContext.Consumer>
-      </DiptychProvider>
+      <ApolloProvider client={client}>
+        <DiptychProvider>
+          <DiptychContext.Consumer>
+            {(value) => {
+              onValue?.(value);
+              return <></>;
+            }}
+          </DiptychContext.Consumer>
+        </DiptychProvider>
+      </ApolloProvider>
     );
   };
 
@@ -113,7 +117,7 @@ describe("DiptychContext", () => {
           value.setTopHighlightTo("highlight_to_id", "1/2/2021");
         },
       });
-      expect(navigateSpy).toHaveBeenCalledTimes(1);
+      expect(navigateSpy).toHaveBeenCalledTimes(2);
       expect(navigateCallToData(navigateSpy.mock.calls[0][0])).toEqual({
         layers: [
           {
