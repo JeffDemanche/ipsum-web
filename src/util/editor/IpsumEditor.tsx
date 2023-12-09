@@ -35,12 +35,14 @@ export type IpsumEditorMetadata = MetadataJournal | MetadataArc;
 interface IpsumEditorProps {
   entryKey: string;
   editable?: boolean;
+  allowHighlighting?: boolean;
   metadata: IpsumEditorMetadata;
 }
 
 export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
   entryKey,
   editable = true,
+  allowHighlighting = true,
   metadata,
 }) => {
   const onError = useCallback((error: Error, editor: LexicalEditor) => {
@@ -50,12 +52,6 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
   return (
     <LexicalComposer
       initialConfig={{
-        // editorState: () => {
-        //   const root = $getRoot();
-        //   const paragraph = $createParagraphNode();
-        //   paragraph.append($createTextNode(" "));
-        //   root.append(paragraph);
-        // },
         theme: editorTheme,
         namespace: entryKey,
         onError,
@@ -72,7 +68,11 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
       }}
     >
       <div className={styles["editor-container"]}>
-        {editable && <ToolbarPlugin entryKey={entryKey} />}
+        <ToolbarPlugin
+          entryKey={entryKey}
+          editable={editable}
+          allowHighlighting={allowHighlighting}
+        />
         <div className={styles["editor-inner"]}>
           <RichTextPlugin
             contentEditable={

@@ -1,9 +1,10 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { Highlight } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import React, { useCallback } from "react";
 import { createHighlight } from "util/apollo";
 import { TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND } from "./HighlightAssignmentPlugin";
+import styles from "./HighlightButton.less";
 
 interface HighlightButtonProps {
   entryKey: string;
@@ -25,8 +26,14 @@ export const HighlightButton: React.FunctionComponent<HighlightButtonProps> = ({
   }, [editor, entryKey]);
 
   return (
-    <IconButton data-testid="apply-highlight-button" onClick={onHighlightClick}>
-      <Highlight></Highlight>
-    </IconButton>
+    <Tooltip title="Create new highlight from selection">
+      <IconButton
+        className={styles["highlight-button"]}
+        data-testid="apply-highlight-button"
+        onClick={onHighlightClick}
+      >
+        <Highlight></Highlight>
+      </IconButton>
+    </Tooltip>
   );
 };
