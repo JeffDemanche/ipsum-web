@@ -1,7 +1,7 @@
 import React, { CSSProperties, useState } from "react";
 import styles from "./HighlightTag.less";
 import { Link, Typography } from "@mui/material";
-import { IpsumArcColor, IpsumColor } from "util/colors";
+import { IpsumArcColor } from "util/colors";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 
@@ -46,7 +46,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
 }) => {
   const {
     data: {
-      highlight: { outgoingRelations },
+      highlight: { hue, outgoingRelations },
     },
   } = useQuery(HighlightTagQuery, {
     variables: { highlightId },
@@ -64,22 +64,16 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
       : "(no arcs)";
   }, [outgoingRelations]);
 
-  const firstArc = outgoingRelations[0]?.object;
-
   const [hover, setHover] = useState(false);
 
-  const ipsumColorL50 = firstArc
-    ? new IpsumArcColor(firstArc.color).toIpsumColor({
-        saturation: 50,
-        lightness: 50,
-      })
-    : new IpsumColor("hsl", [0, 0, 50]);
-  const ipsumColorL30 = firstArc
-    ? new IpsumArcColor(firstArc.color).toIpsumColor({
-        saturation: 50,
-        lightness: 30,
-      })
-    : new IpsumColor("hsl", [0, 0, 30]);
+  const ipsumColorL50 = new IpsumArcColor(hue).toIpsumColor({
+    saturation: 50,
+    lightness: 50,
+  });
+  const ipsumColorL30 = new IpsumArcColor(hue).toIpsumColor({
+    saturation: 50,
+    lightness: 30,
+  });
 
   const backgroundColor = ipsumColorL50.setAlpha(0.05).toRgbaCSS();
   const backgroundColorHighlighted = ipsumColorL50.setAlpha(0.2).toRgbaCSS();

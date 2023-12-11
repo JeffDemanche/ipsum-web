@@ -6,7 +6,7 @@ import { compareDatesDesc, IpsumDateTime, IpsumDay } from "util/dates";
 import { URLSearchCriteria, useIpsumSearchParams } from "util/url";
 
 interface UseHighlightSearchResultsResult {
-  searchResults: { id: string }[];
+  searchResults: { id: string; entry: { date: string } }[];
 }
 
 export const UseHighlightSearchQuery = gql(`

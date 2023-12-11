@@ -1,0 +1,27 @@
+.infinite-scroller {
+  scroll-snap-type: y mandatory;
+  .infinite-scroller-element {
+    scroll-snap-align: start;
+  }
+}
+
+.inner-content {
+  padding-right: 20px;
+}
+
+.time-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.scroll-content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.spinner {
+  display: flex;
+}

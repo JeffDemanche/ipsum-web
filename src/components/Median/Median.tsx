@@ -7,9 +7,11 @@ import { MedianSearchSection } from "./MedianSearchSection";
 export const Median: React.FunctionComponent = () => {
   return (
     <div className={styles["median"]}>
-      <MedianBreadcrumbsSection />
-      <Divider />
-      <MedianSearchSection />
+      <div className={styles["median-absolute"]}>
+        <MedianBreadcrumbsSection />
+        <Divider />
+        <MedianSearchSection />
+      </div>
     </div>
   );
 };

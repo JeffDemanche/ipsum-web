@@ -12,6 +12,7 @@ export type IpsumDateFormatTo =
   | "entry-printed-date"
   | "entry-printed-date-nice"
   | "month-word"
+  | "month-and-year"
   | "url-format"
   | "iso";
 
@@ -157,6 +158,11 @@ export class IpsumDateTime {
         });
       case "month-word":
         return this._luxonDateTime.toLocaleString({ month: "long" });
+      case "month-and-year":
+        return this._luxonDateTime.toLocaleString({
+          month: "long",
+          year: "numeric",
+        });
       case "url-format":
         return this._luxonDateTime.toFormat("MM-dd-yyyy");
       case "iso":
