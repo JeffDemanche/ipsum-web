@@ -23,6 +23,7 @@ describe("Highlight resolvers", () => {
       const arc = createArc({ name: "test arc 1" });
       const entry = createEntry({
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("Hello, world!")
         ),

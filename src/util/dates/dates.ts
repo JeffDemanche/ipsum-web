@@ -4,6 +4,7 @@
 
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
+import { IpsumDay } from "./day";
 
 /** Date formats we can create a string of from a DateTime. */
 export type IpsumDateFormatTo =
@@ -11,6 +12,7 @@ export type IpsumDateFormatTo =
   | "entry-printed-date"
   | "entry-printed-date-nice"
   | "month-word"
+  | "month-and-year"
   | "url-format"
   | "iso";
 
@@ -56,7 +58,9 @@ export const useDateString = (
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDateString(new IpsumDateTime(getCurrentLocalDateTime()));
+      if (IpsumDay.today().toString("iso") !== dateString.toString("iso")) {
+        setDateString(IpsumDay.today().toIpsumDateTime());
+      }
     }, refreshRate);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,6 +158,11 @@ export class IpsumDateTime {
         });
       case "month-word":
         return this._luxonDateTime.toLocaleString({ month: "long" });
+      case "month-and-year":
+        return this._luxonDateTime.toLocaleString({
+          month: "long",
+          year: "numeric",
+        });
       case "url-format":
         return this._luxonDateTime.toFormat("MM-dd-yyyy");
       case "iso":

@@ -37,6 +37,7 @@ describe("apollo entries API", () => {
       const entry1 = {
         entryKey: "1/2/2020",
         stringifiedContentState: entry1CS,
+        htmlString: "<p>Hello, world 1!</p>",
         entryType: EntryType.Journal,
       };
       const entry2CS = stringifyContentState(
@@ -45,6 +46,7 @@ describe("apollo entries API", () => {
       const entry2 = {
         entryKey: "4/2/2020",
         stringifiedContentState: entry2CS,
+        htmlString: "<p>Hello, world 2!</p>",
         entryType: EntryType.Journal,
       };
       jest.useFakeTimers().setSystemTime(new Date(2020, 0, 2));
@@ -85,6 +87,7 @@ describe("apollo entries API", () => {
       );
       createEntry({
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: entry1CS,
         entryType: EntryType.Journal,
       });
@@ -104,6 +107,7 @@ describe("apollo entries API", () => {
       jest.useFakeTimers().setSystemTime(new Date(2020, 0, 2));
       createEntry({
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: entry1CS,
         entryType: EntryType.Journal,
       });
@@ -124,6 +128,7 @@ describe("apollo entries API", () => {
       );
       const entry1 = {
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: entry1CS,
         entryType: EntryType.Journal,
       };
@@ -132,6 +137,7 @@ describe("apollo entries API", () => {
       );
       const entry2 = {
         entryKey: "4/2/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: entry2CS,
         entryType: EntryType.Journal,
       };
@@ -176,6 +182,7 @@ describe("apollo entries API", () => {
       );
       createEntry({
         entryKey: "1/1/2020",
+        htmlString: "<p>Hello, world on january first!</p>",
         stringifiedContentState: entry1CS,
         entryType: EntryType.Journal,
       });
@@ -210,6 +217,7 @@ describe("apollo entries API", () => {
       const editorState = createEditorStateFromFormat("<p>[Hello] world</p>");
       const entry1 = {
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world on january first!</p>",
         stringifiedContentState: stringifyContentState(
           editorState.getCurrentContent()
         ),
@@ -251,6 +259,7 @@ describe("apollo entries API", () => {
       );
       const entry1 = {
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world on january first!</p>",
         stringifiedContentState: entry1CS,
         entryType: EntryType.Journal,
       };
@@ -259,6 +268,7 @@ describe("apollo entries API", () => {
       );
       const entry2 = {
         entryKey: "4/2/2020",
+        htmlString: "<p>Hello, world on january first!</p>",
         stringifiedContentState: entry2CS,
         entryType: EntryType.Journal,
       };

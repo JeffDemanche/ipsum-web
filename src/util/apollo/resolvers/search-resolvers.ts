@@ -9,10 +9,10 @@ const highlightMatchesDays = (
 ) => {
   if (!highlight) return false;
 
-  const highlightEntryDay = IpsumDay.fromString(
-    vars.entries()[highlight.entry].history.dateCreated,
-    "iso"
-  );
+  const entry = vars.entries()[highlight.entry];
+
+  const highlightEntryDay =
+    entry && IpsumDay.fromString(entry.history.dateCreated, "iso");
 
   if (!highlightEntryDay) return false;
 
@@ -43,6 +43,8 @@ const highlightMatchesHighlight = (
 ) => {
   if (!highlightNeedle) return false;
 
+  if (highlightNeedle.id === highlightIdInHaystack) return true;
+
   const arcsRelatedToByHighlightNeedle = highlightNeedle.outgoingRelations
     .filter((relation) => {
       const relationObj = vars.relations()[relation];
@@ -56,7 +58,7 @@ const highlightMatchesHighlight = (
     .map((relation) => vars.relations()[relation].object);
 
   const highlightInHaystack = vars.highlights()[highlightIdInHaystack];
-  return highlightInHaystack.outgoingRelations.some((relation) => {
+  return highlightInHaystack?.outgoingRelations.some((relation) => {
     const relationObj = vars.relations()[relation];
     if (!relationObj) return false;
 

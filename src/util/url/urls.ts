@@ -48,6 +48,10 @@ export const useModifySearchParams = <V extends View>() => {
   };
 };
 
+export const getParams = <V extends View>() => {
+  return searchParamsToData<V>(window.location.search.slice(1));
+};
+
 export class IpsumURL {
   private _url: URL;
 

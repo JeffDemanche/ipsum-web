@@ -34,7 +34,7 @@ export type DayFieldPolicy = {
 	journalEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	srsCardReviews?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type EntryKeySpecifier = ('contentState' | 'date' | 'entryKey' | 'entryType' | 'highlights' | 'history' | 'trackedContentState' | EntryKeySpecifier)[];
+export type EntryKeySpecifier = ('contentState' | 'date' | 'entryKey' | 'entryType' | 'highlights' | 'history' | 'htmlString' | 'trackedContentState' | 'trackedHTMLString' | EntryKeySpecifier)[];
 export type EntryFieldPolicy = {
 	contentState?: FieldPolicy<any> | FieldReadFunction<any>,
 	date?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -42,14 +42,17 @@ export type EntryFieldPolicy = {
 	entryType?: FieldPolicy<any> | FieldReadFunction<any>,
 	highlights?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
-	trackedContentState?: FieldPolicy<any> | FieldReadFunction<any>
+	htmlString?: FieldPolicy<any> | FieldReadFunction<any>,
+	trackedContentState?: FieldPolicy<any> | FieldReadFunction<any>,
+	trackedHTMLString?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type HighlightKeySpecifier = ('arc' | 'arcs' | 'entry' | 'history' | 'id' | 'outgoingRelations' | 'srsCards' | HighlightKeySpecifier)[];
+export type HighlightKeySpecifier = ('arc' | 'arcs' | 'entry' | 'history' | 'hue' | 'id' | 'outgoingRelations' | 'srsCards' | HighlightKeySpecifier)[];
 export type HighlightFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcs?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
+	hue?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	outgoingRelations?: FieldPolicy<any> | FieldReadFunction<any>,
 	srsCards?: FieldPolicy<any> | FieldReadFunction<any>

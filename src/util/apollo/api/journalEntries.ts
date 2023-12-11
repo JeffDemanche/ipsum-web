@@ -1,3 +1,4 @@
+import { autosave } from "../autosave";
 import { UnhydratedType, vars } from "../client";
 import { EntryType } from "../__generated__/graphql";
 import { createEntry } from "./entries";
@@ -5,11 +6,13 @@ import { createEntry } from "./entries";
 export const createJournalEntry = (journalEntry: {
   entryKey: string;
   stringifiedContentState: string;
+  htmlString: string;
   entryType: EntryType;
 }): UnhydratedType["JournalEntry"] => {
   const entry = createEntry({
     entryKey: journalEntry.entryKey,
     stringifiedContentState: journalEntry.stringifiedContentState,
+    htmlString: journalEntry.htmlString,
     entryType: journalEntry.entryType,
   });
 
@@ -24,6 +27,8 @@ export const createJournalEntry = (journalEntry: {
     [entry.entryKey]: newJournalEntry,
   });
 
+  autosave();
+
   return newJournalEntry;
 };
 
@@ -35,4 +40,6 @@ export const deleteJournalEntry = ({ entryKey }: { entryKey: string }) => {
   const entriesCopy = { ...vars.entries() };
   delete entriesCopy[entryKey];
   vars.entries(entriesCopy);
+
+  autosave();
 };

@@ -11,6 +11,7 @@ import { upsertDayForToday } from "./day";
 export const createEntry = (entry: {
   entryKey: string;
   stringifiedContentState: string;
+  htmlString: string;
   entryType: EntryType;
 }): UnhydratedType["Entry"] => {
   if (vars.entries()[entry.entryKey]) return;
@@ -21,6 +22,7 @@ export const createEntry = (entry: {
     trackedContentState: IpsumTimeMachine.create(
       entry.stringifiedContentState
     ).toString(),
+    trackedHTMLString: IpsumTimeMachine.create(entry.htmlString).toString(),
     history: {
       __typename: "History",
       dateCreated: IpsumDay.today().toString("iso"),
@@ -40,6 +42,7 @@ export const createEntry = (entry: {
 export const updateEntry = (entry: {
   entryKey: string;
   stringifiedContentState?: string;
+  htmlString?: string;
   history?: UnhydratedType["History"];
 }): UnhydratedType["Entry"] | undefined => {
   if (!entry.entryKey)
@@ -58,6 +61,14 @@ export const updateEntry = (entry: {
       oldEntry.trackedContentState
     )
       .setValueAtDate(today.dateTime.toJSDate(), entry.stringifiedContentState)
+      .toString();
+  }
+  if (entry.htmlString) {
+    // Make nondestructive changes to the trackedHTMLString
+    newEntry.trackedHTMLString = IpsumTimeMachine.fromString(
+      oldEntry.trackedHTMLString
+    )
+      .setValueAtDate(today.dateTime.toJSDate(), entry.htmlString)
       .toString();
   }
   if (entry.history) {

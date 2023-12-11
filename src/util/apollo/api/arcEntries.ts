@@ -4,6 +4,7 @@ import { createEntry } from "./entries";
 import { ContentState } from "draft-js";
 import { stringifyContentState } from "util/content-state";
 import { EntryType } from "../__generated__/graphql";
+import { autosave } from "../autosave";
 
 export const createArcEntry = ({
   arcId,
@@ -19,6 +20,7 @@ export const createArcEntry = ({
     stringifiedContentState: stringifyContentState(
       ContentState.createFromText("")
     ),
+    htmlString: "",
     entryType: EntryType.Arc,
   });
 
@@ -29,6 +31,8 @@ export const createArcEntry = ({
   };
 
   vars.arcEntries({ ...vars.arcEntries(), [arcEntryKey]: arcEntry });
+
+  autosave();
 
   return arcEntry;
 };
@@ -44,4 +48,6 @@ export const deleteArcEntry = (entryKey: string) => {
   const newEntries = { ...vars.entries() };
   delete newEntries[entryKey];
   vars.entries(newEntries);
+
+  autosave();
 };

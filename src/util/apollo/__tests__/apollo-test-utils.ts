@@ -33,6 +33,7 @@ export const mockEntries = (entries: {
       __typename: "Entry",
       entryKey: "",
       trackedContentState: IpsumTimeMachine.create("").toString(),
+      trackedHTMLString: IpsumTimeMachine.create("").toString(),
       history: {
         __typename: "History",
         dateCreated: IpsumDateTime.now().toString("iso"),

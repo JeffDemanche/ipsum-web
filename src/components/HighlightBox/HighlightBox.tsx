@@ -77,12 +77,12 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
     variables: { highlightId },
   });
   const highlight = data?.highlights?.[0];
-  const highlightRelations = highlight.outgoingRelations;
-  const firstArc = highlightRelations[0].object;
+  const highlightRelations = highlight?.outgoingRelations;
+  const firstArc = highlightRelations?.[0]?.object;
 
-  const entryDate = parseIpsumDateTime(data.highlights[0].entry.date).toString(
-    "entry-printed-date-nice"
-  );
+  const entryDate = parseIpsumDateTime(
+    data?.highlights?.[0]?.entry.date
+  ).toString("entry-printed-date-nice");
 
   const { pushLayer, popHighlights } = useContext(DiptychContext);
 
@@ -100,7 +100,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
     );
 
     onSelect?.(!selected, highlightDay);
-  }, [highlight.entry.date, onSelect, selected]);
+  }, [highlight, onSelect, selected]);
 
   const boxRef = useRef<HTMLDivElement>(null);
 
@@ -122,18 +122,18 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
     return firstArc?.id
       ? new IpsumArcColor(firstArc.color).toIpsumColor(colorParams).toRgbaCSS()
       : "white";
-  }, [firstArc.color, firstArc?.id, hovered, selected]);
+  }, [firstArc?.color, firstArc?.id, hovered, selected]);
 
   const onDeleteClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
       removeHighlightFromEntry({
-        entryKey: highlight.entry.entryKey,
+        entryKey: highlight?.entry?.entryKey,
         highlightId,
       });
       deleteHighlight(highlightId);
     },
-    [highlight.entry.entryKey, highlightId]
+    [highlight, highlightId]
   );
 
   const linkArc = useCallback(
@@ -146,7 +146,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
         objectType: "Arc",
       });
     },
-    [highlight.id]
+    [highlight]
   );
 
   const createAndLinkArc = useCallback(
@@ -159,7 +159,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
 
   const relationsMarkup = useMemo(
     () =>
-      highlightRelations.map((relation, i) => (
+      highlightRelations?.map((relation, i) => (
         <div className={styles["relation"]} key={i}>
           <Typography
             variant="body2"
@@ -202,7 +202,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
         ],
       });
     },
-    [highlight.entry.date, pushLayer]
+    [highlight, pushLayer]
   );
 
   return (
@@ -216,6 +216,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
       variant="translucent"
       onClick={onCardClick}
       className={cx(selected && styles["selected"], styles["box"])}
+      data-testid="median-highlight-box"
       ref={boxRef}
     >
       {selected ? (

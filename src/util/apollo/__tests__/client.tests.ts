@@ -25,6 +25,7 @@ describe("apollo client", () => {
     it("queries entries with specified entry keys", () => {
       createEntry({
         entryKey: "1/1/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("Hello, world!")
         ),
@@ -32,6 +33,7 @@ describe("apollo client", () => {
       });
       createEntry({
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("Hello, world!")
         ),
@@ -62,6 +64,7 @@ describe("apollo client", () => {
       const arc2 = createArc({ name: "test arc 2" });
       createEntry({
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("Hello, world!")
         ),
@@ -131,6 +134,7 @@ describe("apollo client", () => {
       it("should hydrate entry highlights", () => {
         createEntry({
           entryKey: "1/2/2020",
+          htmlString: "<p>Hello, world!</p>",
           stringifiedContentState: stringifyContentState(
             ContentState.createFromText("Hello, world!")
           ),
@@ -138,6 +142,7 @@ describe("apollo client", () => {
         });
         createEntry({
           entryKey: "1/4/2020",
+          htmlString: "<p>Hello, world!</p>",
           stringifiedContentState: stringifyContentState(
             ContentState.createFromText("Hello, world!")
           ),
@@ -177,6 +182,7 @@ describe("apollo client", () => {
 
         createEntry({
           entryKey: "1/2/2020",
+          htmlString: "<p>Hello, world!</p>",
           stringifiedContentState: stringifyContentState(
             ContentState.createFromText("Hello, world!")
           ),
@@ -206,6 +212,7 @@ describe("apollo client", () => {
       it("should hydrate contentState from most recent entry in trackedContentState", () => {
         createEntry({
           entryKey: "1/2/2020",
+          htmlString: "<p>Hello, world!</p>",
           stringifiedContentState: stringifyContentState(
             ContentState.createFromText("Hello, world!")
           ),
@@ -244,6 +251,7 @@ describe("apollo client", () => {
         );
         createEntry({
           entryKey: "1/2/2020",
+          htmlString: "<p>Hello, world!</p>",
           stringifiedContentState: entryCS,
           entryType: EntryType.Journal,
         });

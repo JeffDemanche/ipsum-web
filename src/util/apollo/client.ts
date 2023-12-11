@@ -26,7 +26,7 @@ const typeDefs = gql`
     recentEntries(count: Int!): [Entry!]!
     entryKeys: [String!]!
 
-    recentJournalEntries(count: Int!): [JournalEntry!]!
+    recentJournalEntries(count: Int): [JournalEntry!]!
     journalEntryDates: [String!]!
 
     journalEntry(entryKey: ID!): JournalEntry
@@ -71,6 +71,8 @@ const typeDefs = gql`
     # Resolves to most recent tracked contentState
     contentState: String!
     trackedContentState: String!
+    htmlString: String!
+    trackedHTMLString: String!
     highlights: [Highlight!]!
     entryType: EntryType!
     history: History!
@@ -111,6 +113,7 @@ const typeDefs = gql`
     arcs: [Arc!]!
     outgoingRelations: [Relation!]!
     srsCards: [SRSCard!]!
+    hue: Int!
   }
 
   union RelationSubject = Arc | Highlight
@@ -186,6 +189,7 @@ export type UnhydratedType = {
     __typename: "Entry";
     entryKey: string;
     trackedContentState: string;
+    trackedHTMLString: string;
     history: UnhydratedType["History"];
     entryType: "JOURNAL" | "ARC" | "COMMENT";
   };
@@ -415,7 +419,7 @@ const typePolicies: StrictTypedTypePolicies = {
                 .dateTime.toJSDate()
                 .getTime()
           )
-          .slice(0, args.count);
+          .slice(0, args?.count);
       },
       arc(_, { args }) {
         if (args?.id) {
@@ -475,6 +479,11 @@ const typePolicies: StrictTypedTypePolicies = {
       contentState(_, { readField }) {
         const trackedContentState = readField<string>("trackedContentState");
         const timeMachine = IpsumTimeMachine.fromString(trackedContentState);
+        return timeMachine.currentValue;
+      },
+      htmlString(_, { readField }) {
+        const trackedHTMLString = readField<string>("trackedHTMLString");
+        const timeMachine = IpsumTimeMachine.fromString(trackedHTMLString);
         return timeMachine.currentValue;
       },
       history(h) {

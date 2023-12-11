@@ -1,15 +1,11 @@
 import { Divider, Typography } from "@mui/material";
-import { decorator } from "components/Decorator";
 import { Digest } from "components/Digest";
-import { EditorState, RichUtils } from "draft-js";
-import React, { useCallback, useContext } from "react";
+import React from "react";
 import { IpsumDateTime, IpsumDay } from "util/dates";
-import { blockStyleFn, EditorWrapper } from "components/EditorWrapper";
 import styles from "./JournalEntry.less";
-import { EditorContext } from "../EditorWrapper/EditorContext";
-import { useEntryEditor } from "../EditorWrapper/useEntryEditor";
 import { EntryType } from "util/apollo";
 import { PastDayReflections } from "components/DayReflections";
+import { IpsumEditor } from "util/editor";
 
 interface JournalEntryProps {
   entryKey: string;
@@ -20,55 +16,6 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
   entryKey,
   showDivider,
 }: JournalEntryProps) => {
-  const { editorRef, editorState, setEditorState } = useEntryEditor({
-    entryKey,
-    metadata: { entryType: EntryType.Journal },
-  });
-
-  const { onEditorFocus, onEditorBlur } = useContext(EditorContext);
-
-  const handleKeyCommand = useCallback(
-    (command: string, editorState: EditorState) => {
-      const newState = RichUtils.handleKeyCommand(editorState, command);
-      if (newState) {
-        setEditorState(newState);
-        return "handled";
-      } else return "not-handled";
-    },
-    [setEditorState]
-  );
-
-  const onEditorChange = useCallback(
-    (newEditorState: EditorState) => {
-      // This function prevents the content from being changed but allows
-      // selection changes.
-      if (
-        editorState.getSelection().getHasFocus() &&
-        newEditorState.getSelection().getHasFocus()
-      ) {
-        const onlySelectionChanges = EditorState.forceSelection(
-          EditorState.createWithContent(
-            editorState.getCurrentContent(),
-            decorator(entryKey)
-          ),
-          newEditorState.getSelection()
-        );
-        setEditorState(onlySelectionChanges);
-      } else {
-        setEditorState(newEditorState);
-      }
-    },
-    [editorState, entryKey, setEditorState]
-  );
-
-  const onFocus = useCallback(() => {
-    onEditorFocus(entryKey);
-  }, [entryKey, onEditorFocus]);
-
-  const onBlur = useCallback(() => {
-    onEditorBlur(entryKey);
-  }, [entryKey, onEditorBlur]);
-
   return (
     <div className={styles["journal-entry"]} data-entry-key={entryKey}>
       <div className={styles["entry-text-vertical"]}>
@@ -81,25 +28,12 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
           )}
         </Typography>
         <PastDayReflections day={IpsumDay.fromString(entryKey, "stored-day")} />
-        {editorState && (
-          <>
-            <Digest entryKey={entryKey} className={styles["digest"]} />
-            <EditorWrapper
-              enableControls={false}
-              editorKey={entryKey}
-              enableHighlights={true}
-              editorState={editorState}
-              setEditorState={setEditorState}
-              onChange={onEditorChange}
-              onFocus={onFocus}
-              onBlur={onBlur}
-              handleKeyCommand={handleKeyCommand}
-              blockStyleFn={blockStyleFn}
-              ref={editorRef}
-              editorRef={editorRef}
-            ></EditorWrapper>
-          </>
-        )}
+        <Digest entryKey={entryKey} className={styles["digest"]} />
+        <IpsumEditor
+          entryKey={entryKey}
+          metadata={{ entryType: EntryType.Journal }}
+          editable={false}
+        />
         {showDivider && (
           <div className={styles["divider-container"]}>
             <Divider></Divider>

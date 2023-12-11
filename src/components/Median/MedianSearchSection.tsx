@@ -5,7 +5,7 @@ import { HighlightBox } from "components/HighlightBox";
 import { useHighlightSearch } from "util/search";
 import { DiptychContext } from "components/DiptychContext";
 import { IpsumDay } from "util/dates";
-import { PaginatedList } from "components/PaginatedList";
+import { MonthlyPaginatedList } from "components/MonthlyPaginatedList";
 
 export const MedianSearchSection: React.FunctionComponent = () => {
   const {
@@ -36,26 +36,33 @@ export const MedianSearchSection: React.FunctionComponent = () => {
     if (!searchResults) {
       return null;
     } else {
-      return searchResults.map((highlight) => (
-        <HighlightBox
-          key={highlight.id}
-          highlightId={highlight.id}
-          hovered={(hoveredHighlightIds ?? []).includes(highlight.id)}
-          onHover={(hovered) => {
-            if (hovered) {
-              setHoveredHighlightIds((prev) => [...(prev ?? []), highlight.id]);
-            } else {
-              setHoveredHighlightIds((prev) =>
-                (prev ?? []).filter((id) => id !== highlight.id)
-              );
-            }
-          }}
-          selected={highlight.id === selectedHighlightId}
-          onSelect={(selected, highlightDay) => {
-            onHighlightSelected(selected, highlightDay, highlight.id);
-          }}
-        />
-      ));
+      return searchResults?.map((highlight) => ({
+        id: highlight.id,
+        day: IpsumDay.fromString(highlight.entry.date, "iso"),
+        element: (
+          <HighlightBox
+            key={highlight.id}
+            highlightId={highlight.id}
+            hovered={(hoveredHighlightIds ?? []).includes(highlight.id)}
+            onHover={(hovered) => {
+              if (hovered) {
+                setHoveredHighlightIds((prev) => [
+                  ...(prev ?? []),
+                  highlight.id,
+                ]);
+              } else {
+                setHoveredHighlightIds((prev) =>
+                  (prev ?? []).filter((id) => id !== highlight.id)
+                );
+              }
+            }}
+            selected={highlight.id === selectedHighlightId}
+            onSelect={(selected, highlightDay) => {
+              onHighlightSelected(selected, highlightDay, highlight.id);
+            }}
+          />
+        ),
+      }));
     }
   }, [
     hoveredHighlightIds,
@@ -66,14 +73,13 @@ export const MedianSearchSection: React.FunctionComponent = () => {
   ]);
 
   return (
-    <PaginatedList
-      className={styles["search-section"]}
-      numVisibleAroundFocusedElement={8}
-      amountToLoad={10}
-      elements={highlightBoxes.map((box, i) => ({
+    <MonthlyPaginatedList
+      rangeMode="month"
+      elements={highlightBoxes?.map((box, i) => ({
         index: i,
-        key: box.key.toString(),
-        content: box,
+        key: box.id,
+        content: box.element,
+        day: box.day,
       }))}
     />
   );

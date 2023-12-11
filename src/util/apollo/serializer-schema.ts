@@ -22,6 +22,7 @@ export const SerializedSchema = t.type(
           __typename: t.literal("Entry"),
           entryKey: t.string,
           trackedContentState: t.string,
+          trackedHTMLString: t.string,
           history: HistorySchema,
           entryType: t.union([
             t.literal("JOURNAL"),

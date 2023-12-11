@@ -25,6 +25,7 @@ describe("Search resolvers", () => {
       const arc = createArc({ name: "test arc 1" });
       const entry = createEntry({
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("Hello, world!")
         ),
@@ -78,6 +79,7 @@ describe("Search resolvers", () => {
     it("should return highlights with relatesToHighlight for multiple and clauses", () => {
       const entry = createEntry({
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: stringifyContentState(
           ContentState.createFromText("Hello, world!")
         ),
@@ -145,12 +147,14 @@ describe("Search resolvers", () => {
       jest.useFakeTimers().setSystemTime(new Date(2020, 0, 2));
       const entry1 = createEntry({
         entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: "",
         entryType: EntryType.Journal,
       });
       jest.useFakeTimers().setSystemTime(new Date(2020, 0, 3));
       const entry2 = createEntry({
         entryKey: "1/3/2020",
+        htmlString: "<p>Hello, world!</p>",
         stringifiedContentState: "",
         entryType: EntryType.Journal,
       });

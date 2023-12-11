@@ -1,6 +1,5 @@
 import { Paper, ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
-import React, { useCallback, useContext, useMemo, useState } from "react";
-import SimpleBar from "simplebar-react";
+import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./DailyJournal.less";
 import { DailyJournalURLLayer, useModifySearchParams } from "util/url";
 import { IpsumDay, useDateString } from "util/dates";
@@ -10,13 +9,15 @@ import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 import cx from "classnames";
 import { LayerContext } from "components/Diptych";
-import { PaginatedList } from "components/PaginatedList";
+import { MonthlyPaginatedList } from "components/MonthlyPaginatedList";
 import { CalendarMonth, Today } from "@mui/icons-material";
 import { LayerHeader } from "components/LayerHeader";
 
 const DailyJournalQuery = gql(`
   query DailyJournal {
-    journalEntryKeys
+    recentJournalEntries {
+      entryKey
+    }
   }
 `);
 
@@ -34,31 +35,24 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
 
   const { data } = useQuery(DailyJournalQuery);
 
-  const allEntryKeys = useMemo(() => {
-    const ascendingKeys = [...(data?.journalEntryKeys ?? [])];
-    ascendingKeys.reverse();
-    return ascendingKeys;
-  }, [data]);
-
-  const [visibleEntryKeys, setVisibleEntryKeys] = useState(allEntryKeys);
+  const allEntryKeys = useMemo(
+    () => data?.recentJournalEntries.map((e) => e.entryKey),
+    [data]
+  );
 
   const today = useDateString(30000, "entry-printed-date");
 
   const modifySearchParams = useModifySearchParams<"journal">();
 
   const focusedDateURLFormat = layer?.focusedDate ?? today;
-  const focusedDateEntryKeyFormat = IpsumDay.fromString(
-    focusedDateURLFormat,
-    "url-format"
-  ).toString("entry-printed-date");
 
   const todayEntryComponent = (
     <JournalEntryToday entryKey={today} key={today}></JournalEntryToday>
   );
 
   const entryEditorComponents =
-    visibleEntryKeys &&
-    visibleEntryKeys
+    allEntryKeys &&
+    allEntryKeys
       .filter(
         (entryKey) =>
           entryKey !== today &&
@@ -73,10 +67,11 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
         return {
           index: i,
           key: sortedEntryKey,
+          day: IpsumDay.fromString(sortedEntryKey, "entry-printed-date"),
           content: (
             <JournalEntryPast
               entryKey={sortedEntryKey}
-              showDivider={i !== visibleEntryKeys.length - 1}
+              showDivider={i !== allEntryKeys.length - 1}
               key={sortedEntryKey}
             ></JournalEntryPast>
           ),
@@ -94,6 +89,10 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
             ...newLayers[layerIndex],
             mode,
           } as DailyJournalURLLayer;
+          if (mode === "today") {
+            (newLayers[layerIndex] as DailyJournalURLLayer).focusedDate =
+              IpsumDay.today().toString("url-format");
+          }
         }
 
         return {
@@ -112,7 +111,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
       <Paper ref={paperRef} className={cx(styles["paper"])} variant="shadowed">
         <LayerHeader>
           <ToggleButtonGroup>
-            <Tooltip title="Previous entries">
+            <Tooltip title="Today's entry">
               <ToggleButton
                 onClick={() => {
                   setMode("today");
@@ -123,7 +122,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
                 <Today></Today>
               </ToggleButton>
             </Tooltip>
-            <Tooltip title="Today's entry">
+            <Tooltip title="Previous entries">
               <ToggleButton
                 onClick={() => {
                   setMode("past");
@@ -137,38 +136,31 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
           </ToggleButtonGroup>
         </LayerHeader>
         {currentMode === "today" ? (
-          <SimpleBar className={styles["daily-journal-scroller"]}>
+          <div style={{ height: "100%", overflowY: "auto" }}>
             {todayEntryComponent}
-          </SimpleBar>
+          </div>
         ) : (
-          <PaginatedList
-            className={styles["daily-journal-scroller"]}
-            defaultFocusedElement={{
-              index: entryEditorComponents.findIndex(
-                (element) => element.key === focusedDateEntryKeyFormat
-              ),
-              key: focusedDateEntryKeyFormat,
+          <MonthlyPaginatedList
+            focusedElement={{
+              key: focusedDateURLFormat,
             }}
-            numVisibleAroundFocusedElement={5}
-            amountToLoad={10}
+            rangeMode="month"
             elements={entryEditorComponents}
-            onFocusedElementChanged={(focusedElement) => {
-              modifySearchParams((searchParams) => {
-                return {
-                  ...searchParams,
-                  layers: [
-                    ...searchParams.layers.slice(0, layerIndex),
-                    {
-                      ...searchParams.layers[layerIndex],
-                      focusedDate: IpsumDay.fromString(
-                        focusedElement.key,
-                        "entry-printed-date"
-                      ).toString("url-format"),
-                    },
-                    ...searchParams.layers.slice(layerIndex + 1),
-                  ],
-                };
-              });
+            onFocusedDayChanged={(focusedDay) => {
+              focusedDay &&
+                modifySearchParams((searchParams) => {
+                  return {
+                    ...searchParams,
+                    layers: [
+                      ...searchParams.layers.slice(0, layerIndex),
+                      {
+                        ...searchParams.layers[layerIndex],
+                        focusedDate: focusedDay.toString("url-format"),
+                      },
+                      ...searchParams.layers.slice(layerIndex + 1),
+                    ],
+                  };
+                });
             }}
           />
         )}
