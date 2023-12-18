@@ -32,7 +32,10 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
         <IpsumEditor
           entryKey={entryKey}
           metadata={{ entryType: EntryType.Journal }}
-          editable={false}
+          editable={
+            IpsumDateTime.yesterday().toString("entry-printed-date") ===
+            entryKey
+          }
         />
         {showDivider && (
           <div className={styles["divider-container"]}>

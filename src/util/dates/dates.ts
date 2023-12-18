@@ -180,6 +180,10 @@ export class IpsumDateTime {
     return new this(DateTime.now().startOf("day"));
   }
 
+  static yesterday() {
+    return new this(DateTime.now().minus({ days: 1 }).startOf("day"));
+  }
+
   static now() {
     return new this(DateTime.now());
   }
