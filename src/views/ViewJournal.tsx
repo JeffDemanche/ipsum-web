@@ -5,18 +5,15 @@ import { JournalHotkeysProvider } from "components/JournalHotkeys";
 import { Diptych } from "components/Diptych";
 import { DiptychProvider } from "components/DiptychContext";
 import { JournalInfoDrawer } from "components/JournalInfoDrawer";
-import { EditorContextProvider } from "components/EditorWrapper";
 
 const ProvidersWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
     <DiptychProvider>
-      <EditorContextProvider>
-        <JournalHotkeysProvider>
-          <HighlightSelectionProvider>{children}</HighlightSelectionProvider>
-        </JournalHotkeysProvider>
-      </EditorContextProvider>
+      <JournalHotkeysProvider>
+        <HighlightSelectionProvider>{children}</HighlightSelectionProvider>
+      </JournalHotkeysProvider>
     </DiptychProvider>
   );
 };

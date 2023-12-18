@@ -34,16 +34,14 @@ export type DayFieldPolicy = {
 	journalEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	srsCardReviews?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type EntryKeySpecifier = ('contentState' | 'date' | 'entryKey' | 'entryType' | 'highlights' | 'history' | 'htmlString' | 'trackedContentState' | 'trackedHTMLString' | EntryKeySpecifier)[];
+export type EntryKeySpecifier = ('date' | 'entryKey' | 'entryType' | 'highlights' | 'history' | 'htmlString' | 'trackedHTMLString' | EntryKeySpecifier)[];
 export type EntryFieldPolicy = {
-	contentState?: FieldPolicy<any> | FieldReadFunction<any>,
 	date?: FieldPolicy<any> | FieldReadFunction<any>,
 	entryKey?: FieldPolicy<any> | FieldReadFunction<any>,
 	entryType?: FieldPolicy<any> | FieldReadFunction<any>,
 	highlights?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
 	htmlString?: FieldPolicy<any> | FieldReadFunction<any>,
-	trackedContentState?: FieldPolicy<any> | FieldReadFunction<any>,
 	trackedHTMLString?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type HighlightKeySpecifier = ('arc' | 'arcs' | 'entry' | 'history' | 'hue' | 'id' | 'outgoingRelations' | 'srsCards' | HighlightKeySpecifier)[];

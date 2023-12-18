@@ -1,10 +1,8 @@
 import { gql } from "@apollo/client";
-import { ContentState } from "draft-js";
 import { createArc, createRelation, EntryType } from "util/apollo";
 import { createEntry } from "util/apollo/api/entries";
 import { createHighlight } from "util/apollo/api/highlights";
 import { client, initializeState } from "util/apollo/client";
-import { stringifyContentState } from "util/content-state";
 
 jest.mock("../../autosave");
 
@@ -26,9 +24,6 @@ describe("Search resolvers", () => {
       const entry = createEntry({
         entryKey: "1/2/2020",
         htmlString: "<p>Hello, world!</p>",
-        stringifiedContentState: stringifyContentState(
-          ContentState.createFromText("Hello, world!")
-        ),
         entryType: EntryType.Journal,
       });
       createHighlight({
@@ -80,9 +75,6 @@ describe("Search resolvers", () => {
       const entry = createEntry({
         entryKey: "1/2/2020",
         htmlString: "<p>Hello, world!</p>",
-        stringifiedContentState: stringifyContentState(
-          ContentState.createFromText("Hello, world!")
-        ),
         entryType: EntryType.Journal,
       });
       const highlight1 = createHighlight({
@@ -148,14 +140,12 @@ describe("Search resolvers", () => {
       const entry1 = createEntry({
         entryKey: "1/2/2020",
         htmlString: "<p>Hello, world!</p>",
-        stringifiedContentState: "",
         entryType: EntryType.Journal,
       });
       jest.useFakeTimers().setSystemTime(new Date(2020, 0, 3));
       const entry2 = createEntry({
         entryKey: "1/3/2020",
         htmlString: "<p>Hello, world!</p>",
-        stringifiedContentState: "",
         entryType: EntryType.Journal,
       });
       const highlight1 = createHighlight({

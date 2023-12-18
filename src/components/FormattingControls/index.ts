@@ -1,1 +1,0 @@
-export { FormattingControls } from "./FormattingControls";

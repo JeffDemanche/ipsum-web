@@ -1,8 +1,6 @@
 import { UnhydratedType, vars } from "../client";
 import { v4 as uuidv4 } from "uuid";
 import { createEntry } from "./entries";
-import { ContentState } from "draft-js";
-import { stringifyContentState } from "util/content-state";
 import { EntryType } from "../__generated__/graphql";
 import { autosave } from "../autosave";
 
@@ -17,9 +15,6 @@ export const createArcEntry = ({
 
   createEntry({
     entryKey: arcEntryKey,
-    stringifiedContentState: stringifyContentState(
-      ContentState.createFromText("")
-    ),
     htmlString: "",
     entryType: EntryType.Arc,
   });

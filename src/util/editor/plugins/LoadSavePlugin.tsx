@@ -2,13 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useDebouncedCallback } from "util/hooks";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
-import {
-  $createParagraphNode,
-  $createTextNode,
-  $getRoot,
-  EditorState,
-  LexicalEditor,
-} from "lexical";
+import { $getRoot, EditorState, LexicalEditor } from "lexical";
 import { IpsumEditorMetadata } from "../IpsumEditor";
 import {
   createArcEntry,
@@ -19,8 +13,6 @@ import {
   gql,
   updateEntry,
 } from "util/apollo";
-import { ContentState } from "draft-js";
-import { stringifyContentState } from "util/content-state";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useQuery } from "@apollo/client";
 
@@ -99,9 +91,6 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
         } else {
           const entry = {
             entryKey,
-            stringifiedContentState: stringifyContentState(
-              ContentState.createFromText("")
-            ),
             htmlString,
             entryType: metadata.entryType,
           };

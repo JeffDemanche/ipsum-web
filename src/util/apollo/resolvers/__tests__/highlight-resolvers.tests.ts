@@ -1,11 +1,9 @@
 import { gql } from "@apollo/client";
-import { ContentState } from "draft-js";
 import { createArc, createRelation, EntryType } from "util/apollo";
 import { createEntry } from "util/apollo/api/entries";
 import { createHighlight } from "util/apollo/api/highlights";
 import { createSRSCard } from "util/apollo/api/srs";
 import { client, initializeState } from "util/apollo/client";
-import { stringifyContentState } from "util/content-state";
 
 jest.mock("../../autosave");
 
@@ -24,9 +22,6 @@ describe("Highlight resolvers", () => {
       const entry = createEntry({
         entryKey: "1/2/2020",
         htmlString: "<p>Hello, world!</p>",
-        stringifiedContentState: stringifyContentState(
-          ContentState.createFromText("Hello, world!")
-        ),
         entryType: EntryType.Journal,
       });
       const highlight = createHighlight({

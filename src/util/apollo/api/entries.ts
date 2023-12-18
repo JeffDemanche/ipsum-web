@@ -1,7 +1,4 @@
 import { UnhydratedType, vars } from "../client";
-import { IpsumEntityTransformer } from "util/entities";
-import { SelectionState } from "draft-js";
-import { parseContentState, stringifyContentState } from "util/content-state";
 import { autosave } from "../autosave";
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
@@ -10,7 +7,6 @@ import { upsertDayForToday } from "./day";
 
 export const createEntry = (entry: {
   entryKey: string;
-  stringifiedContentState: string;
   htmlString: string;
   entryType: EntryType;
 }): UnhydratedType["Entry"] => {
@@ -19,9 +15,6 @@ export const createEntry = (entry: {
   const newEntry: UnhydratedType["Entry"] = {
     __typename: "Entry",
     entryKey: entry.entryKey,
-    trackedContentState: IpsumTimeMachine.create(
-      entry.stringifiedContentState
-    ).toString(),
     trackedHTMLString: IpsumTimeMachine.create(entry.htmlString).toString(),
     history: {
       __typename: "History",
@@ -41,7 +34,6 @@ export const createEntry = (entry: {
 
 export const updateEntry = (entry: {
   entryKey: string;
-  stringifiedContentState?: string;
   htmlString?: string;
   history?: UnhydratedType["History"];
 }): UnhydratedType["Entry"] | undefined => {
@@ -55,14 +47,6 @@ export const updateEntry = (entry: {
 
   const today = IpsumDateTime.today();
 
-  if (entry.stringifiedContentState) {
-    // Make nondestructive changes to the trackedContentState
-    newEntry.trackedContentState = IpsumTimeMachine.fromString(
-      oldEntry.trackedContentState
-    )
-      .setValueAtDate(today.dateTime.toJSDate(), entry.stringifiedContentState)
-      .toString();
-  }
   if (entry.htmlString) {
     // Make nondestructive changes to the trackedHTMLString
     newEntry.trackedHTMLString = IpsumTimeMachine.fromString(
@@ -84,55 +68,6 @@ export const updateEntry = (entry: {
   upsertDayForToday();
   autosave();
   return entryUpdate;
-};
-
-export const assignHighlightToEntry = ({
-  entryKey,
-  highlightId,
-  selectionState,
-}: {
-  entryKey: string;
-  highlightId: string;
-  selectionState: SelectionState;
-}) => {
-  const latestContentState = parseContentState(
-    IpsumTimeMachine.fromString(vars.entries()[entryKey].trackedContentState)
-      .currentValue
-  );
-
-  const contentStateWithAssignment = new IpsumEntityTransformer(
-    latestContentState
-  ).applyEntityData(selectionState, "textArcAssignments", {
-    arcAssignmentId: highlightId,
-  }).contentState;
-  updateEntry({
-    entryKey: entryKey,
-    stringifiedContentState: stringifyContentState(contentStateWithAssignment),
-  });
-  autosave();
-};
-export const removeHighlightFromEntry = ({
-  entryKey,
-  highlightId,
-}: {
-  entryKey: string;
-  highlightId: string;
-}) => {
-  const latestContentState = parseContentState(
-    IpsumTimeMachine.fromString(vars.entries()[entryKey].trackedContentState)
-      .currentValue
-  );
-
-  const contentStateNoHighlight = new IpsumEntityTransformer(
-    latestContentState
-  ).removeEntityData("textArcAssignments", null, (existingData) => {
-    return existingData.arcAssignmentId !== highlightId;
-  }).contentState;
-  updateEntry({
-    entryKey: entryKey,
-    stringifiedContentState: stringifyContentState(contentStateNoHighlight),
-  });
-  autosave();
 };
 
 export const deleteEntry = (entryKey: string) => {

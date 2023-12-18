@@ -1,1 +1,0 @@
-export { TextRangeHighlight } from "./TextRangeHighlight";

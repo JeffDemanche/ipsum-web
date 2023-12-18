@@ -5,13 +5,11 @@ import { createEntry } from "./entries";
 
 export const createJournalEntry = (journalEntry: {
   entryKey: string;
-  stringifiedContentState: string;
   htmlString: string;
   entryType: EntryType;
 }): UnhydratedType["JournalEntry"] => {
   const entry = createEntry({
     entryKey: journalEntry.entryKey,
-    stringifiedContentState: journalEntry.stringifiedContentState,
     htmlString: journalEntry.htmlString,
     entryType: journalEntry.entryType,
   });

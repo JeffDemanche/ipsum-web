@@ -14,9 +14,6 @@ import { renameField } from "./rename";
 import { write } from "./write";
 import { SerializedSchema } from "../../src/util/apollo/serializer-schema";
 import { PathReporter } from "io-ts/lib/PathReporter";
-import { migrateArcEntries } from "./migrations/arc-entries-migration";
-import { migrateSRS } from "./migrations/srs-migration";
-import { createDayObject } from "./migrations/create-day-object";
 
 const inputFileArg = process.env.npm_config_input_file;
 const outputFileArg = process.env.npm_config_output_file;

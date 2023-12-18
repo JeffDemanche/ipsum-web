@@ -13,7 +13,6 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query ArcAssignmentPopper {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n": types.ArcAssignmentPopperDocument,
     "\n  query ArcDetailContext($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n      arcEntry {\n        entry {\n          entryKey\n        }\n      }\n    }\n  }\n": types.ArcDetailContextDocument,
     "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n    }\n  } \n": types.ArcDetailPrefsBoxDocument,
     "\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n      name\n    }\n  }\n": types.ArcTagDocument,
@@ -23,10 +22,8 @@ const documents = {
     "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n": types.JournalEntryTodayDocument,
     "\n  query PastDayReflections($deckId: ID, $day: String!) {\n    srsReviewsFromDay(deckId: $deckId, day: $day) {\n      id\n      rating\n      card {\n        id\n      }\n    }\n  }\n": types.PastDayReflectionsDocument,
     "\n  query TodayDayReflections($deckId: ID, $day: String!) {\n    srsCardsForReview(deckId: $deckId, day: $day) {\n      id\n      lastReviewed\n    }\n    srsReviewsFromDay(deckId: $deckId, day: $day) {\n      id\n      rating\n      beforeEF\n      beforeInterval\n      card {\n        id\n      }\n    }\n  }\n": types.TodayDayReflectionsDocument,
-    "\n  query HighlightDecoration($entryKey: ID!, $highlightIds: [ID!]!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n    }\n    highlights(ids: $highlightIds) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n": types.HighlightDecorationDocument,
     "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n      highlights {\n        id\n        hue\n      }\n    }\n  }\n": types.DigestDocument,
     "\n  query DiptychContextHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n    }\n  }\n": types.DiptychContextHighlightDocument,
-    "\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n": types.UseJournalEntryEditorDocument,
     "\n  query HighlightAddReflectionForm($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      srsCards {\n        id\n      }\n    }\n  }\n": types.HighlightAddReflectionFormDocument,
     "\n  query HighlightBox($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightBoxDocument,
     "\n  query UseExcerptQuery($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        htmlString\n      }\n      hue\n    }\n  }\n": types.UseExcerptQueryDocument,
@@ -57,10 +54,6 @@ const documents = {
  */
 export function gql(source: string): unknown;
 
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query ArcAssignmentPopper {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n"): (typeof documents)["\n  query ArcAssignmentPopper {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -100,19 +93,11 @@ export function gql(source: "\n  query TodayDayReflections($deckId: ID, $day: St
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query HighlightDecoration($entryKey: ID!, $highlightIds: [ID!]!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n    }\n    highlights(ids: $highlightIds) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n"): (typeof documents)["\n  query HighlightDecoration($entryKey: ID!, $highlightIds: [ID!]!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n    }\n    highlights(ids: $highlightIds) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      arc {\n        id\n        name\n        color\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function gql(source: "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n      highlights {\n        id\n        hue\n      }\n    }\n  }\n"): (typeof documents)["\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n      highlights {\n        id\n        hue\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query DiptychContextHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n    }\n  }\n"): (typeof documents)["\n  query DiptychContextHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n"): (typeof documents)["\n  query UseJournalEntryEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      contentState\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

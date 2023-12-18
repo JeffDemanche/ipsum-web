@@ -3,7 +3,6 @@ import "normalize.css";
 import { IpsumRouter } from "../views/IpsumRouter";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "styles/styles";
-import "draft-js/dist/Draft.css";
 import "simplebar-react/dist/simplebar.min.css";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "util/apollo";

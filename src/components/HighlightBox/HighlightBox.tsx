@@ -19,13 +19,7 @@ import React, {
 import { IpsumArcColor } from "util/colors";
 import styles from "./HighlightBox.less";
 import cx from "classnames";
-import {
-  createArc,
-  createRelation,
-  deleteHighlight,
-  gql,
-  removeHighlightFromEntry,
-} from "util/apollo";
+import { createArc, createRelation, deleteHighlight, gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
 import { IpsumDateTime, IpsumDay, parseIpsumDateTime } from "util/dates";
 import { theme } from "styles/styles";
@@ -127,13 +121,9 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
   const onDeleteClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      removeHighlightFromEntry({
-        entryKey: highlight?.entry?.entryKey,
-        highlightId,
-      });
       deleteHighlight(highlightId);
     },
-    [highlight, highlightId]
+    [highlightId]
   );
 
   const linkArc = useCallback(

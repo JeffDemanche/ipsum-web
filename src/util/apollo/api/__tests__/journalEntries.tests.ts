@@ -1,8 +1,6 @@
-import { ContentState } from "draft-js";
 import { createJournalEntry } from "util/apollo";
 import { initializeState, vars } from "util/apollo/client";
 import { EntryType } from "util/apollo/__generated__/graphql";
-import { stringifyContentState } from "util/content-state";
 import { deleteJournalEntry } from "../journalEntries";
 
 jest.mock("../../autosave");
@@ -18,9 +16,6 @@ describe("apollo journalEntries API", () => {
         entryKey: "1/1/20",
         entryType: EntryType.Journal,
         htmlString: "<p>Hello, world!</p>",
-        stringifiedContentState: stringifyContentState(
-          ContentState.createFromText("hello world!")
-        ),
       });
 
       expect(vars.journalEntries()["1/1/20"]).toBeDefined();
@@ -34,9 +29,6 @@ describe("apollo journalEntries API", () => {
         entryKey: "1/1/20",
         entryType: EntryType.Journal,
         htmlString: "<p>Hello, world!</p>",
-        stringifiedContentState: stringifyContentState(
-          ContentState.createFromText("hello world!")
-        ),
       });
 
       expect(vars.journalEntries()["1/1/20"]).toBeDefined();

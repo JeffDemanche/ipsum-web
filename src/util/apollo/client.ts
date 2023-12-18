@@ -68,9 +68,6 @@ const typeDefs = gql`
   type Entry {
     entryKey: String!
     date: String!
-    # Resolves to most recent tracked contentState
-    contentState: String!
-    trackedContentState: String!
     htmlString: String!
     trackedHTMLString: String!
     highlights: [Highlight!]!
@@ -188,7 +185,6 @@ export type UnhydratedType = {
   Entry: {
     __typename: "Entry";
     entryKey: string;
-    trackedContentState: string;
     trackedHTMLString: string;
     history: UnhydratedType["History"];
     entryType: "JOURNAL" | "ARC" | "COMMENT";
@@ -475,11 +471,6 @@ const typePolicies: StrictTypedTypePolicies = {
       },
       date(_, { readField }) {
         return readField<UnhydratedType["History"]>("history").dateCreated;
-      },
-      contentState(_, { readField }) {
-        const trackedContentState = readField<string>("trackedContentState");
-        const timeMachine = IpsumTimeMachine.fromString(trackedContentState);
-        return timeMachine.currentValue;
       },
       htmlString(_, { readField }) {
         const trackedHTMLString = readField<string>("trackedHTMLString");

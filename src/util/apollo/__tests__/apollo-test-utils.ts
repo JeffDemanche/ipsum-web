@@ -32,7 +32,6 @@ export const mockEntries = (entries: {
     defaultize<UnhydratedType["Entry"]>(entries, {
       __typename: "Entry",
       entryKey: "",
-      trackedContentState: IpsumTimeMachine.create("").toString(),
       trackedHTMLString: IpsumTimeMachine.create("").toString(),
       history: {
         __typename: "History",
