@@ -136,7 +136,9 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
           </ToggleButtonGroup>
         </LayerHeader>
         {currentMode === "today" ? (
-          <div style={{ height: "100%", overflowY: "auto" }}>
+          <div
+            style={{ height: "100%", overflowY: "auto", paddingRight: "4px" }}
+          >
             {todayEntryComponent}
           </div>
         ) : (

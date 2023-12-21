@@ -1,25 +1,23 @@
 .box {
   display: flex;
   flex-direction: column;
-  padding: 5px;
-  gap: 4px;
   margin-bottom: 5px;
   cursor: pointer;
 
-  border-radius: 21px;
+  &:not(:last-child) {
+    border-bottom: 1px solid rgba(170, 170, 170, 0.5);
+  }
 
   &.selected {
-    background-color: rgba(170, 170, 170, 0.9);
+    outline: 1px solid rgba(170, 170, 170, 0.5);
   }
 
   &:hover {
-    background-color: rgba(170, 170, 170, 0.7);
+    outline: 1px solid rgba(170, 170, 170, 0.5);
   }
 }
 
 .excerpt {
-  margin-left: 5px;
-  margin-right: 5px;
 }
 
 .details-options {

@@ -58,13 +58,32 @@ declare module "@mui/material/Card" {
   }
 }
 
+const {
+  palette: { augmentColor },
+} = createTheme();
+
+const createColor = (mainColor: string) =>
+  augmentColor({ color: { main: mainColor } });
+
 export const theme = createTheme({
   typography: {
     allVariants: {},
     h1: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "96px" },
     h2: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "60px" },
-    h3: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "30px" },
-    h4: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "24px" },
+    h3: {
+      fontFamily: "Inria Sans",
+      fontWeight: "100",
+      fontSize: "30px",
+      color: `${grey[50]} !important`,
+      backgroundColor: grey[900],
+    },
+    h4: {
+      fontFamily: "Inria Sans",
+      fontWeight: "100",
+      fontSize: "24px",
+      color: `${grey[50]} !important`,
+      backgroundColor: grey[900],
+    },
     h5: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "20px" },
     h6: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "16px" },
     body1: { fontFamily: "Meiryo", fontWeight: "regular", fontSize: "16px" },
@@ -98,6 +117,13 @@ export const theme = createTheme({
     onPrimaryMediumEmphasis: "rgba(255, 255, 255, 0.60)",
   },
   components: {
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          borderRadius: "0px !important",
+        },
+      },
+    },
     MuiDrawer: {
       styleOverrides: { paper: { backgroundColor: brown[100] } },
     },
@@ -106,15 +132,13 @@ export const theme = createTheme({
         {
           props: { variant: "shadowed" },
           style: {
-            borderRadius: "4px",
-            backgroundColor: "rgba(210, 210, 210, .55)",
+            backgroundColor: "rgba(255, 255, 255, .55)",
           },
         },
         {
           props: { variant: "translucent" },
           style: {
-            borderRadius: "4px",
-            backgroundColor: "rgba(210, 210, 210, .55)",
+            backgroundColor: "white",
           },
         },
       ],
@@ -149,16 +173,30 @@ export const theme = createTheme({
         },
       },
     },
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          borderRadius: "0px",
+        },
+      },
+    },
     MuiButton: {
       variants: [],
       styleOverrides: {
         root: {
+          borderRadius: "0px",
           textTransform: "none",
         },
       },
     },
     MuiPopover: {},
-    MuiToggleButton: {},
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: "0px",
+        },
+      },
+    },
     MuiInputBase: {
       styleOverrides: {
         root: {

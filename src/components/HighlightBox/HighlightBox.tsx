@@ -16,7 +16,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { IpsumArcColor } from "util/colors";
 import styles from "./HighlightBox.less";
 import cx from "classnames";
 import { createArc, createRelation, deleteHighlight, gql } from "util/apollo";
@@ -29,6 +28,8 @@ import { HighlightAddReflectionForm } from "./HighlightAddReflectionForm";
 interface HighlightBoxProps {
   highlightId: string;
   variant?: "collapsed" | "expanded";
+
+  showDate?: boolean;
 
   selected?: boolean;
   onSelect?: (selected: boolean, day: IpsumDay) => void;
@@ -62,6 +63,7 @@ const HighlightBoxQuery = gql(`
 export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
   highlightId,
   variant = "expanded",
+  showDate,
   selected,
   onSelect,
   hovered,
@@ -103,20 +105,6 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
       boxRef.current.scrollIntoView({ behavior: "auto", block: "start" });
     }
   }, [selected]);
-
-  const cardColor = useMemo(() => {
-    let colorParams = { saturation: 30, lightness: 40 };
-    if (hovered) {
-      colorParams = { saturation: 30, lightness: 30 };
-    }
-    if (selected) {
-      colorParams = { saturation: 20, lightness: 20 };
-    }
-
-    return firstArc?.id
-      ? new IpsumArcColor(firstArc.color).toIpsumColor(colorParams).toRgbaCSS()
-      : "white";
-  }, [firstArc?.color, firstArc?.id, hovered, selected]);
 
   const onDeleteClick = useCallback(
     (e: React.MouseEvent) => {
@@ -230,11 +218,16 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
                 <ArrowLeftRounded />
               </IconButton>
             </Tooltip>
-            <Typography variant="h6" className={styles["highlight-title"]}>
-              <a onClick={onDateClick} href="#">
-                {entryDate}
-              </a>
-            </Typography>
+            {showDate && (
+              <Typography
+                variant="caption"
+                className={styles["highlight-title"]}
+              >
+                <a onClick={onDateClick} href="#">
+                  {entryDate}
+                </a>
+              </Typography>
+            )}
             <div className={styles["options-buttons"]}>
               <Popover
                 open={reflectionPopoverOpen}
@@ -290,11 +283,13 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
         </div>
       ) : (
         <div className={cx(styles["top-controls-container"])}>
-          <Typography variant="h6" className={styles["highlight-title"]}>
-            <a onClick={onDateClick} href="#">
-              {entryDate}
-            </a>
-          </Typography>
+          {showDate && (
+            <Typography variant="caption" className={styles["highlight-title"]}>
+              <a onClick={onDateClick} href="#">
+                {entryDate}
+              </a>
+            </Typography>
+          )}
         </div>
       )}
 

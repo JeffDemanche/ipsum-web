@@ -211,9 +211,9 @@ export const MonthlyPaginatedList: React.FC<MonthlyPaginatedListProps> = ({
       <div
         ref={scrollRef}
         onScroll={onScroll}
-        style={{ height: "100%", overflowY: "auto" }}
+        style={{ height: "100%", overflowY: "auto", paddingRight: "4px" }}
       >
-        <div className={styles["inner-content"]} ref={contentRef}>
+        <div ref={contentRef}>
           {visibleElements?.map((elem) => (
             <div
               key={elem.key}

@@ -1,11 +1,10 @@
 import React, { useCallback, useContext, useMemo } from "react";
 import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import styles from "./MedianSearchSection.less";
-import { HighlightBox } from "components/HighlightBox";
 import { useHighlightSearch } from "util/search";
 import { DiptychContext } from "components/DiptychContext";
 import { IpsumDay } from "util/dates";
-import { MonthlyPaginatedList } from "components/MonthlyPaginatedList";
+import { HighlightsList } from "components/HighlightsList";
 
 export const MedianSearchSection: React.FunctionComponent = () => {
   const {
@@ -32,55 +31,15 @@ export const MedianSearchSection: React.FunctionComponent = () => {
     [setTopHighlightFrom, setTopHighlightTo, topLayer]
   );
 
-  const highlightBoxes = useMemo(() => {
-    if (!searchResults) {
-      return null;
-    } else {
-      return searchResults?.map((highlight) => ({
-        id: highlight.id,
-        day: IpsumDay.fromString(highlight.entry.date, "iso"),
-        element: (
-          <HighlightBox
-            key={highlight.id}
-            highlightId={highlight.id}
-            hovered={(hoveredHighlightIds ?? []).includes(highlight.id)}
-            onHover={(hovered) => {
-              if (hovered) {
-                setHoveredHighlightIds((prev) => [
-                  ...(prev ?? []),
-                  highlight.id,
-                ]);
-              } else {
-                setHoveredHighlightIds((prev) =>
-                  (prev ?? []).filter((id) => id !== highlight.id)
-                );
-              }
-            }}
-            selected={highlight.id === selectedHighlightId}
-            onSelect={(selected, highlightDay) => {
-              onHighlightSelected(selected, highlightDay, highlight.id);
-            }}
-          />
-        ),
-      }));
-    }
-  }, [
-    hoveredHighlightIds,
-    onHighlightSelected,
-    searchResults,
-    selectedHighlightId,
-    setHoveredHighlightIds,
-  ]);
+  const highlightIds = useMemo(() => {
+    return searchResults?.map((highlight) => highlight.id);
+  }, [searchResults]);
 
   return (
-    <MonthlyPaginatedList
-      rangeMode="month"
-      elements={highlightBoxes?.map((box, i) => ({
-        index: i,
-        key: box.id,
-        content: box.element,
-        day: box.day,
-      }))}
-    />
+    <div className={styles["search-section"]}>
+      <div className={styles["results"]}>
+        <HighlightsList highlightIds={highlightIds} />
+      </div>
+    </div>
   );
 };
