@@ -1,7 +1,11 @@
 import { UnhydratedType, vars } from "../client";
 import { v4 as uuidv4 } from "uuid";
 import { autosave } from "../autosave";
-import { calculateNextInterval } from "util/srs";
+import {
+  calculateNextInterval,
+  DEFAULT_SRS_EF,
+  DEFAULT_SRS_INTERVAL,
+} from "util/srs";
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import { upsertDayForToday } from "./day";
 
@@ -24,8 +28,8 @@ export const createSRSCard = ({
     __typename: "SRSCard",
     id: srsCardId,
     deck: "default",
-    ef: 2.5,
-    interval: 1,
+    ef: DEFAULT_SRS_EF,
+    interval: DEFAULT_SRS_INTERVAL,
     reviews: [],
     subjectType,
     subject: subjectId,

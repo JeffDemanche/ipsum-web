@@ -1,3 +1,9 @@
+export const DEFAULT_SRS_EF = 2.5;
+export const DEFAULT_SRS_INTERVAL = 1;
+
+const MINIMUM_EF = 0.5;
+const MINIMUM_INTERVAL = 1;
+
 /**
  * Based on SM2 algorithm. This is run after a SRS card has been reviewed to
  * update the card's interval and EF.
@@ -14,5 +20,10 @@ export const calculateNextInterval = (
   const nextEF =
     previousEF + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02));
 
-  return { nextInterval: previousInterval * nextEF, nextEF };
+  // Cards repeatedly rated 0 will reach a floor where the interval and EF will
+  // no longer decrease.
+  return {
+    nextInterval: Math.max(MINIMUM_INTERVAL, previousInterval * nextEF),
+    nextEF: Math.max(MINIMUM_EF, nextEF),
+  };
 };
