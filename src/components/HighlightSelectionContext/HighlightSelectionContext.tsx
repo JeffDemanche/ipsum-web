@@ -13,11 +13,7 @@ interface HighlightSelectionContextValue {
   setHoveredHighlightIds: React.Dispatch<React.SetStateAction<string[]>>;
 
   selectedHighlightId: string | undefined;
-  setSelectedHighlightId: (
-    highlight: string,
-    layerIndex: number,
-    entryKey?: string
-  ) => void;
+  setSelectedHighlightId: (highlight: string) => void;
 
   ambiguouslySelectedHighlightIds: string[] | undefined;
   setAmbiguouslySelectedHighlightIds: React.Dispatch<
@@ -68,16 +64,16 @@ export const HighlightSelectionProvider: React.FC<
   const selectedHighlightId = selectedHighlight?.id;
 
   const setSelectedHighlightId = useCallback(
-    (highlight: string, layerIndex: number, entryKey?: string) => {
+    (highlight: string) => {
       modifySearchParams((searchParams) => {
+        const topLayerIndex = searchParams.layers.length - 1;
         return {
           ...searchParams,
           layers: [
             ...searchParams.layers.slice(0, -1),
             {
-              ...searchParams.layers[layerIndex],
+              ...searchParams.layers[topLayerIndex],
               highlightFrom: highlight,
-              highlightFromUrlDate: entryKey,
             },
           ],
           // TODO

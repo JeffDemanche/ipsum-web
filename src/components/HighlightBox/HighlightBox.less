@@ -23,6 +23,7 @@
 .details-options {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 
   .delete-button {
     justify-self: right;
@@ -30,6 +31,11 @@
 
   .highlight-title {
     flex-grow: 1;
+  }
+
+  .options-buttons {
+    display: flex;
+    gap: 2px;
   }
 }
 
@@ -49,8 +55,13 @@
       flex-direction: column;
       gap: 3px;
 
-      .relation {
+      .predicate-group {
         display: flex;
+
+        .predicate-relations {
+          display: flex;
+          gap: 2px;
+        }
       }
     }
 
@@ -63,4 +74,11 @@
 .top-controls-container {
   display: flex;
   flex-direction: column;
+  padding: 3px;
+}
+
+.bottom-controls-container {
+  display: flex;
+  flex-direction: column;
+  padding: 3px;
 }

@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightBox } from "components/HighlightBox";
+import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import React, { useContext, useMemo } from "react";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
@@ -41,42 +42,49 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
           (highlight) => highlight.id === highlightId
         );
         if (!highlight) return acc;
-        console.log(highlight.entry.date);
 
         const day = IpsumDay.fromString(highlight.entry.date, "iso");
 
         const dayUrlFormat = day.toString("url-format");
 
         if (!acc[dayUrlFormat]) acc[dayUrlFormat] = [];
-        acc[dayUrlFormat].push(highlightId);
+        acc[dayUrlFormat].push({
+          highlightId,
+          entryKey: highlight.entry.entryKey,
+        });
         return acc;
-      }, {} as Record<string, string[]>),
+      }, {} as Record<string, { highlightId: string; entryKey: string }[]>),
     [highlightIds, highlights]
   );
 
   const days = useMemo(
     () =>
-      Object.entries(groupedByDay).map(([dayUrlFormat, highlightIds]) => {
+      Object.entries(groupedByDay).map(([dayUrlFormat, highlights]) => {
         const day = IpsumDay.fromString(dayUrlFormat, "url-format");
-        return { day, highlightIds };
+        return { day, highlights };
       }),
     [groupedByDay]
   );
 
+  const { setSelectedHighlightId } = useContext(HighlightSelectionContext);
+
   return (
     <div className={styles["highlights-list"]}>
-      {days.map(({ day, highlightIds }) => (
+      {days.map(({ day, highlights }) => (
         <div key={day.toString("url-format")}>
           <Typography variant="h4">
             <a href="">{day.toString("entry-printed-date-nice")}</a>
           </Typography>
           <div>
-            {highlightIds.map((highlightId) => (
+            {highlights.map((highlight) => (
               <HighlightBox
-                key={highlightId}
-                highlightId={highlightId}
-                selected={highlightId === selectedHighlightId}
+                key={highlight.highlightId}
+                highlightId={highlight.highlightId}
+                selected={highlight.highlightId === selectedHighlightId}
                 showDate={false}
+                onSelect={() => {
+                  setSelectedHighlightId(highlight.highlightId);
+                }}
               />
             ))}
           </div>
