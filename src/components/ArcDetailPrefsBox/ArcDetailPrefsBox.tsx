@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from "react";
-import { Slider } from "@mui/material";
+import { Slider, Typography } from "@mui/material";
 import styles from "./ArcDetailPrefsBox.less";
 import { IpsumArcColor } from "util/colors";
 import { ArcDetailContext, ArcDetailSection } from "components/ArcDetail";
@@ -11,6 +11,7 @@ const ArcDetailPrefsBoxQuery = gql(`
   query ArcDetailPrefsBox($arcId: ID!) {
     arc(id: $arcId) {
       id
+      name
       color
     }
   } 
@@ -40,10 +41,16 @@ export const ArcDetailPrefsBox: React.FC = () => {
 
   return (
     <ArcDetailSection>
-      <ArcTag
-        arcForToken={{ type: "from id", id: arc.id }}
-        type="header"
-      ></ArcTag>
+      <Typography
+        variant="h3"
+        sx={{
+          backgroundColor: color
+            .toIpsumColor({ lightness: 30, saturation: 50 })
+            .toRgbaCSS(),
+        }}
+      >
+        {arc.name}
+      </Typography>
       <Slider
         min={0}
         max={359}
