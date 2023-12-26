@@ -4,7 +4,7 @@ import {
   ThreeSixty,
   Comment,
 } from "@mui/icons-material";
-import { IconButton, Popover, Tooltip } from "@mui/material";
+import { Button, IconButton, Popover, Tooltip } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import React, { useCallback, useContext, useRef, useState } from "react";
 import { deleteHighlight } from "util/apollo";
@@ -64,24 +64,24 @@ export const HighlightBoxButtons: React.FunctionComponent<
           ></HighlightAddReflectionForm>
         </Popover>
         <Tooltip title="Reflections">
-          <IconButton
-            color="default"
+          <Button
             size="small"
+            startIcon={<ThreeSixty />}
             onClick={onReflectionClick}
             ref={reflectionButtonRef}
           >
-            <ThreeSixty />
-          </IconButton>
+            Reflect
+          </Button>
         </Tooltip>
         <Tooltip title="Comment">
-          <IconButton color="default" size="small">
-            <Comment />
-          </IconButton>
+          <Button size="small" startIcon={<Comment />}>
+            Comment (0)
+          </Button>
         </Tooltip>
         <Tooltip className={styles["delete-button"]} title="Delete highlight">
-          <IconButton color="default" size="small" onClick={onDeleteClick}>
-            <Delete />
-          </IconButton>
+          <Button size="small" startIcon={<Delete />} onClick={onDeleteClick}>
+            Delete
+          </Button>
         </Tooltip>
       </div>
     </div>

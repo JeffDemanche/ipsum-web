@@ -30,7 +30,7 @@ export const BreadcrumbArc: React.FunctionComponent<BreadcrumbArcProps> = ({
 
   return (
     <div className={styles["breadcrumb"]}>
-      <Card variant="translucent" className={styles["breadcrumb-card"]}>
+      <Card variant="outlined" className={styles["breadcrumb-card"]}>
         <ArcTag arcForToken={{ type: "from id", id: breadcrumb.arcId }} />
       </Card>
     </div>

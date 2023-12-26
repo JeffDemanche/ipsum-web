@@ -1,3 +1,4 @@
+import { BreadcrumbsHeader } from "components/BreadcrumbsHeader";
 import { DiptychContext } from "components/DiptychContext";
 import { Median } from "components/Median";
 import React, { useContext } from "react";
@@ -14,24 +15,29 @@ export const Diptych: React.FunctionComponent = () => {
   const rightHandLayer = layers[rightHandLayerIndex];
 
   return (
-    <div className={styles["diptych-container"]}>
-      {leftHandLayer && (
-        <div className={styles["column-1"]}>
-          <DiptychColumn
-            layer={leftHandLayer}
-            layerIndex={leftHandLayerIndex}
-          ></DiptychColumn>
-        </div>
-      )}
-      {rightHandLayer && (
-        <div className={styles["column-2"]}>
-          <DiptychColumn
-            layer={rightHandLayer}
-            layerIndex={rightHandLayerIndex}
-          ></DiptychColumn>
-        </div>
-      )}
-      <Median />
+    <div className={styles["diptych-and-breadcrumbs"]}>
+      <div className={styles["breadcrumbs-container"]}>
+        <BreadcrumbsHeader />
+      </div>
+      <div className={styles["diptych-container"]}>
+        {leftHandLayer && (
+          <div className={styles["column-1"]}>
+            <DiptychColumn
+              layer={leftHandLayer}
+              layerIndex={leftHandLayerIndex}
+            ></DiptychColumn>
+          </div>
+        )}
+        {rightHandLayer && (
+          <div className={styles["column-2"]}>
+            <DiptychColumn
+              layer={rightHandLayer}
+              layerIndex={rightHandLayerIndex}
+            ></DiptychColumn>
+          </div>
+        )}
+        <Median />
+      </div>
     </div>
   );
 };
