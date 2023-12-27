@@ -1,6 +1,6 @@
 import qs from "qs";
 import { useMemo } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { View, IpsumURLSearch } from "./types";
 
 /**
@@ -27,10 +27,21 @@ export const dataToSearchParams = <V extends View>(
   return qs.stringify(data, { encode: false });
 };
 
-export const useIpsumSearchParams = <V extends View>() => {
-  const location = useLocation();
+const nativeSearchParamsToData = <V extends View>(
+  searchParams: URLSearchParams
+): IpsumURLSearch<V> => {
+  return searchParamsToData(searchParams.toString());
+};
 
-  return useMemo(() => urlToData<V>(window.location.href), [location]);
+export const useIpsumSearchParams = <V extends View>(): IpsumURLSearch<V> => {
+  const [searchParams] = useSearchParams();
+
+  const selectedFields = useMemo(
+    () => nativeSearchParamsToData(searchParams),
+    [searchParams]
+  );
+
+  return selectedFields;
 };
 
 /**
@@ -39,7 +50,6 @@ export const useIpsumSearchParams = <V extends View>() => {
  */
 export const useModifySearchParams = <V extends View>() => {
   const searchParams = useIpsumSearchParams<V>();
-
   const navigate = useNavigate();
   return (modifyFn: (data: IpsumURLSearch<V>) => IpsumURLSearch<V>) => {
     navigate(`?${dataToSearchParams(modifyFn(searchParams))}`, {
@@ -51,19 +61,3 @@ export const useModifySearchParams = <V extends View>() => {
 export const getParams = <V extends View>() => {
   return searchParamsToData<V>(window.location.search.slice(1));
 };
-
-export class IpsumURL {
-  private _url: URL;
-
-  constructor(url: URL) {
-    this._url = url;
-  }
-
-  getView(): View {
-    return this._url.pathname.split("/").slice(1, undefined).join("/") as View;
-  }
-
-  getViewData<V extends View>(): IpsumURLSearch<V> {
-    return qs.parse(this._url.search.slice(1)) as IpsumURLSearch<V>;
-  }
-}

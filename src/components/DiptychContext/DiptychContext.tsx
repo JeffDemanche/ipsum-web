@@ -36,9 +36,7 @@ const DiptychContextHighlightQuery = gql(`
 export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   children,
 }) => {
-  const urlData = useIpsumSearchParams<"journal">();
-
-  const urlLayers = useMemo(() => urlData.layers ?? [], [urlData.layers]);
+  const { layers: urlLayers } = useIpsumSearchParams<"journal">();
 
   const modifySearchParams = useModifySearchParams<"journal">();
 
@@ -181,20 +179,30 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
 
   // This bit of logic deals with highlight deletion when the highlight is
   // present in the URL.
+  const topHighlightFrom = useMemo(
+    () => urlLayers[urlLayers.length - 1]?.highlightFrom,
+    [urlLayers]
+  );
+
   const { data: topLayerHighlightFrom } = useQuery(
     DiptychContextHighlightQuery,
     {
       variables: {
         // TODO: We need to figure out how to handle deleting highlights with many
         // layers open.
-        highlightId: urlLayers[urlLayers.length - 1]?.highlightFrom,
+        highlightId: topHighlightFrom,
       },
     }
   );
 
+  const topHighlightTo = useMemo(
+    () => urlLayers[urlLayers.length - 1]?.highlightTo,
+    [urlLayers]
+  );
+
   const { data: topLayerHighlightTo } = useQuery(DiptychContextHighlightQuery, {
     variables: {
-      highlightId: urlLayers[urlLayers.length - 1]?.highlightTo,
+      highlightId: topHighlightTo,
     },
   });
 

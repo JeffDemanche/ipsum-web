@@ -32,7 +32,7 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
   const {
     data: { highlights },
   } = useQuery(HighlightsListQuery, {
-    variables: { highlightIds },
+    variables: { highlightIds: highlightIds ?? [] },
   });
 
   const groupedByDay = useMemo(

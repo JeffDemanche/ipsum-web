@@ -372,15 +372,28 @@ export class HighlightAssignmentNode extends ElementNode {
     };
   }
 
+  setStyle(element: HTMLElement) {
+    element.classList.add(styles.highlight);
+    const hue = this.__attributes.hue;
+    hue && element.style.setProperty("--hue", `${hue}`);
+    element.style.setProperty("--lightness", `${hue ? "50%" : "0%"}`);
+  }
+
+  removeStyle(element: HTMLElement) {
+    element.classList.remove(styles.highlight);
+    element.style.removeProperty("--hue");
+    element.style.removeProperty("--lightness");
+  }
+
   createDOM(_config: EditorConfig): HTMLElement {
     const element = document.createElement("span");
     if (this.__attributes.highlightId) {
       element.setAttribute("data-highlight-id", this.__attributes.highlightId);
       const hue = this.__attributes.hue;
       hue && element.setAttribute("data-hue", `${hue}`);
-      element.classList.add(styles.highlight);
-      hue && element.style.setProperty("--hue", `${hue}`);
-      element.style.setProperty("--lightness", `${hue ? "50%" : "0%"}`);
+
+      this.setStyle(element);
+
       element.onmouseover = (e) => {
         // TODO
       };
@@ -399,15 +412,17 @@ export class HighlightAssignmentNode extends ElementNode {
     _dom: HTMLElement,
     _config: EditorConfig
   ): boolean {
-    if (this.__attributes.highlightId !== _prevNode.__attributes.highlightId) {
-      if (this.__attributes.highlightId) {
-        _dom.setAttribute("data-highlight-id", this.__attributes.highlightId);
+    if (this.__attributes.highlightId) {
+      _dom.setAttribute("data-highlight-id", this.__attributes.highlightId);
+      if (this.__attributes.hue) {
         _dom.setAttribute("data-hue", `${this.__attributes.hue}`);
-      } else {
-        _dom.removeAttribute("data-highlight-id");
-        _dom.removeAttribute("data-hue");
-        _dom.classList.remove(styles.highlight);
+        this.setStyle(_dom);
       }
+    } else {
+      _dom.removeAttribute("data-highlight-id");
+      _dom.removeAttribute("data-hue");
+      _dom.classList.remove(styles.highlight);
+      this.removeStyle(_dom);
     }
 
     return false;

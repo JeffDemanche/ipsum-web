@@ -1,7 +1,6 @@
 export {
   dataToSearchParams,
   urlToData,
-  IpsumURL,
   useIpsumSearchParams,
   useModifySearchParams,
   getParams,

@@ -161,26 +161,44 @@ export const MonthlyPaginatedList: React.FC<MonthlyPaginatedListProps> = ({
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const [topFocusedElement, setTopFocusedElement] = React.useState<Element>(
+    () => {
+      if (!contentRef.current) return undefined;
+
+      return Array.from(contentRef.current?.children).find((node) => {
+        return (
+          isTopBorderInView(scrollRef.current, node as HTMLDivElement) ||
+          isElementEntireView(scrollRef.current, node as HTMLDivElement)
+        );
+      });
+    }
+  );
+
   const onScroll = useCallback(() => {
     if (scrollRef.current) {
-      const topFocusedElement = Array.from(contentRef.current?.children).find(
-        (node) => {
-          return (
-            isTopBorderInView(scrollRef.current, node as HTMLDivElement) ||
-            isElementEntireView(scrollRef.current, node as HTMLDivElement)
-          );
-        }
-      );
-      if (topFocusedElement?.getAttribute("data-elementdate")) {
+      const newTopFocusedElement = Array.from(
+        contentRef.current?.children
+      ).find((node) => {
+        return (
+          isTopBorderInView(scrollRef.current, node as HTMLDivElement) ||
+          isElementEntireView(scrollRef.current, node as HTMLDivElement)
+        );
+      });
+
+      if (
+        !newTopFocusedElement?.isEqualNode(topFocusedElement) &&
+        newTopFocusedElement?.getAttribute("data-elementdate")
+      ) {
         onFocusedDayChanged?.(
           IpsumDay.fromString(
-            topFocusedElement?.getAttribute("data-elementdate"),
+            newTopFocusedElement?.getAttribute("data-elementdate"),
             "url-format"
           )
         );
+        setTopFocusedElement(newTopFocusedElement);
       }
     }
-  }, [onFocusedDayChanged]);
+  }, [onFocusedDayChanged, topFocusedElement]);
 
   const onPrev = useCallback(() => {
     onFocusedDayChanged?.(nextDayWithElement(elements, prevTimeRange));

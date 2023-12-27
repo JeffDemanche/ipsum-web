@@ -64,8 +64,6 @@ export const HighlightBoxRelations: React.FunctionComponent<
     [highlightRelations]
   );
 
-  console.log(relationsGroupedByPredicate);
-
   const linkArc = useCallback(
     (arcId: string) => {
       createRelation({

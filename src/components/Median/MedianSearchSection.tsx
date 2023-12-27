@@ -32,7 +32,7 @@ export const MedianSearchSection: React.FunctionComponent = () => {
   );
 
   const highlightIds = useMemo(() => {
-    return searchResults?.map((highlight) => highlight.id);
+    return searchResults?.map((highlight) => highlight.id) ?? [];
   }, [searchResults]);
 
   return (
