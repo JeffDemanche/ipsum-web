@@ -305,6 +305,8 @@ export function applyHighlightAssignment(
 export class HighlightAssignmentNode extends ElementNode {
   __attributes: HighlightAssignmentNodeAttributes;
 
+  __hovered = false;
+
   constructor(attributes: HighlightAssignmentNodeAttributes, key?: NodeKey) {
     super(key);
 
@@ -318,6 +320,15 @@ export class HighlightAssignmentNode extends ElementNode {
   setAttributes(attributes: HighlightAssignmentNodeAttributes) {
     const writable = this.getWritable();
     writable.__attributes = attributes;
+  }
+
+  getHovered() {
+    return this.__hovered;
+  }
+
+  setHovered(hovered: boolean) {
+    const writable = this.getWritable();
+    writable.__hovered = hovered;
   }
 
   insertNewAfter(
@@ -372,17 +383,25 @@ export class HighlightAssignmentNode extends ElementNode {
     };
   }
 
-  setStyle(element: HTMLElement) {
+  addHueStyle(element: HTMLElement) {
     element.classList.add(styles.highlight);
     const hue = this.__attributes.hue;
     hue && element.style.setProperty("--hue", `${hue}`);
     element.style.setProperty("--lightness", `${hue ? "50%" : "0%"}`);
   }
 
-  removeStyle(element: HTMLElement) {
+  addHoverStyle(element: HTMLElement) {
+    element.classList.add(styles.hovered);
+  }
+
+  removeHueStyle(element: HTMLElement) {
     element.classList.remove(styles.highlight);
     element.style.removeProperty("--hue");
     element.style.removeProperty("--lightness");
+  }
+
+  removeHoverStyle(element: HTMLElement) {
+    element.classList.remove(styles.hovered);
   }
 
   createDOM(_config: EditorConfig): HTMLElement {
@@ -392,17 +411,7 @@ export class HighlightAssignmentNode extends ElementNode {
       const hue = this.__attributes.hue;
       hue && element.setAttribute("data-hue", `${hue}`);
 
-      this.setStyle(element);
-
-      element.onmouseover = (e) => {
-        // TODO
-      };
-      element.onmouseout = (e) => {
-        // TODO
-      };
-      element.onclick = (e) => {
-        // TODO
-      };
+      this.addHueStyle(element);
     }
     return element;
   }
@@ -416,13 +425,19 @@ export class HighlightAssignmentNode extends ElementNode {
       _dom.setAttribute("data-highlight-id", this.__attributes.highlightId);
       if (this.__attributes.hue) {
         _dom.setAttribute("data-hue", `${this.__attributes.hue}`);
-        this.setStyle(_dom);
+        this.addHueStyle(_dom);
       }
     } else {
       _dom.removeAttribute("data-highlight-id");
       _dom.removeAttribute("data-hue");
       _dom.classList.remove(styles.highlight);
-      this.removeStyle(_dom);
+      this.removeHueStyle(_dom);
+    }
+
+    if (this.getHovered()) {
+      this.addHoverStyle(_dom);
+    } else {
+      this.removeHoverStyle(_dom);
     }
 
     return false;

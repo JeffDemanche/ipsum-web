@@ -1,6 +1,8 @@
 import { useQuery } from "@apollo/client";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { NodeEventPlugin } from "@lexical/react/LexicalNodeEventPlugin";
 import { mergeRegister } from "@lexical/utils";
+import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import {
   $isElementNode,
   $nodesOfType,
@@ -8,7 +10,7 @@ import {
   createCommand,
   LexicalCommand,
 } from "lexical";
-import React, { useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { deleteHighlight, gql } from "util/apollo";
 import { usePrevious } from "util/hooks";
 import {
@@ -24,7 +26,6 @@ import {
 interface HighlightAssignmentPluginProps {
   entryKey: string;
   onHighlightClick?: (highlightId: string) => void;
-  onHighlightHover?: (highlightId: string, hovered: boolean) => void;
 }
 
 const HighlightAssignmentPluginQuery = gql(`
@@ -53,13 +54,12 @@ export const HIGHLIGHT_CLICK_COMMAND: LexicalCommand<{
 }> = createCommand("highlight-click");
 
 export const HIGHLIGHT_HOVER_COMMAND: LexicalCommand<{
-  highlightId: string;
-  hovered: boolean;
+  highlightIds: string[];
 }> = createCommand("highlight-hover");
 
 export const HighlightAssignmentPlugin: React.FunctionComponent<
   HighlightAssignmentPluginProps
-> = ({ entryKey, onHighlightClick, onHighlightHover }) => {
+> = ({ entryKey, onHighlightClick }) => {
   const [editor] = useLexicalComposerContext();
 
   const { data } = useQuery(HighlightAssignmentPluginQuery, {
@@ -111,17 +111,6 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
       HIGHLIGHT_CLICK_COMMAND,
       (payload) => {
         onHighlightClick?.(payload.highlightId);
-        return true;
-      },
-      COMMAND_PRIORITY_NORMAL
-    );
-  });
-
-  useEffect(() => {
-    return editor.registerCommand(
-      HIGHLIGHT_HOVER_COMMAND,
-      (payload) => {
-        onHighlightHover?.(payload.highlightId, payload.hovered);
         return true;
       },
       COMMAND_PRIORITY_NORMAL
@@ -210,5 +199,67 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
     });
   }, [editor]);
 
-  return null;
+  const { hoveredHighlightIds, setHoveredHighlightIds } = useContext(
+    HighlightSelectionContext
+  );
+
+  // Listen to changes in hovered highlight IDs and update the correct nodes to
+  // display as hovered.
+  useEffect(() => {
+    return editor.registerCommand(
+      HIGHLIGHT_HOVER_COMMAND,
+      (payload) => {
+        $nodesOfType(HighlightAssignmentNode)
+          .filter((node) => {
+            return !payload.highlightIds.includes(
+              node.__attributes.highlightId
+            );
+          })
+          .forEach((node) => {
+            node.setHovered(false);
+          });
+
+        $nodesOfType(HighlightAssignmentNode)
+          .filter((node) => {
+            return payload.highlightIds.includes(node.__attributes.highlightId);
+          })
+          .forEach((node) => {
+            node.setHovered(true);
+          });
+
+        return false;
+      },
+      COMMAND_PRIORITY_NORMAL
+    );
+  });
+
+  useEffect(() => {
+    return editor.update(() => {
+      editor.dispatchCommand(HIGHLIGHT_HOVER_COMMAND, {
+        highlightIds: hoveredHighlightIds ?? [],
+      });
+    });
+  }, [editor, hoveredHighlightIds]);
+
+  return (
+    <>
+      <NodeEventPlugin
+        eventType="mouseenter"
+        nodeType={HighlightAssignmentNode}
+        eventListener={(event, editor, nodeKey) => {
+          const highlightId = editor
+            .getElementByKey(nodeKey)
+            .getAttribute("data-highlight-id");
+          setHoveredHighlightIds([highlightId]);
+        }}
+      />
+      <NodeEventPlugin
+        eventType="mouseleave"
+        nodeType={HighlightAssignmentNode}
+        eventListener={() => {
+          setHoveredHighlightIds(undefined);
+        }}
+      />
+    </>
+  );
 };
