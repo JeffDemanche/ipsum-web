@@ -76,7 +76,6 @@ export const SearchResolvers: StrictTypedTypePolicies = {
     fields: {
       searchHighlights(_, { args }) {
         const typedArgs = args as QuerySearchHighlightsArgs;
-
         const allHighlights = Object.values(vars.highlights());
         const filteredHighlights = allHighlights.filter((highlight) => {
           let allAndsMatch = true;

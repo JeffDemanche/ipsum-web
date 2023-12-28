@@ -22,29 +22,30 @@ const unIndentAndNewLine = (text: string) => {
 };
 
 test.describe("Text Highlights", () => {
-  test("highlights a single letter at the end of the entry", async ({
-    page,
-  }) => {
-    const todayEntryKey = new IpsumDateTime(getCurrentLocalDateTime()).toString(
-      "entry-printed-date"
-    );
+  test.describe("Lexical Functionality", () => {
+    test("highlights a single letter at the end of the entry", async ({
+      page,
+    }) => {
+      const todayEntryKey = new IpsumDateTime(
+        getCurrentLocalDateTime()
+      ).toString("entry-printed-date");
 
-    const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
 
-    await contentEditable.fill("This is a test");
+      await contentEditable.fill("This is a test");
 
-    await page.keyboard.down("Shift");
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.up("Shift");
+      await page.keyboard.down("Shift");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.up("Shift");
 
-    const applyHighlightButton = await page.getByTestId(
-      "apply-highlight-button"
-    );
-    await applyHighlightButton.click();
+      const applyHighlightButton = await page.getByTestId(
+        "apply-highlight-button"
+      );
+      await applyHighlightButton.click();
 
-    await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-      removeWildcards(
-        unIndentAndNewLine(`
+      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
+        removeWildcards(
+          unIndentAndNewLine(`
           <p dir="ltr">
             <span data-lexical-text="true">This is a tes</span>
               <span data-highlight-id="7d71efbf-fed3-497a-a006-42eeee59feae" class="HighlightAssignmentPlugin__highlight___XN157" dir="ltr" style="--lightness: 0%;">
@@ -52,38 +53,38 @@ test.describe("Text Highlights", () => {
             </span>
           </p>
         `)
-      )
-    );
-  });
+        )
+      );
+    });
 
-  test("applies two highlights to the same word", async ({ page }) => {
-    const todayEntryKey = new IpsumDateTime(getCurrentLocalDateTime()).toString(
-      "entry-printed-date"
-    );
+    test("applies two highlights to the same word", async ({ page }) => {
+      const todayEntryKey = new IpsumDateTime(
+        getCurrentLocalDateTime()
+      ).toString("entry-printed-date");
 
-    const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
 
-    await contentEditable.fill("123");
+      await contentEditable.fill("123");
 
-    await page.keyboard.down("Shift");
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.up("Shift");
+      await page.keyboard.down("Shift");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.up("Shift");
 
-    const applyHighlightButton = await page.getByTestId(
-      "apply-highlight-button"
-    );
-    await applyHighlightButton.click();
+      const applyHighlightButton = await page.getByTestId(
+        "apply-highlight-button"
+      );
+      await applyHighlightButton.click();
 
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.down("Shift");
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.up("Shift");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.down("Shift");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.up("Shift");
 
-    await applyHighlightButton.click();
+      await applyHighlightButton.click();
 
-    await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-      removeWildcards(
-        unIndentAndNewLine(`
+      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
+        removeWildcards(
+          unIndentAndNewLine(`
           <p>
             <span data-lexical-text="true">1</span>
             <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="HighlightAssignmentPlugin__highlight___XN157" style="--lightness: 0%;">
@@ -94,36 +95,36 @@ test.describe("Text Highlights", () => {
             </span>
           </p>
         `)
-      )
-    );
-  });
+        )
+      );
+    });
 
-  test("applies two highlights to the same text", async ({ page }) => {
-    const todayEntryKey = new IpsumDateTime(getCurrentLocalDateTime()).toString(
-      "entry-printed-date"
-    );
+    test("applies two highlights to the same text", async ({ page }) => {
+      const todayEntryKey = new IpsumDateTime(
+        getCurrentLocalDateTime()
+      ).toString("entry-printed-date");
 
-    const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
 
-    await contentEditable.fill("12345");
+      await contentEditable.fill("12345");
 
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.down("Shift");
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.up("Shift");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.down("Shift");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.up("Shift");
 
-    const applyHighlightButton = await page.getByTestId(
-      "apply-highlight-button"
-    );
-    await applyHighlightButton.click();
+      const applyHighlightButton = await page.getByTestId(
+        "apply-highlight-button"
+      );
+      await applyHighlightButton.click();
 
-    await applyHighlightButton.click();
+      await applyHighlightButton.click();
 
-    await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-      removeWildcards(
-        unIndentAndNewLine(`
+      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
+        removeWildcards(
+          unIndentAndNewLine(`
           <p>
             <span data-lexical-text="true">1</span>
             <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="HighlightAssignmentPlugin__highlight___XN157" style="--lightness: 0%;">
@@ -134,35 +135,35 @@ test.describe("Text Highlights", () => {
             <span data-lexical-text="true">5</span>
           </p>
         `)
-      )
-    );
-  });
+        )
+      );
+    });
 
-  test("applies highlight across multiple paragraphs", async ({ page }) => {
-    const todayEntryKey = new IpsumDateTime(getCurrentLocalDateTime()).toString(
-      "entry-printed-date"
-    );
+    test("applies highlight across multiple paragraphs", async ({ page }) => {
+      const todayEntryKey = new IpsumDateTime(
+        getCurrentLocalDateTime()
+      ).toString("entry-printed-date");
 
-    const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
 
-    await contentEditable.pressSequentially("line 1");
+      await contentEditable.pressSequentially("line 1");
 
-    await contentEditable.press("Enter");
+      await contentEditable.press("Enter");
 
-    await contentEditable.pressSequentially("line 2");
+      await contentEditable.pressSequentially("line 2");
 
-    await page.keyboard.down("Control");
-    await page.keyboard.press("A");
-    await page.keyboard.up("Control");
+      await page.keyboard.down("Control");
+      await page.keyboard.press("A");
+      await page.keyboard.up("Control");
 
-    const applyHighlightButton = await page.getByTestId(
-      "apply-highlight-button"
-    );
-    await applyHighlightButton.click();
+      const applyHighlightButton = await page.getByTestId(
+        "apply-highlight-button"
+      );
+      await applyHighlightButton.click();
 
-    await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-      removeWildcards(
-        unIndentAndNewLine(`
+      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
+        removeWildcards(
+          unIndentAndNewLine(`
           <p dir="ltr">
             <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="HighlightAssignmentPlugin__highlight___XN157" dir="ltr" style="--lightness: 0%;">
               <span data-lexical-text="true">line 1</span>
@@ -174,43 +175,43 @@ test.describe("Text Highlights", () => {
             </span>
           </p>
         `)
-      )
-    );
-  });
+        )
+      );
+    });
 
-  test("applies partially overlapping highlight", async ({ page }) => {
-    const todayEntryKey = new IpsumDateTime(getCurrentLocalDateTime()).toString(
-      "entry-printed-date"
-    );
+    test("applies partially overlapping highlight", async ({ page }) => {
+      const todayEntryKey = new IpsumDateTime(
+        getCurrentLocalDateTime()
+      ).toString("entry-printed-date");
 
-    const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
 
-    await contentEditable.fill("123");
+      await contentEditable.fill("123");
 
-    // Select 1[23]
-    await page.keyboard.down("Shift");
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.up("Shift");
+      // Select 1[23]
+      await page.keyboard.down("Shift");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.up("Shift");
 
-    const applyHighlightButton = await page.getByTestId(
-      "apply-highlight-button"
-    );
-    await applyHighlightButton.click();
+      const applyHighlightButton = await page.getByTestId(
+        "apply-highlight-button"
+      );
+      await applyHighlightButton.click();
 
-    // Select [12]3
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.press("ArrowRight");
-    await page.keyboard.down("Shift");
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.press("ArrowLeft");
-    await page.keyboard.up("Shift");
+      // Select [12]3
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.press("ArrowRight");
+      await page.keyboard.down("Shift");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.press("ArrowLeft");
+      await page.keyboard.up("Shift");
 
-    await applyHighlightButton.click();
+      await applyHighlightButton.click();
 
-    await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-      removeWildcards(
-        unIndentAndNewLine(`
+      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
+        removeWildcards(
+          unIndentAndNewLine(`
           <p>
             <span data-highlight-id="00000000-0000-0000-0000-000000000002" class="HighlightAssignmentPlugin__highlight___XN157" style="--lightness: 0%;">
               <span data-lexical-text="true">1</span>
@@ -223,34 +224,34 @@ test.describe("Text Highlights", () => {
             </span>
           </p>
         `)
-      )
-    );
-  });
+        )
+      );
+    });
 
-  test("applies highlight to a word with formatting", async ({ page }) => {
-    const todayEntryKey = new IpsumDateTime(getCurrentLocalDateTime()).toString(
-      "entry-printed-date"
-    );
+    test("applies highlight to a word with formatting", async ({ page }) => {
+      const todayEntryKey = new IpsumDateTime(
+        getCurrentLocalDateTime()
+      ).toString("entry-printed-date");
 
-    const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
 
-    await contentEditable.press("Control+b");
-    await contentEditable.pressSequentially("12");
-    await contentEditable.press("Control+b");
-    await contentEditable.pressSequentially("3");
-    await contentEditable.press("Control+i");
-    await contentEditable.pressSequentially("45");
+      await contentEditable.press("Control+b");
+      await contentEditable.pressSequentially("12");
+      await contentEditable.press("Control+b");
+      await contentEditable.pressSequentially("3");
+      await contentEditable.press("Control+i");
+      await contentEditable.pressSequentially("45");
 
-    await contentEditable.press("Control+a");
+      await contentEditable.press("Control+a");
 
-    const applyHighlightButton = await page.getByTestId(
-      "apply-highlight-button"
-    );
-    await applyHighlightButton.click();
+      const applyHighlightButton = await page.getByTestId(
+        "apply-highlight-button"
+      );
+      await applyHighlightButton.click();
 
-    await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-      removeWildcards(
-        unIndentAndNewLine(`
+      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
+        removeWildcards(
+          unIndentAndNewLine(`
           <p>
             <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="." style="--lightness: 0%;">
               <strong class="EditorStyles__editor-text-bold___R8XIF" data-lexical-text="true">12</strong>
@@ -259,7 +260,42 @@ test.describe("Text Highlights", () => {
             </span>
           </p>
         `)
-      )
-    );
+        )
+      );
+    });
+  });
+
+  test.describe("Colors", () => {
+    test("single highlight has correct color", async ({ page }) => {
+      const todayEntryKey = new IpsumDateTime(
+        getCurrentLocalDateTime()
+      ).toString("entry-printed-date");
+
+      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+
+      await contentEditable.fill("This is a test");
+
+      await page.keyboard.press("Control+a");
+
+      const applyHighlightButton = await page.getByTestId(
+        "apply-highlight-button"
+      );
+      await applyHighlightButton.click();
+
+      const highlightBox = await page.getByTestId("median-highlight-box");
+
+      await expect(highlightBox).toHaveCount(1);
+
+      await highlightBox.click();
+
+      await page.getByLabel("Add or link arc").click();
+
+      await page
+        .getByTestId("linker-text-field")
+        .getByRole("textbox")
+        .fill("test");
+
+      await page.getByRole("link", { name: "test" }).click();
+    });
   });
 });

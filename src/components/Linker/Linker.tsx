@@ -110,6 +110,7 @@ export const Linker: React.FunctionComponent<LinkerProps> = ({
               }}
               inputRef={inputRef}
               size="small"
+              data-testid="linker-text-field"
             ></TextField>
           </ClickAwayListener>
         )}

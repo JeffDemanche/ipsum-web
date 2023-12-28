@@ -36,7 +36,9 @@ const DiptychContextHighlightQuery = gql(`
 export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   children,
 }) => {
-  const { layers: urlLayers } = useIpsumSearchParams<"journal">();
+  const { layers } = useIpsumSearchParams<"journal">();
+
+  const urlLayers = useMemo(() => layers ?? [], [layers]);
 
   const modifySearchParams = useModifySearchParams<"journal">();
 
