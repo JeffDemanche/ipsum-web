@@ -2,7 +2,6 @@ import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightBox } from "components/HighlightBox";
-import { HighlightSelectionContext } from "components/HighlightSelectionContext";
 import React, { useContext, useMemo } from "react";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
@@ -27,7 +26,8 @@ const HighlightsListQuery = gql(`
 export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
   highlightIds,
 }) => {
-  const { selectedHighlightId } = useContext(DiptychContext);
+  const { selectedHighlightId, setSelectedHighlightId } =
+    useContext(DiptychContext);
 
   const {
     data: { highlights },
@@ -65,8 +65,6 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
       }),
     [groupedByDay]
   );
-
-  const { setSelectedHighlightId } = useContext(HighlightSelectionContext);
 
   return (
     <div className={styles["highlights-list"]}>

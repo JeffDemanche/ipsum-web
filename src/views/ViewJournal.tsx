@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./ViewJournal.less";
-import { HighlightSelectionProvider } from "components/HighlightSelectionContext";
+import { HoveredHighlightsProvider } from "components/HoveredHighlightsContext";
 import { JournalHotkeysProvider } from "components/JournalHotkeys";
 import { Diptych } from "components/Diptych";
 import { DiptychProvider } from "components/DiptychContext";
@@ -12,7 +12,7 @@ const ProvidersWrapper: React.FC<{ children: React.ReactNode }> = ({
   return (
     <DiptychProvider>
       <JournalHotkeysProvider>
-        <HighlightSelectionProvider>{children}</HighlightSelectionProvider>
+        <HoveredHighlightsProvider>{children}</HoveredHighlightsProvider>
       </JournalHotkeysProvider>
     </DiptychProvider>
   );

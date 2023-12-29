@@ -1,5 +1,5 @@
 import { HighlightTag } from "components/HighlightTag";
-import { HighlightSelectionContext } from "components/HighlightSelectionContext";
+import { HoveredHighlightsContext } from "components/HoveredHighlightsContext";
 import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./Digest.less";
 import { gql } from "util/apollo";
@@ -37,7 +37,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({
   );
 
   const { hoveredHighlightIds, setHoveredHighlightIds } = useContext(
-    HighlightSelectionContext
+    HoveredHighlightsContext
   );
 
   const { setTopHighlightFrom, selectedHighlightId } =

@@ -95,7 +95,7 @@ export const ToolbarPlugin: React.FunctionComponent<ToolbarPluginProps> = ({
           const type = $isHeadingNode(element)
             ? element.getTag()
             : element.getType();
-          setBlockType(type);
+          if (type !== "root") setBlockType(type);
         }
       }
       // Update text format
@@ -196,6 +196,8 @@ export const ToolbarPlugin: React.FunctionComponent<ToolbarPluginProps> = ({
       });
     }
   };
+
+  console.log(blockType);
 
   return (
     <div className={styles["toolbar"]} ref={toolbarRef}>

@@ -19,6 +19,7 @@ export const DiptychContext = React.createContext<Diptych>({
   popHighlights: () => {},
   selectedHighlightId: undefined,
   topLayer: undefined,
+  setSelectedHighlightId: () => {},
 });
 
 interface DiptychProviderProps {
@@ -233,6 +234,28 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
     }
   }, [pushLayer, urlLayers.length]);
 
+  const setSelectedHighlightId = useCallback(
+    (highlight: string) => {
+      modifySearchParams((searchParams) => {
+        const topLayerIndex = searchParams.layers.length - 1;
+        return {
+          ...searchParams,
+          layers: [
+            ...searchParams.layers.slice(0, -1),
+            {
+              ...searchParams.layers[topLayerIndex],
+              highlightFrom: highlight,
+            },
+          ],
+          // TODO
+          searchCriteria: { and: [{ or: [{}] }] },
+          highlight,
+        };
+      });
+    },
+    [modifySearchParams]
+  );
+
   return (
     <DiptychContext.Provider
       value={{
@@ -245,6 +268,7 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
         setTopHighlightTo,
         popHighlights,
         selectedHighlightId,
+        setSelectedHighlightId,
       }}
     >
       {children}

@@ -305,7 +305,8 @@ export function applyHighlightAssignment(
 export class HighlightAssignmentNode extends ElementNode {
   __attributes: HighlightAssignmentNodeAttributes;
 
-  __hovered = false;
+  /** Is hovered or selected */
+  __darkened = false;
 
   constructor(attributes: HighlightAssignmentNodeAttributes, key?: NodeKey) {
     super(key);
@@ -322,13 +323,13 @@ export class HighlightAssignmentNode extends ElementNode {
     writable.__attributes = attributes;
   }
 
-  getHovered() {
-    return this.__hovered;
+  getDarkened() {
+    return this.__darkened;
   }
 
-  setHovered(hovered: boolean) {
+  setDarkened(hovered: boolean) {
     const writable = this.getWritable();
-    writable.__hovered = hovered;
+    writable.__darkened = hovered;
   }
 
   insertNewAfter(
@@ -390,7 +391,7 @@ export class HighlightAssignmentNode extends ElementNode {
     element.style.setProperty("--lightness", `${hue ? "50%" : "0%"}`);
   }
 
-  addHoverStyle(element: HTMLElement) {
+  addDarkenedStyle(element: HTMLElement) {
     element.classList.add(styles.hovered);
   }
 
@@ -400,7 +401,7 @@ export class HighlightAssignmentNode extends ElementNode {
     element.style.removeProperty("--lightness");
   }
 
-  removeHoverStyle(element: HTMLElement) {
+  removeDarkenedStyle(element: HTMLElement) {
     element.classList.remove(styles.hovered);
   }
 
@@ -434,10 +435,10 @@ export class HighlightAssignmentNode extends ElementNode {
       this.removeHueStyle(_dom);
     }
 
-    if (this.getHovered()) {
-      this.addHoverStyle(_dom);
+    if (this.getDarkened()) {
+      this.addDarkenedStyle(_dom);
     } else {
-      this.removeHoverStyle(_dom);
+      this.removeDarkenedStyle(_dom);
     }
 
     return false;

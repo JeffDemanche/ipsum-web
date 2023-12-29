@@ -2,7 +2,8 @@ import { useQuery } from "@apollo/client";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { NodeEventPlugin } from "@lexical/react/LexicalNodeEventPlugin";
 import { mergeRegister } from "@lexical/utils";
-import { HighlightSelectionContext } from "components/HighlightSelectionContext";
+import { DiptychContext } from "components/DiptychContext";
+import { HoveredHighlightsContext } from "components/HoveredHighlightsContext";
 import {
   $isElementNode,
   $nodesOfType,
@@ -53,9 +54,9 @@ export const HIGHLIGHT_CLICK_COMMAND: LexicalCommand<{
   highlightId: string;
 }> = createCommand("highlight-click");
 
-export const HIGHLIGHT_HOVER_COMMAND: LexicalCommand<{
+export const DARKEN_HIGHLIGHT_COMMAND: LexicalCommand<{
   highlightIds: string[];
-}> = createCommand("highlight-hover");
+}> = createCommand("highlight-darken");
 
 export const HighlightAssignmentPlugin: React.FunctionComponent<
   HighlightAssignmentPluginProps
@@ -200,14 +201,24 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
   }, [editor]);
 
   const { hoveredHighlightIds, setHoveredHighlightIds } = useContext(
-    HighlightSelectionContext
+    HoveredHighlightsContext
   );
+
+  const { selectedHighlightId } = useContext(DiptychContext);
+
+  const hoveredOrSelectedHighlightIds = useMemo(() => {
+    const ids = new Set(hoveredHighlightIds ?? []);
+    if (selectedHighlightId) {
+      ids.add(selectedHighlightId);
+    }
+    return Array.from(ids);
+  }, [hoveredHighlightIds, selectedHighlightId]);
 
   // Listen to changes in hovered highlight IDs and update the correct nodes to
   // display as hovered.
   useEffect(() => {
     return editor.registerCommand(
-      HIGHLIGHT_HOVER_COMMAND,
+      DARKEN_HIGHLIGHT_COMMAND,
       (payload) => {
         $nodesOfType(HighlightAssignmentNode)
           .filter((node) => {
@@ -216,7 +227,7 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
             );
           })
           .forEach((node) => {
-            node.setHovered(false);
+            node.setDarkened(false);
           });
 
         $nodesOfType(HighlightAssignmentNode)
@@ -224,7 +235,7 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
             return payload.highlightIds.includes(node.__attributes.highlightId);
           })
           .forEach((node) => {
-            node.setHovered(true);
+            node.setDarkened(true);
           });
 
         return false;
@@ -235,11 +246,11 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
 
   useEffect(() => {
     return editor.update(() => {
-      editor.dispatchCommand(HIGHLIGHT_HOVER_COMMAND, {
-        highlightIds: hoveredHighlightIds ?? [],
+      editor.dispatchCommand(DARKEN_HIGHLIGHT_COMMAND, {
+        highlightIds: hoveredOrSelectedHighlightIds,
       });
     });
-  }, [editor, hoveredHighlightIds]);
+  }, [editor, hoveredOrSelectedHighlightIds]);
 
   return (
     <>

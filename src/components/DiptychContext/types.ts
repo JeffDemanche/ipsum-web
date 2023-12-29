@@ -38,4 +38,5 @@ export interface Diptych {
   popHighlights: () => void;
 
   selectedHighlightId?: string;
+  setSelectedHighlightId: (highlightId?: string) => void;
 }
