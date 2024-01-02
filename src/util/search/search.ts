@@ -6,6 +6,8 @@ import { compareDatesDesc, IpsumDateTime, IpsumDay } from "util/dates";
 import { URLSearchCriteria, useIpsumSearchParams } from "util/url";
 
 interface UseHighlightSearchResultsResult {
+  isUserSearch: boolean;
+  searchCriteria: URLSearchCriteria;
   searchResults: { id: string; entry: { date: string } }[];
 }
 
@@ -27,12 +29,14 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
 
   const { topLayer } = useContext(DiptychContext);
 
+  const isUserSearch = !!searchCriteriaFromUrl;
+
   /**
    * Fills in cases when the search results are not present in the URL, they are
    * inferred based on the layer structure and/or selected highlights.
    */
   const searchCriteria: URLSearchCriteria = useMemo(() => {
-    if (searchCriteriaFromUrl) return searchCriteriaFromUrl;
+    if (isUserSearch) return searchCriteriaFromUrl;
 
     // If highlight is selected
     if (topLayer?.highlightFrom) {
@@ -96,7 +100,7 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
     }
 
     return {};
-  }, [searchCriteriaFromUrl, topLayer]);
+  }, [isUserSearch, searchCriteriaFromUrl, topLayer]);
 
   const { data } = useQuery(UseHighlightSearchQuery, {
     variables: { searchCriteria },
@@ -113,6 +117,8 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
     );
 
   return {
+    isUserSearch,
+    searchCriteria,
     searchResults: sortedResults,
   };
 };
