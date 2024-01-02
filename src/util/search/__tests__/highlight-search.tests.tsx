@@ -10,18 +10,24 @@ import {
   mockHighlights,
   mockRelations,
 } from "util/apollo/__tests__/apollo-test-utils";
+import { useIpsumSearchParams } from "util/url";
+import { IpsumURLSearch } from "util/url/types";
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }
 
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  useLocation: jest.fn(),
+jest.mock("util/url", () => ({
+  ...jest.requireActual("util/url"),
+  useIpsumSearchParams: jest.fn(),
 }));
 
 describe("HighlightSearch", () => {
   it("returns sorted incoming highlights from each outgoing arc for the specified highlight when no criteria is provided", () => {
+    jest
+      .mocked(useIpsumSearchParams)
+      .mockReturnValue({} as IpsumURLSearch<"journal">);
+
     // highlight_1 relates to arc_1 and arc_2
     // highlight_2 relates to arc_2
     // So search results for highlight_1 should include highlight_2

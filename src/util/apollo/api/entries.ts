@@ -3,7 +3,7 @@ import { autosave } from "../autosave";
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { EntryType } from "../__generated__/graphql";
-import { upsertDayForToday } from "./day";
+import { deleteDayIfEmpty, upsertDayForToday } from "./day";
 
 export const createEntry = (entry: {
   entryKey: string;
@@ -76,5 +76,17 @@ export const deleteEntry = (entryKey: string) => {
   const newEntries = { ...vars.entries() };
   delete newEntries[entryKey];
   vars.entries(newEntries);
+
+  const newDays = { ...vars.days() };
+  Object.values(newDays).forEach((day) => {
+    if (day.journalEntry === entryKey) delete day.journalEntry;
+    if (day.changedArcEntries.includes(entryKey))
+      day.changedArcEntries = day.changedArcEntries.filter(
+        (e) => e !== entryKey
+      );
+  });
+  vars.days(newDays);
+  deleteDayIfEmpty(IpsumDay.fromString(entryKey, "stored-day").toString());
+
   autosave();
 };

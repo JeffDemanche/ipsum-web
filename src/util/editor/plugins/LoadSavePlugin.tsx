@@ -80,6 +80,7 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
           root.getFirstChild()?.isEmpty() && root.getChildrenSize() === 1;
 
         if (isEmpty) {
+          console.log("empty");
           switch (metadata.entryType) {
             case EntryType.Journal:
               deleteJournalEntry({ entryKey });

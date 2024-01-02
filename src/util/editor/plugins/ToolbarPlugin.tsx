@@ -197,8 +197,6 @@ export const ToolbarPlugin: React.FunctionComponent<ToolbarPluginProps> = ({
     }
   };
 
-  console.log(blockType);
-
   return (
     <div className={styles["toolbar"]} ref={toolbarRef}>
       {editable && (

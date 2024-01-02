@@ -3,6 +3,7 @@ import { EntryType } from "util/apollo/__generated__/graphql";
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { createEntry, deleteEntry, updateEntry } from "../entries";
+import { createSRSCard } from "../srs";
 
 jest.mock("../../autosave");
 
@@ -194,6 +195,25 @@ describe("apollo entries API", () => {
       expect(Object.keys(vars.entries())).toEqual(["1/2/2020", "4/2/2020"]);
       deleteEntry("1/2/2020");
       expect(Object.keys(vars.entries())).toEqual(["4/2/2020"]);
+    });
+
+    it("should also delete the day if it's empty", () => {
+      jest
+        .spyOn(IpsumDateTime, "today")
+        .mockReturnValue(IpsumDateTime.fromJsDate(new Date("2020-01-03")));
+
+      const entry1 = {
+        entryKey: "1/2/2020",
+        htmlString: "<p>Hello, world on january first!</p>",
+        entryType: EntryType.Journal,
+      };
+
+      createEntry(entry1);
+      expect(Object.keys(vars.entries())).toEqual(["1/2/2020"]);
+      expect(Object.keys(vars.days())).toEqual(["1/2/2020"]);
+      deleteEntry("1/2/2020");
+      expect(Object.keys(vars.entries())).toEqual([]);
+      expect(Object.keys(vars.days())).toEqual([]);
     });
   });
 });

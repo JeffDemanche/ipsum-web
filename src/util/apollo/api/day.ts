@@ -19,3 +19,22 @@ export const upsertDayForToday = () => {
     },
   });
 };
+
+export const deleteDayIfEmpty = (dayKey: string): boolean => {
+  const day = vars.days()[dayKey];
+  if (!day) return false;
+
+  if (
+    !day.journalEntry &&
+    !day.srsCardReviews.length &&
+    !day.changedArcEntries.length &&
+    !day.comments.length
+  ) {
+    const daysCopy = { ...vars.days() };
+    delete daysCopy[dayKey];
+    vars.days(daysCopy);
+    return true;
+  }
+
+  return false;
+};
