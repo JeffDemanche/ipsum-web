@@ -36,7 +36,6 @@ const nativeSearchParamsToData = <V extends View>(
 export const useIpsumSearchParams = <V extends View>(): IpsumURLSearch<V> => {
   const [searchParams] = useSearchParams();
 
-  console.log(searchParams.toString());
   const selectedFields = useMemo(
     () => nativeSearchParamsToData(searchParams),
     [searchParams]
