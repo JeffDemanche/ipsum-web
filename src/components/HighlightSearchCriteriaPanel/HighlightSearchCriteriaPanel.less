@@ -1,3 +1,44 @@
+@gap: 4px;
+
 .highlight-search-criteria-panel {
-  background-color: blue;
+  .search-criteria-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: @gap;
+
+    .empty-criteria-row {
+      grid-column: 1 / 3;
+      display: grid;
+      grid-template-columns: 40px 1fr;
+    }
+
+    .and-clause {
+      grid-column: 1 / 3;
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: @gap;
+
+      .and-clause-minus {
+        grid-column: 1;
+      }
+
+      .and-clause-criteria {
+        grid-column: 2;
+      }
+    }
+
+    .options-row {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+
+      .options-row-plus {
+        grid-column: 1;
+      }
+
+      .options-row-options {
+        grid-column: 2;
+      }
+    }
+  }
 }

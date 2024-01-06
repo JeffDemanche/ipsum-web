@@ -13,6 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\n  query ArcChipConnectedQuery($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n    }\n  }\n": types.ArcChipConnectedQueryDocument,
     "\n  query ArcDetailContext($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n      arcEntry {\n        entry {\n          entryKey\n        }\n      }\n    }\n  }\n": types.ArcDetailContextDocument,
     "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n    }\n  } \n": types.ArcDetailPrefsBoxDocument,
     "\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n      name\n    }\n  }\n": types.ArcTagDocument,
@@ -54,6 +55,10 @@ const documents = {
  */
 export function gql(source: string): unknown;
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query ArcChipConnectedQuery($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n    }\n  }\n"): (typeof documents)["\n  query ArcChipConnectedQuery($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
