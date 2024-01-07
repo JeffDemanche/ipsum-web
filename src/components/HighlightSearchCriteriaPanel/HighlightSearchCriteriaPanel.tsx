@@ -15,20 +15,42 @@ export interface HighlightSearchCriteriaPanelProps {
 export const HighlightSearchCriteriaPanel: React.FC<
   HighlightSearchCriteriaPanelProps
 > = ({ searchCriteria, isUserSearch }) => {
-  const modifySearchCriteria = useModifySearchParams();
+  const modifySearchParams = useModifySearchParams<"journal">();
 
-  const pushAndClause = useCallback(() => {}, [modifySearchCriteria]);
+  const pushAndClause = useCallback(() => {
+    modifySearchParams((searchParams) => {
+      const and = searchParams.searchCriteria?.and ?? [];
+      and.push({ or: [] });
+      return {
+        ...searchParams,
+        searchCriteria: { ...searchParams.searchCriteria, and },
+      };
+    });
+  }, [modifySearchParams]);
 
   const removeAndClause = useCallback(
-    (clauseIndex: number) => {},
-    [modifySearchCriteria]
+    (clauseIndex: number) => {
+      modifySearchParams((searchParams) => {
+        const and = searchParams.searchCriteria?.and ?? [];
+        and.splice(clauseIndex, 1);
+        return {
+          ...searchParams,
+          searchCriteria: { ...searchParams.searchCriteria, and },
+        };
+      });
+    },
+    [modifySearchParams]
   );
 
   const rows = useMemo(() => {
     if (!searchCriteria.and?.length) {
       return (
         <div className={styles["empty-criteria-row"]}>
-          <IconButton size="small">
+          <IconButton
+            data-testid="add-and-clause-button"
+            size="small"
+            onClick={pushAndClause}
+          >
             <Add />
           </IconButton>
           <Typography variant="body2">
@@ -51,7 +73,13 @@ export const HighlightSearchCriteriaPanel: React.FC<
       return (
         <div className={styles["and-clause"]} key={i}>
           <div className={styles["and-clause-minus"]}>
-            <IconButton size="small">
+            <IconButton
+              size="small"
+              data-testid="remove-and-clause-button"
+              onClick={() => {
+                removeAndClause(i);
+              }}
+            >
               <Remove />
             </IconButton>
           </div>
@@ -89,7 +117,11 @@ export const HighlightSearchCriteriaPanel: React.FC<
         {clauses}
         <div className={styles["options-row"]}>
           <div className={styles["options-row-plus"]}>
-            <IconButton size="small">
+            <IconButton
+              data-testid="add-and-clause-button"
+              size="small"
+              onClick={pushAndClause}
+            >
               <Add />
             </IconButton>
           </div>
@@ -99,7 +131,7 @@ export const HighlightSearchCriteriaPanel: React.FC<
         </div>
       </>
     );
-  }, [searchCriteria.and]);
+  }, [pushAndClause, removeAndClause, searchCriteria.and]);
 
   return (
     <div className={styles["highlight-search-criteria-panel"]}>
