@@ -85,8 +85,22 @@ export const HighlightSearchCriteriaPanel: React.FC<
   );
 
   const setOrDateClause = useCallback(
-    (andIndex: number, orIndex: number, date: IpsumDay) => {},
-    []
+    (andIndex: number, orIndex: number, date: IpsumDay) => {
+      modifySearchParams((searchParams) => {
+        const activeSearchCriteria =
+          searchParams.searchCriteria ?? searchCriteria;
+
+        const and = activeSearchCriteria?.and ?? [];
+        const or = and[andIndex].or ?? [];
+        or[orIndex].days = { days: [date.toString("url-format")] };
+        and[andIndex].or = or;
+        return {
+          ...searchParams,
+          searchCriteria: removeEmptyClauses({ ...activeSearchCriteria, and }),
+        };
+      });
+    },
+    [modifySearchParams, searchCriteria]
   );
 
   const removeOrDateClause = useCallback(

@@ -171,7 +171,11 @@ describe("HighlightSearchCriteriaPanel", () => {
       });
     });
 
-    it("editing a day or clause changes the url search params", async () => {});
+    // RTL/MUI being annoying with the date popover.
+    it.todo(
+      "editing a day or clause changes the url search params",
+      async () => {}
+    );
 
     it("removing a day or clause changes the url search params", async () => {
       mockModifySearchHookReturn({
