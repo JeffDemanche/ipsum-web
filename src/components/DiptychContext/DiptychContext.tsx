@@ -248,7 +248,7 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
             },
           ],
           // TODO
-          searchCriteria: { and: [{ or: [{}] }] },
+          // searchCriteria: { and: [{ or: [{}] }] },
           highlight,
         };
       });

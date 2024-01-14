@@ -69,7 +69,7 @@ export const urlToData = <V extends View>(url: string): IpsumURLSearch<V> => {
 export const searchParamsToData = <V extends View>(
   search: string
 ): IpsumURLSearch<V> => {
-  return deserializeEmpty(qs.parse(search) as IpsumURLSearch<V>);
+  return deserializeEmpty(qs.parse(search, { depth: 12 }) as IpsumURLSearch<V>);
 };
 
 /**

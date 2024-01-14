@@ -9,9 +9,14 @@ interface DayChipProps {
   day: IpsumDay;
 
   onChange?: (day: IpsumDay) => void;
+  onDelete?: () => void;
 }
 
-export const DayChip: React.FC<DayChipProps> = ({ day, onChange }) => {
+export const DayChip: React.FC<DayChipProps> = ({
+  day,
+  onChange,
+  onDelete,
+}) => {
   const [pickerOpen, setPickerOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
 
@@ -40,6 +45,7 @@ export const DayChip: React.FC<DayChipProps> = ({ day, onChange }) => {
         variant="outlined"
         label={day?.toString("entry-printed-date") ?? "No date"}
         onClick={() => setPickerOpen(true)}
+        onDelete={onDelete}
       />
     </>
   );
