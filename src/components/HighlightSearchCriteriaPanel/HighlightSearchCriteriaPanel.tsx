@@ -20,12 +20,6 @@ const removeEmptyClauses = (searchCriteria: URLSearchCriteria) => {
     return and.or?.length;
   });
 
-  if (!and?.length) {
-    const noAnd = { ...searchCriteria };
-    delete noAnd.and;
-    return noAnd;
-  }
-
   return { ...searchCriteria, and };
 };
 
@@ -45,7 +39,7 @@ export const HighlightSearchCriteriaPanel: React.FC<
       and.push({ or: [] });
       return {
         ...searchParams,
-        searchCriteria: removeEmptyClauses({ ...activeSearchCriteria, and }),
+        searchCriteria: { ...activeSearchCriteria, and },
       };
     });
   }, [modifySearchParams, searchCriteria]);
@@ -60,7 +54,7 @@ export const HighlightSearchCriteriaPanel: React.FC<
         and.splice(clauseIndex, 1);
         return {
           ...searchParams,
-          searchCriteria: removeEmptyClauses({ ...activeSearchCriteria, and }),
+          searchCriteria: { ...activeSearchCriteria, and },
         };
       });
     },
@@ -79,7 +73,7 @@ export const HighlightSearchCriteriaPanel: React.FC<
         and[andIndex].or = or;
         return {
           ...searchParams,
-          searchCriteria: removeEmptyClauses({ ...activeSearchCriteria, and }),
+          searchCriteria: { ...activeSearchCriteria, and },
         };
       });
     },
@@ -98,7 +92,7 @@ export const HighlightSearchCriteriaPanel: React.FC<
         and[andIndex].or = or;
         return {
           ...searchParams,
-          searchCriteria: removeEmptyClauses({ ...activeSearchCriteria, and }),
+          searchCriteria: { ...activeSearchCriteria, and },
         };
       });
     },
@@ -117,7 +111,7 @@ export const HighlightSearchCriteriaPanel: React.FC<
         and[andIndex].or = or;
         return {
           ...searchParams,
-          searchCriteria: removeEmptyClauses({ ...activeSearchCriteria, and }),
+          searchCriteria: { ...activeSearchCriteria, and },
         };
       });
     },
@@ -179,7 +173,8 @@ export const HighlightSearchCriteriaPanel: React.FC<
         ?.map((or) =>
           or.days?.days?.map((day) => IpsumDay.fromString(day, "url-format"))
         )
-        .flat();
+        .flat()
+        .filter(Boolean);
       const orArcIds = and.or
         ?.map((or) => or.relatesToArc?.arcId)
         .filter(Boolean);

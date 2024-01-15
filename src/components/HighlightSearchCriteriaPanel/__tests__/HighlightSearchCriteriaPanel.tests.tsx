@@ -5,10 +5,10 @@ import { HighlightSearchCriteriaPanel } from "../HighlightSearchCriteriaPanel";
 import { useModifySearchParams } from "util/url";
 import { IpsumURLSearch } from "util/url/types";
 import { IpsumDay } from "util/dates";
-import { createArc } from "util/apollo";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "util/apollo";
 
 jest.mock("util/url");
-jest.mock("util/apollo");
 
 describe("HighlightSearchCriteriaPanel", () => {
   let modifySearchHookReturnMock: jest.Mock;
@@ -41,10 +41,12 @@ describe("HighlightSearchCriteriaPanel", () => {
       mockModifySearchHookReturn({});
 
       render(
-        <HighlightSearchCriteriaPanel
-          isUserSearch={false}
-          searchCriteria={{}}
-        />
+        <ApolloProvider client={client}>
+          <HighlightSearchCriteriaPanel
+            isUserSearch={false}
+            searchCriteria={{}}
+          />
+        </ApolloProvider>
       );
 
       expect(
@@ -60,10 +62,12 @@ describe("HighlightSearchCriteriaPanel", () => {
       mockModifySearchHookReturn({ layers: [] });
 
       render(
-        <HighlightSearchCriteriaPanel
-          isUserSearch={false}
-          searchCriteria={{}}
-        />
+        <ApolloProvider client={client}>
+          <HighlightSearchCriteriaPanel
+            isUserSearch={false}
+            searchCriteria={{}}
+          />
+        </ApolloProvider>
       );
 
       const addAndClauseButton = await screen.findByTestId(
@@ -85,10 +89,12 @@ describe("HighlightSearchCriteriaPanel", () => {
       });
 
       render(
-        <HighlightSearchCriteriaPanel
-          isUserSearch={false}
-          searchCriteria={{ and: [{ or: [] }] }}
-        />
+        <ApolloProvider client={client}>
+          <HighlightSearchCriteriaPanel
+            isUserSearch={false}
+            searchCriteria={{ and: [{ or: [] }] }}
+          />
+        </ApolloProvider>
       );
 
       const addAndClauseButton = await screen.findByTestId(
@@ -115,15 +121,17 @@ describe("HighlightSearchCriteriaPanel", () => {
       });
 
       render(
-        <HighlightSearchCriteriaPanel
-          isUserSearch={false}
-          searchCriteria={{
-            and: [
-              { or: [{ days: { days: ["01-01-2021"] } }] },
-              { or: [{ days: { days: ["02-02-2021"] } }] },
-            ],
-          }}
-        />
+        <ApolloProvider client={client}>
+          <HighlightSearchCriteriaPanel
+            isUserSearch={false}
+            searchCriteria={{
+              and: [
+                { or: [{ days: { days: ["01-01-2021"] } }] },
+                { or: [{ days: { days: ["02-02-2021"] } }] },
+              ],
+            }}
+          />
+        </ApolloProvider>
       );
 
       const removeAndClauseButton = (
@@ -147,10 +155,12 @@ describe("HighlightSearchCriteriaPanel", () => {
       });
 
       render(
-        <HighlightSearchCriteriaPanel
-          isUserSearch={false}
-          searchCriteria={{ and: [{ or: [] }] }}
-        />
+        <ApolloProvider client={client}>
+          <HighlightSearchCriteriaPanel
+            isUserSearch={false}
+            searchCriteria={{ and: [{ or: [] }] }}
+          />
+        </ApolloProvider>
       );
 
       const addOrClauseButton = await screen.findByTestId(
@@ -174,10 +184,7 @@ describe("HighlightSearchCriteriaPanel", () => {
     });
 
     // RTL/MUI being annoying with the date popover.
-    it.todo(
-      "editing a day or clause changes the url search params",
-      async () => {}
-    );
+    it.todo("editing a day or clause changes the url search params");
 
     it("removing a day or clause changes the url search params", async () => {
       mockModifySearchHookReturn({
@@ -186,12 +193,14 @@ describe("HighlightSearchCriteriaPanel", () => {
       });
 
       render(
-        <HighlightSearchCriteriaPanel
-          isUserSearch={false}
-          searchCriteria={{
-            and: [{ or: [{ days: { days: ["01-01-2024"] } }] }],
-          }}
-        />
+        <ApolloProvider client={client}>
+          <HighlightSearchCriteriaPanel
+            isUserSearch={false}
+            searchCriteria={{
+              and: [{ or: [{ days: { days: ["01-01-2024"] } }] }],
+            }}
+          />
+        </ApolloProvider>
       );
 
       const removeOrClauseButton = (
@@ -202,7 +211,7 @@ describe("HighlightSearchCriteriaPanel", () => {
       expect(modifySearchHookReturnMock).toHaveBeenCalledTimes(1);
       expect(modifySearchHookReturnMock).toHaveReturnedWith({
         layers: [],
-        searchCriteria: {},
+        searchCriteria: { and: [{ or: [] }] },
       });
     });
 

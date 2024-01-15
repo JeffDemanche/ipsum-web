@@ -11,6 +11,21 @@ interface UseHighlightSearchResultsResult {
   searchResults: { id: string; entry: { date: string } }[];
 }
 
+const UseHighlightSearchHighlightArcsQuery = gql(`
+  query UseHighlightSearchHighlightArcs($highlightId: ID!) {
+    highlight(id: $highlightId) {
+      outgoingRelations {
+        id
+        object {
+          ... on Arc {
+            id
+          }
+        }
+      }
+    }
+  }
+`);
+
 export const UseHighlightSearchQuery = gql(`
   query UseHighlightSearch($searchCriteria: SearchCriteria!) {
     searchHighlights(criteria: $searchCriteria) {
@@ -29,6 +44,21 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
 
   const { topLayer } = useContext(DiptychContext);
 
+  const { data: highlightArcsData } = useQuery(
+    UseHighlightSearchHighlightArcsQuery,
+    {
+      skip: !topLayer?.highlightFrom,
+      variables: { highlightId: topLayer?.highlightFrom },
+    }
+  );
+  const topLayerHighlightArcs = useMemo(
+    () =>
+      highlightArcsData?.highlight.outgoingRelations.map(
+        (relation) => relation.object.id
+      ),
+    [highlightArcsData?.highlight.outgoingRelations]
+  );
+
   const isUserSearch = !!searchCriteriaFromUrl;
 
   /**
@@ -43,13 +73,11 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
       return {
         and: [
           {
-            or: [
-              {
-                relatesToHighlight: {
-                  highlightId: topLayer.highlightFrom,
-                },
+            or: topLayerHighlightArcs.map((arcId) => ({
+              relatesToArc: {
+                arcId,
               },
-            ],
+            })),
           },
         ],
       };

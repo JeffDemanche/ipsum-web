@@ -39,6 +39,7 @@ const documents = {
     "\n  query HighlightAssignmentPlugin($entryKey: ID!) {\n    entry (entryKey: $entryKey) {\n      highlights {\n        id\n        entry {\n          entryKey\n          date\n        }\n        hue\n      }\n    }\n  }\n": types.HighlightAssignmentPluginDocument,
     "\n  query IpsumEditor($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      htmlString\n      entryType\n    }\n  }\n": types.IpsumEditorDocument,
     "\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n": types.UseSearchArcsDocument,
+    "\n  query UseHighlightSearchHighlightArcs($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      outgoingRelations {\n        id\n        object {\n          ... on Arc {\n            id\n          }\n        }\n      }\n    }\n  }\n": types.UseHighlightSearchHighlightArcsDocument,
     "\n  query UseHighlightSearch($searchCriteria: SearchCriteria!) {\n    searchHighlights(criteria: $searchCriteria) {\n      id\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n": types.UseHighlightSearchDocument,
 };
 
@@ -160,6 +161,10 @@ export function gql(source: "\n  query IpsumEditor($entryKey: ID!) {\n    entry(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n"): (typeof documents)["\n  query UseSearchArcs {\n    arcs {\n      id\n      name\n      color\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query UseHighlightSearchHighlightArcs($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      outgoingRelations {\n        id\n        object {\n          ... on Arc {\n            id\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query UseHighlightSearchHighlightArcs($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      outgoingRelations {\n        id\n        object {\n          ... on Arc {\n            id\n          }\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
