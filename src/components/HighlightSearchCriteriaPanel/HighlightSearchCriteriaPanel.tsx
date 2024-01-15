@@ -7,6 +7,8 @@ import { IpsumDay } from "util/dates";
 import { IconButton, Chip, Button, Typography } from "@mui/material";
 import { Add, Remove } from "@mui/icons-material";
 import cx from "classnames";
+import { ArcSearchAutocomplete } from "components/ArcSearchAutocomplete";
+import { createArc } from "util/apollo";
 
 export interface HighlightSearchCriteriaPanelProps {
   searchCriteria: URLSearchCriteria;
@@ -122,7 +124,23 @@ export const HighlightSearchCriteriaPanel: React.FC<
     [modifySearchParams, searchCriteria]
   );
 
-  const pushOrArcClause = useCallback((andIndex: number) => {}, []);
+  const setOrArcClauses = useCallback(
+    (andIndex: number, arcIds: string[]) => {
+      modifySearchParams((searchParams) => {
+        const activeSearchCriteria =
+          searchParams.searchCriteria ?? searchCriteria;
+
+        const and = activeSearchCriteria?.and ?? [];
+        const or = arcIds.map((arcId) => ({ relatesToArc: { arcId } }));
+        and[andIndex].or = or;
+        return {
+          ...searchParams,
+          searchCriteria: { ...activeSearchCriteria, and },
+        };
+      });
+    },
+    [modifySearchParams, searchCriteria]
+  );
 
   const removeOrArcClause = useCallback(
     (andIndex: number, orIndex: number) => {},
@@ -216,15 +234,19 @@ export const HighlightSearchCriteriaPanel: React.FC<
                   }}
                 />
               ))}
-              <IconButton
-                data-testid="add-or-clause-arc-button"
-                size="small"
-                onClick={() => {
-                  pushOrArcClause(i);
+              <ArcSearchAutocomplete
+                allowCreate
+                value={orArcIds}
+                onNewArc={(name) => {
+                  return createArc({ name }).id;
                 }}
-              >
-                <Add />
-              </IconButton>
+                onChange={(arcs) => {
+                  setOrArcClauses(
+                    i,
+                    arcs.map((arc) => arc.arcId)
+                  );
+                }}
+              />
             </div>
           </div>
         </div>
@@ -253,12 +275,12 @@ export const HighlightSearchCriteriaPanel: React.FC<
   }, [
     onReset,
     pushAndClause,
-    pushOrArcClause,
     pushOrDateClause,
     removeAndClause,
     removeOrArcClause,
     removeOrDateClause,
     searchCriteria.and,
+    setOrArcClauses,
     setOrDateClause,
   ]);
 

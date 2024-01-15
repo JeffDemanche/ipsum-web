@@ -7,6 +7,8 @@ export interface ArcChipProps {
 
   onClick?: () => void;
   onDelete?: () => void;
+
+  chipProps?: Partial<React.ComponentProps<typeof Chip>>;
 }
 
 export const ArcChip: React.FC<ArcChipProps> = ({
@@ -14,9 +16,11 @@ export const ArcChip: React.FC<ArcChipProps> = ({
   hue,
   onClick,
   onDelete,
+  chipProps,
 }) => {
   return (
     <Chip
+      {...chipProps}
       variant="outlined"
       label={label}
       sx={{

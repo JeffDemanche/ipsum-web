@@ -5,8 +5,10 @@ import { HighlightSearchCriteriaPanel } from "../HighlightSearchCriteriaPanel";
 import { useModifySearchParams } from "util/url";
 import { IpsumURLSearch } from "util/url/types";
 import { IpsumDay } from "util/dates";
+import { createArc } from "util/apollo";
 
 jest.mock("util/url");
+jest.mock("util/apollo");
 
 describe("HighlightSearchCriteriaPanel", () => {
   let modifySearchHookReturnMock: jest.Mock;
@@ -203,8 +205,6 @@ describe("HighlightSearchCriteriaPanel", () => {
         searchCriteria: {},
       });
     });
-
-    it("adding an arc or clause changes the url search params", async () => {});
 
     it("removing an arc or clause changes the url search params", async () => {});
   });

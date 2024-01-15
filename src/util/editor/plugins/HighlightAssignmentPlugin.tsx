@@ -10,8 +10,9 @@ import {
   COMMAND_PRIORITY_NORMAL,
   createCommand,
   LexicalCommand,
+  LexicalEditor,
 } from "lexical";
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { deleteHighlight, gql } from "util/apollo";
 import { usePrevious } from "util/hooks";
 import {
@@ -26,6 +27,7 @@ import {
 
 interface HighlightAssignmentPluginProps {
   entryKey: string;
+  editable?: boolean;
   onHighlightClick?: (highlightId: string) => void;
 }
 
@@ -60,7 +62,7 @@ export const DARKEN_HIGHLIGHT_COMMAND: LexicalCommand<{
 
 export const HighlightAssignmentPlugin: React.FunctionComponent<
   HighlightAssignmentPluginProps
-> = ({ entryKey, onHighlightClick }) => {
+> = ({ editable, entryKey, onHighlightClick }) => {
   const [editor] = useLexicalComposerContext();
 
   const { data } = useQuery(HighlightAssignmentPluginQuery, {
@@ -220,6 +222,12 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
     return editor.registerCommand(
       DARKEN_HIGHLIGHT_COMMAND,
       (payload) => {
+        // TODO this is a temp workaround for editable editors causing scroll
+        // when the darkening mechanic is enabled on them.
+        if (editable) {
+          return;
+        }
+
         $nodesOfType(HighlightAssignmentNode)
           .filter((node) => {
             return !payload.highlightIds.includes(
@@ -252,24 +260,31 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
     });
   }, [editor, hoveredOrSelectedHighlightIds]);
 
+  const onHighlightMouseEnter = useCallback(
+    (event: Event, editor: LexicalEditor, nodeKey: string) => {
+      const highlightId = editor
+        .getElementByKey(nodeKey)
+        .getAttribute("data-highlight-id");
+      setHoveredHighlightIds([highlightId]);
+    },
+    [setHoveredHighlightIds]
+  );
+
+  const onHighlightMouseLeave = useCallback(() => {
+    setHoveredHighlightIds(undefined);
+  }, [setHoveredHighlightIds]);
+
   return (
     <>
       <NodeEventPlugin
         eventType="mouseenter"
         nodeType={HighlightAssignmentNode}
-        eventListener={(event, editor, nodeKey) => {
-          const highlightId = editor
-            .getElementByKey(nodeKey)
-            .getAttribute("data-highlight-id");
-          setHoveredHighlightIds([highlightId]);
-        }}
+        eventListener={onHighlightMouseEnter}
       />
       <NodeEventPlugin
         eventType="mouseleave"
         nodeType={HighlightAssignmentNode}
-        eventListener={() => {
-          setHoveredHighlightIds(undefined);
-        }}
+        eventListener={onHighlightMouseLeave}
       />
     </>
   );

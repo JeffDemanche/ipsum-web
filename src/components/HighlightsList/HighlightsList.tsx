@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightBox } from "components/HighlightBox";
-import React, { useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import styles from "./HighlightsList.less";
@@ -66,12 +66,31 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
     [groupedByDay]
   );
 
+  const { pushLayer } = useContext(DiptychContext);
+
+  const onDateClick = useCallback(
+    (e: React.MouseEvent, day: IpsumDay) => {
+      e.stopPropagation();
+      pushLayer({
+        type: "daily_journal",
+        mode: "past",
+        visibleDates: [day.toString("url-format")],
+      });
+    },
+    [pushLayer]
+  );
+
   return (
     <div className={styles["highlights-list"]}>
+      {days.length === 0 && (
+        <Typography variant="h4">No highlight results</Typography>
+      )}
       {days.map(({ day, highlights }) => (
         <div key={day.toString("url-format")}>
           <Typography variant="h4">
-            <a href="">{day.toString("entry-printed-date-nice")}</a>
+            <a onClick={(e) => onDateClick(e, day)} href="#">
+              {day.toString("entry-printed-date-nice")}
+            </a>
           </Typography>
           <div>
             {highlights.map((highlight) => (
