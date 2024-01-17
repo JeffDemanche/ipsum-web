@@ -137,8 +137,22 @@ export const HighlightSearchCriteriaPanel: React.FC<
   );
 
   const removeOrArcClause = useCallback(
-    (andIndex: number, orIndex: number) => {},
-    []
+    (andIndex: number, orIndex: number) => {
+      modifySearchParams((searchParams) => {
+        const activeSearchCriteria =
+          searchParams.searchCriteria ?? searchCriteria;
+
+        const and = activeSearchCriteria?.and ?? [];
+        const or = and[andIndex].or ?? [];
+        or.splice(orIndex, 1);
+        and[andIndex].or = or;
+        return {
+          ...searchParams,
+          searchCriteria: { ...activeSearchCriteria, and },
+        };
+      });
+    },
+    [modifySearchParams, searchCriteria]
   );
 
   const onReset = useCallback(() => {

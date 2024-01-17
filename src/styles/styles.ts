@@ -150,7 +150,8 @@ export const theme = createTheme(
       MuiChip: {
         styleOverrides: {
           root: {
-            borderRadius: "8px",
+            borderRadius: "4px",
+            height: "26px",
             fontFamily: baseTheme.typography.caption.fontFamily,
             fontSize: baseTheme.typography.caption.fontSize,
             fontWeight: baseTheme.typography.caption.fontWeight,

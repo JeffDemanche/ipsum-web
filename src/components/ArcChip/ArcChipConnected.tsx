@@ -19,16 +19,16 @@ const ArcChipConnectedQuery = gql(`
 
 export const ArcChipConnected: React.FC<
   ArcChipConnectedProps & Omit<ArcChipProps, "label" | "hue">
-> = ({ arcId, chipProps }) => {
+> = ({ arcId, ...props }) => {
   const { data } = useQuery(ArcChipConnectedQuery, {
     variables: { arcId },
   });
 
   return (
     <ArcChip
-      chipProps={chipProps}
       label={data?.arc?.name ?? "null"}
       hue={data?.arc?.color ?? 0}
+      {...props}
     />
   );
 };

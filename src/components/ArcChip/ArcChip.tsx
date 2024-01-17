@@ -24,8 +24,12 @@ export const ArcChip: React.FC<ArcChipProps> = ({
       variant="outlined"
       label={label}
       sx={{
-        backgroundColor: `hsla(${hue}, 73%, 84%, 1)`,
-        ":hover": { backgroundColor: `hsla(${hue}, 50%, 84%, 1) !important` },
+        backgroundColor: `hsla(${hue}, 50%, 30%, 1)`,
+        color: `hsla(${hue}, 50%, 80%, 1)`,
+        ":hover": {
+          backgroundColor: `hsla(${hue}, 50%, 50%, 1) !important`,
+          color: `hsla(${hue}, 50%, 90%, 1) !important`,
+        },
       }}
       onClick={onClick}
       onDelete={onDelete}

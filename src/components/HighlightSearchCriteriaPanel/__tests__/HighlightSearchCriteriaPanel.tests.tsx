@@ -215,6 +215,45 @@ describe("HighlightSearchCriteriaPanel", () => {
       });
     });
 
-    it("removing an arc or clause changes the url search params", async () => {});
+    it("removing an arc or clause changes the url search params", async () => {
+      const criteria = {
+        and: [
+          {
+            or: [
+              {
+                relatesToArc: {
+                  arcId: "arc-1",
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      mockModifySearchHookReturn({
+        layers: [],
+        searchCriteria: criteria,
+      });
+
+      render(
+        <ApolloProvider client={client}>
+          <HighlightSearchCriteriaPanel
+            isUserSearch={false}
+            searchCriteria={criteria}
+          />
+        </ApolloProvider>
+      );
+
+      const removeOrClauseButton = (
+        await screen.findAllByTestId("CancelIcon")
+      )[0];
+      fireEvent.click(removeOrClauseButton);
+
+      expect(modifySearchHookReturnMock).toHaveBeenCalledTimes(1);
+      expect(modifySearchHookReturnMock).toHaveReturnedWith({
+        layers: [],
+        searchCriteria: { and: [{ or: [] }] },
+      });
+    });
   });
 });
