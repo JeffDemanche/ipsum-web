@@ -183,11 +183,8 @@ export const HighlightSearchCriteriaPanel: React.FC<
         ?.map((or) =>
           or.days?.days?.map((day) => IpsumDay.fromString(day, "url-format"))
         )
-        .flat()
-        .filter(Boolean);
-      const orArcIds = and.or
-        ?.map((or) => or.relatesToArc?.arcId)
-        .filter(Boolean);
+        .flat();
+      const orArcIds = and.or?.map((or) => or.relatesToArc?.arcId);
 
       const autocompleteExpanded = expandedArcAutocomplete === i;
 
@@ -205,20 +202,24 @@ export const HighlightSearchCriteriaPanel: React.FC<
             </IconButton>
           </div>
           <div className={styles["and-clause-criteria"]}>
-            <div>
+            <div className={styles["and-clause-days"]}>
               <Chip variant="outlined" label="From day" />
-              {orDays?.map((day, j) => (
-                <DayChip
-                  key={j}
-                  day={day}
-                  onChange={(day) => {
-                    setOrDateClause(i, j, day);
-                  }}
-                  onDelete={() => {
-                    removeOrDateClause(i, j);
-                  }}
-                />
-              ))}
+              {orDays?.map((day, j) => {
+                if (!day) return null;
+
+                return (
+                  <DayChip
+                    key={j}
+                    day={day}
+                    onChange={(day) => {
+                      setOrDateClause(i, j, day);
+                    }}
+                    onDelete={() => {
+                      removeOrDateClause(i, j);
+                    }}
+                  />
+                );
+              })}
               <IconButton
                 data-testid="add-or-clause-date-button"
                 size="small"
@@ -229,20 +230,24 @@ export const HighlightSearchCriteriaPanel: React.FC<
                 <Add />
               </IconButton>
             </div>
-            <div>
+            <div className={styles["and-clause-arcs"]}>
               <Chip variant="outlined" label="Re: arc" />
               {!autocompleteExpanded &&
-                orArcIds?.map((arcId, j) => (
-                  <ArcChipConnected
-                    key={j}
-                    arcId={arcId}
-                    onClick={() => {}}
-                    onDelete={() => {
-                      removeOrArcClause(i, j);
-                    }}
-                  />
-                ))}
+                orArcIds?.map((arcId, j) => {
+                  if (!arcId) return null;
+                  return (
+                    <ArcChipConnected
+                      key={j}
+                      arcId={arcId}
+                      onClick={() => {}}
+                      onDelete={() => {
+                        removeOrArcClause(i, j);
+                      }}
+                    />
+                  );
+                })}
               <ArcSearchAutocomplete
+                className={styles["arc-autocomplete"]}
                 allowCreate
                 multiple
                 value={orArcIds}
@@ -282,7 +287,9 @@ export const HighlightSearchCriteriaPanel: React.FC<
             </IconButton>
           </div>
           <div className={styles["options-row-options"]}>
-            <Button onClick={onReset}>Reset</Button>
+            <Button size="small" variant="outlined" onClick={onReset}>
+              Reset
+            </Button>
           </div>
         </div>
       </>

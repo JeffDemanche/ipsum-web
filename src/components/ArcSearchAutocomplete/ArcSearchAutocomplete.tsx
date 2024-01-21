@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { useQuery } from "@apollo/client";
 import { Add } from "@mui/icons-material";
 import {
@@ -13,6 +14,8 @@ import { gql } from "util/apollo";
 import styles from "./ArcSearchAutocomplete.less";
 
 interface ArcSearchAutocompleteProps {
+  className?: string;
+
   defaultExpanded?: boolean;
   allowCreate?: boolean;
   multiple?: boolean;
@@ -46,6 +49,7 @@ const ArcSearchAutocompleteQuery = gql(`
 `);
 
 export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
+  className,
   defaultExpanded,
   allowCreate,
   multiple,
@@ -218,7 +222,7 @@ export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
   ]);
 
   return (
-    <div className={styles["arc-search"]}>
+    <div className={cx(styles["arc-search"], className)}>
       {expanded ? <>{expandedJsx}</> : <>{collapsedJsx}</>}
     </div>
   );

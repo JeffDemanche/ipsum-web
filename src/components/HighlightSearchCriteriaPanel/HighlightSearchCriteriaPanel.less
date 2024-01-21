@@ -1,6 +1,12 @@
 @gap: 4px;
 
+.arc-autocomplete {
+  flex-grow: 1;
+}
+
 .highlight-search-criteria-panel {
+  padding-bottom: @gap;
+
   &.inferred {
     opacity: 0.7;
   }
@@ -14,27 +20,49 @@
     .empty-criteria-row {
       grid-column: 1 / 3;
       display: grid;
+      align-items: center;
       grid-template-columns: 40px 1fr;
     }
 
     .and-clause {
       grid-column: 1 / 3;
       display: grid;
+      align-items: center;
       grid-template-columns: 40px 1fr;
       gap: @gap;
+      padding-bottom: @gap;
+      border-bottom: 1px solid lightgrey;
 
       .and-clause-minus {
         grid-column: 1;
       }
 
       .and-clause-criteria {
+        display: grid;
         grid-column: 2;
+        gap: @gap;
+
+        .and-clause-days {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: @gap;
+        }
+
+        .and-clause-arcs {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: @gap;
+        }
       }
     }
 
     .options-row {
       display: grid;
+      align-items: center;
       grid-template-columns: 40px 1fr;
+      gap: @gap;
 
       .options-row-plus {
         grid-column: 1;
