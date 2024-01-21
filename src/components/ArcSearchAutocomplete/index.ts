@@ -1,1 +1,4 @@
-export { ArcSearchAutocomplete } from "./ArcSearchAutocomplete";
+export {
+  ArcSearchAutocomplete,
+  ArcSearchResult,
+} from "./ArcSearchAutocomplete";

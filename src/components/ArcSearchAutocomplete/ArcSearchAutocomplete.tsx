@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { useQuery } from "@apollo/client";
-import { Add } from "@mui/icons-material";
+import { Add, Create } from "@mui/icons-material";
 import {
   Autocomplete,
   createFilterOptions,
@@ -23,14 +23,14 @@ interface ArcSearchAutocompleteProps {
   /** Return the ID of the created arc. */
   onNewArc?: (name: string) => string;
 
-  value: string[];
+  value: string[] | string;
   onChange?: (arcs: ArcSearchResult[]) => void;
 
   onExpand?: () => void;
   onCollapse?: () => void;
 }
 
-interface ArcSearchResult {
+export interface ArcSearchResult {
   label: string;
 
   arcId?: string;
@@ -61,13 +61,13 @@ export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
 }) => {
   const { data } = useQuery(ArcSearchAutocompleteQuery);
 
-  const value = useMemo(
-    () =>
-      data?.arcs
-        ?.filter((arc) => valueArcIds.includes(arc.id))
-        .map((arc) => ({ label: arc.name, arcId: arc.id })) ?? [],
-    [data?.arcs, valueArcIds]
-  );
+  const value = useMemo(() => {
+    if (!valueArcIds) return undefined;
+
+    return data?.arcs
+      ?.filter((arc) => (valueArcIds ?? []).includes(arc.id))
+      .map((arc) => ({ label: arc.name, arcId: arc.id }));
+  }, [data?.arcs, valueArcIds]);
 
   const [expanded, setExpandedState] = useState(defaultExpanded ?? false);
 
@@ -191,7 +191,11 @@ export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
           if (option.newArcProps) {
             return (
               <li {...props} key={option.label}>
-                <ArcChip label={option.label} hue={option.newArcProps.hue} />
+                <ArcChip
+                  transparent
+                  label={option.label}
+                  hue={option.newArcProps.hue}
+                />
               </li>
             );
           } else {

@@ -2,6 +2,8 @@ import React from "react";
 import { Chip } from "@mui/material";
 
 export interface ArcChipProps {
+  transparent?: boolean;
+
   label: string;
   hue: number;
 
@@ -12,6 +14,7 @@ export interface ArcChipProps {
 }
 
 export const ArcChip: React.FC<ArcChipProps> = ({
+  transparent,
   label,
   hue,
   onClick,
@@ -24,6 +27,7 @@ export const ArcChip: React.FC<ArcChipProps> = ({
       variant="outlined"
       label={label}
       sx={{
+        opacity: transparent ? 0.7 : 1,
         backgroundColor: `hsla(${hue}, 50%, 30%, 1)`,
         color: `hsla(${hue}, 50%, 80%, 1)`,
         ":hover": {
