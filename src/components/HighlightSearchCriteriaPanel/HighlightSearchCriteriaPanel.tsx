@@ -15,14 +15,6 @@ export interface HighlightSearchCriteriaPanelProps {
   isUserSearch: boolean;
 }
 
-const removeEmptyClauses = (searchCriteria: URLSearchCriteria) => {
-  const and = searchCriteria.and?.filter((and) => {
-    return and.or?.length;
-  });
-
-  return { ...searchCriteria, and };
-};
-
 export const HighlightSearchCriteriaPanel: React.FC<
   HighlightSearchCriteriaPanelProps
 > = ({ searchCriteria, isUserSearch }) => {
@@ -245,6 +237,7 @@ export const HighlightSearchCriteriaPanel: React.FC<
               ))}
               <ArcSearchAutocomplete
                 allowCreate
+                multiple
                 value={orArcIds}
                 onNewArc={(name) => {
                   return createArc({ name }).id;

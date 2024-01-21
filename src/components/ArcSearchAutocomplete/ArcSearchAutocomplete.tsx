@@ -1,6 +1,11 @@
 import { useQuery } from "@apollo/client";
 import { Add } from "@mui/icons-material";
-import { Autocomplete, IconButton, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  createFilterOptions,
+  IconButton,
+  TextField,
+} from "@mui/material";
 import { ArcChip, ArcChipConnected } from "components/ArcChip";
 import React, { useCallback, useMemo, useState } from "react";
 import { isString } from "underscore";
@@ -30,7 +35,7 @@ interface ArcSearchResult {
 
 const ArcSearchAutocompleteQuery = gql(`
   query ArcSearchAutocomplete {
-    arcs {
+    arcs(sort: ALPHA_DESC) {
       id
       name
     }
@@ -107,9 +112,19 @@ export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
     [allowCreate, onChange, onNewArc]
   );
 
+  const filterOptions = useMemo(
+    () =>
+      createFilterOptions<ArcSearchResult>({
+        matchFrom: "start",
+        stringify: (option) => option.label,
+      }),
+    []
+  );
+
   const expandedJsx = useMemo(() => {
     return (
       <Autocomplete
+        size="small"
         freeSolo={false}
         className={styles["arc-search-autocomplete"]}
         multiple={multiple}
@@ -137,11 +152,13 @@ export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
           tags.map((tag, index) =>
             tag.arcId ? (
               <ArcChipConnected
+                key={tag.arcId}
                 chipProps={getTagProps({ index })}
                 arcId={tag.arcId}
               />
             ) : (
               <ArcChip
+                key={tag.label}
                 chipProps={getTagProps({ index })}
                 label={tag.label}
                 hue={tag.newArcProps.hue}
@@ -165,15 +182,16 @@ export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
           }
         }}
         options={options}
-        getOptionLabel={(option) =>
-          (option as unknown as ArcSearchResult[])?.[0]?.label
-        }
+        getOptionLabel={(option) => {
+          return (option as unknown as ArcSearchResult[])?.[0]?.label ?? "";
+        }}
         isOptionEqualToValue={(option, value) =>
           option.arcId === value.arcId && option.label === value.label
         }
+        filterOptions={filterOptions}
       />
     );
-  }, [multiple, onAutocompleteChange, options, value]);
+  }, [filterOptions, multiple, onAutocompleteChange, options, value]);
 
   return (
     <div className={styles["arc-search"]}>

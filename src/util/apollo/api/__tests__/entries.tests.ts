@@ -3,7 +3,6 @@ import { EntryType } from "util/apollo/__generated__/graphql";
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { createEntry, deleteEntry, updateEntry } from "../entries";
-import { createSRSCard } from "../srs";
 
 jest.mock("../../autosave");
 
