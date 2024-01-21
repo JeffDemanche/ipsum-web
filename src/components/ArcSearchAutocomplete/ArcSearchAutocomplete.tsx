@@ -22,6 +22,9 @@ interface ArcSearchAutocompleteProps {
 
   value: string[];
   onChange?: (arcs: ArcSearchResult[]) => void;
+
+  onExpand?: () => void;
+  onCollapse?: () => void;
 }
 
 interface ArcSearchResult {
@@ -49,6 +52,8 @@ export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
   onNewArc,
   value: valueArcIds,
   onChange,
+  onExpand,
+  onCollapse,
 }) => {
   const { data } = useQuery(ArcSearchAutocompleteQuery);
 
@@ -60,7 +65,19 @@ export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
     [data?.arcs, valueArcIds]
   );
 
-  const [expanded, setExpanded] = useState(defaultExpanded ?? false);
+  const [expanded, setExpandedState] = useState(defaultExpanded ?? false);
+
+  const setExpanded = useCallback(
+    (expanded: boolean) => {
+      if (expanded) {
+        onExpand?.();
+      } else {
+        onCollapse?.();
+      }
+      setExpandedState(expanded);
+    },
+    [onCollapse, onExpand]
+  );
 
   const collapsedJsx = useMemo(() => {
     return (
@@ -68,7 +85,7 @@ export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
         <Add />
       </IconButton>
     );
-  }, []);
+  }, [setExpanded]);
 
   const [searchText, setSearchText] = useState<string>("");
 
@@ -191,7 +208,14 @@ export const ArcSearchAutocomplete: React.FC<ArcSearchAutocompleteProps> = ({
         filterOptions={filterOptions}
       />
     );
-  }, [filterOptions, multiple, onAutocompleteChange, options, value]);
+  }, [
+    filterOptions,
+    multiple,
+    onAutocompleteChange,
+    options,
+    setExpanded,
+    value,
+  ]);
 
   return (
     <div className={styles["arc-search"]}>

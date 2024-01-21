@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { URLSearchCriteria, useModifySearchParams } from "util/url";
 import styles from "./HighlightSearchCriteriaPanel.less";
 import { ArcChipConnected } from "components/ArcChip";
@@ -156,6 +156,10 @@ export const HighlightSearchCriteriaPanel: React.FC<
     });
   }, [modifySearchParams]);
 
+  const [expandedArcAutocomplete, setExpandedArcAutocomplete] = useState<
+    number | undefined
+  >();
+
   const rows = useMemo(() => {
     if (!searchCriteria.and?.length) {
       return (
@@ -184,6 +188,8 @@ export const HighlightSearchCriteriaPanel: React.FC<
       const orArcIds = and.or
         ?.map((or) => or.relatesToArc?.arcId)
         .filter(Boolean);
+
+      const autocompleteExpanded = expandedArcAutocomplete === i;
 
       return (
         <div className={styles["and-clause"]} key={i}>
@@ -225,16 +231,17 @@ export const HighlightSearchCriteriaPanel: React.FC<
             </div>
             <div>
               <Chip variant="outlined" label="Re: arc" />
-              {orArcIds?.map((arcId, j) => (
-                <ArcChipConnected
-                  key={j}
-                  arcId={arcId}
-                  onClick={() => {}}
-                  onDelete={() => {
-                    removeOrArcClause(i, j);
-                  }}
-                />
-              ))}
+              {!autocompleteExpanded &&
+                orArcIds?.map((arcId, j) => (
+                  <ArcChipConnected
+                    key={j}
+                    arcId={arcId}
+                    onClick={() => {}}
+                    onDelete={() => {
+                      removeOrArcClause(i, j);
+                    }}
+                  />
+                ))}
               <ArcSearchAutocomplete
                 allowCreate
                 multiple
@@ -247,6 +254,12 @@ export const HighlightSearchCriteriaPanel: React.FC<
                     i,
                     arcs.map((arc) => arc.arcId)
                   );
+                }}
+                onExpand={() => {
+                  setExpandedArcAutocomplete(i);
+                }}
+                onCollapse={() => {
+                  setExpandedArcAutocomplete(undefined);
                 }}
               />
             </div>
@@ -275,6 +288,7 @@ export const HighlightSearchCriteriaPanel: React.FC<
       </>
     );
   }, [
+    expandedArcAutocomplete,
     onReset,
     pushAndClause,
     pushOrDateClause,
