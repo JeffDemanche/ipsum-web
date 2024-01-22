@@ -1,1 +1,0 @@
-export { ArcTag } from "./ArcTag";

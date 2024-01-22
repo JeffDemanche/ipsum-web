@@ -84,16 +84,28 @@ const baseTheme = createTheme({
       color: `${grey[50]} !important`,
       backgroundColor: grey[900],
     },
-    h5: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "20px" },
+    h5: { fontFamily: "Inria Sans", fontWeight: "100", fontSizz: "20px" },
     h6: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "16px" },
-    body1: { fontFamily: "Meiryo", fontWeight: "regular", fontSize: "16px" },
-    body2: { fontFamily: "Meiryo", fontWeight: "regular", fontSize: "14px" },
+    body1: {
+      fontFamily: "Inria Sans",
+      fontWeight: "regular",
+      fontSize: "16px",
+    },
+    body2: {
+      fontFamily: "Inria Sans",
+      fontWeight: "regular",
+      fontSize: "14px",
+    },
     subtitle1: {
       fontFamily: "Inria Sans",
       fontWeight: "100",
       fontSize: "14px",
     },
-    caption: { fontFamily: "Meiryo", fontWeight: "regular", fontSize: "14px" },
+    caption: {
+      fontFamily: "Inria Sans",
+      fontWeight: "regular",
+      fontSize: "14px",
+    },
   },
   palette: {
     primary: {

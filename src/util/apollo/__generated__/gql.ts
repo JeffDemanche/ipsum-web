@@ -17,8 +17,6 @@ const documents = {
     "\n  query ArcDetailContext($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n      arcEntry {\n        entry {\n          entryKey\n        }\n      }\n    }\n  }\n": types.ArcDetailContextDocument,
     "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n    }\n  } \n": types.ArcDetailPrefsBoxDocument,
     "\n  query ArcSearchAutocomplete {\n    arcs(sort: ALPHA_DESC) {\n      id\n      name\n    }\n  }\n": types.ArcSearchAutocompleteDocument,
-    "\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n      name\n    }\n  }\n": types.ArcTagDocument,
-    "\n  query BreadcrumbArcQuery($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n    }\n  }\n": types.BreadcrumbArcQueryDocument,
     "\n  query BreadcrumbJournalEntryQuery($journalEntryId: ID!) {\n    journalEntry(entryKey: $journalEntryId) {\n      entryKey\n      entry {\n        date\n      }\n    }\n  }\n": types.BreadcrumbJournalEntryQueryDocument,
     "\n  query DailyJournal {\n    recentJournalEntries {\n      entryKey\n    }\n  }\n": types.DailyJournalDocument,
     "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n": types.JournalEntryTodayDocument,
@@ -33,7 +31,6 @@ const documents = {
     "\n  query HighlightsList($highlightIds: [ID!]!) {\n    highlights(ids: $highlightIds) {\n      id\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n": types.HighlightsListDocument,
     "\n  query JournalDateRangeEntryKeys {\n    journalEntryKeys\n  }\n": types.JournalDateRangeEntryKeysDocument,
     "\n  query JournalTitle {\n    journalTitle\n  }\n": types.JournalTitleDocument,
-    "\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n": types.LinkerDocument,
     "\n  query ReflectionCard($cardId: ID!) {\n    srsCard(id: $cardId) {\n      id\n      interval\n      ef\n      subject {\n        __typename\n        ... on Highlight {\n          id\n          entry {\n            entryKey\n          }\n        }\n        ... on Arc {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.ReflectionCardDocument,
     "\n  query ArcChooser {\n    arcs {\n      id\n      color\n      name\n    }\n  }\n": types.ArcChooserDocument,
     "\n  query HighlightAssignmentPlugin($entryKey: ID!) {\n    entry (entryKey: $entryKey) {\n      highlights {\n        id\n        entry {\n          entryKey\n          date\n        }\n        hue\n      }\n    }\n  }\n": types.HighlightAssignmentPluginDocument,
@@ -73,14 +70,6 @@ export function gql(source: "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query ArcSearchAutocomplete {\n    arcs(sort: ALPHA_DESC) {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query ArcSearchAutocomplete {\n    arcs(sort: ALPHA_DESC) {\n      id\n      name\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n      name\n    }\n  }\n"): (typeof documents)["\n  query ArcTag($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n      name\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query BreadcrumbArcQuery($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n    }\n  }\n"): (typeof documents)["\n  query BreadcrumbArcQuery($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      color\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -137,10 +126,6 @@ export function gql(source: "\n  query JournalDateRangeEntryKeys {\n    journalE
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query JournalTitle {\n    journalTitle\n  }\n"): (typeof documents)["\n  query JournalTitle {\n    journalTitle\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n"): (typeof documents)["\n  query Linker {\n    journalMetadata {\n      lastArcHue\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

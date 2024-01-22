@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { useQuery } from "@apollo/client";
-import { Add, Create } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import {
   Autocomplete,
   createFilterOptions,
