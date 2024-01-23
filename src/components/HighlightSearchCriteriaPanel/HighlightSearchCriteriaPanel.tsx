@@ -171,9 +171,14 @@ export const HighlightSearchCriteriaPanel: React.FC<
           >
             <Add />
           </IconButton>
-          <Typography variant="body2">
-            Filter highlights by adding criteria
-          </Typography>
+          <div className={styles["empty-criteria-copy"]}>
+            <Typography variant="body2">
+              Filter highlights by adding criteria
+            </Typography>
+            <Button size="small" variant="outlined" onClick={onReset}>
+              Reset
+            </Button>
+          </div>
         </div>
       );
     }
