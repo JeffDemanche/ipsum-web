@@ -264,38 +264,4 @@ test.describe("Text Highlights", () => {
       );
     });
   });
-
-  test.describe("Colors", () => {
-    test("single highlight has correct color", async ({ page }) => {
-      const todayEntryKey = new IpsumDateTime(
-        getCurrentLocalDateTime()
-      ).toString("entry-printed-date");
-
-      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
-
-      await contentEditable.fill("This is a test");
-
-      await page.keyboard.press("Control+a");
-
-      const applyHighlightButton = await page.getByTestId(
-        "apply-highlight-button"
-      );
-      await applyHighlightButton.click();
-
-      const highlightBox = await page.getByTestId("median-highlight-box");
-
-      await expect(highlightBox).toHaveCount(1);
-
-      await highlightBox.click();
-
-      await page.getByLabel("Add or link arc").click();
-
-      await page
-        .getByTestId("linker-text-field")
-        .getByRole("textbox")
-        .fill("test");
-
-      await page.getByRole("link", { name: "test" }).click();
-    });
-  });
 });

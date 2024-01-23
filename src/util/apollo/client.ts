@@ -2,14 +2,15 @@ import { ApolloClient, InMemoryCache, gql, makeVar } from "@apollo/client";
 import { parseIpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { v4 as uuidv4 } from "uuid";
+import { ArcResolvers } from "./resolvers/arc-resolvers";
 import { HighlightResolvers } from "./resolvers/highlight-resolvers";
 import { SearchResolvers } from "./resolvers/search-resolvers";
 import { SRSResolvers } from "./resolvers/srs-resolvers";
+import { arcTypeDef } from "./schemas/arc-schema";
 import { searchTypeDef } from "./schemas/search-schema";
 import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import {
   QueryArcEntriesArgs,
-  QueryArcsArgs,
   QueryEntriesArgs,
   QueryRelationsArgs,
   QueryJournalEntriesArgs,
@@ -35,9 +36,6 @@ const typeDefs = gql`
 
     arcEntry(arcId: ID!): ArcEntry
     arcEntries(entryKeys: [ID!]): [ArcEntry]
-
-    arc(id: ID!): Arc
-    arcs(ids: [ID!]): [Arc]
 
     highlight(id: ID!): Highlight
     highlights(ids: [ID!], entries: [ID!], arcs: [ID!]): [Highlight]
@@ -88,18 +86,6 @@ const typeDefs = gql`
   type CommentEntry {
     entry: Entry!
     comment: Comment!
-  }
-
-  type Arc {
-    id: ID!
-    name: String!
-    color: Int!
-    highlights: [Highlight!]!
-    history: History!
-    arcEntry: ArcEntry!
-
-    incomingRelations: [Relation!]!
-    outgoingRelations: [Relation!]!
   }
 
   type Highlight {
@@ -417,18 +403,6 @@ const typePolicies: StrictTypedTypePolicies = {
           )
           .slice(0, args?.count);
       },
-      arc(_, { args }) {
-        if (args?.id) {
-          return vars.arcs()[args.id];
-        }
-        return null;
-      },
-      arcs(_, { args }: { args: QueryArcsArgs }) {
-        if (args?.ids) {
-          return args.ids.map((id) => vars.arcs()[id]);
-        }
-        return Object.values(vars.arcs());
-      },
       arcEntry(_, { args }) {
         if (args?.arcId) {
           const arcEntryKey = Object.values(vars.arcs()).find(
@@ -459,6 +433,7 @@ const typePolicies: StrictTypedTypePolicies = {
       ...HighlightResolvers.Query.fields,
       ...SRSResolvers.Query.fields,
       ...SearchResolvers.Query.fields,
+      ...ArcResolvers.Query.fields,
     },
   },
   Entry: {
@@ -501,27 +476,6 @@ const typePolicies: StrictTypedTypePolicies = {
       },
     },
   },
-  Arc: {
-    keyFields: ["id"],
-    fields: {
-      highlights(_, { readField }) {
-        return Object.values(vars.highlights()).filter((highlight) => {
-          return highlight.outgoingRelations.some(
-            (relation) => vars.relations()[relation].object === readField("id")
-          );
-        });
-      },
-      incomingRelations(relationIds: string[]) {
-        return relationIds.map((id) => vars.relations()[id]);
-      },
-      outgoingRelations(relationIds: string[]) {
-        return relationIds.map((id) => vars.relations()[id]);
-      },
-      arcEntry(arcEntryKey) {
-        return vars.arcEntries()[arcEntryKey];
-      },
-    },
-  },
   Relation: {
     keyFields: ["id"],
     fields: {
@@ -554,5 +508,5 @@ const cache = new InMemoryCache({ typePolicies, addTypename: true });
 
 export const client = new ApolloClient({
   cache,
-  typeDefs: [typeDefs, searchTypeDef],
+  typeDefs: [typeDefs, arcTypeDef, searchTypeDef],
 });

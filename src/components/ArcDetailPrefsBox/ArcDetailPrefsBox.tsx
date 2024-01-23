@@ -3,7 +3,6 @@ import { Slider, Typography } from "@mui/material";
 import styles from "./ArcDetailPrefsBox.less";
 import { IpsumArcColor } from "util/colors";
 import { ArcDetailContext, ArcDetailSection } from "components/ArcDetail";
-import { ArcTag } from "components/ArcTag";
 import { gql, updateArc } from "util/apollo";
 import { useQuery } from "@apollo/client";
 

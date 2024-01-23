@@ -1,8 +1,11 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { ArcTag } from "components/ArcTag";
+import { ArcChipConnected } from "components/ArcChip";
+import {
+  ArcSearchAutocomplete,
+  ArcSearchResult,
+} from "components/ArcSearchAutocomplete";
 import { DiptychContext } from "components/DiptychContext";
-import { Linker } from "components/Linker";
 import React, { useCallback, useContext, useMemo } from "react";
 import { theme } from "styles/styles";
 import { createArc, createRelation, gql } from "util/apollo";
@@ -77,10 +80,16 @@ export const HighlightBoxRelations: React.FunctionComponent<
     [highlight]
   );
 
-  const createAndLinkArc = useCallback(
-    (name: string) => {
-      const arc = createArc({ name });
-      linkArc(arc.id);
+  const createArcFromAutocomplete = useCallback((name: string) => {
+    const arc = createArc({ name });
+    return arc.id;
+  }, []);
+
+  const onAutocompleteChange = useCallback(
+    (value: ArcSearchResult[]) => {
+      if (!value || value.length === 0 || value[0].newArcProps) return;
+
+      linkArc(value[0].arcId);
     },
     [linkArc]
   );
@@ -98,14 +107,11 @@ export const HighlightBoxRelations: React.FunctionComponent<
           </Typography>
           <div className={styles["predicate-relations"]}>
             {relationsGroupedByPredicate[predicate].map((relation, i) => (
-              <ArcTag
-                arcForToken={{
-                  type: "from id",
-                  id: relation.object.id,
-                }}
+              <ArcChipConnected
+                arcId={relation.object.id}
                 onClick={onArcClick}
                 key={i}
-              ></ArcTag>
+              ></ArcChipConnected>
             ))}
           </div>
         </div>
@@ -117,12 +123,15 @@ export const HighlightBoxRelations: React.FunctionComponent<
     <div className={styles["details-relations"]}>
       <div className={styles["relations-right"]}>
         <div className={styles["relations"]}>{relationsMarkup}</div>
-        <div>
-          <Linker
-            onAddArc={createAndLinkArc}
-            onChooseArc={linkArc}
-            className={styles["linker"]}
-          ></Linker>
+        <div className={styles["autocomplete-row"]}>
+          <ArcSearchAutocomplete
+            className={styles["assign-arc-autocomplete"]}
+            allowCreate
+            multiple={false}
+            value={undefined}
+            onChange={onAutocompleteChange}
+            onNewArc={createArcFromAutocomplete}
+          />
         </div>
       </div>
     </div>

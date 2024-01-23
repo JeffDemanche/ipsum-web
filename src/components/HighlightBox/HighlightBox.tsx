@@ -106,7 +106,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
       onMouseLeave={() => {
         onHover?.(false);
       }}
-      variant="translucent"
+      variant={selected ? "elevation" : "translucent"}
       onClick={onCardClick}
       className={cx(selected && styles["selected"], styles["box"])}
       data-testid="median-highlight-box"

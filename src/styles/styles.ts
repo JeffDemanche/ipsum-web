@@ -65,7 +65,7 @@ const {
 const createColor = (mainColor: string) =>
   augmentColor({ color: { main: mainColor } });
 
-export const theme = createTheme({
+const baseTheme = createTheme({
   typography: {
     allVariants: {},
     h1: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "96px" },
@@ -84,20 +84,32 @@ export const theme = createTheme({
       color: `${grey[50]} !important`,
       backgroundColor: grey[900],
     },
-    h5: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "20px" },
+    h5: { fontFamily: "Inria Sans", fontWeight: "100", fontSizz: "20px" },
     h6: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "16px" },
-    body1: { fontFamily: "Meiryo", fontWeight: "regular", fontSize: "16px" },
-    body2: { fontFamily: "Meiryo", fontWeight: "regular", fontSize: "14px" },
+    body1: {
+      fontFamily: "Inria Sans",
+      fontWeight: "regular",
+      fontSize: "16px",
+    },
+    body2: {
+      fontFamily: "Inria Sans",
+      fontWeight: "regular",
+      fontSize: "14px",
+    },
     subtitle1: {
       fontFamily: "Inria Sans",
       fontWeight: "100",
+      fontSize: "14px",
+    },
+    caption: {
+      fontFamily: "Inria Sans",
+      fontWeight: "regular",
       fontSize: "14px",
     },
   },
   palette: {
     primary: {
       main: grey[700],
-      "700": grey[700],
     },
     secondary: {
       main: amber[500],
@@ -116,107 +128,124 @@ export const theme = createTheme({
     onPrimaryHighEmphasis: "rgba(255, 255, 255, 0.87)",
     onPrimaryMediumEmphasis: "rgba(255, 255, 255, 0.60)",
   },
-  components: {
-    MuiAccordion: {
-      styleOverrides: {
-        root: {
-          borderRadius: "0px !important",
+});
+
+export const theme = createTheme(
+  {
+    components: {
+      MuiAccordion: {
+        styleOverrides: {
+          root: {
+            borderRadius: "0px !important",
+          },
         },
       },
-    },
-    MuiDrawer: {
-      styleOverrides: { paper: { backgroundColor: brown[100] } },
-    },
-    MuiCard: {
-      variants: [
-        {
-          props: { variant: "shadowed" },
-          style: {
-            backgroundColor: "rgba(255, 255, 255, .55)",
+      MuiDrawer: {
+        styleOverrides: { paper: { backgroundColor: brown[100] } },
+      },
+      MuiCard: {
+        variants: [
+          {
+            props: { variant: "shadowed" },
+            style: {
+              backgroundColor: "rgba(255, 255, 255, .55)",
+            },
+          },
+          {
+            props: { variant: "translucent" },
+            style: {
+              backgroundColor: "white",
+            },
+          },
+        ],
+      },
+      MuiChip: {
+        styleOverrides: {
+          root: {
+            borderRadius: "4px",
+            height: "26px",
+            fontFamily: baseTheme.typography.caption.fontFamily,
+            fontSize: baseTheme.typography.caption.fontSize,
+            fontWeight: baseTheme.typography.caption.fontWeight,
           },
         },
-        {
-          props: { variant: "translucent" },
-          style: {
-            backgroundColor: "white",
+      },
+      MuiPaper: {
+        variants: [
+          {
+            props: { variant: "shadowed" },
+            style: {
+              borderRadius: "0px",
+              backgroundColor: "white",
+            },
+          },
+          {
+            props: { variant: "translucent" },
+            style: {
+              borderRadius: "0px",
+              backgroundColor: "rgba(255, 255, 255, .55)",
+              backdropFilter: "blur(5px)",
+            },
+          },
+        ],
+      },
+      MuiOutlinedInput: {},
+      MuiTextField: {},
+      MuiDivider: {},
+      MuiIconButton: {
+        styleOverrides: {
+          sizeSmall: {
+            height: "24px",
+            width: "24px",
           },
         },
-      ],
-    },
-    MuiPaper: {
-      variants: [
-        {
-          props: { variant: "shadowed" },
-          style: {
+      },
+      MuiButtonBase: {
+        styleOverrides: {
+          root: {
             borderRadius: "0px",
-            backgroundColor: "white",
           },
         },
-        {
-          props: { variant: "translucent" },
-          style: {
+      },
+      MuiButton: {
+        variants: [],
+        styleOverrides: {
+          root: {
             borderRadius: "0px",
-            backgroundColor: "rgba(255, 255, 255, .55)",
-            backdropFilter: "blur(5px)",
+            textTransform: "none",
           },
         },
-      ],
-    },
-    MuiOutlinedInput: {},
-    MuiTextField: {},
-    MuiDivider: {},
-    MuiIconButton: {
-      styleOverrides: {
-        sizeSmall: {
-          height: "24px",
-          width: "24px",
-        },
       },
-    },
-    MuiButtonBase: {
-      styleOverrides: {
-        root: {
-          borderRadius: "0px",
-        },
-      },
-    },
-    MuiButton: {
-      variants: [],
-      styleOverrides: {
-        root: {
-          borderRadius: "0px",
-          textTransform: "none",
-        },
-      },
-    },
-    MuiPopover: {},
-    MuiToggleButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: "0px",
-        },
-      },
-    },
-    MuiInputBase: {
-      styleOverrides: {
-        root: {
-          color: grey[700],
-          fontSize: "15px",
-          fontFamily: "Inria Sans",
-        },
-      },
-    },
-    MuiMenuItem: {
-      styleOverrides: {
-        root: {
-          i: {
-            color: grey[900],
+      MuiPopover: {},
+      MuiToggleButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: "0px",
           },
-          color: grey[700],
-          fontSize: "15px",
-          fontFamily: "Inria Sans",
+        },
+      },
+      MuiInputBase: {
+        styleOverrides: {
+          root: {
+            color: grey[700],
+            fontSize: "15px",
+            fontFamily: "Inria Sans",
+          },
+        },
+      },
+      MuiMenuItem: {
+        styleOverrides: {
+          root: {
+            i: {
+              color: grey[900],
+            },
+            color: grey[700],
+            fontSize: "15px",
+            fontFamily: "Inria Sans",
+          },
         },
       },
     },
   },
-});
+  baseTheme
+);

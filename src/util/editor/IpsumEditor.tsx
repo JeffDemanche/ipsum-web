@@ -90,7 +90,7 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
             }
           />
           <LoadSavePlugin entryKey={entryKey} metadata={metadata} />
-          <HighlightAssignmentPlugin entryKey={entryKey} />
+          <HighlightAssignmentPlugin editable={editable} entryKey={entryKey} />
           <ListPlugin />
           <LinkPlugin />
           <HistoryPlugin />
