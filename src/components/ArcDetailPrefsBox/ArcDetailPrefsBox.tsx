@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from "react";
-import { Slider, Typography } from "@mui/material";
+import { Slider, TextField, Typography } from "@mui/material";
 import styles from "./ArcDetailPrefsBox.less";
 import { IpsumArcColor } from "util/colors";
 import { ArcDetailContext, ArcDetailSection } from "components/ArcDetail";
@@ -38,18 +38,63 @@ export const ArcDetailPrefsBox: React.FC = () => {
 
   const color = new IpsumArcColor(localColor);
 
+  const [editingName, setEditingName] = useState(false);
+
+  const onNameChange = useCallback(
+    (name: string) => {
+      updateArc({ id: arc.id, name });
+      setEditingName(false);
+    },
+    [arc.id]
+  );
+
   return (
     <ArcDetailSection>
-      <Typography
-        variant="h3"
-        sx={{
-          backgroundColor: color
-            .toIpsumColor({ lightness: 30, saturation: 50 })
-            .toRgbaCSS(),
-        }}
-      >
-        {arc.name}
-      </Typography>
+      {editingName ? (
+        <TextField
+          variant="standard"
+          defaultValue={arc.name}
+          autoFocus
+          onBlur={(e) => {
+            onNameChange(e.target.value);
+          }}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              if (e.target instanceof HTMLInputElement) {
+                onNameChange(e.target.value);
+              }
+            } else if (e.key === "Escape") {
+              setEditingName(false);
+            }
+          }}
+          inputProps={{
+            sx: {
+              fontSize: "30px",
+              color: "white",
+            },
+          }}
+          sx={{
+            width: "100%",
+            color: "white",
+            backgroundColor: color
+              .toIpsumColor({ lightness: 30, saturation: 50 })
+              .toRgbaCSS(),
+          }}
+        ></TextField>
+      ) : (
+        <Typography
+          variant="h3"
+          onClick={() => setEditingName(true)}
+          sx={{
+            cursor: "pointer",
+            backgroundColor: color
+              .toIpsumColor({ lightness: 30, saturation: 50 })
+              .toRgbaCSS(),
+          }}
+        >
+          {arc.name}
+        </Typography>
+      )}
       <Slider
         min={0}
         max={359}
