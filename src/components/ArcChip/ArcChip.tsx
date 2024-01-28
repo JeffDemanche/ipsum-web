@@ -7,7 +7,7 @@ export interface ArcChipProps {
   label: string;
   hue: number;
 
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
   onDelete?: () => void;
 
   chipProps?: Partial<React.ComponentProps<typeof Chip>>;

@@ -498,6 +498,7 @@ const typePolicies: StrictTypedTypePolicies = {
       },
     },
   },
+  Arc: ArcResolvers.Arc,
   Highlight: HighlightResolvers.Highlight,
   SRSDeck: SRSResolvers.SRSDeck,
   SRSCard: SRSResolvers.SRSCard,

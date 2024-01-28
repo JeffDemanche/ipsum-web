@@ -8,11 +8,11 @@ import {
 import { DiptychContext } from "components/DiptychContext";
 import React, { useCallback, useContext, useMemo } from "react";
 import { theme } from "styles/styles";
-import { createArc, createRelation, gql } from "util/apollo";
+import { createArc, createRelation, deleteRelation, gql } from "util/apollo";
 import styles from "./HighlightBox.less";
 
 const HighlightBoxRelationsQuery = gql(`
-  query HighlightBox($highlightId: ID!) {
+  query HighlightBoxRelations($highlightId: ID!) {
     highlight(id: $highlightId) {
       id
       entry {
@@ -21,6 +21,7 @@ const HighlightBoxRelationsQuery = gql(`
       }
       outgoingRelations {
         __typename
+        id
         predicate
         object {
           ... on Arc {
@@ -80,6 +81,10 @@ export const HighlightBoxRelations: React.FunctionComponent<
     [highlight]
   );
 
+  const unlinkArc = useCallback((relationId: string) => {
+    deleteRelation(relationId);
+  }, []);
+
   const createArcFromAutocomplete = useCallback((name: string) => {
     const arc = createArc({ name });
     return arc.id;
@@ -109,14 +114,19 @@ export const HighlightBoxRelations: React.FunctionComponent<
             {relationsGroupedByPredicate[predicate].map((relation, i) => (
               <ArcChipConnected
                 arcId={relation.object.id}
-                onClick={onArcClick}
+                onClick={(e) => {
+                  onArcClick(relation.object.id, e);
+                }}
+                onDelete={() => {
+                  unlinkArc(relation.id);
+                }}
                 key={i}
               ></ArcChipConnected>
             ))}
           </div>
         </div>
       )),
-    [onArcClick, relationsGroupedByPredicate]
+    [onArcClick, relationsGroupedByPredicate, unlinkArc]
   );
 
   return (

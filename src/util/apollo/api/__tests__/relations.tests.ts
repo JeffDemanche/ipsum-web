@@ -1,7 +1,7 @@
 import { initializeState, vars } from "util/apollo/client";
 import { createArc } from "../arcs";
 import { createHighlight } from "../highlights";
-import { createRelation } from "../relations";
+import { createRelation, deleteRelation } from "../relations";
 
 jest.mock("../../autosave");
 
@@ -55,6 +55,56 @@ describe("apollo relations API", () => {
       expect(vars.relations()[id].subject).toEqual(highlightId);
       expect(vars.relations()[id].predicate).toEqual("relates to");
       expect(vars.relations()[id].object).toEqual(arcId);
+    });
+  });
+
+  describe("deleteRelation", () => {
+    it("should not delete a relation if the relation does not exist", () => {
+      expect(() => deleteRelation("relation 1")).toThrow();
+    });
+
+    it("should delete a relation and update subject highlight and object arc", () => {
+      const { id: arcId } = createArc({ name: "arc" });
+      const { id: highlightId } = createHighlight({
+        entry: "entry",
+      });
+      const { id } = createRelation({
+        subject: highlightId,
+        subjectType: "Highlight",
+        predicate: "relates to",
+        object: arcId,
+        objectType: "Arc",
+      });
+      expect(vars.highlights()[highlightId].outgoingRelations).toEqual([id]);
+      expect(vars.arcs()[arcId].incomingRelations).toEqual([id]);
+      expect(vars.relations()[id].subject).toEqual(highlightId);
+      expect(vars.relations()[id].predicate).toEqual("relates to");
+      expect(vars.relations()[id].object).toEqual(arcId);
+
+      deleteRelation(id);
+      expect(vars.highlights()[highlightId].outgoingRelations).toEqual([]);
+      expect(vars.arcs()[arcId].incomingRelations).toEqual([]);
+      expect(vars.relations()[id]).toBeUndefined();
+    });
+
+    it("should delete a relation and update subject and object arcs", () => {
+      const { id: arc1Id } = createArc({ name: "arc 1" });
+      const { id: arc2Id } = createArc({ name: "arc 2" });
+      const { id } = createRelation({
+        subject: arc1Id,
+        subjectType: "Arc",
+        predicate: "relates to",
+        object: arc2Id,
+        objectType: "Arc",
+      });
+      expect(vars.arcs()[arc1Id].outgoingRelations).toEqual([id]);
+      expect(vars.arcs()[arc2Id].incomingRelations).toEqual([id]);
+      expect(vars.relations()[id].predicate).toEqual("relates to");
+
+      deleteRelation(id);
+      expect(vars.arcs()[arc1Id].outgoingRelations).toEqual([]);
+      expect(vars.arcs()[arc2Id].incomingRelations).toEqual([]);
+      expect(vars.relations()[id]).toBeUndefined();
     });
   });
 });

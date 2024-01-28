@@ -65,3 +65,47 @@ export const createRelation = ({
   autosave();
   return result;
 };
+
+export const deleteRelation = (id: string) => {
+  const relation = vars.relations()[id];
+  if (!relation) throw new Error("deleteRelation: Relation not found");
+
+  delete vars.relations()[id];
+
+  // Update outgoing relations on subject objects
+  if (relation.subjectType === "Arc") {
+    if (!vars.arcs()[relation.subject])
+      throw new Error("deleteRelation: Subject arc not found");
+    updateArc({
+      id: relation.subject,
+      outgoingRelations: vars.arcs()[
+        // eslint-disable-next-line no-unexpected-multiline
+        relation.subject
+      ].outgoingRelations.filter((relationId) => relationId !== id),
+    });
+  } else if (relation.subjectType === "Highlight") {
+    if (!vars.highlights()[relation.subject])
+      throw new Error("deleteRelation: Subject highlight not found");
+    updateHighlight({
+      id: relation.subject,
+      outgoingRelations: vars.highlights()[
+        // eslint-disable-next-line no-unexpected-multiline
+        relation.subject
+      ].outgoingRelations.filter((relationId) => relationId !== id),
+    });
+  }
+
+  if (relation.objectType === "Arc") {
+    if (!vars.arcs()[relation.object])
+      throw new Error("deleteRelation: Object arc not found");
+    updateArc({
+      id: relation.object,
+      incomingRelations: vars.arcs()[
+        // eslint-disable-next-line no-unexpected-multiline
+        relation.object
+      ].incomingRelations.filter((relationId) => relationId !== id),
+    });
+  }
+
+  autosave();
+};
