@@ -7,6 +7,7 @@ import { HighlightResolvers } from "./resolvers/highlight-resolvers";
 import { SearchResolvers } from "./resolvers/search-resolvers";
 import { SRSResolvers } from "./resolvers/srs-resolvers";
 import { arcTypeDef } from "./schemas/arc-schema";
+import { highlightTypeDef } from "./schemas/highlight-schema";
 import { searchTypeDef } from "./schemas/search-schema";
 import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import {
@@ -36,9 +37,6 @@ const typeDefs = gql`
 
     arcEntry(arcId: ID!): ArcEntry
     arcEntries(entryKeys: [ID!]): [ArcEntry]
-
-    highlight(id: ID!): Highlight
-    highlights(ids: [ID!], entries: [ID!], arcs: [ID!]): [Highlight]
 
     relation(id: ID!): Relation
     relations(ids: [ID!]): [Relation]
@@ -86,17 +84,6 @@ const typeDefs = gql`
   type CommentEntry {
     entry: Entry!
     comment: Comment!
-  }
-
-  type Highlight {
-    id: ID!
-    history: History!
-    entry: Entry!
-    arc: Arc
-    arcs: [Arc!]!
-    outgoingRelations: [Relation!]!
-    srsCards: [SRSCard!]!
-    hue: Int!
   }
 
   union RelationSubject = Arc | Highlight
@@ -509,5 +496,5 @@ const cache = new InMemoryCache({ typePolicies, addTypename: true });
 
 export const client = new ApolloClient({
   cache,
-  typeDefs: [typeDefs, arcTypeDef, searchTypeDef],
+  typeDefs: [typeDefs, arcTypeDef, searchTypeDef, highlightTypeDef],
 });

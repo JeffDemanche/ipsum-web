@@ -20,6 +20,10 @@ import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 
+import { highlight } from "./plugins/HighlightAssignmentPlugin.less";
+
+export const highlightSpanClassname = highlight;
+
 interface MetadataJournal {
   entryType: EntryType.Journal;
 }

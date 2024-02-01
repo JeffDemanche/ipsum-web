@@ -1,8 +1,9 @@
 import cx from "classnames";
 import { Paper } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./HighlightExcerpt.less";
-import { useExcerpt } from "./useExcerpt";
+import { gql } from "util/apollo";
+import { useQuery } from "@apollo/client";
 
 interface HighlightExcerptProps {
   highlightId: string;
@@ -10,13 +11,29 @@ interface HighlightExcerptProps {
   charLimit?: number;
 }
 
+const HighlightExcerptQuery = gql(`
+  query HighlightExcerptQuery($highlightId: ID!) {
+    highlight(id: $highlightId) {
+      id
+      excerpt
+    }
+  }
+`);
+
 export const HighlightExcerpt: React.FunctionComponent<
   HighlightExcerptProps
 > = ({ highlightId, className, charLimit }) => {
-  const { ref } = useExcerpt({
-    highlightId,
-    charLimit,
+  const { data } = useQuery(HighlightExcerptQuery, {
+    variables: { highlightId },
   });
+
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (data?.highlight?.excerpt && ref.current) {
+      ref.current.innerHTML = data.highlight.excerpt;
+    }
+  }, [data.highlight.excerpt]);
 
   return (
     <Paper

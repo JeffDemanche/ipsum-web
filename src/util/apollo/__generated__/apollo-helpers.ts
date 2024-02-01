@@ -44,11 +44,12 @@ export type EntryFieldPolicy = {
 	htmlString?: FieldPolicy<any> | FieldReadFunction<any>,
 	trackedHTMLString?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type HighlightKeySpecifier = ('arc' | 'arcs' | 'entry' | 'history' | 'hue' | 'id' | 'outgoingRelations' | 'srsCards' | HighlightKeySpecifier)[];
+export type HighlightKeySpecifier = ('arc' | 'arcs' | 'entry' | 'excerpt' | 'history' | 'hue' | 'id' | 'outgoingRelations' | 'srsCards' | HighlightKeySpecifier)[];
 export type HighlightFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcs?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>,
+	excerpt?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
 	hue?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,

@@ -1,3 +1,5 @@
+import { IpsumTimeMachine } from "util/diff";
+import { excerptDivString } from "util/excerpt";
 import { vars } from "../client";
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
 import { QueryHighlightsArgs } from "../__generated__/graphql";
@@ -77,6 +79,22 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
         const averageHue =
           arcs.reduce((acc, cur) => acc + cur.color, 0) / arcs.length;
         return Math.floor(averageHue);
+      },
+      excerpt(_, { readField }) {
+        const entry = readField<{
+          __typename: "Entry";
+          trackedHTMLString: string;
+        }>("entry");
+
+        const currentHtmlString = IpsumTimeMachine.fromString(
+          entry.trackedHTMLString
+        ).currentValue;
+
+        return excerptDivString({
+          entryDomString: currentHtmlString,
+          highlightId: readField("id"),
+          highlightHue: readField("hue"),
+        });
       },
     },
   },
