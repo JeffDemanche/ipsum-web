@@ -84,7 +84,7 @@ describe("HighlightExcerpt", () => {
   it("only shows highlighted block when there are other blocks present", () => {
     render(
       <ApolloProvider client={client}>
-        <HighlightExcerpt charLimit={12} highlightId="highlight_2" />
+        <HighlightExcerpt highlightId="highlight_2" />
       </ApolloProvider>
     );
 

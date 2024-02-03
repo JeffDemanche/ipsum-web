@@ -7,8 +7,19 @@ import { useQuery } from "@apollo/client";
 
 interface HighlightExcerptProps {
   highlightId: string;
-  className?: string;
-  charLimit?: number;
+  paperClassName?: string;
+  divClassName?: string;
+
+  /**
+   * Truncate will apply an ellipsis to excerpt text based on the width of the
+   * paper component.
+   */
+  truncate?: boolean;
+
+  /**
+   * If truncate is true, this will determine the number of lines to display.
+   */
+  truncateLineClamp?: number;
 }
 
 const HighlightExcerptQuery = gql(`
@@ -22,7 +33,13 @@ const HighlightExcerptQuery = gql(`
 
 export const HighlightExcerpt: React.FunctionComponent<
   HighlightExcerptProps
-> = ({ highlightId, className, charLimit }) => {
+> = ({
+  highlightId,
+  paperClassName,
+  divClassName,
+  truncate,
+  truncateLineClamp,
+}) => {
   const { data } = useQuery(HighlightExcerptQuery, {
     variables: { highlightId },
   });
@@ -38,10 +55,18 @@ export const HighlightExcerpt: React.FunctionComponent<
   return (
     <Paper
       sx={{ borderRadius: "0" }}
-      className={cx(className, styles["excerpt"])}
+      className={cx(paperClassName, styles["excerpt-paper"])}
       data-highlightid={highlightId}
     >
-      <div ref={ref} />
+      <div
+        className={cx(
+          divClassName,
+          styles["excerpt-div"],
+          truncate && styles["truncate"]
+        )}
+        style={{ WebkitLineClamp: truncateLineClamp }}
+        ref={ref}
+      />
     </Paper>
   );
 };

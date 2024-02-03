@@ -1,6 +1,14 @@
-.excerpt {
+.excerpt-paper {
   padding: 4px;
   font-size: 11pt;
   font-family: "Crimson Text", serif;
   line-height: 1.5;
+
+  .truncate {
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }

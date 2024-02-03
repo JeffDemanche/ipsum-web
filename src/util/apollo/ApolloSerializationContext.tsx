@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
 import { readFromFile, writeToFile } from "util/file";
 import { useIpsumIDBWrapper } from "util/indexed-db";
+import { useModifySearchParams } from "util/url";
 import { autosave } from "./autosave";
 import { initializeState, vars } from "./client";
 import { loadApolloState, writeApolloState } from "./serializer";
@@ -48,6 +48,8 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
     }
   }, [loadErrors]);
 
+  const modifySearchParams = useModifySearchParams();
+
   const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false);
   const refreshDom = useCallback(() => {
     setRefreshTrigger(true);
@@ -71,17 +73,16 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
         })
       )
     );
+    modifySearchParams(() => ({}));
     autosave();
-  }, []);
-
-  const navigate = useNavigate();
+  }, [modifySearchParams]);
 
   const resetToInitial = useCallback(() => {
-    navigate({ search: "" });
+    modifySearchParams(() => ({}));
     initializeState();
     autosave();
     refreshDom();
-  }, [navigate, refreshDom]);
+  }, [modifySearchParams, refreshDom]);
 
   // Autosave stuff
   const idbWrapper = useIpsumIDBWrapper();
