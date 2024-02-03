@@ -17,7 +17,6 @@ const documents = {
     "\n  query ArcDetailContext($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n      arcEntry {\n        entry {\n          entryKey\n        }\n      }\n    }\n  }\n": types.ArcDetailContextDocument,
     "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n    }\n  } \n": types.ArcDetailPrefsBoxDocument,
     "\n  query ArcSearchAutocomplete {\n    arcs(sort: ALPHA_DESC) {\n      id\n      name\n    }\n  }\n": types.ArcSearchAutocompleteDocument,
-    "\n  query BreadcrumbHighlightQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n": types.BreadcrumbHighlightQueryDocument,
     "\n  query BreadcrumbJournalEntryQuery($journalEntryId: ID!) {\n    journalEntry(entryKey: $journalEntryId) {\n      entryKey\n      entry {\n        date\n      }\n    }\n  }\n": types.BreadcrumbJournalEntryQueryDocument,
     "\n  query DailyJournal {\n    recentJournalEntries {\n      entryKey\n    }\n  }\n": types.DailyJournalDocument,
     "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n": types.JournalEntryTodayDocument,
@@ -71,10 +70,6 @@ export function gql(source: "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query ArcSearchAutocomplete {\n    arcs(sort: ALPHA_DESC) {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query ArcSearchAutocomplete {\n    arcs(sort: ALPHA_DESC) {\n      id\n      name\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query BreadcrumbHighlightQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n"): (typeof documents)["\n  query BreadcrumbHighlightQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

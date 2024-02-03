@@ -21,5 +21,17 @@ export default function fixArcEntries(modifiedData: any) {
         arc: arc.id,
       };
     }
+    if (!modifiedData.entries[modifiedData.arcEntries[arc.arcEntry].entry]) {
+      modifiedData.entries[arc.arcEntry] = {
+        __typename: "Entry",
+        entryKey: arc.arcEntry,
+        trackedHTMLString: IpsumTimeMachine.create("").toString(),
+        entryType: "ARC",
+        history: {
+          __typename: "History",
+          dateCreated: IpsumDay.today().toString("iso"),
+        },
+      };
+    }
   });
 }

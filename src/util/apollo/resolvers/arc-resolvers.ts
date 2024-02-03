@@ -7,7 +7,8 @@ export const ArcResolvers: StrictTypedTypePolicies = {
     fields: {
       arc(_, { args }) {
         if (args?.id) {
-          return vars.arcs()[args.id];
+          const arc = vars.arcs()[args.id];
+          return arc ?? null;
         }
         return null;
       },
@@ -46,7 +47,8 @@ export const ArcResolvers: StrictTypedTypePolicies = {
         return relationIds.map((id) => vars.relations()[id]);
       },
       arcEntry(arcEntryKey) {
-        return vars.arcEntries()[arcEntryKey];
+        const arcEntry = vars.arcEntries()[arcEntryKey];
+        return arcEntry ?? null;
       },
     },
   },

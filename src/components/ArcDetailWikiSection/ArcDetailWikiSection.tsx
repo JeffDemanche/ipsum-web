@@ -9,10 +9,7 @@ export const ArcDetailWikiSection: React.FunctionComponent = () => {
   const arcId = arc.id;
   const arcName = arc.name;
 
-  const entryKey = useMemo(
-    () => arc.arcEntry.entry.entryKey,
-    [arc.arcEntry.entry.entryKey]
-  );
+  const entryKey = useMemo(() => arc.arcEntry?.entry.entryKey, [arc.arcEntry]);
 
   return (
     <ArcDetailSection>

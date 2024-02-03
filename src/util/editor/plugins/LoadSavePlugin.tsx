@@ -84,9 +84,6 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
             case EntryType.Journal:
               deleteJournalEntry({ entryKey });
               break;
-            case EntryType.Arc:
-              deleteArcEntry(entryKey);
-              break;
           }
         } else {
           const entry = {

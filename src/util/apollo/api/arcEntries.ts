@@ -44,5 +44,12 @@ export const deleteArcEntry = (entryKey: string) => {
   delete newEntries[entryKey];
   vars.entries(newEntries);
 
+  const newArcs = { ...vars.arcs() };
+  Object.values(newArcs).forEach((arc) => {
+    if (arc.arcEntry === entryKey) {
+      delete arc.arcEntry;
+    }
+  });
+
   autosave();
 };

@@ -16,6 +16,7 @@ import {
   QueryRelationsArgs,
   QueryJournalEntriesArgs,
 } from "./__generated__/graphql";
+import { onError } from "@apollo/client/link/error";
 
 const typeDefs = gql`
   type Query {
@@ -459,7 +460,11 @@ const typePolicies: StrictTypedTypePolicies = {
         return vars.arcs()[arcId];
       },
       entry(entryKey) {
-        return vars.entries()[entryKey];
+        const entry = vars.entries()[entryKey];
+        if (!entry) {
+          throw new Error(`No entry found with key: ${entryKey}`);
+        }
+        return entry;
       },
     },
   },
@@ -494,7 +499,12 @@ const typePolicies: StrictTypedTypePolicies = {
 
 const cache = new InMemoryCache({ typePolicies, addTypename: true });
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  console.log("graphQLErrors", graphQLErrors);
+});
+
 export const client = new ApolloClient({
   cache,
   typeDefs: [typeDefs, arcTypeDef, searchTypeDef, highlightTypeDef],
+  link: errorLink,
 });

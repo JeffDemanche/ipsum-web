@@ -31,7 +31,11 @@ interface ArcDetailProviderProps {
 export const ArcDetailProvider: React.FunctionComponent<
   ArcDetailProviderProps
 > = ({ arcId, children }) => {
-  const { data } = useQuery(ArcDetailContextQuery, { variables: { arcId } });
+  const { data } = useQuery(ArcDetailContextQuery, {
+    variables: { arcId },
+    onError: (error) => console.error(error),
+    errorPolicy: "all",
+  });
 
   return (
     <ArcDetailContext.Provider value={{ arcId, arc: data.arc }}>
