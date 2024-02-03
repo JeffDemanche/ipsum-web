@@ -2,22 +2,12 @@ import { HighlightBreadcrumb } from "components/DiptychContext";
 import React from "react";
 import styles from "./Breadcrumb.less";
 import cx from "classnames";
-import { HighlightBox } from "components/HighlightBox";
 import { Card } from "@mui/material";
-import { gql } from "util/apollo";
+import { HighlightExcerpt } from "components/HighlightExcerpt";
 
 interface BreadcrumbHighlightProps {
   breadcrumb: HighlightBreadcrumb;
 }
-
-const BreadcrumbHighlightQuery = gql(`
-  query BreadcrumbHighlightQuery($highlightId: ID!) {
-    highlight(id: $highlightId) {
-      id
-      excerpt
-    }
-  }
-`);
 
 export const BreadcrumbHighlight: React.FunctionComponent<
   BreadcrumbHighlightProps
@@ -25,8 +15,11 @@ export const BreadcrumbHighlight: React.FunctionComponent<
   return (
     <div className={cx(styles["breadcrumb"], styles["highlight-breadcrumb"])}>
       <Card variant="outlined" className={styles["breadcrumb-card"]}>
-        <HighlightBox
-          variant="collapsed"
+        <HighlightExcerpt
+          truncate
+          truncateLineClamp={2}
+          paperClassName={styles["breadcrumb-highlight-excerpt"]}
+          divClassName={styles["excerpt-top-div"]}
           highlightId={breadcrumb.highlightId}
         />
       </Card>

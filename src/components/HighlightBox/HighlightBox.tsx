@@ -139,9 +139,8 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
 
       {variant !== "collapsed" && (
         <HighlightExcerpt
-          className={styles["excerpt"]}
+          paperClassName={styles["excerpt"]}
           highlightId={highlightId}
-          charLimit={selected ? undefined : 200}
         />
       )}
 

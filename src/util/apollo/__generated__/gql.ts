@@ -17,7 +17,7 @@ const documents = {
     "\n  query ArcDetailContext($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n      arcEntry {\n        entry {\n          entryKey\n        }\n      }\n    }\n  }\n": types.ArcDetailContextDocument,
     "\n  query ArcDetailPrefsBox($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n    }\n  } \n": types.ArcDetailPrefsBoxDocument,
     "\n  query ArcSearchAutocomplete {\n    arcs(sort: ALPHA_DESC) {\n      id\n      name\n    }\n  }\n": types.ArcSearchAutocompleteDocument,
-    "\n  query BreadcrumbHighlightQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      # excerpt\n    }\n  }\n": types.BreadcrumbHighlightQueryDocument,
+    "\n  query BreadcrumbHighlightQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n": types.BreadcrumbHighlightQueryDocument,
     "\n  query BreadcrumbJournalEntryQuery($journalEntryId: ID!) {\n    journalEntry(entryKey: $journalEntryId) {\n      entryKey\n      entry {\n        date\n      }\n    }\n  }\n": types.BreadcrumbJournalEntryQueryDocument,
     "\n  query DailyJournal {\n    recentJournalEntries {\n      entryKey\n    }\n  }\n": types.DailyJournalDocument,
     "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n": types.JournalEntryTodayDocument,
@@ -29,7 +29,6 @@ const documents = {
     "\n  query HighlightBox($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightBoxDocument,
     "\n  query HighlightBoxRelations($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightBoxRelationsDocument,
     "\n  query HighlightExcerptQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n": types.HighlightExcerptQueryDocument,
-    "\n  query UseExcerptQuery($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        htmlString\n      }\n      hue\n    }\n  }\n": types.UseExcerptQueryDocument,
     "\n  query HighlightTag($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      hue\n      outgoingRelations {\n        id\n        object {\n          __typename\n          ... on Arc {\n            id\n            name\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightTagDocument,
     "\n  query HighlightsList($highlightIds: [ID!]!) {\n    highlights(ids: $highlightIds) {\n      id\n      entry {\n        entryKey\n        date\n      }\n    }\n  }\n": types.HighlightsListDocument,
     "\n  query JournalDateRangeEntryKeys {\n    journalEntryKeys\n  }\n": types.JournalDateRangeEntryKeysDocument,
@@ -75,7 +74,7 @@ export function gql(source: "\n  query ArcSearchAutocomplete {\n    arcs(sort: A
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query BreadcrumbHighlightQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      # excerpt\n    }\n  }\n"): (typeof documents)["\n  query BreadcrumbHighlightQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      # excerpt\n    }\n  }\n"];
+export function gql(source: "\n  query BreadcrumbHighlightQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n"): (typeof documents)["\n  query BreadcrumbHighlightQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -120,10 +119,6 @@ export function gql(source: "\n  query HighlightBoxRelations($highlightId: ID!) 
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query HighlightExcerptQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n"): (typeof documents)["\n  query HighlightExcerptQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query UseExcerptQuery($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        htmlString\n      }\n      hue\n    }\n  }\n"): (typeof documents)["\n  query UseExcerptQuery($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      entry {\n        entryKey\n        htmlString\n      }\n      hue\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
