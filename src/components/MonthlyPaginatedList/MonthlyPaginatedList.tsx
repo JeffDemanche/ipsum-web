@@ -64,9 +64,9 @@ function monthHasElement(
   elements: MonthlyPaginatedListProps["elements"],
   day: IpsumDay
 ) {
-  return elements.some((elem) =>
-    elem.day.isBetween(day.firstDayOfMonth(), day.lastDayOfMonth())
-  );
+  return elements.some((elem) => {
+    return elem.day.isBetween(day.firstDayOfMonth(), day.lastDayOfMonth());
+  });
 }
 
 function anyElementsAfter(
@@ -135,7 +135,10 @@ export const MonthlyPaginatedList: React.FC<MonthlyPaginatedListProps> = ({
         return focusedDay.add(0, 1).firstDayOfMonth();
       } else {
         let additionCounter = 2;
-        while (!monthHasElement(elements, focusedDay.add(0, additionCounter))) {
+        while (
+          !monthHasElement(elements, focusedDay.add(0, additionCounter)) &&
+          !focusedDay.add(0, additionCounter).isInFuture()
+        ) {
           additionCounter++;
         }
         return focusedDay.add(0, additionCounter).firstDayOfMonth();
@@ -152,6 +155,7 @@ export const MonthlyPaginatedList: React.FC<MonthlyPaginatedListProps> = ({
       } else {
         let additionCounter = -2;
         while (!monthHasElement(elements, focusedDay.add(0, additionCounter))) {
+          console.log("here2");
           additionCounter--;
         }
         return focusedDay.add(0, additionCounter).firstDayOfMonth();
@@ -184,7 +188,6 @@ export const MonthlyPaginatedList: React.FC<MonthlyPaginatedListProps> = ({
           isElementEntireView(scrollRef.current, node as HTMLDivElement)
         );
       });
-
       if (
         !newTopFocusedElement?.isEqualNode(topFocusedElement) &&
         newTopFocusedElement?.getAttribute("data-elementdate")

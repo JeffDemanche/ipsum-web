@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { IpsumDateFormatFrom, IpsumDateFormatTo, IpsumDateTime } from "./dates";
 
 /**
@@ -15,15 +16,8 @@ export class IpsumDay {
   }
 
   add(days: number, months?: number): IpsumDay {
-    const jsDate = new Date(this._year, this._month, this._day);
-    jsDate.setDate(jsDate.getDate() + days);
-    if (months) {
-      jsDate.setMonth(jsDate.getMonth() + months);
-    }
-    return new IpsumDay(
-      jsDate.getDate(),
-      jsDate.getMonth(),
-      jsDate.getFullYear()
+    return IpsumDay.fromLuxonDateTime(
+      this.toLuxonDateTime().plus({ days, months })
     );
   }
 
@@ -39,12 +33,34 @@ export class IpsumDay {
     return new Date(this._year, this._month, this._day);
   }
 
+  toLuxonDateTime(): DateTime {
+    return DateTime.fromJSDate(this.toJsDate());
+  }
+
   firstDayOfMonth(): IpsumDay {
-    return new IpsumDay(1, this._month, this._year);
+    const jsDate = DateTime.fromJSDate(
+      new Date(this._year, this._month, this._day)
+    )
+      .startOf("month")
+      .toJSDate();
+    return new IpsumDay(
+      jsDate.getDate(),
+      jsDate.getMonth(),
+      jsDate.getFullYear()
+    );
   }
 
   lastDayOfMonth(): IpsumDay {
-    return new IpsumDay(0, this._month + 1, this._year);
+    const jsDate = DateTime.fromJSDate(
+      new Date(this._year, this._month, this._day)
+    )
+      .endOf("month")
+      .toJSDate();
+    return new IpsumDay(
+      jsDate.getDate(),
+      jsDate.getMonth(),
+      jsDate.getFullYear()
+    );
   }
 
   /**
@@ -52,9 +68,15 @@ export class IpsumDay {
    */
   isBetween(start: IpsumDay, end: IpsumDay): boolean {
     return (
-      this.toJsDate().getTime() >= start.toJsDate().getTime() &&
-      this.toJsDate().getTime() <= end.toJsDate().getTime()
+      DateTime.fromJSDate(this.toJsDate()).startOf("day").toMillis() >=
+        DateTime.fromJSDate(start.toJsDate()).toMillis() &&
+      DateTime.fromJSDate(this.toJsDate()).startOf("day").toMillis() <=
+        DateTime.fromJSDate(end.toJsDate()).toMillis()
     );
+  }
+
+  isInFuture(): boolean {
+    return this.isAfter(IpsumDay.today());
   }
 
   equals(day: IpsumDay): boolean {
@@ -73,13 +95,22 @@ export class IpsumDay {
     return this.toJsDate().getTime() > day.toJsDate().getTime();
   }
 
-  static fromIpsumDateTime(ipsumDateTime: IpsumDateTime): IpsumDay {
-    const jsDate = ipsumDateTime.dateTime.toJSDate();
+  static fromJsDate(jsDate: Date): IpsumDay {
     return new IpsumDay(
       jsDate.getDate(),
       jsDate.getMonth(),
       jsDate.getFullYear()
     );
+  }
+
+  static fromLuxonDateTime(luxonDateTime: DateTime): IpsumDay {
+    const jsDate = luxonDateTime.toJSDate();
+    return IpsumDay.fromJsDate(jsDate);
+  }
+
+  static fromIpsumDateTime(ipsumDateTime: IpsumDateTime): IpsumDay {
+    const jsDate = ipsumDateTime.dateTime.toJSDate();
+    return IpsumDay.fromJsDate(jsDate);
   }
 
   static fromString(
