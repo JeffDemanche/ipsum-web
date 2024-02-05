@@ -25,7 +25,7 @@ export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
       case "arc_detail":
         return (
           <LayerProvider layer={layer} layerIndex={layerIndex}>
-            <ArcDetail />
+            <ArcDetail key={layer.arcId} />
           </LayerProvider>
         );
     }

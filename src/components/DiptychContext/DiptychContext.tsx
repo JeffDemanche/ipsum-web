@@ -9,6 +9,22 @@ import {
 } from "util/url";
 import { Breadcrumb, Diptych } from "./types";
 
+const isIdenticalLayer = (a: URLLayer, b: URLLayer) => {
+  if (a.type !== b.type) {
+    return false;
+  }
+
+  if (a.type === "daily_journal" && b.type === "daily_journal") {
+    return a.focusedDate === b.focusedDate;
+  }
+
+  if (a.type === "arc_detail" && b.type === "arc_detail") {
+    return a.arcId === b.arcId;
+  }
+
+  return false;
+};
+
 export const DiptychContext = React.createContext<Diptych>({
   layers: [],
   pushLayer: () => {},
@@ -45,6 +61,13 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
 
   const pushLayer = useCallback(
     (layer: URLLayer) => {
+      if (urlLayers.length > 0) {
+        const topLayer = urlLayers[urlLayers.length - 1];
+        if (isIdenticalLayer(topLayer, layer)) {
+          return;
+        }
+      }
+
       modifySearchParams((searchParams) => {
         const newUrlLayers = [...urlLayers, layer];
         return {
