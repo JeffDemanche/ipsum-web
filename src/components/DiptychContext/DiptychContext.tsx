@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client";
+import { BreadcrumbType } from "components/Breadcrumb";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { gql } from "util/apollo";
 import { IpsumDateTime, IpsumDay } from "util/dates";
@@ -7,7 +8,7 @@ import {
   useIpsumSearchParams,
   useModifySearchParams,
 } from "util/url";
-import { Breadcrumb, Diptych } from "./types";
+import { Diptych } from "./types";
 
 const isIdenticalLayer = (a: URLLayer, b: URLLayer) => {
   if (a.type !== b.type) {
@@ -90,47 +91,57 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
     });
   }, [modifySearchParams, urlLayers]);
 
-  const breadcrumbForLayer = useCallback((layer: URLLayer): Breadcrumb => {
-    switch (layer.type) {
-      case "daily_journal":
-        return {
-          type: "journal_entry",
-          journalEntryId: layer.highlightFromEntryKey
-            ? IpsumDay.fromString(
-                layer.highlightFromEntryKey,
-                "entry-printed-date"
-              ).toString("stored-day")
-            : layer.focusedDate
-            ? IpsumDateTime.fromString(
-                layer.focusedDate,
-                "url-format"
-              ).toString("entry-printed-date")
-            : IpsumDay.today().toString("entry-printed-date"),
-        };
-      case "arc_detail":
-        return {
-          type: "arc",
-          arcId: layer.arcId,
-        };
-    }
-  }, []);
+  const breadcrumbForLayer = useCallback(
+    (layer: URLLayer, visible: boolean): BreadcrumbType => {
+      switch (layer.type) {
+        case "daily_journal":
+          return {
+            type: "journal_entry",
+            journalEntryId: layer.highlightFromEntryKey
+              ? IpsumDay.fromString(
+                  layer.highlightFromEntryKey,
+                  "entry-printed-date"
+                ).toString("stored-day")
+              : layer.focusedDate
+              ? IpsumDateTime.fromString(
+                  layer.focusedDate,
+                  "url-format"
+                ).toString("entry-printed-date")
+              : IpsumDay.today().toString("entry-printed-date"),
+            visible,
+          };
+        case "arc_detail":
+          return {
+            type: "arc",
+            arcId: layer.arcId,
+            visible,
+          };
+      }
+    },
+    []
+  );
 
   const orderedBreadcrumbs = useMemo(() => {
-    const breadcrumbs: Breadcrumb[] = [];
+    const breadcrumbs: BreadcrumbType[] = [];
 
-    urlLayers.forEach((layer) => {
-      breadcrumbs.push(breadcrumbForLayer(layer));
+    urlLayers.forEach((layer, i) => {
+      const layerVisible =
+        i === urlLayers.length - 1 || i === urlLayers.length - 2;
+
+      breadcrumbs.push(breadcrumbForLayer(layer, layerVisible));
 
       if (layer.highlightFrom) {
         breadcrumbs.push({
           type: "highlight",
           highlightId: layer.highlightFrom,
+          visible: layerVisible,
         });
 
         if (layer.highlightTo) {
           breadcrumbs.push({
             type: "highlight",
             highlightId: layer.highlightTo,
+            visible: layerVisible,
           });
         }
       }

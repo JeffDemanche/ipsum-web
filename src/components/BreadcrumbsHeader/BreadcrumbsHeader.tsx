@@ -8,7 +8,13 @@ export const BreadcrumbsHeader: React.FunctionComponent = () => {
   return (
     <div className={styles["breadcrumbs-header"]}>
       {orderedBreadcrumbs.map((breadcrumb, i) => {
-        return <Breadcrumb key={i} breadcrumb={breadcrumb} />;
+        return (
+          <Breadcrumb
+            key={i}
+            breadcrumb={breadcrumb}
+            layerVisible={breadcrumb.visible}
+          />
+        );
       })}
     </div>
   );
