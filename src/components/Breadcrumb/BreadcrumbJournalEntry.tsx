@@ -1,11 +1,9 @@
-import { Card, Typography } from "@mui/material";
-import { JournalEntryBreadcrumb } from "components/DiptychContext";
+import { Typography } from "@mui/material";
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "util/apollo";
-import styles from "./Breadcrumb.less";
-import cx from "classnames";
 import { parseIpsumDateTime } from "util/dates";
+import { JournalEntryBreadcrumb } from "./types";
 
 interface BreadcrumbJournalEntryProps {
   breadcrumb: JournalEntryBreadcrumb;
@@ -37,11 +35,5 @@ export const BreadcrumbJournalEntry: React.FunctionComponent<
       )
     : "Daily journal";
 
-  return (
-    <div className={cx(styles["breadcrumb"])}>
-      <Card variant="outlined" className={styles["breadcrumb-card"]}>
-        <Typography variant="caption">{text}</Typography>
-      </Card>
-    </div>
-  );
+  return <Typography variant="caption">{text}</Typography>;
 };
