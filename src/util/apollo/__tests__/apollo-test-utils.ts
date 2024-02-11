@@ -81,6 +81,7 @@ export const mockHighlights = (highlight: {
       entry: "",
       history: { __typename: "History" },
       outgoingRelations: [],
+      importanceRatings: [],
     })
   );
 };

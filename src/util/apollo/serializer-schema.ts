@@ -95,6 +95,13 @@ export const SerializedSchema = t.type(
           history: HistorySchema,
           entry: t.string,
           outgoingRelations: t.array(t.string),
+          importanceRatings: t.array(
+            t.type({
+              __typename: t.literal("ImportanceRating"),
+              day: t.string,
+              value: t.number,
+            })
+          ),
         },
         "highlight"
       ),

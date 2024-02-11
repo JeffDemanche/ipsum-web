@@ -17,6 +17,7 @@ export const createHighlight = ({
     entry,
     outgoingRelations: outgoingRelations ?? [],
     history: { __typename: "History" },
+    importanceRatings: [],
   };
   vars.highlights({
     ...vars.highlights(),

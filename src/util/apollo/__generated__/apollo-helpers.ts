@@ -44,21 +44,28 @@ export type EntryFieldPolicy = {
 	htmlString?: FieldPolicy<any> | FieldReadFunction<any>,
 	trackedHTMLString?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type HighlightKeySpecifier = ('arc' | 'arcs' | 'entry' | 'excerpt' | 'history' | 'hue' | 'id' | 'outgoingRelations' | 'srsCards' | HighlightKeySpecifier)[];
+export type HighlightKeySpecifier = ('arc' | 'arcs' | 'currentImportance' | 'entry' | 'excerpt' | 'history' | 'hue' | 'id' | 'importanceRatings' | 'outgoingRelations' | 'srsCards' | HighlightKeySpecifier)[];
 export type HighlightFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcs?: FieldPolicy<any> | FieldReadFunction<any>,
+	currentImportance?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>,
 	excerpt?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
 	hue?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	importanceRatings?: FieldPolicy<any> | FieldReadFunction<any>,
 	outgoingRelations?: FieldPolicy<any> | FieldReadFunction<any>,
 	srsCards?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type HistoryKeySpecifier = ('dateCreated' | HistoryKeySpecifier)[];
 export type HistoryFieldPolicy = {
 	dateCreated?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type ImportanceRatingKeySpecifier = ('day' | 'value' | ImportanceRatingKeySpecifier)[];
+export type ImportanceRatingFieldPolicy = {
+	day?: FieldPolicy<any> | FieldReadFunction<any>,
+	value?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type JournalEntryKeySpecifier = ('entry' | 'entryKey' | JournalEntryKeySpecifier)[];
 export type JournalEntryFieldPolicy = {
@@ -69,12 +76,13 @@ export type JournalMetadataKeySpecifier = ('lastArcHue' | JournalMetadataKeySpec
 export type JournalMetadataFieldPolicy = {
 	lastArcHue?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('arc' | 'arcEntries' | 'arcEntry' | 'arcs' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'searchHighlights' | 'srsCard' | 'srsCardsForReview' | 'srsReviewsFromDay' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('arc' | 'arcEntries' | 'arcEntry' | 'arcs' | 'day' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'searchHighlights' | 'srsCard' | 'srsCardsForReview' | 'srsReviewsFromDay' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcEntries?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcs?: FieldPolicy<any> | FieldReadFunction<any>,
+	day?: FieldPolicy<any> | FieldReadFunction<any>,
 	entries?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>,
 	entryKeys?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -163,6 +171,10 @@ export type StrictTypedTypePolicies = {
 	History?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | HistoryKeySpecifier | (() => undefined | HistoryKeySpecifier),
 		fields?: HistoryFieldPolicy,
+	},
+	ImportanceRating?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ImportanceRatingKeySpecifier | (() => undefined | ImportanceRatingKeySpecifier),
+		fields?: ImportanceRatingFieldPolicy,
 	},
 	JournalEntry?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | JournalEntryKeySpecifier | (() => undefined | JournalEntryKeySpecifier),

@@ -16,5 +16,13 @@ export const highlightTypeDef = gql`
     srsCards: [SRSCard!]!
     hue: Int!
     excerpt: String!
+
+    importanceRatings: [ImportanceRating!]!
+    currentImportance: Float!
+  }
+
+  type ImportanceRating {
+    day: Day!
+    value: Float! # 0-1
   }
 `;

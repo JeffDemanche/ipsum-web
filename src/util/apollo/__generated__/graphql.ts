@@ -80,11 +80,13 @@ export type Highlight = {
   __typename?: 'Highlight';
   arc?: Maybe<Arc>;
   arcs: Array<Arc>;
+  currentImportance: Scalars['Float'];
   entry: Entry;
   excerpt: Scalars['String'];
   history: History;
   hue: Scalars['Int'];
   id: Scalars['ID'];
+  importanceRatings: Array<ImportanceRating>;
   outgoingRelations: Array<Relation>;
   srsCards: Array<SrsCard>;
 };
@@ -92,6 +94,12 @@ export type Highlight = {
 export type History = {
   __typename?: 'History';
   dateCreated?: Maybe<Scalars['String']>;
+};
+
+export type ImportanceRating = {
+  __typename?: 'ImportanceRating';
+  day: Day;
+  value: Scalars['Float'];
 };
 
 export type JournalEntry = {
@@ -111,6 +119,7 @@ export type Query = {
   arcEntries?: Maybe<Array<Maybe<ArcEntry>>>;
   arcEntry?: Maybe<ArcEntry>;
   arcs?: Maybe<Array<Maybe<Arc>>>;
+  day?: Maybe<Day>;
   entries?: Maybe<Array<Maybe<Entry>>>;
   entry?: Maybe<Entry>;
   entryKeys: Array<Scalars['String']>;
@@ -152,6 +161,11 @@ export type QueryArcEntryArgs = {
 export type QueryArcsArgs = {
   ids?: InputMaybe<Array<Scalars['ID']>>;
   sort?: InputMaybe<ArcSortType>;
+};
+
+
+export type QueryDayArgs = {
+  day: Scalars['String'];
 };
 
 

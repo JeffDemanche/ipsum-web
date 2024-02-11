@@ -17,6 +17,8 @@ import {
   QueryJournalEntriesArgs,
 } from "./__generated__/graphql";
 import { onError } from "@apollo/client/link/error";
+import { dayTypeDef } from "./schemas/day-schema";
+import { DayResolvers } from "./resolvers/day-resolvers";
 
 const typeDefs = gql`
   type Query {
@@ -94,14 +96,6 @@ const typeDefs = gql`
     subject: RelationSubject!
     predicate: String!
     object: Arc!
-  }
-
-  type Day {
-    day: String!
-    journalEntry: JournalEntry
-    changedArcEntries: [ArcEntry!]
-    comments: [Comment!]
-    srsCardReviews: [SRSCardReview!]
   }
 
   union SRSCardSubject = Arc | Highlight
@@ -188,12 +182,18 @@ export type UnhydratedType = {
     incomingRelations: string[];
     outgoingRelations: string[];
   };
+  ImportanceRating: {
+    __typename: "ImportanceRating";
+    day: string;
+    value: number;
+  };
   Highlight: {
     __typename: "Highlight";
     id: string;
     history: UnhydratedType["History"];
     entry: string;
     outgoingRelations: string[];
+    importanceRatings: UnhydratedType["ImportanceRating"][];
   };
   Relation: {
     __typename: "Relation";
@@ -422,6 +422,7 @@ const typePolicies: StrictTypedTypePolicies = {
       ...SRSResolvers.Query.fields,
       ...SearchResolvers.Query.fields,
       ...ArcResolvers.Query.fields,
+      ...DayResolvers.Query.fields,
     },
   },
   Entry: {
@@ -495,6 +496,7 @@ const typePolicies: StrictTypedTypePolicies = {
   SRSDeck: SRSResolvers.SRSDeck,
   SRSCard: SRSResolvers.SRSCard,
   SRSCardReview: SRSResolvers.SRSCardReview,
+  Day: DayResolvers.Day,
 };
 
 const cache = new InMemoryCache({ typePolicies, addTypename: true });
@@ -505,6 +507,6 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 export const client = new ApolloClient({
   cache,
-  typeDefs: [typeDefs, arcTypeDef, searchTypeDef, highlightTypeDef],
+  typeDefs: [typeDefs, arcTypeDef, searchTypeDef, highlightTypeDef, dayTypeDef],
   link: errorLink,
 });
