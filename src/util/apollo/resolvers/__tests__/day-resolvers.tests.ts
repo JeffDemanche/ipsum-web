@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { client } from "util/apollo";
-import { createDay } from "util/apollo/api/day";
+import { upsertDay } from "util/apollo/api/day";
 import { initializeState } from "util/apollo/client";
 
 jest.mock("../../autosave");
@@ -15,7 +15,7 @@ describe("Day resolvers", () => {
   });
 
   it("should get a day", () => {
-    createDay("1/1/2021");
+    upsertDay({ day: "1/1/2021" });
 
     const result = client.readQuery({
       query: gql(`

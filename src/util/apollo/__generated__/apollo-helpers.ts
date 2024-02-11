@@ -26,12 +26,13 @@ export type CommentEntryFieldPolicy = {
 	comment?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type DayKeySpecifier = ('changedArcEntries' | 'comments' | 'day' | 'journalEntry' | 'srsCardReviews' | DayKeySpecifier)[];
+export type DayKeySpecifier = ('changedArcEntries' | 'comments' | 'day' | 'journalEntry' | 'ratedHighlights' | 'srsCardReviews' | DayKeySpecifier)[];
 export type DayFieldPolicy = {
 	changedArcEntries?: FieldPolicy<any> | FieldReadFunction<any>,
 	comments?: FieldPolicy<any> | FieldReadFunction<any>,
 	day?: FieldPolicy<any> | FieldReadFunction<any>,
 	journalEntry?: FieldPolicy<any> | FieldReadFunction<any>,
+	ratedHighlights?: FieldPolicy<any> | FieldReadFunction<any>,
 	srsCardReviews?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type EntryKeySpecifier = ('date' | 'entryKey' | 'entryType' | 'highlights' | 'history' | 'htmlString' | 'trackedHTMLString' | EntryKeySpecifier)[];

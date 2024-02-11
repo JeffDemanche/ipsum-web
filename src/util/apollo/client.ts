@@ -208,6 +208,7 @@ export type UnhydratedType = {
     __typename: "Day";
     day: string;
     journalEntry?: string;
+    ratedHighlights: string[];
     changedArcEntries: string[];
     comments: string[];
     srsCardReviews: string[];

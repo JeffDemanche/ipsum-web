@@ -1,8 +1,10 @@
 import { vars, initializeState } from "util/apollo/client";
+import { IpsumDay } from "util/dates";
 import { createArc } from "../arcs";
 import {
   createHighlight,
   deleteHighlight,
+  rateHighlightImportance,
   updateHighlight,
 } from "../highlights";
 import { createRelation } from "../relations";
@@ -83,6 +85,68 @@ describe("apollo highlights API", () => {
       expect(vars.relations()).toEqual({ [relation.id]: relation });
       deleteHighlight(highlight.id);
       expect(vars.relations()).toEqual({});
+    });
+  });
+
+  describe("rateHighlightImportance", () => {
+    it("should add an importance rating to the highlight", () => {
+      const highlight = createHighlight({ entry: "1/2/2020" });
+      rateHighlightImportance({
+        highlightId: highlight.id,
+        day: IpsumDay.fromString("1/2/2020", "stored-day"),
+        rating: 1,
+      });
+      expect(vars.highlights()[highlight.id].importanceRatings).toEqual([
+        { __typename: "ImportanceRating", day: "1/2/2020", value: 1 },
+      ]);
+    });
+
+    it("should remove an importance rating from the highlight", () => {
+      const highlight = createHighlight({ entry: "1/2/2020" });
+      rateHighlightImportance({
+        highlightId: highlight.id,
+        day: IpsumDay.fromString("1/2/2020", "stored-day"),
+        rating: 1,
+      });
+      rateHighlightImportance({
+        highlightId: highlight.id,
+        day: IpsumDay.fromString("1/3/2020", "stored-day"),
+        rating: 1,
+      });
+      // Remove one of the ratings
+      rateHighlightImportance({
+        highlightId: highlight.id,
+        day: IpsumDay.fromString("1/2/2020", "stored-day"),
+        rating: 0,
+      });
+      expect(vars.highlights()[highlight.id].importanceRatings).toEqual([
+        { __typename: "ImportanceRating", day: "1/3/2020", value: 1 },
+      ]);
+    });
+
+    it("should add highlight to day object when adding rating", () => {
+      const highlight = createHighlight({ entry: "1/2/2020" });
+      rateHighlightImportance({
+        highlightId: highlight.id,
+        day: IpsumDay.fromString("1/2/2020", "stored-day"),
+        rating: 1,
+      });
+      expect(vars.days()["1/2/2020"].ratedHighlights).toEqual([highlight.id]);
+    });
+
+    it("should remove highlight from day object when removing rating", () => {
+      const highlight = createHighlight({ entry: "1/2/2020" });
+      rateHighlightImportance({
+        highlightId: highlight.id,
+        day: IpsumDay.fromString("1/2/2020", "stored-day"),
+        rating: 1,
+      });
+      rateHighlightImportance({
+        highlightId: highlight.id,
+        day: IpsumDay.fromString("1/2/2020", "stored-day"),
+        rating: 0,
+      });
+      expect(vars.days()["1/2/2020"].ratedHighlights).toEqual([]);
     });
   });
 });

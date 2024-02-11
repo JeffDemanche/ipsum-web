@@ -181,6 +181,7 @@ export const SerializedSchema = t.type(
           __typename: t.literal("Day"),
           day: t.string,
           journalEntry: t.union([t.string, t.undefined]),
+          ratedHighlights: t.array(t.string),
           changedArcEntries: t.array(t.string),
           comments: t.array(t.string),
           srsCardReviews: t.array(t.string),

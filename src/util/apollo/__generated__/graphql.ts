@@ -56,6 +56,7 @@ export type Day = {
   comments?: Maybe<Array<Comment>>;
   day: Scalars['String'];
   journalEntry?: Maybe<JournalEntry>;
+  ratedHighlights?: Maybe<Array<Highlight>>;
   srsCardReviews?: Maybe<Array<SrsCardReview>>;
 };
 

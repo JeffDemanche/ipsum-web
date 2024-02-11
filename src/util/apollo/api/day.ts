@@ -1,29 +1,40 @@
 import { IpsumDay } from "util/dates";
 import { vars } from "../client";
 
-export const createDay = (day: string) => {
+export const upsertDay = ({
+  day,
+  ratedHighlights,
+}: {
+  day: string;
+  ratedHighlights?: string[];
+}) => {
   const ipsumDay = IpsumDay.fromString(day, "stored-day");
-  if (ipsumDay.toLuxonDateTime().isValid) {
-    vars.days({
-      ...vars.days(),
-      [day]: {
-        __typename: "Day",
-        day,
-        journalEntry: vars.journalEntries()[day]?.entryKey,
-        srsCardReviews: Object.values(vars.srsCardReviews())
-          .filter((review) => review.day === day)
-          .map((review) => review.id),
-        // TODO
-        changedArcEntries: [],
-        comments: [],
-      },
-    });
+
+  if (!ipsumDay.toLuxonDateTime().isValid) {
+    throw new Error(`upsertDay: Invalid day: ${day}`);
   }
+
+  const existingDay = vars.days()[day];
+
+  vars.days({
+    ...vars.days(),
+    [day]: {
+      __typename: "Day",
+      day,
+      journalEntry: vars.journalEntries()[day]?.entryKey,
+      // DEPRECATED
+      srsCardReviews: [],
+      ratedHighlights: ratedHighlights ?? existingDay?.ratedHighlights ?? [],
+      // TODO
+      changedArcEntries: [],
+      comments: [],
+    },
+  });
 };
 
 export const upsertDayForToday = () => {
   const today = IpsumDay.today();
-  createDay(today.toString("stored-day"));
+  upsertDay({ day: today.toString("stored-day") });
 };
 
 export const deleteDayIfEmpty = (dayKey: string): boolean => {

@@ -9,6 +9,7 @@ export const dayTypeDef = gql`
     day: String!
     journalEntry: JournalEntry
     changedArcEntries: [ArcEntry!]
+    ratedHighlights: [Highlight!]
     comments: [Comment!]
     srsCardReviews: [SRSCardReview!]
   }
