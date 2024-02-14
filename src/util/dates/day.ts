@@ -75,6 +75,13 @@ export class IpsumDay {
     );
   }
 
+  numDaysUntil(day: IpsumDay): number {
+    return day
+      .toLuxonDateTime()
+      .startOf("day")
+      .diff(this.toLuxonDateTime(), "days").days;
+  }
+
   isInFuture(): boolean {
     return this.isAfter(IpsumDay.today());
   }
@@ -88,11 +95,17 @@ export class IpsumDay {
   }
 
   isBefore(day: IpsumDay): boolean {
-    return this.toJsDate().getTime() < day.toJsDate().getTime();
+    return (
+      this.toLuxonDateTime().startOf("day").toMillis() <
+      day.toLuxonDateTime().startOf("day").toMillis()
+    );
   }
 
   isAfter(day: IpsumDay): boolean {
-    return this.toJsDate().getTime() > day.toJsDate().getTime();
+    return (
+      this.toLuxonDateTime().startOf("day").toMillis() >
+      day.toLuxonDateTime().startOf("day").toMillis()
+    );
   }
 
   static fromJsDate(jsDate: Date): IpsumDay {

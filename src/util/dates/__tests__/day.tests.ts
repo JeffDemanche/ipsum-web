@@ -47,4 +47,23 @@ describe("day", () => {
       expect(day.isBetween(start, end)).toBeTruthy();
     });
   });
+
+  describe("numDaysUntil", () => {
+    it("should be 0 days until same day", () => {
+      const day = IpsumDay.fromString("1/1/2021");
+      expect(day.numDaysUntil(day)).toEqual(0);
+    });
+
+    it("should be 1 day until next day", () => {
+      const day = IpsumDay.fromString("1/1/2021");
+      const nextDay = IpsumDay.fromString("1/2/2021");
+      expect(day.numDaysUntil(nextDay)).toEqual(1);
+    });
+
+    it("should be -1 day until previous day", () => {
+      const day = IpsumDay.fromString("1/2/2021");
+      const previousDay = IpsumDay.fromString("1/1/2021");
+      expect(day.numDaysUntil(previousDay)).toEqual(-1);
+    });
+  });
 });

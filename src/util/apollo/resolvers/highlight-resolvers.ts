@@ -1,6 +1,7 @@
 import { IpsumTimeMachine } from "util/diff";
 import { excerptDivString } from "util/excerpt";
-import { vars } from "../client";
+import { highlightImportanceOnDay } from "util/importance";
+import { UnhydratedType, vars } from "../client";
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
 import { QueryHighlightsArgs } from "../__generated__/graphql";
 
@@ -95,6 +96,12 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
           highlightId: readField("id"),
           highlightHue: readField("hue"),
         });
+      },
+      currentImportance(_, { readField }) {
+        const ratings =
+          readField<UnhydratedType["ImportanceRating"][]>("importanceRatings");
+
+        return highlightImportanceOnDay({ ratings });
       },
     },
   },
