@@ -15,25 +15,46 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
         return vars.highlights()[args.id] ?? null;
       },
       highlights(_, { args }: { args?: QueryHighlightsArgs }) {
+        let results: UnhydratedType["Highlight"][] = [];
+
         if (args?.ids && !args?.entries) {
-          return args.ids.map((id) => vars.highlights()[id]);
+          results = args.ids.map((id) => vars.highlights()[id]);
         } else if (args?.ids || args?.entries || args?.arcs) {
-          return Object.values(vars.highlights()).filter((highlight) => {
+          results = Object.values(vars.highlights()).filter((highlight) => {
             const highlightRelations = highlight.outgoingRelations
               .map((relation) => vars.relations()[relation])
               .filter((relation) => relation.objectType === "Arc");
             const arcsIntersection = highlightRelations.filter((relation) =>
               args.arcs?.includes(relation.object)
             );
-
             return (
               (!args.ids || args.ids.includes(highlight.id)) &&
               (!args.entries || args.entries.includes(highlight.entry)) &&
               (!args.arcs || arcsIntersection.length > 0)
             );
           });
+        } else {
+          results = Object.values(vars.highlights());
         }
-        return Object.values(vars.highlights());
+
+        if (args?.sort === "DATE_DESC") {
+          results.sort(
+            (a, b) =>
+              Date.parse(b.history.dateCreated) -
+              Date.parse(a.history.dateCreated)
+          );
+        } else if (args?.sort === "IMPORTANCE_DESC") {
+          results.sort((a, b) => {
+            const aImportance = highlightImportanceOnDay({
+              ratings: a.importanceRatings,
+            });
+            const bImportance = highlightImportanceOnDay({
+              ratings: b.importanceRatings,
+            });
+            return bImportance - aImportance;
+          });
+        }
+        return results;
       },
     },
   },

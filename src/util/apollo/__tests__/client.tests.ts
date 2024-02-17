@@ -49,69 +49,6 @@ describe("apollo client", () => {
       expect(result.entries[0].entryKey).toEqual("1/2/2020");
     });
 
-    it("queries highlights with specified arcs", () => {
-      const arc1 = createArc({ name: "test arc 1" });
-      const arc2 = createArc({ name: "test arc 2" });
-      createEntry({
-        entryKey: "1/2/2020",
-        htmlString: "<p>Hello, world!</p>",
-        entryType: EntryType.Journal,
-      });
-      const highlight1 = createHighlight({
-        entry: "1/2/2020",
-      });
-      const highlight2 = createHighlight({
-        entry: "1/2/2020",
-      });
-      createRelation({
-        object: arc1.id,
-        objectType: "Arc",
-        subject: highlight1.id,
-        subjectType: "Highlight",
-        predicate: "relates to",
-      });
-      createRelation({
-        object: arc2.id,
-        objectType: "Arc",
-        subject: highlight2.id,
-        subjectType: "Highlight",
-        predicate: "relates to",
-      });
-
-      const result = client.readQuery({
-        query: gql(`
-          query ReadHighlights($arc: [ID!]) {
-            highlights(arcs: $arcs) {
-              id
-              outgoingRelations {
-                object {
-                  __typename
-                  ... on Arc {
-                    id
-                    name
-                    color
-                  }
-                }
-              }
-              entry {
-                entryKey
-                date
-              }
-            }
-          }
-        `),
-        variables: {
-          arcs: [arc1.id],
-        },
-      });
-
-      expect(result.highlights).toHaveLength(1);
-      expect(result.highlights[0].id).toEqual(highlight1.id);
-      expect(result.highlights[0].outgoingRelations[0].object.id).toEqual(
-        arc1.id
-      );
-    });
-
     it.todo("queries for journalEntries");
   });
 

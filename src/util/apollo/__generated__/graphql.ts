@@ -92,6 +92,11 @@ export type Highlight = {
   srsCards: Array<SrsCard>;
 };
 
+export enum HighlightSortType {
+  DateDesc = 'DATE_DESC',
+  ImportanceDesc = 'IMPORTANCE_DESC'
+}
+
 export type History = {
   __typename?: 'History';
   dateCreated?: Maybe<Scalars['String']>;
@@ -189,6 +194,7 @@ export type QueryHighlightsArgs = {
   arcs?: InputMaybe<Array<Scalars['ID']>>;
   entries?: InputMaybe<Array<Scalars['ID']>>;
   ids?: InputMaybe<Array<Scalars['ID']>>;
+  sort?: InputMaybe<HighlightSortType>;
 };
 
 

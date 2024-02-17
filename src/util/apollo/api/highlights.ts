@@ -1,7 +1,7 @@
 import { UnhydratedType, vars } from "../client";
 import { v4 as uuidv4 } from "uuid";
 import { autosave } from "../autosave";
-import { IpsumDay } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 import { upsertDay } from "./day";
 
 export const createHighlight = ({
@@ -18,7 +18,10 @@ export const createHighlight = ({
     id: highlightId,
     entry,
     outgoingRelations: outgoingRelations ?? [],
-    history: { __typename: "History" },
+    history: {
+      __typename: "History",
+      dateCreated: IpsumDateTime.today().toString("iso"),
+    },
     importanceRatings: [],
   };
   vars.highlights({
@@ -79,6 +82,8 @@ export const rateHighlightImportance = ({
 }) => {
   const highlight = vars.highlights()[highlightId];
   if (!highlight) return;
+
+  day = day ?? IpsumDay.today();
 
   if (rating > 1 || rating < 0) {
     throw new Error("rateHighlightImportance: Rating must be between 0 and 1");

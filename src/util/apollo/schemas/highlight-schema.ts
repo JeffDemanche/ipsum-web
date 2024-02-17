@@ -3,7 +3,12 @@ import { gql } from "@apollo/client";
 export const highlightTypeDef = gql`
   type Query {
     highlight(id: ID!): Highlight
-    highlights(ids: [ID!], entries: [ID!], arcs: [ID!]): [Highlight]
+    highlights(
+      ids: [ID!]
+      entries: [ID!]
+      arcs: [ID!]
+      sort: HighlightSortType
+    ): [Highlight]
   }
 
   type Highlight {
@@ -24,5 +29,10 @@ export const highlightTypeDef = gql`
   type ImportanceRating {
     day: Day!
     value: Float! # 0-1
+  }
+
+  enum HighlightSortType {
+    DATE_DESC
+    IMPORTANCE_DESC
   }
 `;
