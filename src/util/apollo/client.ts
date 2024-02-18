@@ -494,6 +494,7 @@ const typePolicies: StrictTypedTypePolicies = {
   },
   Arc: ArcResolvers.Arc,
   Highlight: HighlightResolvers.Highlight,
+  ImportanceRating: HighlightResolvers.ImportanceRating,
   SRSDeck: SRSResolvers.SRSDeck,
   SRSCard: SRSResolvers.SRSCard,
   SRSCardReview: SRSResolvers.SRSCardReview,
@@ -502,8 +503,10 @@ const typePolicies: StrictTypedTypePolicies = {
 
 const cache = new InMemoryCache({ typePolicies, addTypename: true });
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
-  console.log("graphQLErrors", graphQLErrors);
+const errorLink = onError((errors) => {
+  console.log("errors", errors);
+
+  errors.forward(errors.operation);
 });
 
 export const client = new ApolloClient({

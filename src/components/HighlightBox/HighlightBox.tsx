@@ -1,7 +1,13 @@
 import { Card, Typography } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightExcerpt } from "components/HighlightExcerpt";
-import React, { useCallback, useContext, useEffect, useRef } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import styles from "./HighlightBox.less";
 import cx from "classnames";
 import { gql } from "util/apollo";

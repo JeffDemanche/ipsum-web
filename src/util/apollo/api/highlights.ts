@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { autosave } from "../autosave";
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import { upsertDay } from "./day";
+import _ from "lodash";
 
 export const createHighlight = ({
   entry,
@@ -89,7 +90,7 @@ export const rateHighlightImportance = ({
     throw new Error("rateHighlightImportance: Rating must be between 0 and 1");
   }
 
-  const newHighlight = { ...highlight };
+  const newHighlight = _.cloneDeep(highlight);
   const dayObj = vars.days()[day.toString("stored-day")];
 
   if (rating === 0) {

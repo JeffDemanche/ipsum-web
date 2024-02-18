@@ -26,6 +26,7 @@ const documents = {
     "\n  query DiptychContextHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n    }\n  }\n": types.DiptychContextHighlightDocument,
     "\n  query HighlightAddReflectionForm($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      srsCards {\n        id\n      }\n    }\n  }\n": types.HighlightAddReflectionFormDocument,
     "\n  query HighlightBox($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightBoxDocument,
+    "\n  query HighlightBoxButtons($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      importanceRatings {\n        value\n        day {\n          day\n        }\n      }\n      currentImportance\n    }\n  }\n": types.HighlightBoxButtonsDocument,
     "\n  query HighlightBoxRelations($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightBoxRelationsDocument,
     "\n  query HighlightExcerptQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n": types.HighlightExcerptQueryDocument,
     "\n  query HighlightTag($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      hue\n      outgoingRelations {\n        id\n        object {\n          __typename\n          ... on Arc {\n            id\n            name\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightTagDocument,
@@ -106,6 +107,10 @@ export function gql(source: "\n  query HighlightAddReflectionForm($highlightId: 
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query HighlightBox($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query HighlightBox($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query HighlightBoxButtons($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      importanceRatings {\n        value\n        day {\n          day\n        }\n      }\n      currentImportance\n    }\n  }\n"): (typeof documents)["\n  query HighlightBoxButtons($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      importanceRatings {\n        value\n        day {\n          day\n        }\n      }\n      currentImportance\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

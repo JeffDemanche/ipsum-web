@@ -126,4 +126,12 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
       },
     },
   },
+  ImportanceRating: {
+    keyFields: ["day"],
+    fields: {
+      day(day) {
+        return vars.days()[day];
+      },
+    },
+  },
 };
