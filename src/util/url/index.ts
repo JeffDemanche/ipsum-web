@@ -5,4 +5,9 @@ export {
   useModifySearchParams,
   getParams,
 } from "./urls";
-export { URLLayer, DailyJournalURLLayer, URLSearchCriteria } from "./types";
+export {
+  IpsumURLSearch,
+  URLLayer,
+  DailyJournalURLLayer,
+  URLSearchCriteria,
+} from "./types";

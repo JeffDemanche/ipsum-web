@@ -37,6 +37,8 @@ export const DiptychContext = React.createContext<Diptych>({
   selectedHighlightId: undefined,
   topLayer: undefined,
   setSelectedHighlightId: () => {},
+  sort: "importance",
+  setSort: () => {},
 });
 
 interface DiptychProviderProps {
@@ -54,7 +56,7 @@ const DiptychContextHighlightQuery = gql(`
 export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   children,
 }) => {
-  const { layers } = useIpsumSearchParams<"journal">();
+  const { layers, sort } = useIpsumSearchParams<"journal">();
 
   const urlLayers = useMemo(() => layers ?? [], [layers]);
 
@@ -290,6 +292,18 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
     [modifySearchParams]
   );
 
+  const setSort = useCallback(
+    (sort: "importance" | "date") => {
+      modifySearchParams((searchParams) => {
+        return {
+          ...searchParams,
+          sort,
+        };
+      });
+    },
+    [modifySearchParams]
+  );
+
   return (
     <DiptychContext.Provider
       value={{
@@ -303,6 +317,8 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
         popHighlights,
         selectedHighlightId,
         setSelectedHighlightId,
+        sort,
+        setSort,
       }}
     >
       {children}

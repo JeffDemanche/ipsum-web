@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightBox } from "components/HighlightBox";
 import React, { useCallback, useContext, useMemo } from "react";
-import { gql } from "util/apollo";
+import { gql, HighlightSortType } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import styles from "./HighlightsList.less";
 
@@ -12,9 +12,12 @@ interface HighlightsListProps {
 }
 
 const HighlightsListQuery = gql(`
-  query HighlightsList($highlightIds: [ID!]!) {
-    highlights(ids: $highlightIds) {
+  query HighlightsList($highlightIds: [ID!]!, $sort: HighlightSortType) {
+    highlights(ids: $highlightIds, sort: $sort) {
       id
+      history {
+        dateCreated
+      }
       entry {
         entryKey
         date
@@ -26,45 +29,82 @@ const HighlightsListQuery = gql(`
 export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
   highlightIds,
 }) => {
-  const { selectedHighlightId, setSelectedHighlightId } =
+  const { selectedHighlightId, setSelectedHighlightId, sort } =
     useContext(DiptychContext);
+
+  const sortVariable = useMemo(() => {
+    if (sort === "importance") return HighlightSortType.ImportanceDesc;
+    if (sort === "date") return HighlightSortType.DateDesc;
+    return undefined;
+  }, [sort]);
 
   const {
     data: { highlights },
   } = useQuery(HighlightsListQuery, {
-    variables: { highlightIds: highlightIds ?? [] },
+    variables: { highlightIds: highlightIds ?? [], sort: sortVariable },
   });
 
-  const groupedByDay = useMemo(
-    () =>
-      highlightIds.reduce((acc, highlightId) => {
-        const highlight = highlights.find(
-          (highlight) => highlight.id === highlightId
-        );
-        if (!highlight) return acc;
+  const groupedByDay = useMemo(() => {
+    const grouped: {
+      day: IpsumDay;
+      highlights: { highlightId: string; entryKey: string }[];
+    }[] = [];
+    for (const highlight of highlights) {
+      if (!highlight) continue;
 
-        const day = IpsumDay.fromString(highlight.entry.date, "iso");
+      const day = IpsumDay.fromString(highlight.entry.date, "iso");
 
-        const dayUrlFormat = day.toString("url-format");
+      const dayUrlFormat = day.toString("url-format");
 
-        if (!acc[dayUrlFormat]) acc[dayUrlFormat] = [];
-        acc[dayUrlFormat].push({
-          highlightId,
-          entryKey: highlight.entry.entryKey,
+      if (
+        grouped.length === 0 ||
+        grouped[grouped.length - 1].day.toString("url-format") !== dayUrlFormat
+      ) {
+        grouped.push({
+          day,
+          highlights: [
+            { entryKey: highlight.entry.entryKey, highlightId: highlight.id },
+          ],
         });
-        return acc;
-      }, {} as Record<string, { highlightId: string; entryKey: string }[]>),
-    [highlightIds, highlights]
-  );
+      } else {
+        grouped[grouped.length - 1].highlights.push({
+          entryKey: highlight.entry.entryKey,
+          highlightId: highlight.id,
+        });
+      }
+    }
+    return grouped;
+  }, [highlights]);
 
-  const days = useMemo(
-    () =>
-      Object.entries(groupedByDay).map(([dayUrlFormat, highlights]) => {
-        const day = IpsumDay.fromString(dayUrlFormat, "url-format");
-        return { day, highlights };
-      }),
-    [groupedByDay]
-  );
+  // const groupedByDay = useMemo(
+  //   () =>
+  //     highlights.reduce((acc, highlight) => {
+  //       if (!highlight) return acc;
+
+  //       const day = IpsumDay.fromString(highlight.entry.date, "iso");
+
+  //       const dayUrlFormat = day.toString("url-format");
+
+  //       if (!acc[dayUrlFormat]) acc[dayUrlFormat] = [];
+  //       acc[dayUrlFormat].push({
+  //         highlightId: highlight.id,
+  //         entryKey: highlight.entry.entryKey,
+  //       });
+  //       return acc;
+  //     }, {} as Record<string, { highlightId: string; entryKey: string }[]>),
+  //   [highlights]
+  // );
+
+  // console.log(groupedByDay);
+
+  // const days = useMemo(
+  //   () =>
+  //     Object.entries(groupedByDay).map(([dayUrlFormat, highlights]) => {
+  //       const day = IpsumDay.fromString(dayUrlFormat, "url-format");
+  //       return { day, highlights };
+  //     }),
+  //   [groupedByDay]
+  // );
 
   const { pushLayer } = useContext(DiptychContext);
 
@@ -82,11 +122,11 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
 
   return (
     <div className={styles["highlights-list"]}>
-      {days.length === 0 && (
+      {groupedByDay.length === 0 && (
         <Typography variant="h4">No highlight results</Typography>
       )}
-      {days.map(({ day, highlights }) => (
-        <div key={day.toString("url-format")}>
+      {groupedByDay.map(({ day, highlights }, i) => (
+        <div key={i}>
           <Typography variant="h4">
             <a onClick={(e) => onDateClick(e, day)} href="#">
               {day.toString("entry-printed-date-nice")}

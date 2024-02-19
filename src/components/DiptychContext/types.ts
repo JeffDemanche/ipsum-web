@@ -1,5 +1,5 @@
 import { BreadcrumbType } from "components/Breadcrumb";
-import { URLLayer } from "util/url";
+import { URLLayer, IpsumURLSearch } from "util/url";
 
 export interface Diptych {
   layers: URLLayer[];
@@ -20,4 +20,7 @@ export interface Diptych {
 
   selectedHighlightId?: string;
   setSelectedHighlightId: (highlightId?: string) => void;
+
+  sort: IpsumURLSearch<"journal">["sort"];
+  setSort: (sort: IpsumURLSearch<"journal">["sort"]) => void;
 }

@@ -64,6 +64,7 @@ interface URLJournalView {
   layers?: URLLayer[];
   searchCriteria?: URLSearchCriteria;
   highlight?: string;
+  sort?: "date" | "importance";
 }
 
 type EmptySearchData = unknown;
