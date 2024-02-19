@@ -1,10 +1,9 @@
 import { Divider, Typography } from "@mui/material";
 import { Digest } from "components/Digest";
 import React from "react";
-import { IpsumDateTime, IpsumDay } from "util/dates";
+import { IpsumDateTime } from "util/dates";
 import styles from "./JournalEntry.less";
 import { EntryType } from "util/apollo";
-import { PastDayReflections } from "components/DayReflections";
 import { IpsumEditor } from "util/editor";
 
 interface JournalEntryProps {
@@ -27,7 +26,6 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
             "entry-printed-date-nice"
           )}
         </Typography>
-        <PastDayReflections day={IpsumDay.fromString(entryKey, "stored-day")} />
         <Digest entryKey={entryKey} className={styles["digest"]} />
         <IpsumEditor
           entryKey={entryKey}

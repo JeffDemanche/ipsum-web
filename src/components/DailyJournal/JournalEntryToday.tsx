@@ -1,11 +1,10 @@
 import cx from "classnames";
 import { Digest } from "components/Digest";
 import React from "react";
-import { IpsumDateTime, IpsumDay } from "util/dates";
+import { IpsumDateTime } from "util/dates";
 import styles from "./JournalEntry.less";
 import { Typography } from "@mui/material";
 import { EntryType, gql } from "util/apollo";
-import { TodayDayReflections } from "components/DayReflections";
 import { IpsumEditor } from "util/editor";
 import { useQuery } from "@apollo/client";
 
@@ -51,9 +50,6 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
             "entry-printed-date-nice"
           )}
         </Typography>
-        <TodayDayReflections
-          day={IpsumDay.fromString(entryKey, "stored-day")}
-        />
         <Digest entryKey={entryKey} className={styles["digest"]} />
         <IpsumEditor
           entryKey={entryKey}
