@@ -20,8 +20,6 @@ const documents = {
     "\n  query BreadcrumbJournalEntryQuery($journalEntryId: ID!) {\n    journalEntry(entryKey: $journalEntryId) {\n      entryKey\n      entry {\n        date\n      }\n    }\n  }\n": types.BreadcrumbJournalEntryQueryDocument,
     "\n  query DailyJournal {\n    recentJournalEntries {\n      entryKey\n    }\n  }\n": types.DailyJournalDocument,
     "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n": types.JournalEntryTodayDocument,
-    "\n  query PastDayReflections($deckId: ID, $day: String!) {\n    srsReviewsFromDay(deckId: $deckId, day: $day) {\n      id\n      rating\n      card {\n        id\n      }\n    }\n  }\n": types.PastDayReflectionsDocument,
-    "\n  query TodayDayReflections($deckId: ID, $day: String!) {\n    srsCardsForReview(deckId: $deckId, day: $day) {\n      id\n      lastReviewed\n    }\n    srsReviewsFromDay(deckId: $deckId, day: $day) {\n      id\n      rating\n      beforeEF\n      beforeInterval\n      card {\n        id\n      }\n    }\n  }\n": types.TodayDayReflectionsDocument,
     "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n      highlights {\n        id\n        hue\n      }\n    }\n  }\n": types.DigestDocument,
     "\n  query DiptychContextHighlight($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n    }\n  }\n": types.DiptychContextHighlightDocument,
     "\n  query HighlightAddReflectionForm($highlightId: ID!) {\n    highlights(ids: [$highlightId]) {\n      id\n      srsCards {\n        id\n      }\n    }\n  }\n": types.HighlightAddReflectionFormDocument,
@@ -83,14 +81,6 @@ export function gql(source: "\n  query DailyJournal {\n    recentJournalEntries 
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n"): (typeof documents)["\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query PastDayReflections($deckId: ID, $day: String!) {\n    srsReviewsFromDay(deckId: $deckId, day: $day) {\n      id\n      rating\n      card {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query PastDayReflections($deckId: ID, $day: String!) {\n    srsReviewsFromDay(deckId: $deckId, day: $day) {\n      id\n      rating\n      card {\n        id\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query TodayDayReflections($deckId: ID, $day: String!) {\n    srsCardsForReview(deckId: $deckId, day: $day) {\n      id\n      lastReviewed\n    }\n    srsReviewsFromDay(deckId: $deckId, day: $day) {\n      id\n      rating\n      beforeEF\n      beforeInterval\n      card {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query TodayDayReflections($deckId: ID, $day: String!) {\n    srsCardsForReview(deckId: $deckId, day: $day) {\n      id\n      lastReviewed\n    }\n    srsReviewsFromDay(deckId: $deckId, day: $day) {\n      id\n      rating\n      beforeEF\n      beforeInterval\n      card {\n        id\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

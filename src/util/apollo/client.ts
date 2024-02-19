@@ -19,6 +19,8 @@ import {
 import { onError } from "@apollo/client/link/error";
 import { dayTypeDef } from "./schemas/day-schema";
 import { DayResolvers } from "./resolvers/day-resolvers";
+import { journalEntryTypeDef } from "./schemas/journal-entry-schema";
+import { JournalEntryResolvers } from "./resolvers/journal-entry-resolvers";
 
 const typeDefs = gql`
   type Query {
@@ -30,13 +32,6 @@ const typeDefs = gql`
     entries(entryKeys: [ID!]): [Entry]
     recentEntries(count: Int!): [Entry!]!
     entryKeys: [String!]!
-
-    recentJournalEntries(count: Int): [JournalEntry!]!
-    journalEntryDates: [String!]!
-
-    journalEntry(entryKey: ID!): JournalEntry
-    journalEntryKeys: [ID!]!
-    journalEntries(entryKeys: [ID!]): [JournalEntry]
 
     arcEntry(arcId: ID!): ArcEntry
     arcEntries(entryKeys: [ID!]): [ArcEntry]
@@ -72,11 +67,6 @@ const typeDefs = gql`
     highlights: [Highlight!]!
     entryType: EntryType!
     history: History!
-  }
-
-  type JournalEntry {
-    entryKey: String!
-    entry: Entry!
   }
 
   type ArcEntry {
@@ -358,39 +348,8 @@ const typePolicies: StrictTypedTypePolicies = {
           )
           .slice(0, args.count);
       },
-      journalEntry(_, { args }) {
-        if (args.entryKey) {
-          return vars.journalEntries()[args.entryKey] ?? null;
-        }
-        return null;
-      },
-      journalEntryKeys() {
-        return Object.keys(vars.journalEntries());
-      },
-      journalEntries(_, { args }: { args: QueryJournalEntriesArgs }) {
-        if (args?.entryKeys) {
-          return args.entryKeys
-            .map((entryKey) => vars.journalEntries()[entryKey])
-            .filter(Boolean);
-        }
-        return Object.values(vars.journalEntries());
-      },
       entryKeys() {
         return Object.values(vars.entries()).map((entry) => entry.entryKey);
-      },
-      recentJournalEntries(_, { args }) {
-        return Object.values(vars.entries())
-          .filter((entry) => entry.entryType === "JOURNAL")
-          .sort(
-            (a, b) =>
-              parseIpsumDateTime(b.history.dateCreated)
-                .dateTime.toJSDate()
-                .getTime() -
-              parseIpsumDateTime(a.history.dateCreated)
-                .dateTime.toJSDate()
-                .getTime()
-          )
-          .slice(0, args?.count);
       },
       arcEntry(_, { args }) {
         if (args?.arcId) {
@@ -424,6 +383,7 @@ const typePolicies: StrictTypedTypePolicies = {
       ...SearchResolvers.Query.fields,
       ...ArcResolvers.Query.fields,
       ...DayResolvers.Query.fields,
+      ...JournalEntryResolvers.Query.fields,
     },
   },
   Entry: {
@@ -444,14 +404,6 @@ const typePolicies: StrictTypedTypePolicies = {
       },
       history(h) {
         return h;
-      },
-    },
-  },
-  JournalEntry: {
-    keyFields: ["entryKey"],
-    fields: {
-      entry(_, { readField }) {
-        return vars.entries()[readField<string>("entryKey")];
       },
     },
   },
@@ -499,6 +451,7 @@ const typePolicies: StrictTypedTypePolicies = {
   SRSCard: SRSResolvers.SRSCard,
   SRSCardReview: SRSResolvers.SRSCardReview,
   Day: DayResolvers.Day,
+  JournalEntry: JournalEntryResolvers.JournalEntry,
 };
 
 const cache = new InMemoryCache({ typePolicies, addTypename: true });
@@ -511,6 +464,13 @@ const errorLink = onError((errors) => {
 
 export const client = new ApolloClient({
   cache,
-  typeDefs: [typeDefs, arcTypeDef, searchTypeDef, highlightTypeDef, dayTypeDef],
+  typeDefs: [
+    typeDefs,
+    arcTypeDef,
+    searchTypeDef,
+    highlightTypeDef,
+    dayTypeDef,
+    journalEntryTypeDef,
+  ],
   link: errorLink,
 });
