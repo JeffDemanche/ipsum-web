@@ -1,13 +1,7 @@
 import { Card, Typography } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightExcerpt } from "components/HighlightExcerpt";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import styles from "./HighlightBox.less";
 import cx from "classnames";
 import { gql } from "util/apollo";
@@ -15,6 +9,7 @@ import { useQuery } from "@apollo/client";
 import { IpsumDateTime, IpsumDay, parseIpsumDateTime } from "util/dates";
 import { HighlightBoxButtons } from "./HighlightBoxButtons";
 import { HighlightBoxRelations } from "./HighlightBoxRelations";
+import { ImportanceRatingButton } from "./ImportanceRatingButton";
 
 interface HighlightBoxProps {
   highlightId: string;
@@ -37,6 +32,7 @@ const HighlightBoxQuery = gql(`
         entryKey
         date
       }
+      currentImportance
       outgoingRelations {
         __typename
         predicate
@@ -140,6 +136,9 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
               </a>
             </Typography>
           )}
+          <div className={styles["unselected-info-header"]}>
+            <ImportanceRatingButton highlightId={highlightId} />
+          </div>
         </div>
       )}
 
