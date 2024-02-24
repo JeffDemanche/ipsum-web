@@ -11,16 +11,19 @@ export type IpsumDateFormatTo =
   | "stored-day"
   | "entry-printed-date"
   | "entry-printed-date-nice"
+  | "entry-printed-date-nice-with-year"
   | "month-word"
   | "month-and-year"
   | "url-format"
-  | "iso";
+  | "iso"
+  | "relative-calendar";
 
 /** Date formats we can create a DateTime of from a string. */
 export type IpsumDateFormatFrom =
   | "stored-day"
   | "entry-printed-date"
   | "entry-printed-date-nice"
+  | "entry-printed-date-nice-with-year"
   | "url-format"
   | "iso";
 
@@ -127,6 +130,8 @@ export class IpsumDateTime {
         return new this(DateTime.fromFormat(dateString, "D"));
       case "entry-printed-date-nice":
         return new this(DateTime.fromFormat(dateString, "D"));
+      case "entry-printed-date-nice-with-year":
+        return new this(DateTime.fromFormat(dateString, "D"));
       case "url-format":
         return new this(DateTime.fromFormat(dateString, "MM-dd-yyyy"));
       case "iso":
@@ -156,6 +161,13 @@ export class IpsumDateTime {
           month: "long",
           day: "2-digit",
         });
+      case "entry-printed-date-nice-with-year":
+        return this._luxonDateTime.toLocaleString({
+          weekday: "long",
+          month: "long",
+          day: "2-digit",
+          year: "numeric",
+        });
       case "month-word":
         return this._luxonDateTime.toLocaleString({ month: "long" });
       case "month-and-year":
@@ -167,6 +179,8 @@ export class IpsumDateTime {
         return this._luxonDateTime.toFormat("MM-dd-yyyy");
       case "iso":
         return this._luxonDateTime.toISO();
+      case "relative-calendar":
+        return this._luxonDateTime.toRelativeCalendar({ unit: "days" });
       default:
         return undefined;
     }

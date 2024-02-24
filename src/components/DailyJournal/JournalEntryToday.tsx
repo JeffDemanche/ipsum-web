@@ -47,7 +47,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
           })}
         >
           {IpsumDateTime.fromString(entryKey, "entry-printed-date").toString(
-            "entry-printed-date-nice"
+            "entry-printed-date-nice-with-year"
           )}
         </Typography>
         <Digest entryKey={entryKey} className={styles["digest"]} />

@@ -129,7 +129,10 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
         <div key={i}>
           <Typography variant="h4">
             <a onClick={(e) => onDateClick(e, day)} href="#">
-              {day.toString("entry-printed-date-nice")}
+              {day.toString("entry-printed-date-nice-with-year")}{" "}
+              <span className={styles["relative-date-text"]}>
+                {day.toString("relative-calendar")}
+              </span>
             </a>
           </Typography>
           <div>
