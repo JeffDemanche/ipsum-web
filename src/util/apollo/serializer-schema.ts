@@ -123,44 +123,6 @@ export const SerializedSchema = t.type(
       ),
       "relations"
     ),
-    srsCardReviews: t.record(
-      t.string,
-      t.type({
-        __typename: t.literal("SRSCardReview"),
-        id: t.string,
-        card: t.string,
-        day: t.string,
-        rating: t.number,
-        beforeInterval: t.number,
-        afterInterval: t.number,
-        beforeEF: t.number,
-        afterEF: t.number,
-      })
-    ),
-    srsCards: t.record(
-      t.string,
-      t.type({
-        __typename: t.literal("SRSCard"),
-        id: t.string,
-        lastReviewed: t.string,
-        interval: t.number,
-        ef: t.number,
-        subjectType: t.union([t.literal("Arc"), t.literal("Highlight")]),
-        subject: t.string,
-        endDate: t.union([t.string, t.undefined]),
-        deck: t.string,
-        reviews: t.array(t.string),
-        history: HistorySchema,
-      })
-    ),
-    srsDecks: t.record(
-      t.string,
-      t.type({
-        __typename: t.literal("SRSDeck"),
-        id: t.string,
-        cards: t.array(t.string),
-      })
-    ),
     comments: t.record(
       t.string,
       t.type(
@@ -184,7 +146,6 @@ export const SerializedSchema = t.type(
           ratedHighlights: t.array(t.string),
           changedArcEntries: t.array(t.string),
           comments: t.array(t.string),
-          srsCardReviews: t.array(t.string),
         },
         "day"
       ),

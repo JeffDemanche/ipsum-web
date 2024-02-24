@@ -5,7 +5,6 @@ import {
   createHighlight,
   rateHighlightImportance,
 } from "util/apollo/api/highlights";
-import { createSRSCard } from "util/apollo/api/srs";
 import { client, initializeState } from "util/apollo/client";
 import { IpsumDateTime } from "util/dates";
 
@@ -248,32 +247,5 @@ describe("Highlight resolvers", () => {
     });
   });
 
-  describe("field queries", () => {
-    it("should query srs cards for a highlight", () => {
-      const highlight = createHighlight({ entry: "1/2/2020" });
-      const srsCard = createSRSCard({
-        subjectType: "Highlight",
-        subjectId: highlight.id,
-      });
-
-      const result = client.readQuery({
-        query: gql(`
-        query ReadHighlight($highlight: ID!) {
-          highlight(id: $highlight) {
-            id
-            srsCards {
-              id
-            }
-          }
-        }
-      `),
-        variables: {
-          highlight: highlight.id,
-        },
-      });
-
-      expect(result.highlight.id).toEqual(highlight.id);
-      expect(result.highlight.srsCards[0].id).toEqual(srsCard.id);
-    });
-  });
+  describe("field queries", () => {});
 });

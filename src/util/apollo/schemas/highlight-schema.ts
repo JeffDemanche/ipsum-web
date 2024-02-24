@@ -18,7 +18,6 @@ export const highlightTypeDef = gql`
     arc: Arc
     arcs: [Arc!]!
     outgoingRelations: [Relation!]!
-    srsCards: [SRSCard!]!
     hue: Int!
     excerpt: String!
 

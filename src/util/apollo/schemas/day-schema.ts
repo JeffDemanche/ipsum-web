@@ -11,7 +11,6 @@ export const dayTypeDef = gql`
     changedArcEntries: [ArcEntry!]
     ratedHighlights: [Highlight!]
     comments: [Comment!]
-    srsCardReviews: [SRSCardReview!]
     hasJournalEntry: Boolean!
   }
 `;

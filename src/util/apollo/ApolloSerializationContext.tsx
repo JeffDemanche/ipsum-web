@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { unstable_batchedUpdates } from "react-dom";
 import { readFromFile, writeToFile } from "util/file";
 import { useIpsumIDBWrapper } from "util/indexed-db";
 import { useModifySearchParams } from "util/url";
 import { autosave } from "./autosave";
-import { initializeState, vars } from "./client";
+import { client, initializeState, vars } from "./client";
 import { loadApolloState, writeApolloState } from "./serializer";
 
 interface ApolloSerialization {
@@ -77,11 +78,14 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
     autosave();
   }, [modifySearchParams]);
 
-  const resetToInitial = useCallback(() => {
+  const [resetting, setResetting] = useState(false);
+  const resetToInitial = useCallback(async () => {
+    setResetting(true);
     modifySearchParams(() => ({}));
-    initializeState();
+    await initializeState();
     autosave();
     refreshDom();
+    setResetting(false);
   }, [modifySearchParams, refreshDom]);
 
   // Autosave stuff
@@ -94,8 +98,9 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
     if (idbWrapper !== undefined && stateFromAutosave === undefined) {
       idbWrapper.getAutosaveValue().then((state) => {
         if (!state) {
-          initializeState();
-          setHasLoadedAutosave(true);
+          initializeState().then(() => {
+            setHasLoadedAutosave(true);
+          });
         } else {
           setStateFromAutosave(state);
         }
@@ -111,6 +116,16 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
     }
   }, [idbWrapper, hasLoadedAutosave, stateFromAutosave]);
 
+  const dom = (() => {
+    if (resetting) {
+      return <p>resetting...</p>;
+    } else if (hasLoadedAutosave) {
+      return children;
+    } else {
+      return <p>loading autosave...</p>;
+    }
+  })();
+
   return (
     <ApolloSerializationContext.Provider
       value={{
@@ -121,15 +136,7 @@ export const ApolloSerializationProvider: React.FunctionComponent<{
         loadErrors,
       }}
     >
-      {hasLoadedAutosave ? (
-        refreshTrigger ? (
-          <></>
-        ) : (
-          children
-        )
-      ) : (
-        <p>loading autosave...</p>
-      )}
+      {dom}
     </ApolloSerializationContext.Provider>
   );
 };

@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 import { ArcResolvers } from "./resolvers/arc-resolvers";
 import { HighlightResolvers } from "./resolvers/highlight-resolvers";
 import { SearchResolvers } from "./resolvers/search-resolvers";
-import { SRSResolvers } from "./resolvers/srs-resolvers";
 import { arcTypeDef } from "./schemas/arc-schema";
 import { highlightTypeDef } from "./schemas/highlight-schema";
 import { searchTypeDef } from "./schemas/search-schema";
@@ -14,7 +13,6 @@ import {
   QueryArcEntriesArgs,
   QueryEntriesArgs,
   QueryRelationsArgs,
-  QueryJournalEntriesArgs,
 } from "./__generated__/graphql";
 import { onError } from "@apollo/client/link/error";
 import { dayTypeDef } from "./schemas/day-schema";
@@ -38,10 +36,6 @@ const typeDefs = gql`
 
     relation(id: ID!): Relation
     relations(ids: [ID!]): [Relation]
-
-    srsCard(id: ID!): SRSCard
-    srsCardsForReview(deckId: ID, day: String!): [SRSCard!]!
-    srsReviewsFromDay(deckId: ID, day: String!): [SRSCardReview!]!
   }
 
   # Generalized type that can be used on objects that have a history
@@ -86,41 +80,6 @@ const typeDefs = gql`
     subject: RelationSubject!
     predicate: String!
     object: Arc!
-  }
-
-  union SRSCardSubject = Arc | Highlight
-
-  enum SRSCardSubjectType {
-    Arc
-    Highlight
-  }
-
-  type SRSCard {
-    id: ID!
-    lastReviewed: String!
-    interval: Float!
-    ef: Float!
-    subject: SRSCardSubject!
-    subjectType: SRSCardSubjectType!
-    endDate: String
-    deck: SRSDeck!
-    reviews: [SRSCardReview!]!
-  }
-
-  type SRSCardReview {
-    id: ID!
-    card: SRSCard!
-    day: Day!
-    rating: Int!
-    beforeInterval: Float!
-    beforeEF: Float!
-    afterInterval: Float!
-    afterEF: Float!
-  }
-
-  type SRSDeck {
-    id: ID!
-    cards: [SRSCard!]!
   }
 
   # TODO
@@ -201,36 +160,6 @@ export type UnhydratedType = {
     ratedHighlights: string[];
     changedArcEntries: string[];
     comments: string[];
-    srsCardReviews: string[];
-  };
-  SRSCardReview: {
-    __typename: "SRSCardReview";
-    id: string;
-    card: string;
-    day: string;
-    rating: number;
-    beforeInterval: number;
-    beforeEF: number;
-    afterInterval: number;
-    afterEF: number;
-  };
-  SRSCard: {
-    __typename: "SRSCard";
-    id: string;
-    lastReviewed: string;
-    interval: number;
-    ef: number;
-    subjectType: "Arc" | "Highlight";
-    subject: string;
-    endDate?: string;
-    deck: string;
-    reviews: string[];
-    history: UnhydratedType["History"];
-  };
-  SRSDeck: {
-    __typename: "SRSDeck";
-    id: string;
-    cards: string[];
   };
   Comment: {
     __typename: "Comment";
@@ -256,11 +185,6 @@ export const vars = {
   highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
   relations: makeVar<{ [id in string]: UnhydratedType["Relation"] }>({}),
   days: makeVar<{ [day in string]: UnhydratedType["Day"] }>({}),
-  srsCardReviews: makeVar<{ [id in string]: UnhydratedType["SRSCardReview"] }>(
-    {}
-  ),
-  srsCards: makeVar<{ [id in string]: UnhydratedType["SRSCard"] }>({}),
-  srsDecks: makeVar<{ [id in string]: UnhydratedType["SRSDeck"] }>({}),
   comments: makeVar<{ [id in string]: UnhydratedType["Comment"] }>({}),
 };
 
@@ -278,14 +202,15 @@ export const serializeVars: (keyof typeof vars)[] = [
   "commentEntries",
   "highlights",
   "relations",
-  "srsCards",
-  "srsCardReviews",
-  "srsDecks",
   "comments",
   "days",
 ];
 
-export const initializeState = () => {
+export const initializeState = async () => {
+  // Cancels "watches" on queries. Because all queries will update on each
+  // reactive var call, resetting one might trigger a query update that could
+  // cause errors.
+  await client.clearStore();
   vars.journalId(uuidv4());
   vars.journalTitle("new journal");
   vars.journalMetadata({ lastArcHue: 0 });
@@ -297,15 +222,6 @@ export const initializeState = () => {
   vars.highlights({});
   vars.relations({});
   vars.days({});
-  vars.srsCards({});
-  vars.srsCardReviews({});
-  vars.srsDecks({
-    default: {
-      __typename: "SRSDeck",
-      id: "default",
-      cards: [],
-    },
-  });
   vars.comments({});
 };
 
@@ -379,7 +295,6 @@ const typePolicies: StrictTypedTypePolicies = {
         return Object.values(vars.relations());
       },
       ...HighlightResolvers.Query.fields,
-      ...SRSResolvers.Query.fields,
       ...SearchResolvers.Query.fields,
       ...ArcResolvers.Query.fields,
       ...DayResolvers.Query.fields,
@@ -447,9 +362,6 @@ const typePolicies: StrictTypedTypePolicies = {
   Arc: ArcResolvers.Arc,
   Highlight: HighlightResolvers.Highlight,
   ImportanceRating: HighlightResolvers.ImportanceRating,
-  SRSDeck: SRSResolvers.SRSDeck,
-  SRSCard: SRSResolvers.SRSCard,
-  SRSCardReview: SRSResolvers.SRSCardReview,
   Day: DayResolvers.Day,
   JournalEntry: JournalEntryResolvers.JournalEntry,
 };

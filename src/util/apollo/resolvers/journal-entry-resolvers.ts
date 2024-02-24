@@ -36,7 +36,9 @@ export const JournalEntryResolvers: StrictTypedTypePolicies = {
           return Object.keys(vars.journalEntries()).filter((entry) => {
             const journalEntry = vars.journalEntries()[entry];
             const entryData = vars.entries()[journalEntry.entry];
-            return isJournalEntryEmpty(entryData.trackedHTMLString);
+            return (
+              entryData && isJournalEntryEmpty(entryData.trackedHTMLString)
+            );
           });
         }
       },
@@ -53,7 +55,9 @@ export const JournalEntryResolvers: StrictTypedTypePolicies = {
           return Object.keys(vars.journalEntries()).filter((entry) => {
             const journalEntry = vars.journalEntries()[entry];
             const entryData = vars.entries()[journalEntry.entry];
-            return isJournalEntryEmpty(entryData.trackedHTMLString);
+            return (
+              entryData && isJournalEntryEmpty(entryData.trackedHTMLString)
+            );
           });
         }
       },

@@ -85,11 +85,6 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
       outgoingRelations(relationIds: string[]) {
         return relationIds.map((id) => vars.relations()[id]);
       },
-      srsCards(_, { readField }) {
-        return Object.values(vars.srsCards()).filter(
-          (srsCard) => srsCard.subject === readField("id")
-        );
-      },
       hue(_, { readField }) {
         const arcs = readField<
           {

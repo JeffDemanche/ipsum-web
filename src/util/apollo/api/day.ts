@@ -22,8 +22,6 @@ export const upsertDay = ({
       __typename: "Day",
       day,
       journalEntry: vars.journalEntries()[day]?.entryKey,
-      // DEPRECATED
-      srsCardReviews: [],
       ratedHighlights: ratedHighlights ?? existingDay?.ratedHighlights ?? [],
       // TODO
       changedArcEntries: [],
@@ -43,7 +41,6 @@ export const deleteDayIfEmpty = (dayKey: string): boolean => {
 
   if (
     !day.journalEntry &&
-    !day.srsCardReviews.length &&
     !day.changedArcEntries.length &&
     !day.comments.length
   ) {
