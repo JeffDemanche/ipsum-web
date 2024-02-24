@@ -317,7 +317,7 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
         popHighlights,
         selectedHighlightId,
         setSelectedHighlightId,
-        sort,
+        sort: sort ?? "importance",
         setSort,
       }}
     >
