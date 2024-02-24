@@ -20,14 +20,15 @@ export const Diptych: React.FunctionComponent = () => {
         <BreadcrumbsHeader />
       </div>
       <div className={styles["diptych-container"]}>
-        {leftHandLayer && (
-          <div className={styles["column-1"]}>
+        {/* Render column 1 even if there is no left hand layer to avoid layout shift */}
+        <div className={styles["column-1"]}>
+          {leftHandLayer && (
             <DiptychColumn
               layer={leftHandLayer}
               layerIndex={leftHandLayerIndex}
             ></DiptychColumn>
-          </div>
-        )}
+          )}
+        </div>
         {rightHandLayer && (
           <div className={styles["column-2"]}>
             <DiptychColumn

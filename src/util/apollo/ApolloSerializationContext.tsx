@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { unstable_batchedUpdates } from "react-dom";
+import React, { useCallback, useEffect, useState } from "react";
 import { readFromFile, writeToFile } from "util/file";
 import { useIpsumIDBWrapper } from "util/indexed-db";
 import { useModifySearchParams } from "util/url";
 import { autosave } from "./autosave";
-import { client, initializeState, vars } from "./client";
+import { initializeState, vars } from "./client";
 import { loadApolloState, writeApolloState } from "./serializer";
 
 interface ApolloSerialization {
