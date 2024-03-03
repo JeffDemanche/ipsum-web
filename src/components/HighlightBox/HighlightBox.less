@@ -1,6 +1,7 @@
 .box {
   display: flex;
   flex-direction: column;
+  margin-top: 5px;
   margin-bottom: 5px;
   cursor: pointer;
 
@@ -9,10 +10,12 @@
   }
 
   &.selected {
+    background-color: rgba(170, 170, 170, 0.1);
     outline: 1px solid rgba(170, 170, 170, 0.5);
   }
 
   &:hover {
+    background-color: rgba(170, 170, 170, 0.1);
     outline: 1px solid rgba(170, 170, 170, 0.5);
   }
 }
@@ -31,6 +34,12 @@
 
   .highlight-title {
     flex-grow: 1;
+  }
+
+  .left-aligned {
+    align-items: center;
+    display: flex;
+    gap: 2px;
   }
 
   .right-aligned {

@@ -20,7 +20,7 @@ export const MedianSearchSection: React.FunctionComponent = () => {
   }, [searchResults, selectedHighlightId]);
 
   return (
-    <div className={styles["search-section"]}>
+    <>
       <div className={styles["sort-by-select-container"]}>
         <TextField
           size="small"
@@ -40,7 +40,6 @@ export const MedianSearchSection: React.FunctionComponent = () => {
           <MenuItem value="date">Date</MenuItem>
         </TextField>
       </div>
-
       <HighlightSearchCriteriaPanel
         isUserSearch={isUserSearch}
         searchCriteria={searchCriteria}
@@ -48,6 +47,6 @@ export const MedianSearchSection: React.FunctionComponent = () => {
       <div className={styles["results"]}>
         <HighlightsList highlightIds={highlightIds} />
       </div>
-    </div>
+    </>
   );
 };

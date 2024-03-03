@@ -27,6 +27,7 @@ export const HighlightBoxButtons: React.FunctionComponent<
     <div className={styles["details-options"]}>
       <div className={styles["left-aligned"]}>
         <Tooltip
+          className={styles["deselect-button"]}
           title="Deselect highlight"
           onClick={(e) => {
             // TODO make this smarter once the highlights have been fleshed

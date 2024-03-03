@@ -1,18 +1,31 @@
 import { Card, Typography } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightExcerpt } from "components/HighlightExcerpt";
-import React, { useCallback, useContext, useEffect, useRef } from "react";
+import React, { useCallback, useContext, useRef } from "react";
 import styles from "./HighlightBox.less";
 import cx from "classnames";
-import { gql } from "util/apollo";
-import { useQuery } from "@apollo/client";
 import { IpsumDateTime, IpsumDay, parseIpsumDateTime } from "util/dates";
 import { HighlightBoxButtons } from "./HighlightBoxButtons";
 import { HighlightBoxRelations } from "./HighlightBoxRelations";
 import { ImportanceRatingButton } from "./ImportanceRatingButton";
 
 interface HighlightBoxProps {
-  highlightId: string;
+  className?: string;
+
+  highlight: {
+    id: string;
+    entry: {
+      date: string;
+    };
+    currentImportance: number;
+    outgoingRelations: {
+      predicate: string;
+      object: {
+        id: string;
+        color: number;
+      };
+    }[];
+  };
   variant?: "collapsed" | "expanded";
 
   showDate?: boolean;
@@ -24,31 +37,9 @@ interface HighlightBoxProps {
   onHover?: (hovered: boolean) => void;
 }
 
-const HighlightBoxQuery = gql(`
-  query HighlightBox($highlightId: ID!) {
-    highlight(id: $highlightId) {
-      id
-      entry {
-        entryKey
-        date
-      }
-      currentImportance
-      outgoingRelations {
-        __typename
-        predicate
-        object {
-          ... on Arc {
-            id
-            color
-          }
-        }
-      }
-    }
-  }
-`);
-
 export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
-  highlightId,
+  className,
+  highlight,
   variant = "expanded",
   showDate,
   selected,
@@ -56,13 +47,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
   hovered,
   onHover,
 }) => {
-  const { data } = useQuery(HighlightBoxQuery, {
-    variables: { highlightId },
-  });
-
   const { pushLayer } = useContext(DiptychContext);
-
-  const highlight = data?.highlight;
 
   const entryDate = parseIpsumDateTime(highlight.entry.date).toString(
     "entry-printed-date-nice"
@@ -77,12 +62,6 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
   }, [highlight, onSelect, selected]);
 
   const boxRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (selected) {
-      boxRef.current.scrollIntoView({ behavior: "auto", block: "start" });
-    }
-  }, [selected]);
 
   const onDateClick = useCallback(
     (e: React.MouseEvent) => {
@@ -110,7 +89,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
       }}
       variant={selected ? "elevation" : "translucent"}
       onClick={onCardClick}
-      className={cx(selected && styles["selected"], styles["box"])}
+      className={cx(className, selected && styles["selected"], styles["box"])}
       data-testid="median-highlight-box"
       ref={boxRef}
     >
@@ -125,7 +104,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
               </a>
             </Typography>
           )}
-          <HighlightBoxButtons highlightId={highlightId} />
+          <HighlightBoxButtons highlightId={highlight.id} />
         </div>
       ) : (
         <div className={cx(styles["top-controls-container"])}>
@@ -137,7 +116,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
             </Typography>
           )}
           <div className={styles["unselected-info-header"]}>
-            <ImportanceRatingButton highlightId={highlightId} />
+            <ImportanceRatingButton highlightId={highlight.id} />
           </div>
         </div>
       )}
@@ -145,13 +124,13 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
       {variant !== "collapsed" && (
         <HighlightExcerpt
           paperClassName={styles["excerpt"]}
-          highlightId={highlightId}
+          highlightId={highlight.id}
         />
       )}
 
       {selected && (
         <div className={styles["bottom-controls-container"]}>
-          <HighlightBoxRelations highlightId={highlightId} />
+          <HighlightBoxRelations highlightId={highlight.id} />
         </div>
       )}
     </Card>

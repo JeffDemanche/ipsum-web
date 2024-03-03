@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { Paper } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 import styles from "./HighlightExcerpt.less";
 import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
@@ -43,15 +43,6 @@ export const HighlightExcerpt: React.FunctionComponent<
   const { data } = useQuery(HighlightExcerptQuery, {
     variables: { highlightId },
   });
-
-  const ref = React.useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (data?.highlight?.excerpt && ref.current) {
-      ref.current.innerHTML = data.highlight.excerpt;
-    }
-  }, [data.highlight.excerpt]);
-
   return (
     <Paper
       sx={{ borderRadius: "0" }}
@@ -65,7 +56,7 @@ export const HighlightExcerpt: React.FunctionComponent<
           truncate && styles["truncate"]
         )}
         style={{ WebkitLineClamp: truncateLineClamp }}
-        ref={ref}
+        dangerouslySetInnerHTML={{ __html: data?.highlight?.excerpt ?? "" }}
       />
     </Paper>
   );

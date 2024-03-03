@@ -6,6 +6,7 @@ import React, { useCallback, useContext, useMemo } from "react";
 import { gql, HighlightSortType } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import styles from "./HighlightsList.less";
+import { GroupedVirtuoso } from "react-virtuoso";
 
 interface HighlightsListProps {
   highlightIds: string[];
@@ -21,6 +22,17 @@ const HighlightsListQuery = gql(`
       entry {
         entryKey
         date
+      }
+      currentImportance
+      outgoingRelations {
+        __typename
+        predicate
+        object {
+          ... on Arc {
+            id
+            color
+          }
+        }
       }
     }
   }
@@ -47,7 +59,7 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
   const groupedByDay = useMemo(() => {
     const grouped: {
       day: IpsumDay;
-      highlights: { highlightId: string; entryKey: string }[];
+      highlights: typeof highlights;
     }[] = [];
     for (const highlight of highlights) {
       if (!highlight) continue;
@@ -62,49 +74,14 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
       ) {
         grouped.push({
           day,
-          highlights: [
-            { entryKey: highlight.entry.entryKey, highlightId: highlight.id },
-          ],
+          highlights: [highlight],
         });
       } else {
-        grouped[grouped.length - 1].highlights.push({
-          entryKey: highlight.entry.entryKey,
-          highlightId: highlight.id,
-        });
+        grouped[grouped.length - 1].highlights.push(highlight);
       }
     }
     return grouped;
   }, [highlights]);
-
-  // const groupedByDay = useMemo(
-  //   () =>
-  //     highlights.reduce((acc, highlight) => {
-  //       if (!highlight) return acc;
-
-  //       const day = IpsumDay.fromString(highlight.entry.date, "iso");
-
-  //       const dayUrlFormat = day.toString("url-format");
-
-  //       if (!acc[dayUrlFormat]) acc[dayUrlFormat] = [];
-  //       acc[dayUrlFormat].push({
-  //         highlightId: highlight.id,
-  //         entryKey: highlight.entry.entryKey,
-  //       });
-  //       return acc;
-  //     }, {} as Record<string, { highlightId: string; entryKey: string }[]>),
-  //   [highlights]
-  // );
-
-  // console.log(groupedByDay);
-
-  // const days = useMemo(
-  //   () =>
-  //     Object.entries(groupedByDay).map(([dayUrlFormat, highlights]) => {
-  //       const day = IpsumDay.fromString(dayUrlFormat, "url-format");
-  //       return { day, highlights };
-  //     }),
-  //   [groupedByDay]
-  // );
 
   const { pushLayer } = useContext(DiptychContext);
 
@@ -121,12 +98,13 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
   );
 
   return (
-    <div className={styles["highlights-list"]}>
-      {groupedByDay.length === 0 && (
-        <Typography variant="h4">No highlight results</Typography>
-      )}
-      {groupedByDay.map(({ day, highlights }, i) => (
-        <div key={i}>
+    <GroupedVirtuoso
+      className={styles["highlights-list"]}
+      groupCounts={groupedByDay.map((group) => group.highlights.length)}
+      groupContent={(index) => {
+        const day = groupedByDay[index].day;
+
+        return (
           <Typography variant="h4">
             <a onClick={(e) => onDateClick(e, day)} href="#">
               {day.toString("entry-printed-date-nice-with-year")}{" "}
@@ -135,21 +113,23 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
               </span>
             </a>
           </Typography>
-          <div>
-            {highlights.map((highlight) => (
-              <HighlightBox
-                key={highlight.highlightId}
-                highlightId={highlight.highlightId}
-                selected={highlight.highlightId === selectedHighlightId}
-                showDate={false}
-                onSelect={() => {
-                  setSelectedHighlightId(highlight.highlightId);
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
+        );
+      }}
+      itemContent={(index) => {
+        const highlight = highlights[index];
+        return (
+          <HighlightBox
+            className={styles["list-highlight-box"]}
+            key={highlight.id}
+            highlight={highlight}
+            selected={highlight.id === selectedHighlightId}
+            showDate={false}
+            onSelect={() => {
+              setSelectedHighlightId(highlight.id);
+            }}
+          />
+        );
+      }}
+    />
   );
 };
