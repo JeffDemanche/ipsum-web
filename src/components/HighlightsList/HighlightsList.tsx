@@ -2,11 +2,17 @@ import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightBox } from "components/HighlightBox";
-import React, { useCallback, useContext, useMemo } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { gql, HighlightSortType } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import styles from "./HighlightsList.less";
-import { GroupedVirtuoso } from "react-virtuoso";
+import { GroupedVirtuoso, GroupedVirtuosoHandle } from "react-virtuoso";
 
 interface HighlightsListProps {
   highlightIds: string[];
@@ -97,8 +103,20 @@ export const HighlightsList: React.FunctionComponent<HighlightsListProps> = ({
     [pushLayer]
   );
 
+  const virtuosoRef = useRef<GroupedVirtuosoHandle>(null);
+
+  useEffect(() => {
+    if (selectedHighlightId && virtuosoRef.current) {
+      const index = highlights.findIndex(
+        (highlight) => highlight.id === selectedHighlightId
+      );
+      virtuosoRef.current.scrollToIndex(index);
+    }
+  }, [highlights, selectedHighlightId]);
+
   return (
     <GroupedVirtuoso
+      ref={virtuosoRef}
       className={styles["highlights-list"]}
       groupCounts={groupedByDay.map((group) => group.highlights.length)}
       groupContent={(index) => {
