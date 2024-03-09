@@ -8,27 +8,6 @@ export type LayerType =
 
 export type BaseURLLayer = {
   type: LayerType;
-
-  /** The highlight linked to *from* this layer. */
-  highlightFrom?: string;
-
-  /**
-   * The entry key of the highlight linked to from this layer. Only valid if
-   * `highlightFrom` is defined.
-   */
-  highlightFromEntryKey?: string;
-
-  /**
-   * The highlight which links *to* the next layer. This can be different from
-   * `highlightFrom`. Only valid if `highlightFrom` is defined.
-   */
-  highlightTo?: string;
-
-  /**
-   * The entry key of the highlight which links to the next layer. Only valid if
-   * `highlightFrom` and `highlightTo` are defined.
-   */
-  highlightToEntryKey?: string;
 };
 
 export interface DailyJournalURLLayer extends BaseURLLayer {

@@ -42,13 +42,13 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
   const searchCriteriaFromUrl =
     useIpsumSearchParams<"journal">().searchCriteria;
 
-  const { topLayer } = useContext(DiptychContext);
+  const { topLayer, selectedHighlightId } = useContext(DiptychContext);
 
   const { data: highlightArcsData } = useQuery(
     UseHighlightSearchHighlightArcsQuery,
     {
-      skip: !topLayer?.highlightFrom,
-      variables: { highlightId: topLayer?.highlightFrom },
+      skip: !selectedHighlightId,
+      variables: { highlightId: selectedHighlightId },
     }
   );
   const topLayerHighlightArcs = useMemo(
@@ -69,7 +69,7 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
     if (isUserSearch) return searchCriteriaFromUrl;
 
     // If highlight is selected
-    if (topLayer?.highlightFrom) {
+    if (selectedHighlightId) {
       return {
         and: [
           {
@@ -128,7 +128,13 @@ export const useSearchResults = (): UseHighlightSearchResultsResult => {
     }
 
     return {};
-  }, [isUserSearch, searchCriteriaFromUrl, topLayer]);
+  }, [
+    isUserSearch,
+    searchCriteriaFromUrl,
+    selectedHighlightId,
+    topLayer,
+    topLayerHighlightArcs,
+  ]);
 
   const { data } = useQuery(UseHighlightSearchQuery, {
     variables: { searchCriteria },

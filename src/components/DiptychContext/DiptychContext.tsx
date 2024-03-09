@@ -51,6 +51,11 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
 }) => {
   const { layers, sort, highlight } = useIpsumSearchParams<"journal">();
 
+  /**
+   * Equivalent to the hightlightFrom on the topmost layer.
+   */
+  const selectedHighlightId = useMemo(() => highlight, [highlight]);
+
   const urlLayers = useMemo(() => layers ?? [], [layers]);
 
   const modifySearchParams = useModifySearchParams<"journal">();
@@ -92,9 +97,9 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
         case "daily_journal":
           return {
             type: "journal_entry",
-            journalEntryId: layer.highlightFromEntryKey
+            journalEntryId: selectedHighlightId
               ? IpsumDay.fromString(
-                  layer.highlightFromEntryKey,
+                  selectedHighlightId,
                   "entry-printed-date"
                 ).toString("stored-day")
               : layer.focusedDate
@@ -119,7 +124,7 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
           };
       }
     },
-    []
+    [selectedHighlightId]
   );
 
   const orderedBreadcrumbs = useMemo(() => {
@@ -148,11 +153,6 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
       });
     }
   }, [modifySearchParams, urlLayers]);
-
-  /**
-   * Equivalent to the hightlightFrom on the topmost layer.
-   */
-  const selectedHighlightId = useMemo(() => highlight, [highlight]);
 
   useEffect(() => {
     if (urlLayers.length === 0) {
