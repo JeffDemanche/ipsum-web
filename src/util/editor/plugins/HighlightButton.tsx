@@ -1,7 +1,8 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { Highlight } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
-import React, { useCallback } from "react";
+import { DiptychContext } from "components/DiptychContext";
+import React, { useCallback, useContext } from "react";
 import { createHighlight } from "util/apollo";
 import { TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND } from "./HighlightAssignmentPlugin";
 import styles from "./HighlightButton.less";
@@ -15,6 +16,8 @@ export const HighlightButton: React.FunctionComponent<HighlightButtonProps> = ({
 }) => {
   const [editor] = useLexicalComposerContext();
 
+  const { setSelectedHighlightId } = useContext(DiptychContext);
+
   const onHighlightClick = useCallback(() => {
     const highlight = createHighlight({ entry: entryKey });
 
@@ -23,7 +26,9 @@ export const HighlightButton: React.FunctionComponent<HighlightButtonProps> = ({
         highlightId: highlight.id,
       });
     });
-  }, [editor, entryKey]);
+
+    setSelectedHighlightId(highlight.id);
+  }, [editor, entryKey, setSelectedHighlightId]);
 
   return (
     <Tooltip title="Create new highlight from selection">
