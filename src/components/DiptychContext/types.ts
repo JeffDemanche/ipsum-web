@@ -8,14 +8,6 @@ export interface Diptych {
 
   pushLayer: (layer: URLLayer) => void;
   popLayer: () => void;
-  setTopHighlightFrom: (
-    highlightFrom: string,
-    highlightFromEntryKey: string
-  ) => void;
-  setTopHighlightTo: (
-    highlightTo: string,
-    highlightFromEntryKey: string
-  ) => void;
   popHighlights: () => void;
 
   selectedHighlightId?: string;

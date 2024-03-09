@@ -1,12 +1,11 @@
-import { useQuery } from "@apollo/client";
 import { BreadcrumbType } from "components/Breadcrumb";
 import React, { useCallback, useEffect, useMemo } from "react";
-import { gql } from "util/apollo";
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import {
   URLLayer,
   useIpsumSearchParams,
   useModifySearchParams,
+  HighlightDetailURLLayer,
 } from "util/url";
 import { Diptych } from "./types";
 
@@ -23,6 +22,10 @@ const isIdenticalLayer = (a: URLLayer, b: URLLayer) => {
     return a.arcId === b.arcId;
   }
 
+  if (a.type === "highlight_detail" && b.type === "highlight_detail") {
+    return a.highlightId === b.highlightId;
+  }
+
   return false;
 };
 
@@ -31,8 +34,6 @@ export const DiptychContext = React.createContext<Diptych>({
   pushLayer: () => {},
   popLayer: () => {},
   orderedBreadcrumbs: [],
-  setTopHighlightFrom: () => {},
-  setTopHighlightTo: () => {},
   popHighlights: () => {},
   selectedHighlightId: undefined,
   topLayer: undefined,
@@ -45,18 +46,10 @@ interface DiptychProviderProps {
   children: React.ReactNode;
 }
 
-const DiptychContextHighlightQuery = gql(`
-  query DiptychContextHighlight($highlightId: ID!) {
-    highlight(id: $highlightId) {
-      id
-    }
-  }
-`);
-
 export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   children,
 }) => {
-  const { layers, sort } = useIpsumSearchParams<"journal">();
+  const { layers, sort, highlight } = useIpsumSearchParams<"journal">();
 
   const urlLayers = useMemo(() => layers ?? [], [layers]);
 
@@ -118,6 +111,12 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
             arcId: layer.arcId,
             visible,
           };
+        case "highlight_detail":
+          return {
+            type: "highlight",
+            highlightId: layer.highlightId,
+            visible,
+          };
       }
     },
     []
@@ -131,138 +130,29 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
         i === urlLayers.length - 1 || i === urlLayers.length - 2;
 
       breadcrumbs.push(breadcrumbForLayer(layer, layerVisible));
-
-      if (layer.highlightFrom) {
-        breadcrumbs.push({
-          type: "highlight",
-          highlightId: layer.highlightFrom,
-          visible: layerVisible,
-        });
-
-        if (layer.highlightTo) {
-          breadcrumbs.push({
-            type: "highlight",
-            highlightId: layer.highlightTo,
-            visible: layerVisible,
-          });
-        }
-      }
     });
 
     return breadcrumbs;
   }, [breadcrumbForLayer, urlLayers]);
 
-  const setTopHighlightFrom = useCallback(
-    (highlightFrom: string, highlightFromEntryKey: string) => {
-      modifySearchParams((searchParams) => ({
-        ...searchParams,
-        layers: [
-          ...searchParams.layers.slice(0, -1),
-          {
-            ...searchParams.layers[searchParams.layers.length - 1],
-            highlightFrom,
-            highlightFromEntryKey,
-            highlightTo: undefined,
-            highlightToEntryKey: undefined,
-          },
-        ],
-      }));
-    },
-    [modifySearchParams]
-  );
-
-  const setTopHighlightTo = useCallback(
-    (highlightTo: string, highlightToEntryKey: string) => {
+  const popHighlights = useCallback(() => {
+    if (urlLayers[urlLayers.length - 1]?.type === "highlight_detail") {
       modifySearchParams((searchParams) => {
-        if (
-          !searchParams.layers[searchParams.layers.length - 1].highlightFrom
-        ) {
-          throw new Error(
-            "Don't set highlightTo when highlightFrom is not set"
-          );
-        }
-
+        const topLayer = {
+          ...searchParams.layers[searchParams.layers.length - 1],
+        };
         return {
           ...searchParams,
-          layers: [
-            ...searchParams.layers.slice(0, -1),
-            {
-              ...searchParams.layers[searchParams.layers.length - 1],
-              highlightTo,
-              highlightToEntryKey,
-            },
-          ],
+          layers: [...searchParams.layers.slice(0, -1), topLayer],
         };
       });
-    },
-    [modifySearchParams]
-  );
-
-  const popHighlights = useCallback(() => {
-    modifySearchParams((searchParams) => {
-      return {
-        ...searchParams,
-        layers: [
-          ...searchParams.layers.slice(0, -1),
-          {
-            ...searchParams.layers[searchParams.layers.length - 1],
-            highlightFrom: undefined,
-            highlightFromEntryKey: undefined,
-            highlightTo: undefined,
-            highlightToEntryKey: undefined,
-          },
-        ],
-      };
-    });
-  }, [modifySearchParams]);
-
-  // This bit of logic deals with highlight deletion when the highlight is
-  // present in the URL.
-  const topHighlightFrom = useMemo(
-    () => urlLayers[urlLayers.length - 1]?.highlightFrom,
-    [urlLayers]
-  );
-
-  const { data: topLayerHighlightFrom } = useQuery(
-    DiptychContextHighlightQuery,
-    {
-      variables: {
-        // TODO: We need to figure out how to handle deleting highlights with many
-        // layers open.
-        highlightId: topHighlightFrom,
-      },
     }
-  );
-
-  const topHighlightTo = useMemo(
-    () => urlLayers[urlLayers.length - 1]?.highlightTo,
-    [urlLayers]
-  );
-
-  const { data: topLayerHighlightTo } = useQuery(DiptychContextHighlightQuery, {
-    variables: {
-      highlightId: topHighlightTo,
-    },
-  });
-
-  useEffect(() => {
-    if (
-      (!topLayerHighlightFrom?.highlight &&
-        urlLayers[urlLayers.length - 1]?.highlightFrom) ||
-      (!topLayerHighlightTo?.highlight &&
-        urlLayers[urlLayers.length - 1]?.highlightTo)
-    ) {
-      popHighlights();
-    }
-  }, [popHighlights, topLayerHighlightFrom, topLayerHighlightTo, urlLayers]);
+  }, [modifySearchParams, urlLayers]);
 
   /**
    * Equivalent to the hightlightFrom on the topmost layer.
    */
-  const selectedHighlightId = useMemo(() => {
-    const topLayer = urlLayers[urlLayers.length - 1];
-    return topLayer?.highlightFrom;
-  }, [urlLayers]);
+  const selectedHighlightId = useMemo(() => highlight, [highlight]);
 
   useEffect(() => {
     if (urlLayers.length === 0) {
@@ -271,25 +161,54 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
   }, [pushLayer, urlLayers.length]);
 
   const setSelectedHighlightId = useCallback(
-    (highlight: string) => {
-      modifySearchParams((searchParams) => {
-        const topLayerIndex = searchParams.layers.length - 1;
-        return {
-          ...searchParams,
-          layers: [
-            ...searchParams.layers.slice(0, -1),
-            {
-              ...searchParams.layers[topLayerIndex],
-              highlightFrom: highlight,
-            },
-          ],
-          // TODO
-          // searchCriteria: { and: [{ or: [{}] }] },
-          highlight,
-        };
-      });
+    (highlightId: string) => {
+      const newLayer: HighlightDetailURLLayer = {
+        type: "highlight_detail",
+        highlightId,
+      };
+      if (highlightId === undefined) {
+        modifySearchParams((searchParams) => {
+          const newUrlLayers = [...urlLayers];
+          newUrlLayers.pop();
+          return {
+            ...searchParams,
+            layers: newUrlLayers,
+            highlight: undefined,
+          };
+        });
+      } else if (
+        urlLayers.length === 0 ||
+        urlLayers[urlLayers.length - 1]?.type === "highlight_detail"
+      ) {
+        modifySearchParams((searchParams) => {
+          const newUrlLayers = [...urlLayers];
+          newUrlLayers.pop();
+          newUrlLayers.push(newLayer);
+          return {
+            ...searchParams,
+            layers: newUrlLayers,
+            highlight: highlightId,
+          };
+        });
+      } else {
+        if (urlLayers.length > 0) {
+          const topLayer = urlLayers[urlLayers.length - 1];
+          if (isIdenticalLayer(topLayer, newLayer)) {
+            return;
+          }
+        }
+
+        modifySearchParams((searchParams) => {
+          const newUrlLayers = [...urlLayers, newLayer];
+          return {
+            ...searchParams,
+            layers: newUrlLayers,
+            highlight: highlightId,
+          };
+        });
+      }
     },
-    [modifySearchParams]
+    [modifySearchParams, urlLayers]
   );
 
   const setSort = useCallback(
@@ -312,8 +231,6 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
         pushLayer,
         popLayer,
         orderedBreadcrumbs,
-        setTopHighlightFrom,
-        setTopHighlightTo,
         popHighlights,
         selectedHighlightId,
         setSelectedHighlightId,

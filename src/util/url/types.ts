@@ -1,6 +1,10 @@
 export type View = "" | "journal";
 
-export type LayerType = "connection_only" | "daily_journal" | "arc_detail";
+export type LayerType =
+  | "connection_only"
+  | "daily_journal"
+  | "arc_detail"
+  | "highlight_detail";
 
 export type BaseURLLayer = {
   type: LayerType;
@@ -39,7 +43,15 @@ export interface ArcDetailURLLayer extends BaseURLLayer {
   arcId: string;
 }
 
-export type URLLayer = DailyJournalURLLayer | ArcDetailURLLayer;
+export interface HighlightDetailURLLayer extends BaseURLLayer {
+  type: "highlight_detail";
+  highlightId: string;
+}
+
+export type URLLayer =
+  | DailyJournalURLLayer
+  | ArcDetailURLLayer
+  | HighlightDetailURLLayer;
 
 interface URLHighlightCriterion {
   days?: {

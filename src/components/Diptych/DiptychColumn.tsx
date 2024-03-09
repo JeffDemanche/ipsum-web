@@ -28,6 +28,13 @@ export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
             <ArcDetail key={layer.arcId} />
           </LayerProvider>
         );
+      case "highlight_detail":
+        return (
+          <LayerProvider layer={layer} layerIndex={layerIndex}>
+            TODO Highlight detail
+            {/* <HighlightDetail key={layer.highlightId} /> */}
+          </LayerProvider>
+        );
     }
   }, [layer, layerIndex]);
 

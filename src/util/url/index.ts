@@ -9,5 +9,6 @@ export {
   IpsumURLSearch,
   URLLayer,
   DailyJournalURLLayer,
+  HighlightDetailURLLayer,
   URLSearchCriteria,
 } from "./types";

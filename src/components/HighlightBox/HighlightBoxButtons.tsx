@@ -13,7 +13,7 @@ interface HighlightBoxButtonsProps {
 export const HighlightBoxButtons: React.FunctionComponent<
   HighlightBoxButtonsProps
 > = ({ highlightId }) => {
-  const { popHighlights } = useContext(DiptychContext);
+  const { setSelectedHighlightId } = useContext(DiptychContext);
 
   const onDeleteClick = useCallback(
     (e: React.MouseEvent) => {
@@ -33,7 +33,7 @@ export const HighlightBoxButtons: React.FunctionComponent<
             // TODO make this smarter once the highlights have been fleshed
             // out.
             e.stopPropagation();
-            popHighlights();
+            setSelectedHighlightId();
           }}
         >
           <IconButton size="small" color="default">

@@ -127,12 +127,12 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
           highlightId={highlight.id}
         />
       )}
-
-      {selected && (
-        <div className={styles["bottom-controls-container"]}>
-          <HighlightBoxRelations highlightId={highlight.id} />
-        </div>
-      )}
+      <div className={styles["bottom-controls-container"]}>
+        <HighlightBoxRelations
+          highlightId={highlight.id}
+          showPlusButton={selected}
+        />
+      </div>
     </Card>
   );
 };

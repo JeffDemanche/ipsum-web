@@ -36,11 +36,12 @@ const HighlightBoxRelationsQuery = gql(`
 
 interface HighlightBoxRelationsProps {
   highlightId: string;
+  showPlusButton?: boolean;
 }
 
 export const HighlightBoxRelations: React.FunctionComponent<
   HighlightBoxRelationsProps
-> = ({ highlightId }) => {
+> = ({ highlightId, showPlusButton }) => {
   const { data } = useQuery(HighlightBoxRelationsQuery, {
     variables: { highlightId },
   });
@@ -133,16 +134,18 @@ export const HighlightBoxRelations: React.FunctionComponent<
     <div className={styles["details-relations"]}>
       <div className={styles["relations-right"]}>
         <div className={styles["relations"]}>{relationsMarkup}</div>
-        <div className={styles["autocomplete-row"]}>
-          <ArcSearchAutocomplete
-            className={styles["assign-arc-autocomplete"]}
-            allowCreate
-            multiple={false}
-            value={undefined}
-            onChange={onAutocompleteChange}
-            onNewArc={createArcFromAutocomplete}
-          />
-        </div>
+        {showPlusButton && (
+          <div className={styles["autocomplete-row"]}>
+            <ArcSearchAutocomplete
+              className={styles["assign-arc-autocomplete"]}
+              allowCreate
+              multiple={false}
+              value={undefined}
+              onChange={onAutocompleteChange}
+              onNewArc={createArcFromAutocomplete}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

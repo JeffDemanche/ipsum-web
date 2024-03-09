@@ -40,7 +40,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({
     HoveredHighlightsContext
   );
 
-  const { setTopHighlightFrom, selectedHighlightId } =
+  const { setSelectedHighlightId, selectedHighlightId } =
     useContext(DiptychContext);
 
   const tokenSelected = useCallback(
@@ -72,7 +72,7 @@ export const Digest: React.FunctionComponent<DigestProps> = ({
                   setHoveredHighlightIds(undefined);
                 }}
                 onClick={() => {
-                  setTopHighlightFrom(highlight.id, data.entry?.entryKey);
+                  setSelectedHighlightId(highlight.id);
                 }}
               ></HighlightTag>
             </React.Fragment>
@@ -82,10 +82,9 @@ export const Digest: React.FunctionComponent<DigestProps> = ({
     );
   }, [
     className,
-    data.entry?.entryKey,
     highlights,
     setHoveredHighlightIds,
-    setTopHighlightFrom,
+    setSelectedHighlightId,
     tokenHighlighted,
   ]);
 
