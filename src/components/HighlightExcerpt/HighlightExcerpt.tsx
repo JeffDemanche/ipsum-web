@@ -2,11 +2,14 @@ import cx from "classnames";
 import { Paper } from "@mui/material";
 import React from "react";
 import styles from "./HighlightExcerpt.less";
-import { gql } from "util/apollo";
-import { useQuery } from "@apollo/client";
 
 interface HighlightExcerptProps {
-  highlightId: string;
+  /** Stringified HTML DOM */
+  excerpt: string;
+
+  /** Passed as data-highlightid to the container DOM element */
+  dataHighlightId: string;
+
   paperClassName?: string;
   divClassName?: string;
 
@@ -22,32 +25,21 @@ interface HighlightExcerptProps {
   truncateLineClamp?: number;
 }
 
-const HighlightExcerptQuery = gql(`
-  query HighlightExcerptQuery($highlightId: ID!) {
-    highlight(id: $highlightId) {
-      id
-      excerpt
-    }
-  }
-`);
-
 export const HighlightExcerpt: React.FunctionComponent<
   HighlightExcerptProps
 > = ({
-  highlightId,
+  excerpt,
+  dataHighlightId,
   paperClassName,
   divClassName,
   truncate,
   truncateLineClamp,
 }) => {
-  const { data } = useQuery(HighlightExcerptQuery, {
-    variables: { highlightId },
-  });
   return (
     <Paper
       sx={{ borderRadius: "0" }}
       className={cx(paperClassName, styles["excerpt-paper"])}
-      data-highlightid={highlightId}
+      data-highlightid={dataHighlightId}
     >
       <div
         className={cx(
@@ -56,7 +48,7 @@ export const HighlightExcerpt: React.FunctionComponent<
           truncate && styles["truncate"]
         )}
         style={{ WebkitLineClamp: truncateLineClamp }}
-        dangerouslySetInnerHTML={{ __html: data?.highlight?.excerpt ?? "" }}
+        dangerouslySetInnerHTML={{ __html: excerpt ?? "" }}
       />
     </Paper>
   );

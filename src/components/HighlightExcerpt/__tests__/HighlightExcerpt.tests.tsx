@@ -10,7 +10,7 @@ import {
 } from "util/apollo/__tests__/apollo-test-utils";
 import { IpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { HighlightExcerpt } from "../HighlightExcerpt";
+import { HighlightExcerptConnected } from "../HighlightExcerptConnected";
 
 describe("HighlightExcerpt", () => {
   beforeEach(() => {
@@ -84,7 +84,7 @@ describe("HighlightExcerpt", () => {
   it("only shows highlighted block when there are other blocks present", () => {
     render(
       <ApolloProvider client={client}>
-        <HighlightExcerpt highlightId="highlight_2" />
+        <HighlightExcerptConnected highlightId="highlight_2" />
       </ApolloProvider>
     );
 

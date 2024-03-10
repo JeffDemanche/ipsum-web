@@ -1,6 +1,5 @@
 import { Card, Typography } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
-import { HighlightExcerpt } from "components/HighlightExcerpt";
 import React, { useCallback, useContext, useRef } from "react";
 import styles from "./HighlightBox.less";
 import cx from "classnames";
@@ -8,6 +7,7 @@ import { IpsumDateTime, IpsumDay, parseIpsumDateTime } from "util/dates";
 import { HighlightBoxButtons } from "./HighlightBoxButtons";
 import { HighlightBoxRelations } from "./HighlightBoxRelations";
 import { ImportanceRatingButton } from "./ImportanceRatingButton";
+import { HighlightExcerptConnected } from "components/HighlightExcerpt";
 
 interface HighlightBoxProps {
   className?: string;
@@ -122,7 +122,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
       )}
 
       {variant !== "collapsed" && (
-        <HighlightExcerpt
+        <HighlightExcerptConnected
           paperClassName={styles["excerpt"]}
           highlightId={highlight.id}
         />

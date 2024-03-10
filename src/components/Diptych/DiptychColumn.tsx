@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import styles from "./DiptychColumn.less";
 import { URLLayer } from "util/url";
 import { LayerProvider } from "./LayerContext";
+import { HighlightDetail } from "components/HighlightDetail";
 
 interface DiptychColumnProps {
   layer: URLLayer;
@@ -31,8 +32,7 @@ export const DiptychColumn: React.FunctionComponent<DiptychColumnProps> = ({
       case "highlight_detail":
         return (
           <LayerProvider layer={layer} layerIndex={layerIndex}>
-            TODO Highlight detail
-            {/* <HighlightDetail key={layer.highlightId} /> */}
+            <HighlightDetail key={layer.highlightId} />
           </LayerProvider>
         );
     }
