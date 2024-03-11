@@ -5,7 +5,7 @@ import styles from "./HighlightBox.less";
 import cx from "classnames";
 import { IpsumDateTime, IpsumDay, parseIpsumDateTime } from "util/dates";
 import { HighlightBoxButtons } from "./HighlightBoxButtons";
-import { HighlightBoxRelations } from "./HighlightBoxRelations";
+import { HighlightRelationsTable } from "../HighlightRelationsTable/HighlightRelationsTable";
 import { ImportanceRatingButton } from "./ImportanceRatingButton";
 import { HighlightExcerptConnected } from "components/HighlightExcerpt";
 
@@ -128,7 +128,7 @@ export const HighlightBox: React.FunctionComponent<HighlightBoxProps> = ({
         />
       )}
       <div className={styles["bottom-controls-container"]}>
-        <HighlightBoxRelations
+        <HighlightRelationsTable
           highlightId={highlight.id}
           showPlusButton={selected}
         />

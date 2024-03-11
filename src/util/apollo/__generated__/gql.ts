@@ -21,10 +21,10 @@ const documents = {
     "\n  query DailyJournal {\n    recentJournalEntries {\n      entryKey\n    }\n  }\n": types.DailyJournalDocument,
     "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n": types.JournalEntryTodayDocument,
     "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n      highlights {\n        id\n        hue\n      }\n    }\n  }\n": types.DigestDocument,
-    "\n  query HighlightBoxRelations($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightBoxRelationsDocument,
     "\n  query HighlightBoxButtons($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      importanceRatings {\n        value\n        day {\n          day\n        }\n      }\n      currentImportance\n    }\n  }\n": types.HighlightBoxButtonsDocument,
     "\n  query HighlightDetail($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n      history {\n        dateCreated\n      }\n    }\n  }\n": types.HighlightDetailDocument,
     "\n  query HighlightExcerptQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n": types.HighlightExcerptQueryDocument,
+    "\n  query HighlightRelationsTable($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightRelationsTableDocument,
     "\n  query HighlightTag($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      hue\n      outgoingRelations {\n        id\n        object {\n          __typename\n          ... on Arc {\n            id\n            name\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightTagDocument,
     "\n  query HighlightsList($highlightIds: [ID!]!, $sort: HighlightSortType) {\n    highlights(ids: $highlightIds, sort: $sort) {\n      id\n      history {\n        dateCreated\n      }\n      entry {\n        entryKey\n        date\n      }\n      currentImportance\n      outgoingRelations {\n        __typename\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n": types.HighlightsListDocument,
     "\n  query JournalDateRangeEntryKeys {\n    journalEntryKeys\n  }\n": types.JournalDateRangeEntryKeysDocument,
@@ -85,10 +85,6 @@ export function gql(source: "\n  query Digest($entryKey: ID!) {\n    entry(entry
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query HighlightBoxRelations($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query HighlightBoxRelations($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function gql(source: "\n  query HighlightBoxButtons($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      importanceRatings {\n        value\n        day {\n          day\n        }\n      }\n      currentImportance\n    }\n  }\n"): (typeof documents)["\n  query HighlightBoxButtons($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      importanceRatings {\n        value\n        day {\n          day\n        }\n      }\n      currentImportance\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -98,6 +94,10 @@ export function gql(source: "\n  query HighlightDetail($highlightId: ID!) {\n   
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query HighlightExcerptQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n"): (typeof documents)["\n  query HighlightExcerptQuery($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      excerpt\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query HighlightRelationsTable($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query HighlightRelationsTable($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      entry {\n        entryKey\n        date\n      }\n      outgoingRelations {\n        __typename\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            color\n          }\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

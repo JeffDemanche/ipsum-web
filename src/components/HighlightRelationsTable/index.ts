@@ -1,0 +1,1 @@
+export { HighlightRelationsTable } from "./HighlightRelationsTable";

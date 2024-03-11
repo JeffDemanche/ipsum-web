@@ -9,10 +9,10 @@ import { DiptychContext } from "components/DiptychContext";
 import React, { useCallback, useContext, useMemo } from "react";
 import { theme } from "styles/styles";
 import { createArc, createRelation, deleteRelation, gql } from "util/apollo";
-import styles from "./HighlightBox.less";
+import styles from "./HighlightRelationsTable.less";
 
-const HighlightBoxRelationsQuery = gql(`
-  query HighlightBoxRelations($highlightId: ID!) {
+const HighlightRelationsTableQuery = gql(`
+  query HighlightRelationsTable($highlightId: ID!) {
     highlight(id: $highlightId) {
       id
       entry {
@@ -34,15 +34,15 @@ const HighlightBoxRelationsQuery = gql(`
   }
 `);
 
-interface HighlightBoxRelationsProps {
+interface HighlightRelationsTableProps {
   highlightId: string;
   showPlusButton?: boolean;
 }
 
-export const HighlightBoxRelations: React.FunctionComponent<
-  HighlightBoxRelationsProps
+export const HighlightRelationsTable: React.FunctionComponent<
+  HighlightRelationsTableProps
 > = ({ highlightId, showPlusButton }) => {
-  const { data } = useQuery(HighlightBoxRelationsQuery, {
+  const { data } = useQuery(HighlightRelationsTableQuery, {
     variables: { highlightId },
   });
 
@@ -105,6 +105,7 @@ export const HighlightBoxRelations: React.FunctionComponent<
       Object.keys(relationsGroupedByPredicate).map((predicate, i) => (
         <div className={styles["predicate-group"]} key={i}>
           <Typography
+            className={styles["predicate-name"]}
             variant="body2"
             display="flex"
             color={theme.palette.onSurfaceMediumEmphasis}

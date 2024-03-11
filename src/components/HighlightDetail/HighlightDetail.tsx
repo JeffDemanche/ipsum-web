@@ -40,19 +40,27 @@ export const HighlightDetail: React.FunctionComponent = () => {
   return (
     <Paper className={styles["highlight-detail"]} variant="shadowed">
       <LayerHeader />
-      <Typography variant="h3">
-        {IpsumDateTime.fromString(
-          data.highlight.history.dateCreated,
-          "iso"
-        ).toString("entry-printed-date-nice-with-year")}
-      </Typography>
-      <HighlightTag type="header" highlightId={highlightId} />
-      <HighlightDetailRelationsSection />
-      <HighlightDetailExcerptSection
-        excerpt={data.highlight.excerpt}
-        highlightId={highlightId}
-      />
-      <HighlightDetailCommentsSection />
+      <div className={styles["title-section"]}>
+        <Typography variant="h3">
+          {IpsumDateTime.fromString(
+            data.highlight.history.dateCreated,
+            "iso"
+          ).toString("entry-printed-date-nice-with-year")}
+        </Typography>
+        <HighlightTag type="header" highlightId={highlightId} />
+      </div>
+      <div className={styles["excerpt-section"]}>
+        <HighlightDetailExcerptSection
+          excerpt={data.highlight.excerpt}
+          highlightId={highlightId}
+        />
+      </div>
+      <div className={styles["relations-section"]}>
+        <HighlightDetailRelationsSection highlightId={highlightId} />
+      </div>
+      <div className={styles["comments-section"]}>
+        <HighlightDetailCommentsSection />
+      </div>
     </Paper>
   );
 };
