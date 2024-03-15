@@ -102,6 +102,7 @@ export const SerializedSchema = t.type(
               value: t.number,
             })
           ),
+          comments: t.array(t.string),
         },
         "highlight"
       ),
@@ -131,6 +132,7 @@ export const SerializedSchema = t.type(
           id: t.string,
           history: HistorySchema,
           commentEntry: t.string,
+          highlight: t.string,
         },
         "comment"
       ),

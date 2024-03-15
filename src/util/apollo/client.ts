@@ -86,6 +86,7 @@ const typeDefs = gql`
   type Comment {
     id: ID!
     commentEntry: CommentEntry!
+    highlight: Highlight!
     history: History!
   }
 `;
@@ -143,6 +144,7 @@ export type UnhydratedType = {
     entry: string;
     outgoingRelations: string[];
     importanceRatings: UnhydratedType["ImportanceRating"][];
+    comments: string[];
   };
   Relation: {
     __typename: "Relation";
@@ -164,6 +166,7 @@ export type UnhydratedType = {
   Comment: {
     __typename: "Comment";
     id: string;
+    highlight: string;
     commentEntry: string;
     history: UnhydratedType["History"];
   };

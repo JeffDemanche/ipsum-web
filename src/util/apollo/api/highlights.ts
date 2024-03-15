@@ -24,6 +24,7 @@ export const createHighlight = ({
       dateCreated: IpsumDateTime.today().toString("iso"),
     },
     importanceRatings: [],
+    comments: [],
   };
   vars.highlights({
     ...vars.highlights(),

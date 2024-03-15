@@ -1,6 +1,8 @@
 import { vars, initializeState } from "util/apollo/client";
+import { EntryType } from "util/apollo/__generated__/graphql";
 import { IpsumDay } from "util/dates";
 import { createArc } from "../arcs";
+import { createEntry } from "../entries";
 import {
   createHighlight,
   deleteHighlight,
@@ -18,6 +20,11 @@ describe("apollo highlights API", () => {
 
   describe("createHighlight", () => {
     it("should add highlights to the state", () => {
+      createEntry({
+        entryKey: "1/2/2020",
+        htmlString: "",
+        entryType: EntryType.Journal,
+      });
       const highlight1 = createHighlight({
         entry: "1/2/2020",
       });
@@ -34,6 +41,11 @@ describe("apollo highlights API", () => {
 
   describe("updateHighlight", () => {
     it("should update highlights in the state", () => {
+      createEntry({
+        entryKey: "1/2/2020",
+        htmlString: "",
+        entryType: EntryType.Journal,
+      });
       const highlight1 = createHighlight({
         entry: "1/2/2020",
       });
@@ -60,6 +72,11 @@ describe("apollo highlights API", () => {
 
   describe("deleteHighlight", () => {
     it("should delete highlights from the state", () => {
+      createEntry({
+        entryKey: "1/2/2020",
+        htmlString: "",
+        entryType: EntryType.Journal,
+      });
       const highlight1 = createHighlight({
         entry: "1/2/2020",
       });
@@ -73,6 +90,11 @@ describe("apollo highlights API", () => {
     });
 
     it("should remove relations that connect to or from the highlight", () => {
+      createEntry({
+        entryKey: "1/2/2020",
+        htmlString: "",
+        entryType: EntryType.Journal,
+      });
       const highlight = createHighlight({ entry: "1/2/2020" });
       const arc = createArc({ name: "arc" });
       const relation = createRelation({
@@ -90,6 +112,11 @@ describe("apollo highlights API", () => {
 
   describe("rateHighlightImportance", () => {
     it("should add an importance rating to the highlight", () => {
+      createEntry({
+        entryKey: "1/2/2020",
+        htmlString: "",
+        entryType: EntryType.Journal,
+      });
       const highlight = createHighlight({ entry: "1/2/2020" });
       rateHighlightImportance({
         highlightId: highlight.id,
@@ -102,6 +129,11 @@ describe("apollo highlights API", () => {
     });
 
     it("should remove an importance rating from the highlight", () => {
+      createEntry({
+        entryKey: "1/2/2020",
+        htmlString: "",
+        entryType: EntryType.Journal,
+      });
       const highlight = createHighlight({ entry: "1/2/2020" });
       rateHighlightImportance({
         highlightId: highlight.id,
@@ -125,6 +157,11 @@ describe("apollo highlights API", () => {
     });
 
     it("should add highlight to day object when adding rating", () => {
+      createEntry({
+        entryKey: "1/2/2020",
+        htmlString: "",
+        entryType: EntryType.Journal,
+      });
       const highlight = createHighlight({ entry: "1/2/2020" });
       rateHighlightImportance({
         highlightId: highlight.id,
@@ -135,6 +172,11 @@ describe("apollo highlights API", () => {
     });
 
     it("should remove highlight from day object when removing rating", () => {
+      createEntry({
+        entryKey: "1/2/2020",
+        htmlString: "",
+        entryType: EntryType.Journal,
+      });
       const highlight = createHighlight({ entry: "1/2/2020" });
       rateHighlightImportance({
         highlightId: highlight.id,
