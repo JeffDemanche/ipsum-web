@@ -40,6 +40,7 @@ export enum ArcSortType {
 export type Comment = {
   __typename?: 'Comment';
   commentEntry: CommentEntry;
+  highlight: Highlight;
   history: History;
   id: Scalars['ID'];
 };
@@ -124,6 +125,10 @@ export type Query = {
   arcEntries?: Maybe<Array<Maybe<ArcEntry>>>;
   arcEntry?: Maybe<ArcEntry>;
   arcs?: Maybe<Array<Maybe<Arc>>>;
+  comment?: Maybe<Comment>;
+  commentEntries?: Maybe<Array<Maybe<CommentEntry>>>;
+  commentEntry?: Maybe<CommentEntry>;
+  comments?: Maybe<Array<Maybe<Comment>>>;
   day?: Maybe<Day>;
   entries?: Maybe<Array<Maybe<Entry>>>;
   entry?: Maybe<Entry>;
@@ -163,6 +168,26 @@ export type QueryArcEntryArgs = {
 export type QueryArcsArgs = {
   ids?: InputMaybe<Array<Scalars['ID']>>;
   sort?: InputMaybe<ArcSortType>;
+};
+
+
+export type QueryCommentArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryCommentEntriesArgs = {
+  entryKeys?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryCommentEntryArgs = {
+  entryKey: Scalars['ID'];
+};
+
+
+export type QueryCommentsArgs = {
+  ids?: InputMaybe<Array<Scalars['ID']>>;
 };
 
 

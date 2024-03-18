@@ -75,7 +75,7 @@ export const JournalEntryResolvers: StrictTypedTypePolicies = {
     keyFields: ["entryKey"],
     fields: {
       entry(_, { readField }) {
-        return vars.entries()[readField<string>("entryKey")];
+        return vars.entries()[readField<string>("entryKey")] ?? null;
       },
     },
   },

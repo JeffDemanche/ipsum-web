@@ -19,6 +19,10 @@ import { dayTypeDef } from "./schemas/day-schema";
 import { DayResolvers } from "./resolvers/day-resolvers";
 import { journalEntryTypeDef } from "./schemas/journal-entry-schema";
 import { JournalEntryResolvers } from "./resolvers/journal-entry-resolvers";
+import { commentTypeDef } from "./schemas/comment-schema";
+import { CommentResolvers } from "./resolvers/comment-resolvers";
+import { commentEntryTypeDef } from "./schemas/comment-entry-schema";
+import { CommentEntryResolvers } from "./resolvers/comment-entry-resolvers";
 
 const typeDefs = gql`
   type Query {
@@ -68,11 +72,6 @@ const typeDefs = gql`
     arc: Arc!
   }
 
-  type CommentEntry {
-    entry: Entry!
-    comment: Comment!
-  }
-
   union RelationSubject = Arc | Highlight
 
   type Relation {
@@ -80,14 +79,6 @@ const typeDefs = gql`
     subject: RelationSubject!
     predicate: String!
     object: Arc!
-  }
-
-  # TODO
-  type Comment {
-    id: ID!
-    commentEntry: CommentEntry!
-    highlight: Highlight!
-    history: History!
   }
 `;
 
@@ -302,6 +293,8 @@ const typePolicies: StrictTypedTypePolicies = {
       ...ArcResolvers.Query.fields,
       ...DayResolvers.Query.fields,
       ...JournalEntryResolvers.Query.fields,
+      ...CommentResolvers.Query.fields,
+      ...CommentEntryResolvers.Query.fields,
     },
   },
   Entry: {
@@ -367,6 +360,8 @@ const typePolicies: StrictTypedTypePolicies = {
   ImportanceRating: HighlightResolvers.ImportanceRating,
   Day: DayResolvers.Day,
   JournalEntry: JournalEntryResolvers.JournalEntry,
+  Comment: CommentResolvers.Comment,
+  CommentEntry: CommentEntryResolvers.CommentEntry,
 };
 
 const cache = new InMemoryCache({ typePolicies, addTypename: true });
@@ -386,6 +381,8 @@ export const client = new ApolloClient({
     highlightTypeDef,
     dayTypeDef,
     journalEntryTypeDef,
+    commentTypeDef,
+    commentEntryTypeDef,
   ],
   link: errorLink,
 });
