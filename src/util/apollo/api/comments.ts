@@ -9,8 +9,10 @@ import { deleteCommentEntry } from "./commentEntries";
 
 export const createComment = ({
   highlight,
+  htmlString,
 }: {
   highlight: string;
+  htmlString?: string;
 }): UnhydratedType["Comment"] => {
   if (!vars.highlights()[highlight]) {
     throw new Error(`createComment: highlight ${highlight} not found`);
@@ -22,7 +24,7 @@ export const createComment = ({
 
   createEntry({
     entryKey: commentEntryKey,
-    htmlString: "",
+    htmlString: htmlString ?? "",
     entryType: EntryType.Comment,
   });
 

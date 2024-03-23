@@ -119,6 +119,10 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
 
         return highlightImportanceOnDay({ ratings });
       },
+      comments(commentIds: string[]) {
+        const comments = vars.comments();
+        return commentIds.map((id) => comments[id]);
+      },
     },
   },
   ImportanceRating: {

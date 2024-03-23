@@ -5,6 +5,7 @@ import { createEntry } from "./entries";
 
 export const createCommentEntry = (commentEntry: {
   comment: string;
+  htmlString?: string;
 }): UnhydratedType["CommentEntry"] => {
   if (!vars.comments()[commentEntry.comment]) {
     throw new Error(
@@ -16,7 +17,7 @@ export const createCommentEntry = (commentEntry: {
 
   createEntry({
     entryKey: commentEntryKey,
-    htmlString: "",
+    htmlString: commentEntry.htmlString ?? "",
     entryType: EntryType.Comment,
   });
 

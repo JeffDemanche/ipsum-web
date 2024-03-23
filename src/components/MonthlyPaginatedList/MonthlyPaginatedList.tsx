@@ -155,7 +155,6 @@ export const MonthlyPaginatedList: React.FC<MonthlyPaginatedListProps> = ({
       } else {
         let additionCounter = -2;
         while (!monthHasElement(elements, focusedDay.add(0, additionCounter))) {
-          console.log("here2");
           additionCounter--;
         }
         return focusedDay.add(0, additionCounter).firstDayOfMonth();

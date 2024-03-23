@@ -4,22 +4,25 @@ import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 import { $getRoot, EditorState, LexicalEditor } from "lexical";
 import { IpsumEditorMetadata } from "../IpsumEditor";
-import {
-  createArcEntry,
-  createJournalEntry,
-  deleteJournalEntry,
-  EntryType,
-  createCommentEntry,
-  gql,
-  updateEntry,
-  deleteCommentEntry,
-} from "util/apollo";
+import { gql } from "util/apollo";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useQuery } from "@apollo/client";
 
 interface LoadSavePluginProps {
   timeout?: number;
-  entryKey: string;
+  entryKey: string | undefined;
+  setEntryKey: (entryKey: string | undefined) => void;
+
+  createEntry?: (htmlString: string) => string;
+  updateEntry?: ({
+    entryKey,
+    htmlString,
+  }: {
+    entryKey: string;
+    htmlString: string;
+  }) => boolean;
+  deleteEntry?: (entryKey: string) => void;
+
   metadata: IpsumEditorMetadata;
 }
 
@@ -36,6 +39,10 @@ const IpsumEditorQuery = gql(`
 export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
   timeout = 500,
   entryKey,
+  setEntryKey,
+  createEntry,
+  updateEntry,
+  deleteEntry,
   metadata,
 }) => {
   const { data } = useQuery(IpsumEditorQuery, { variables: { entryKey } });
@@ -78,41 +85,22 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
 
         const root = $getRoot();
         const isEmpty =
-          root.getFirstChild()?.isEmpty() && root.getChildrenSize() === 1;
+          root.isEmpty() ||
+          (root.getFirstChild()?.isEmpty() && root.getChildrenSize() === 1);
 
         if (isEmpty) {
-          switch (metadata.entryType) {
-            case EntryType.Journal:
-              deleteJournalEntry({ entryKey });
-              break;
-            case EntryType.Comment:
-              deleteCommentEntry(entryKey);
-              break;
-          }
+          deleteEntry?.(entryKey);
+          setEntryKey?.(undefined);
         } else {
           const entry = {
             entryKey,
             htmlString,
             entryType: metadata.entryType,
           };
-          const attemptedUpdate = updateEntry(entry);
-          if (!attemptedUpdate && !isEmpty) {
-            switch (metadata.entryType) {
-              case EntryType.Journal:
-                createJournalEntry(entry);
-                break;
-              case EntryType.Arc:
-                createArcEntry({
-                  arcId: metadata.arcId,
-                  arcName: metadata.arcName,
-                });
-                break;
-              case EntryType.Comment:
-                createCommentEntry({
-                  comment: metadata.commentId,
-                });
-                break;
-            }
+          const entryUpdateFailed = !entryKey || !updateEntry(entry);
+          if (entryUpdateFailed && !isEmpty) {
+            const newEntryKey = createEntry?.(htmlString);
+            setEntryKey?.(newEntryKey);
           }
         }
       });

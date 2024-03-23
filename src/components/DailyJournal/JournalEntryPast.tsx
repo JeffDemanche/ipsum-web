@@ -3,7 +3,12 @@ import { Digest } from "components/Digest";
 import React from "react";
 import { IpsumDateTime } from "util/dates";
 import styles from "./JournalEntry.less";
-import { EntryType } from "util/apollo";
+import {
+  EntryType,
+  createJournalEntry,
+  deleteJournalEntry,
+  updateEntry,
+} from "util/apollo";
 import { IpsumEditor } from "util/editor";
 
 interface JournalEntryProps {
@@ -28,7 +33,24 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
         </Typography>
         <Digest entryKey={entryKey} className={styles["digest"]} />
         <IpsumEditor
-          entryKey={entryKey}
+          defaultEntryKey={entryKey}
+          createEntry={(htmlString) => {
+            createJournalEntry({
+              entryKey,
+              htmlString,
+              entryType: EntryType.Journal,
+            });
+            return entryKey;
+          }}
+          updateEntry={({ entryKey, htmlString }) => {
+            return !!updateEntry({
+              entryKey,
+              htmlString,
+            });
+          }}
+          deleteEntry={(entryKey) => {
+            deleteJournalEntry({ entryKey });
+          }}
           metadata={{ entryType: EntryType.Journal }}
           editable={
             IpsumDateTime.yesterday().toString("entry-printed-date") ===

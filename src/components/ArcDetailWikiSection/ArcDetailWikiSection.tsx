@@ -1,6 +1,6 @@
 import { ArcDetailContext, ArcDetailSection } from "components/ArcDetail";
 import React, { useContext, useMemo } from "react";
-import { EntryType } from "util/apollo";
+import { EntryType, createArcEntry, updateEntry } from "util/apollo";
 import { IpsumEditor } from "util/editor";
 
 export const ArcDetailWikiSection: React.FunctionComponent = () => {
@@ -14,7 +14,21 @@ export const ArcDetailWikiSection: React.FunctionComponent = () => {
   return (
     <ArcDetailSection>
       <IpsumEditor
-        entryKey={entryKey}
+        defaultEntryKey={entryKey}
+        createEntry={(htmlString) => {
+          const { entry } = createArcEntry({
+            arcId,
+            arcName,
+            htmlString,
+          });
+          return entry;
+        }}
+        updateEntry={({ entryKey, htmlString }) => {
+          return !!updateEntry({ entryKey, htmlString });
+        }}
+        deleteEntry={() => {
+          // Nothing rn.
+        }}
         metadata={{ entryType: EntryType.Arc, arcId, arcName }}
       />
     </ArcDetailSection>

@@ -1,21 +1,47 @@
+import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import React from "react";
-import { EntryType } from "util/apollo";
+import {
+  EntryType,
+  createComment,
+  deleteComment,
+  gql,
+  updateEntry,
+} from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumEditor } from "util/editor";
 
 interface HighlightCommentProps {
   depth: number;
   dayIso: string;
-  commentId: string;
-  commentEntryKey: string;
+  highlightId: string;
+  commentId: string | undefined;
   editable: boolean;
-  htmlString: string;
 }
+
+const HighlightCommentQuery = gql(`
+  query HighlightComment($commentId: ID!) {
+    comment(id: $commentId) {
+      id
+      commentEntry {
+        entry {
+          entryKey
+          htmlString
+        }
+      }
+    }
+  }
+`);
 
 export const HighlightComment: React.FunctionComponent<
   HighlightCommentProps
-> = ({ depth, dayIso, commentId, commentEntryKey, editable, htmlString }) => {
+> = ({ depth, dayIso, highlightId, commentId, editable }) => {
+  const { data } = useQuery(HighlightCommentQuery, {
+    variables: {
+      commentId,
+    },
+  });
+
   return (
     <div>
       <Typography variant="h4">
@@ -24,8 +50,25 @@ export const HighlightComment: React.FunctionComponent<
         )}
       </Typography>
       <IpsumEditor
-        entryKey={commentEntryKey}
+        defaultEntryKey={data.comment?.commentEntry?.entry?.entryKey}
         metadata={{ entryType: EntryType.Comment, commentId }}
+        allowHighlighting
+        createEntry={(htmlString) => {
+          const { commentEntry } = createComment({
+            highlight: highlightId,
+            htmlString,
+          });
+          return commentEntry;
+        }}
+        updateEntry={({ entryKey, htmlString }) => {
+          return !!updateEntry({
+            entryKey,
+            htmlString,
+          });
+        }}
+        deleteEntry={() => {
+          deleteComment(commentId);
+        }}
         editable={editable}
       />
     </div>

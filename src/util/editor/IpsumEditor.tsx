@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styles from "./IpsumEditor.less";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -45,21 +45,35 @@ export type IpsumEditorMetadata =
   | MetadataComment;
 
 interface IpsumEditorProps {
-  entryKey: string;
+  defaultEntryKey?: string;
   editable?: boolean;
   allowHighlighting?: boolean;
+  createEntry: (htmlString: string) => string;
+  updateEntry: ({
+    entryKey,
+    htmlString,
+  }: {
+    entryKey: string;
+    htmlString: string;
+  }) => boolean;
+  deleteEntry: (entryKey: string) => void;
   metadata: IpsumEditorMetadata;
 }
 
 export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
-  entryKey,
+  defaultEntryKey,
   editable = true,
   allowHighlighting = true,
+  createEntry,
+  updateEntry,
+  deleteEntry,
   metadata,
 }) => {
   const onError = useCallback((error: Error, editor: LexicalEditor) => {
     console.error(error, editor);
   }, []);
+
+  const [entryKey, setEntryKey] = useState(defaultEntryKey);
 
   return (
     <LexicalComposer
@@ -82,7 +96,7 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
       <div className={styles["editor-container"]}>
         <ToolbarPlugin
           entryKey={entryKey}
-          editable={editable}
+          editable={!!entryKey && editable}
           allowHighlighting={allowHighlighting}
         />
         <div className={styles["editor-inner"]}>
@@ -101,8 +115,20 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
               </div>
             }
           />
-          <LoadSavePlugin entryKey={entryKey} metadata={metadata} />
-          <HighlightAssignmentPlugin editable={editable} entryKey={entryKey} />
+          <LoadSavePlugin
+            entryKey={entryKey}
+            setEntryKey={setEntryKey}
+            createEntry={createEntry}
+            updateEntry={updateEntry}
+            deleteEntry={deleteEntry}
+            metadata={metadata}
+          />
+          {entryKey && (
+            <HighlightAssignmentPlugin
+              editable={editable}
+              entryKey={entryKey}
+            />
+          )}
           <ListPlugin />
           <LinkPlugin />
           <HistoryPlugin />

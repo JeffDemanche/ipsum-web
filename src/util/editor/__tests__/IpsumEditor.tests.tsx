@@ -14,7 +14,10 @@ describe("IpsumEditor", () => {
       render(
         <ApolloProvider client={client}>
           <IpsumEditor
-            entryKey="test_entry"
+            defaultEntryKey="test_entry"
+            createEntry={() => "test_entry"}
+            updateEntry={() => true}
+            deleteEntry={() => {}}
             metadata={{ entryType: EntryType.Journal }}
           ></IpsumEditor>
         </ApolloProvider>
@@ -31,7 +34,10 @@ describe("IpsumEditor", () => {
       render(
         <ApolloProvider client={client}>
           <IpsumEditor
-            entryKey="test_entry"
+            defaultEntryKey="test_entry"
+            createEntry={() => "test_entry"}
+            updateEntry={() => true}
+            deleteEntry={() => {}}
             metadata={{ entryType: EntryType.Journal }}
           ></IpsumEditor>
         </ApolloProvider>

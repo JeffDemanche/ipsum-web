@@ -48,12 +48,11 @@ export const HighlightDetailCommentsSection: React.FunctionComponent<
 
     return (
       <HighlightComment
-        key={comment.id}
+        key={isToday ? "today" : comment.id}
         editable={isToday}
         depth={0}
-        htmlString={comment.commentEntry.entry.htmlString}
+        highlightId={highlightId}
         commentId={comment.id}
-        commentEntryKey={comment.commentEntry.entry.entryKey}
         dayIso={comment.history.dateCreated}
       />
     );
@@ -62,13 +61,12 @@ export const HighlightDetailCommentsSection: React.FunctionComponent<
   if (!commentToday) {
     commentsElements.unshift(
       <HighlightComment
-        key="new-comment"
+        key={"today"}
         editable
         depth={0}
-        htmlString=""
+        highlightId={highlightId}
         commentId=""
         dayIso={IpsumDay.today().toString("iso")}
-        commentEntryKey=""
       />
     );
   }

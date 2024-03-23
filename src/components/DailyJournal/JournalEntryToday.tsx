@@ -4,7 +4,13 @@ import React from "react";
 import { IpsumDateTime } from "util/dates";
 import styles from "./JournalEntry.less";
 import { Typography } from "@mui/material";
-import { EntryType, gql } from "util/apollo";
+import {
+  EntryType,
+  createJournalEntry,
+  deleteJournalEntry,
+  gql,
+  updateEntry,
+} from "util/apollo";
 import { IpsumEditor } from "util/editor";
 import { useQuery } from "@apollo/client";
 
@@ -52,7 +58,24 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
         </Typography>
         <Digest entryKey={entryKey} className={styles["digest"]} />
         <IpsumEditor
-          entryKey={entryKey}
+          defaultEntryKey={entryKey}
+          createEntry={(htmlString) => {
+            createJournalEntry({
+              entryKey,
+              htmlString,
+              entryType: EntryType.Journal,
+            });
+            return entryKey;
+          }}
+          updateEntry={({ entryKey, htmlString }) => {
+            return !!updateEntry({
+              entryKey,
+              htmlString,
+            });
+          }}
+          deleteEntry={(entryKey) => {
+            deleteJournalEntry({ entryKey });
+          }}
           metadata={{ entryType: EntryType.Journal }}
         />
       </div>

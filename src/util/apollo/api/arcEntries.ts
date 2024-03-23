@@ -7,15 +7,17 @@ import { autosave } from "../autosave";
 export const createArcEntry = ({
   arcId,
   arcName,
+  htmlString = "",
 }: {
   arcId: string;
   arcName: string;
+  htmlString?: string;
 }): UnhydratedType["ArcEntry"] => {
   const arcEntryKey = `arc-entry:${arcName}:${uuidv4()}`;
 
   createEntry({
     entryKey: arcEntryKey,
-    htmlString: "",
+    htmlString: htmlString,
     entryType: EntryType.Arc,
   });
 
