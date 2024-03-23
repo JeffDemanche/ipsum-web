@@ -20,6 +20,7 @@ export const highlightTypeDef = gql`
     outgoingRelations: [Relation!]!
     hue: Int!
     excerpt: String!
+    comments: [Comment!]!
 
     importanceRatings: [ImportanceRating!]!
     currentImportance: Float!

@@ -7,11 +7,12 @@ import { IpsumEditorMetadata } from "../IpsumEditor";
 import {
   createArcEntry,
   createJournalEntry,
-  deleteArcEntry,
   deleteJournalEntry,
   EntryType,
+  createCommentEntry,
   gql,
   updateEntry,
+  deleteCommentEntry,
 } from "util/apollo";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useQuery } from "@apollo/client";
@@ -84,6 +85,9 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
             case EntryType.Journal:
               deleteJournalEntry({ entryKey });
               break;
+            case EntryType.Comment:
+              deleteCommentEntry(entryKey);
+              break;
           }
         } else {
           const entry = {
@@ -101,6 +105,11 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
                 createArcEntry({
                   arcId: metadata.arcId,
                   arcName: metadata.arcName,
+                });
+                break;
+              case EntryType.Comment:
+                createCommentEntry({
+                  comment: metadata.commentId,
                 });
                 break;
             }

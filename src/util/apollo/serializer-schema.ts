@@ -130,6 +130,7 @@ export const SerializedSchema = t.type(
         {
           __typename: t.literal("Comment"),
           id: t.string,
+          parent: t.union([t.string, t.null]),
           history: HistorySchema,
           commentEntry: t.string,
           highlight: t.string,

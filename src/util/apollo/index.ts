@@ -8,6 +8,8 @@ export { updateEntry } from "./api/entries";
 export * from "./api/highlights";
 export * from "./api/journalTitle";
 export * from "./api/relations";
+export * from "./api/comments";
+export * from "./api/commentEntries";
 export {
   ApolloSerializationProvider,
   ApolloSerializationContext,

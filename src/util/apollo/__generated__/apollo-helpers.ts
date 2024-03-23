@@ -15,12 +15,13 @@ export type ArcEntryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CommentKeySpecifier = ('commentEntry' | 'highlight' | 'history' | 'id' | CommentKeySpecifier)[];
+export type CommentKeySpecifier = ('commentEntry' | 'highlight' | 'history' | 'id' | 'parent' | CommentKeySpecifier)[];
 export type CommentFieldPolicy = {
 	commentEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	highlight?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
-	id?: FieldPolicy<any> | FieldReadFunction<any>
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	parent?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type CommentEntryKeySpecifier = ('comment' | 'entry' | CommentEntryKeySpecifier)[];
 export type CommentEntryFieldPolicy = {
@@ -46,10 +47,11 @@ export type EntryFieldPolicy = {
 	htmlString?: FieldPolicy<any> | FieldReadFunction<any>,
 	trackedHTMLString?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type HighlightKeySpecifier = ('arc' | 'arcs' | 'currentImportance' | 'entry' | 'excerpt' | 'history' | 'hue' | 'id' | 'importanceRatings' | 'outgoingRelations' | HighlightKeySpecifier)[];
+export type HighlightKeySpecifier = ('arc' | 'arcs' | 'comments' | 'currentImportance' | 'entry' | 'excerpt' | 'history' | 'hue' | 'id' | 'importanceRatings' | 'outgoingRelations' | HighlightKeySpecifier)[];
 export type HighlightFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcs?: FieldPolicy<any> | FieldReadFunction<any>,
+	comments?: FieldPolicy<any> | FieldReadFunction<any>,
 	currentImportance?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>,
 	excerpt?: FieldPolicy<any> | FieldReadFunction<any>,

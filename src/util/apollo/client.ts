@@ -157,6 +157,7 @@ export type UnhydratedType = {
   Comment: {
     __typename: "Comment";
     id: string;
+    parent: string | null;
     highlight: string;
     commentEntry: string;
     history: UnhydratedType["History"];

@@ -34,7 +34,15 @@ interface MetadataArc {
   arcName: string;
 }
 
-export type IpsumEditorMetadata = MetadataJournal | MetadataArc;
+interface MetadataComment {
+  entryType: EntryType.Comment;
+  commentId: string;
+}
+
+export type IpsumEditorMetadata =
+  | MetadataJournal
+  | MetadataArc
+  | MetadataComment;
 
 interface IpsumEditorProps {
   entryKey: string;

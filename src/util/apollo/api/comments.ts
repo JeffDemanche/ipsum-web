@@ -40,6 +40,7 @@ export const createComment = ({
   const result: UnhydratedType["Comment"] = {
     __typename: "Comment",
     id: commentId,
+    parent: null,
     highlight,
     commentEntry: commentEntryKey,
     history: initializeHistory(),

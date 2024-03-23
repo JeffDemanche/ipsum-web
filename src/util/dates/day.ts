@@ -63,6 +63,10 @@ export class IpsumDay {
     );
   }
 
+  isToday(): boolean {
+    return this.equals(IpsumDay.today());
+  }
+
   /**
    * Inclusive.
    */

@@ -59,7 +59,7 @@ export const HighlightDetail: React.FunctionComponent = () => {
         <HighlightDetailRelationsSection highlightId={highlightId} />
       </div>
       <div className={styles["comments-section"]}>
-        <HighlightDetailCommentsSection />
+        <HighlightDetailCommentsSection highlightId={highlightId} />
       </div>
     </Paper>
   );

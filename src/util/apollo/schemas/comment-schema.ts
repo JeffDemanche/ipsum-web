@@ -8,6 +8,7 @@ export const commentTypeDef = gql`
 
   type Comment {
     id: ID!
+    parent: Comment
     commentEntry: CommentEntry!
     highlight: Highlight!
     history: History!
