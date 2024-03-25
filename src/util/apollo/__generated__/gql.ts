@@ -19,7 +19,8 @@ const documents = {
     "\n  query ArcSearchAutocomplete {\n    arcs(sort: ALPHA_DESC) {\n      id\n      name\n    }\n  }\n": types.ArcSearchAutocompleteDocument,
     "\n  query BreadcrumbJournalEntryQuery($journalEntryId: ID!) {\n    journalEntry(entryKey: $journalEntryId) {\n      entryKey\n      entry {\n        date\n      }\n    }\n  }\n": types.BreadcrumbJournalEntryQueryDocument,
     "\n  query DailyJournal {\n    recentJournalEntries {\n      entryKey\n    }\n  }\n": types.DailyJournalDocument,
-    "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n": types.JournalEntryTodayDocument,
+    "\n  query JournalEntryComments($dayIso: String!) {\n    commentsForDay(day: $dayIso) {\n      id\n      commentEntry {\n        entry {\n          entryKey\n          htmlString\n        }\n      }\n      highlight {\n        id\n        history{\n          dateCreated\n        }\n        excerpt\n      }\n    }\n  }\n": types.JournalEntryCommentsDocument,
+    "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n      entry {\n        date\n      }\n    }\n  }\n": types.JournalEntryTodayDocument,
     "\n  query Digest($entryKey: ID!) {\n    entry(entryKey: $entryKey) {\n      entryKey\n      date\n      highlights {\n        id\n        hue\n      }\n    }\n  }\n": types.DigestDocument,
     "\n  query HighlightBoxButtons($highlightId: ID!) {\n    highlight(id: $highlightId) {\n      id\n      importanceRatings {\n        value\n        day {\n          day\n        }\n      }\n      currentImportance\n    }\n  }\n": types.HighlightBoxButtonsDocument,
     "\n  query HighlightComment($commentId: ID!) {\n    comment(id: $commentId) {\n      id\n      commentEntry {\n        entry {\n          entryKey\n          htmlString\n        }\n      }\n    }\n  }\n": types.HighlightCommentDocument,
@@ -79,7 +80,11 @@ export function gql(source: "\n  query DailyJournal {\n    recentJournalEntries 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n"): (typeof documents)["\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n    }\n  }\n"];
+export function gql(source: "\n  query JournalEntryComments($dayIso: String!) {\n    commentsForDay(day: $dayIso) {\n      id\n      commentEntry {\n        entry {\n          entryKey\n          htmlString\n        }\n      }\n      highlight {\n        id\n        history{\n          dateCreated\n        }\n        excerpt\n      }\n    }\n  }\n"): (typeof documents)["\n  query JournalEntryComments($dayIso: String!) {\n    commentsForDay(day: $dayIso) {\n      id\n      commentEntry {\n        entry {\n          entryKey\n          htmlString\n        }\n      }\n      highlight {\n        id\n        history{\n          dateCreated\n        }\n        excerpt\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n      entry {\n        date\n      }\n    }\n  }\n"): (typeof documents)["\n  query JournalEntryToday($entryKey: ID!) {\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n      entry {\n        date\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

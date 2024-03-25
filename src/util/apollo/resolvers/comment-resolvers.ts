@@ -1,3 +1,4 @@
+import { IpsumDay } from "util/dates";
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
 import { QueryCommentsArgs } from "../__generated__/graphql";
 import { vars } from "../client";
@@ -16,6 +17,19 @@ export const CommentResolvers: StrictTypedTypePolicies = {
           return args.ids.map((id) => vars.comments()[id]);
         }
         return Object.values(vars.comments());
+      },
+      commentsForDay(_, { args }) {
+        if (args?.day) {
+          const ipsumDay = IpsumDay.fromString(args.day, "iso");
+
+          return Object.values(vars.comments()).filter((comment) => {
+            return IpsumDay.fromString(
+              comment.history.dateCreated,
+              "iso"
+            ).equals(ipsumDay);
+          });
+        }
+        return [];
       },
     },
   },

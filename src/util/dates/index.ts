@@ -10,4 +10,4 @@ export {
   compareDatesAsc,
   compareDatesDesc,
 } from "./dates";
-export { IpsumDay } from "./day";
+export { IpsumDay, useToday } from "./day";

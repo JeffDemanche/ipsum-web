@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { Digest } from "components/Digest";
 import React from "react";
-import { IpsumDateTime } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 import styles from "./JournalEntry.less";
 import { Typography } from "@mui/material";
 import {
@@ -13,15 +13,20 @@ import {
 } from "util/apollo";
 import { IpsumEditor } from "util/editor";
 import { useQuery } from "@apollo/client";
+import { JournalEntryComments } from "./JournalEntryComments";
 
 interface JournalEntryTodayProps {
   entryKey: string;
+  day: IpsumDay;
 }
 
 const JournalEntryTodayQuery = gql(`
   query JournalEntryToday($entryKey: ID!) {
     journalEntry(entryKey: $entryKey) {
       entryKey
+      entry {
+        date
+      }
     }
   }
 `);
@@ -31,6 +36,7 @@ const JournalEntryTodayQuery = gql(`
  */
 export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
   entryKey,
+  day,
 }: JournalEntryTodayProps) => {
   const { data } = useQuery(JournalEntryTodayQuery, {
     variables: { entryKey },
@@ -78,6 +84,7 @@ export const JournalEntryToday: React.FC<JournalEntryTodayProps> = ({
           }}
           metadata={{ entryType: EntryType.Journal }}
         />
+        <JournalEntryComments day={day} />
       </div>
     </div>
   );

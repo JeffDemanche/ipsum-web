@@ -2,7 +2,7 @@ import { Paper, ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
 import React, { useCallback, useContext, useMemo } from "react";
 import styles from "./DailyJournal.less";
 import { DailyJournalURLLayer, useModifySearchParams } from "util/url";
-import { IpsumDay, useDateString } from "util/dates";
+import { IpsumDay, useToday } from "util/dates";
 import { JournalEntryToday } from "./JournalEntryToday";
 import { JournalEntryPast } from "./JournalEntryPast";
 import { gql } from "util/apollo";
@@ -41,14 +41,19 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
     [data]
   );
 
-  const today = useDateString(30000, "entry-printed-date");
+  const today = useToday(30000);
 
   const modifySearchParams = useModifySearchParams<"journal">();
 
-  const focusedDateURLFormat = layer?.focusedDate ?? today;
+  const focusedDateURLFormat =
+    layer?.focusedDate ?? today.toString("url-format");
 
   const todayEntryComponent = (
-    <JournalEntryToday entryKey={today} key={today}></JournalEntryToday>
+    <JournalEntryToday
+      entryKey={today.toString("entry-printed-date")}
+      day={today}
+      key={today.toString("entry-printed-date")}
+    ></JournalEntryToday>
   );
 
   const entryEditorComponents =
@@ -56,7 +61,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
     allEntryKeys
       .filter(
         (entryKey) =>
-          entryKey !== today &&
+          entryKey !== today.toString("entry-printed-date") &&
           (!layer.visibleDates ||
             layer.visibleDates.includes(
               IpsumDay.fromString(entryKey, "entry-printed-date").toString(
@@ -72,6 +77,7 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
           content: (
             <JournalEntryPast
               entryKey={sortedEntryKey}
+              day={IpsumDay.fromString(sortedEntryKey, "entry-printed-date")}
               showDivider={i !== allEntryKeys.length - 1}
               key={sortedEntryKey}
             ></JournalEntryPast>

@@ -1,5 +1,29 @@
 import { DateTime } from "luxon";
-import { IpsumDateFormatFrom, IpsumDateFormatTo, IpsumDateTime } from "./dates";
+import {
+  IpsumDateFormatFrom,
+  IpsumDateFormatTo,
+  IpsumDateTime,
+  getCurrentLocalDateTime,
+} from "./dates";
+import { useEffect, useState } from "react";
+
+export const useToday = (refreshRate: number): IpsumDay => {
+  const [day, setDay] = useState(
+    IpsumDay.fromLuxonDateTime(getCurrentLocalDateTime())
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!IpsumDay.today().equals(day)) {
+        setDay(IpsumDay.today());
+      }
+    }, refreshRate);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return day;
+};
 
 /**
  * Represents a day in the Gregorian calendar with Ipsum-specific functionality.

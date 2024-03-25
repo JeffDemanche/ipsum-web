@@ -1,7 +1,7 @@
 import { Divider, Typography } from "@mui/material";
 import { Digest } from "components/Digest";
 import React from "react";
-import { IpsumDateTime } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 import styles from "./JournalEntry.less";
 import {
   EntryType,
@@ -10,13 +10,16 @@ import {
   updateEntry,
 } from "util/apollo";
 import { IpsumEditor } from "util/editor";
+import { JournalEntryComments } from "./JournalEntryComments";
 
 interface JournalEntryProps {
+  day: IpsumDay;
   entryKey: string;
   showDivider?: boolean;
 }
 
 export const JournalEntryPast: React.FC<JournalEntryProps> = ({
+  day,
   entryKey,
   showDivider,
 }: JournalEntryProps) => {
@@ -57,6 +60,7 @@ export const JournalEntryPast: React.FC<JournalEntryProps> = ({
             entryKey
           }
         />
+        <JournalEntryComments day={day} />
         {showDivider && (
           <div className={styles["divider-container"]}>
             <Divider></Divider>
