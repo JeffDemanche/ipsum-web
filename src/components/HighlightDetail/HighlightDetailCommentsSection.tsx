@@ -3,6 +3,7 @@ import React from "react";
 import { gql } from "util/apollo";
 import { HighlightComment } from "./HighlightComment";
 import { IpsumDay } from "util/dates";
+import styles from "./HighlightDetail.less";
 
 interface HighlightDetailCommentsSectionProps {
   highlightId: string;
@@ -54,6 +55,7 @@ export const HighlightDetailCommentsSection: React.FunctionComponent<
         highlightId={highlightId}
         commentId={comment.id}
         dayIso={comment.history.dateCreated}
+        className={styles["comment"]}
       />
     );
   });
@@ -67,6 +69,7 @@ export const HighlightDetailCommentsSection: React.FunctionComponent<
         highlightId={highlightId}
         commentId=""
         dayIso={IpsumDay.today().toString("iso")}
+        className={styles["comment"]}
       />
     );
   }

@@ -10,6 +10,7 @@ import {
 } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumEditor } from "util/editor";
+import styles from "./HighlightDetail.less";
 
 interface HighlightCommentProps {
   depth: number;
@@ -17,6 +18,7 @@ interface HighlightCommentProps {
   highlightId: string;
   commentId: string | undefined;
   editable: boolean;
+  className?: string;
 }
 
 const HighlightCommentQuery = gql(`
@@ -35,7 +37,7 @@ const HighlightCommentQuery = gql(`
 
 export const HighlightComment: React.FunctionComponent<
   HighlightCommentProps
-> = ({ depth, dayIso, highlightId, commentId, editable }) => {
+> = ({ depth, dayIso, highlightId, commentId, editable, className }) => {
   const { data } = useQuery(HighlightCommentQuery, {
     variables: {
       commentId,
@@ -43,7 +45,7 @@ export const HighlightComment: React.FunctionComponent<
   });
 
   return (
-    <div>
+    <div className={className}>
       <Typography variant="h4">
         {IpsumDay.fromString(dayIso, "iso").toString(
           "entry-printed-date-nice-with-year"
@@ -70,6 +72,7 @@ export const HighlightComment: React.FunctionComponent<
           deleteComment(commentId);
         }}
         editable={editable}
+        className={styles["comment-editor"]}
       />
     </div>
   );

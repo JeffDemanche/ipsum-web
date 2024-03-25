@@ -19,7 +19,7 @@ import { ListItemNode, ListNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
-
+import cx from "classnames";
 import { highlight } from "./plugins/HighlightAssignmentPlugin.less";
 
 export const highlightSpanClassname = highlight;
@@ -57,6 +57,7 @@ interface IpsumEditorProps {
     htmlString: string;
   }) => boolean;
   deleteEntry: (entryKey: string) => void;
+  className?: string;
   metadata: IpsumEditorMetadata;
 }
 
@@ -67,6 +68,7 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
   createEntry,
   updateEntry,
   deleteEntry,
+  className,
   metadata,
 }) => {
   const onError = useCallback((error: Error, editor: LexicalEditor) => {
@@ -93,7 +95,7 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
         ],
       }}
     >
-      <div className={styles["editor-container"]}>
+      <div className={cx(className, styles["editor-container"])}>
         <ToolbarPlugin
           entryKey={entryKey}
           editable={!!entryKey && editable}
