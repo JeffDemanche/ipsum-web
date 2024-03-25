@@ -6,6 +6,7 @@ import React, { useCallback, useContext } from "react";
 import { createHighlight } from "util/apollo";
 import { TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND } from "./HighlightAssignmentPlugin";
 import styles from "./HighlightButton.less";
+import { TestIds } from "util/test-ids";
 
 interface HighlightButtonProps {
   entryKey: string;
@@ -34,7 +35,7 @@ export const HighlightButton: React.FunctionComponent<HighlightButtonProps> = ({
     <Tooltip title="Create new highlight from selection">
       <IconButton
         className={styles["highlight-button"]}
-        data-testid="apply-highlight-button"
+        data-testid={TestIds.Editor.ApplyHighlightButton}
         onClick={onHighlightClick}
       >
         <Highlight></Highlight>

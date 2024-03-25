@@ -12,6 +12,7 @@ import { LayerContext } from "components/Diptych";
 import { MonthlyPaginatedList } from "components/MonthlyPaginatedList";
 import { CalendarMonth, Today } from "@mui/icons-material";
 import { LayerHeader } from "components/LayerHeader";
+import { TestIds } from "util/test-ids";
 
 const DailyJournalQuery = gql(`
   query DailyJournal {
@@ -107,7 +108,10 @@ export const DailyJournal: React.FunctionComponent<DailyJournalProps> = ({
   const currentMode = !layer.mode ? "today" : layer.mode;
 
   return (
-    <div className={styles["daily-journal"]}>
+    <div
+      className={styles["daily-journal"]}
+      data-testid={TestIds.DailyJournal.DailyJournal}
+    >
       <Paper ref={paperRef} className={cx(styles["paper"])} variant="shadowed">
         <LayerHeader>
           <ToggleButtonGroup>

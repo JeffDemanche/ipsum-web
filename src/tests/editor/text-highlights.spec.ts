@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { getCurrentLocalDateTime, IpsumDateTime } from "util/dates";
+import { TestIds } from "util/test-ids";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:9000/journal/");
@@ -34,12 +35,15 @@ test.describe("Text Highlights", () => {
 
       await contentEditable.fill("This is a test");
 
+      // Wait for entry debounce.
+      await page.waitForTimeout(1000);
+
       await page.keyboard.down("Shift");
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.up("Shift");
 
       const applyHighlightButton = await page.getByTestId(
-        "apply-highlight-button"
+        TestIds.Editor.ApplyHighlightButton
       );
       await applyHighlightButton.click();
 
@@ -66,14 +70,22 @@ test.describe("Text Highlights", () => {
 
       await contentEditable.fill("123");
 
+      // Wait for entry debounce.
+      await page.waitForTimeout(1000);
+
       await page.keyboard.down("Shift");
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.up("Shift");
 
-      const applyHighlightButton = await page.getByTestId(
-        "apply-highlight-button"
+      const dailyJournal = await page.getByTestId(
+        TestIds.DailyJournal.DailyJournal
+      );
+      const applyHighlightButton = await dailyJournal.getByTestId(
+        TestIds.Editor.ApplyHighlightButton
       );
       await applyHighlightButton.click();
+
+      await contentEditable.focus();
 
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.down("Shift");
@@ -108,6 +120,9 @@ test.describe("Text Highlights", () => {
 
       await contentEditable.fill("12345");
 
+      // Wait for entry debounce.
+      await page.waitForTimeout(1000);
+
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.down("Shift");
       await page.keyboard.press("ArrowLeft");
@@ -115,10 +130,16 @@ test.describe("Text Highlights", () => {
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.up("Shift");
 
-      const applyHighlightButton = await page.getByTestId(
-        "apply-highlight-button"
+      const dailyJournal = await page.getByTestId(
+        TestIds.DailyJournal.DailyJournal
       );
+      const applyHighlightButton = await dailyJournal.getByTestId(
+        TestIds.Editor.ApplyHighlightButton
+      );
+
       await applyHighlightButton.click();
+
+      await contentEditable.focus();
 
       await applyHighlightButton.click();
 
@@ -152,12 +173,15 @@ test.describe("Text Highlights", () => {
 
       await contentEditable.pressSequentially("line 2");
 
-      await page.keyboard.down("Control");
+      // Wait for entry debounce.
+      await page.waitForTimeout(1000);
+
+      await page.keyboard.down("Meta");
       await page.keyboard.press("A");
-      await page.keyboard.up("Control");
+      await page.keyboard.up("Meta");
 
       const applyHighlightButton = await page.getByTestId(
-        "apply-highlight-button"
+        TestIds.Editor.ApplyHighlightButton
       );
       await applyHighlightButton.click();
 
@@ -188,15 +212,22 @@ test.describe("Text Highlights", () => {
 
       await contentEditable.fill("123");
 
+      // Wait for entry debounce.
+      await page.waitForTimeout(1000);
+
       // Select 1[23]
       await page.keyboard.down("Shift");
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.up("Shift");
 
-      const applyHighlightButton = await page.getByTestId(
-        "apply-highlight-button"
+      const dailyJournal = await page.getByTestId(
+        TestIds.DailyJournal.DailyJournal
       );
+      const applyHighlightButton = await dailyJournal.getByTestId(
+        TestIds.Editor.ApplyHighlightButton
+      );
+
       await applyHighlightButton.click();
 
       // Select [12]3
@@ -235,18 +266,25 @@ test.describe("Text Highlights", () => {
 
       const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
 
-      await contentEditable.press("Control+b");
+      await contentEditable.press("Meta+b");
       await contentEditable.pressSequentially("12");
-      await contentEditable.press("Control+b");
+      await contentEditable.press("Meta+b");
       await contentEditable.pressSequentially("3");
-      await contentEditable.press("Control+i");
+      await contentEditable.press("Meta+i");
       await contentEditable.pressSequentially("45");
 
-      await contentEditable.press("Control+a");
+      // Wait for entry debounce.
+      await page.waitForTimeout(1000);
 
-      const applyHighlightButton = await page.getByTestId(
-        "apply-highlight-button"
+      await contentEditable.press("Meta+a");
+
+      const dailyJournal = await page.getByTestId(
+        TestIds.DailyJournal.DailyJournal
       );
+      const applyHighlightButton = await dailyJournal.getByTestId(
+        TestIds.Editor.ApplyHighlightButton
+      );
+
       await applyHighlightButton.click();
 
       await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
