@@ -8,8 +8,8 @@ import { DiptychColumn } from "./DiptychColumn";
 export const Diptych: React.FunctionComponent = () => {
   const { layers } = useContext(DiptychContext);
 
-  const leftHandLayerIndex = layers.length <= 1 ? 0 : layers.length - 2;
-  const rightHandLayerIndex = layers.length > 1 ? layers.length - 1 : undefined;
+  const rightHandLayerIndex = layers.length <= 1 ? 0 : layers.length - 2;
+  const leftHandLayerIndex = layers.length > 1 ? layers.length - 1 : undefined;
 
   const leftHandLayer = layers[leftHandLayerIndex];
   const rightHandLayer = layers[rightHandLayerIndex];
@@ -20,15 +20,16 @@ export const Diptych: React.FunctionComponent = () => {
         <BreadcrumbsHeader />
       </div>
       <div className={styles["diptych-container"]}>
+        <Median />
         {/* Render column 1 even if there is no left hand layer to avoid layout shift */}
-        <div className={styles["column-1"]}>
-          {leftHandLayer && (
+        {leftHandLayer && (
+          <div className={styles["column-1"]}>
             <DiptychColumn
               layer={leftHandLayer}
               layerIndex={leftHandLayerIndex}
             ></DiptychColumn>
-          )}
-        </div>
+          </div>
+        )}
         {rightHandLayer && (
           <div className={styles["column-2"]}>
             <DiptychColumn
@@ -37,7 +38,6 @@ export const Diptych: React.FunctionComponent = () => {
             ></DiptychColumn>
           </div>
         )}
-        <Median />
       </div>
     </div>
   );
