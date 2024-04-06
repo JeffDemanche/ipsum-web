@@ -4,6 +4,7 @@ import { JournalInfoBox } from "components/JournalInfoBox";
 import React, { useState } from "react";
 import styles from "./JournalInfoDrawer.less";
 import cx from "classnames";
+
 import { JournalDateRangePicker } from "components/JournalDateRangePicker";
 
 export const JournalInfoDrawer: React.FunctionComponent = () => {

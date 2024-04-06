@@ -24,10 +24,19 @@ module.exports = {
     quotes: ["error", "double", { avoidEscape: true }],
     semi: ["error", "always"],
     "@typescript-eslint/no-empty-function": "off",
-    "import/no-internal-modules": [
+    "@typescript-eslint/no-restricted-imports": [
       "error",
       {
-        forbid: ["components/**/*", "state/**/*", "util/**/*"],
+        patterns: [
+          {
+            group: ["components/*/*", "!components/atoms/*"],
+            message: "Don't reach into component packages",
+          },
+          {
+            group: ["util/*/*", "styles/*/*"],
+            message: "Don't reach into util or styles packages",
+          },
+        ],
       },
     ],
   },
@@ -35,7 +44,7 @@ module.exports = {
     {
       files: ["**/__tests__/*"],
       rules: {
-        "import/no-internal-modules": 0,
+        "@typescript-eslint/no-restricted-imports": 0,
       },
     },
   ],
