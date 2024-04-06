@@ -7,7 +7,7 @@ import {
 } from "components/ArcSearchAutocomplete";
 import { DiptychContext } from "components/DiptychContext";
 import React, { useCallback, useContext, useMemo } from "react";
-import { theme } from "styles/styles";
+import { theme } from "components/styles";
 import { createArc, createRelation, deleteRelation, gql } from "util/apollo";
 import styles from "./HighlightRelationsTable.less";
 
@@ -61,11 +61,14 @@ export const HighlightRelationsTable: React.FunctionComponent<
 
   const relationsGroupedByPredicate = useMemo(
     () =>
-      highlightRelations?.reduce((acc, relation) => {
-        if (!acc[relation.predicate]) acc[relation.predicate] = [];
-        acc[relation.predicate].push(relation);
-        return acc;
-      }, {} as Record<string, typeof highlightRelations>),
+      highlightRelations?.reduce(
+        (acc, relation) => {
+          if (!acc[relation.predicate]) acc[relation.predicate] = [];
+          acc[relation.predicate].push(relation);
+          return acc;
+        },
+        {} as Record<string, typeof highlightRelations>
+      ),
     [highlightRelations]
   );
 

@@ -69,13 +69,13 @@ const baseTheme = createTheme({
     h5: { fontFamily: "Inria Sans", fontWeight: "100", fontSizz: "20px" },
     h6: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "16px" },
     body1: {
-      fontFamily: "Inria Sans",
-      fontWeight: "regular",
+      fontFamily: "Roboto",
+      fontWeight: "light",
       fontSize: "16px",
     },
     body2: {
-      fontFamily: "Inria Sans",
-      fontWeight: "regular",
+      fontFamily: "Roboto",
+      fontWeight: "light",
       fontSize: "14px",
     },
     subtitle1: {
@@ -84,7 +84,7 @@ const baseTheme = createTheme({
       fontSize: "14px",
     },
     caption: {
-      fontFamily: "Inria Sans",
+      fontFamily: "Roboto",
       fontWeight: "regular",
       fontSize: "14px",
     },
