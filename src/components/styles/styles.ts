@@ -186,6 +186,9 @@ export const theme = createTheme(
         styleOverrides: {
           root: {
             borderRadius: "0px",
+            fontFamily: "Roboto",
+            fontSize: "12px",
+            fontWeight: "100",
           },
         },
       },

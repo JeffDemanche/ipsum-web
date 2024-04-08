@@ -1,17 +1,45 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 
 import { Button as MuiButton } from "@mui/material";
 
 interface ButtonProps {
-  iconBefore?: React.ReactNode;
-  iconAfter?: React.ReactNode;
+  variant?: "text" | "outlined" | "contained" | "link";
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
   children: React.ReactNode;
 }
 
 export const Button: React.FunctionComponent<ButtonProps> = ({
-  iconBefore,
-  iconAfter,
+  variant,
+  startIcon,
+  endIcon,
   children,
 }) => {
-  return <MuiButton style={{ fontFamily: "Amstelvar" }}>{children}</MuiButton>;
+  const muiVariant = variant === "link" ? "text" : variant;
+
+  const linkStyle: CSSProperties = {
+    fontWeight: "lighter",
+    fontFamily: "Roboto",
+    fontSize: "12px",
+    textDecoration: "underline",
+    backgroundColor: "transparent",
+  };
+
+  const nonLinkStyle: CSSProperties = {
+    fontWeight: "lighter",
+    fontFamily: "Roboto",
+    fontSize: "12px",
+  };
+
+  return (
+    <MuiButton
+      variant={muiVariant}
+      startIcon={startIcon}
+      endIcon={endIcon}
+      disableRipple={variant === "link"}
+      style={variant === "link" ? linkStyle : nonLinkStyle}
+    >
+      {children}
+    </MuiButton>
+  );
 };

@@ -9,7 +9,7 @@ const meta: Meta<typeof Type> = {
 export default meta;
 type Story = StoryObj<typeof Type>;
 
-export const TypeExample: Story = {
+export const TypeExampleSingleLine: Story = {
   args: {
     variant: "heading",
     weight: "regular",
