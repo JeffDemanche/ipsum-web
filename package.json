@@ -125,6 +125,7 @@
     "storybook": "^8.0.6",
     "timeshift": "^0.0.2",
     "tsconfig-paths": "^4.2.0",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
     "webpack-cli": "^4.9.2"
   },
   "eslintConfig": {

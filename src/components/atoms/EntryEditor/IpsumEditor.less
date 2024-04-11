@@ -1,0 +1,34 @@
+@import '../../styles/vars.less';
+
+.editor-container {
+  border-radius: 2px;
+  color: #000;
+  position: relative;
+  line-height: 1.75;
+  font-weight: 400;
+  text-align: left;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.editor-inner {
+  background: #fff;
+  position: relative;
+  height: 100%;
+  margin-top: 12px;
+}
+
+.editor-placeholder {
+  font-family: @font_family_body;
+  font-weight: @font_weight_light;
+  color: @grey700;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 0;
+  left: 2px;
+  user-select: none;
+  display: inline-block;
+  pointer-events: none;
+  padding-left: 1px;
+}
