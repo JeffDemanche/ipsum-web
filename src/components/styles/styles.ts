@@ -1,5 +1,13 @@
 import { createTheme } from "@mui/material";
 import { brown, amber, grey } from "@mui/material/colors";
+import {
+  border_radius_inputs,
+  font_family_inputs,
+  font_size_inputs,
+  font_weight_inputs,
+  grid_x_4,
+  grid_x_5,
+} from "./constants";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -157,14 +165,14 @@ export const theme = createTheme(
           {
             props: { variant: "shadowed" },
             style: {
-              borderRadius: "0px",
+              borderRadius: border_radius_inputs,
               backgroundColor: "white",
             },
           },
           {
             props: { variant: "translucent" },
             style: {
-              borderRadius: "0px",
+              borderRadius: border_radius_inputs,
               backgroundColor: "rgba(255, 255, 255, .55)",
               backdropFilter: "blur(5px)",
             },
@@ -182,21 +190,11 @@ export const theme = createTheme(
           },
         },
       },
-      MuiButtonBase: {
-        styleOverrides: {
-          root: {
-            borderRadius: "0px",
-            fontFamily: "Roboto",
-            fontSize: "12px",
-            fontWeight: "100",
-          },
-        },
-      },
       MuiButton: {
         variants: [],
         styleOverrides: {
           root: {
-            borderRadius: "0px",
+            borderRadius: border_radius_inputs,
             textTransform: "none",
           },
         },
@@ -205,28 +203,37 @@ export const theme = createTheme(
       MuiToggleButton: {
         styleOverrides: {
           root: {
-            borderRadius: "0px",
+            borderRadius: border_radius_inputs,
+          },
+        },
+      },
+      MuiSelect: {
+        styleOverrides: {
+          outlined: {
+            borderRadius: border_radius_inputs,
+            fontFamily: font_family_inputs,
+            fontSize: font_size_inputs,
+            fontWeight: font_weight_inputs,
           },
         },
       },
       MuiInputBase: {
         styleOverrides: {
           root: {
-            color: grey[700],
-            fontSize: "15px",
-            fontFamily: "Inria Sans",
+            fontSize: font_size_inputs,
+            fontFamily: font_family_inputs,
+            fontWeight: font_weight_inputs,
+            borderRadius: border_radius_inputs,
+            height: grid_x_5,
           },
         },
       },
       MuiMenuItem: {
         styleOverrides: {
           root: {
-            i: {
-              color: grey[900],
-            },
-            color: grey[700],
-            fontSize: "15px",
-            fontFamily: "Inria Sans",
+            fontSize: font_size_inputs,
+            fontFamily: font_family_inputs,
+            fontWeight: font_weight_inputs,
           },
         },
       },

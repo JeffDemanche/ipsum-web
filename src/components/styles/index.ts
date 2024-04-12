@@ -1,3 +1,3 @@
 export { theme } from "./styles";
-export { gridSize } from "./constants";
+export * from "./constants";
 import "./styles";

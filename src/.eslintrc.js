@@ -29,7 +29,11 @@ module.exports = {
       {
         patterns: [
           {
-            group: ["components/*/*", "!components/atoms/*"],
+            group: [
+              "components/*/*",
+              "!components/atoms/*",
+              "!components/molecules/*",
+            ],
             message: "Don't reach into component packages",
           },
           {

@@ -1,6 +1,11 @@
 import React, { CSSProperties } from "react";
 
 import { Button as MuiButton } from "@mui/material";
+import {
+  font_family_inputs,
+  font_size_inputs,
+  font_weight_inputs,
+} from "components/styles";
 
 interface ButtonProps {
   variant?: "text" | "outlined" | "contained" | "link";
@@ -18,17 +23,17 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   const muiVariant = variant === "link" ? "text" : variant;
 
   const linkStyle: CSSProperties = {
-    fontWeight: "lighter",
-    fontFamily: "Roboto",
-    fontSize: "12px",
+    fontWeight: font_weight_inputs,
+    fontFamily: font_family_inputs,
+    fontSize: font_size_inputs,
     textDecoration: "underline",
     backgroundColor: "transparent",
   };
 
   const nonLinkStyle: CSSProperties = {
-    fontWeight: "lighter",
-    fontFamily: "Roboto",
-    fontSize: "12px",
+    fontWeight: font_weight_inputs,
+    fontFamily: font_family_inputs,
+    fontSize: font_size_inputs,
   };
 
   return (

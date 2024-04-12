@@ -18,6 +18,7 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import cx from "classnames";
 import { highlight } from "./plugins/HighlightAssignmentPlugin.less";
+import { FormattingPlugin } from "./plugins/FormattingPlugin";
 
 export const highlightSpanClassname = highlight;
 
@@ -78,6 +79,7 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
           editable={!!entryKey && editable}
           allowHighlighting={allowHighlighting}
         /> */}
+        <FormattingPlugin />
         <div className={styles["editor-inner"]}>
           <RichTextPlugin
             contentEditable={

@@ -4,7 +4,7 @@ import { FormattingControlsContextType } from "./types";
 export const FormattingControlsContext =
   React.createContext<FormattingControlsContextType>({
     activeEditor: null,
-    setActiveEditor: () => {},
+    setActiveEditor: null,
   });
 
 export const FormattingControlsProvider: React.FunctionComponent<{
