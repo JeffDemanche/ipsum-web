@@ -1,4 +1,25 @@
+import { $isLinkNode } from "@lexical/link";
+import {
+  $isListNode,
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
+  ListNode,
+  REMOVE_LIST_COMMAND,
+} from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import {
+  $createHeadingNode,
+  $createQuoteNode,
+  $isHeadingNode,
+} from "@lexical/rich-text";
+import { $isAtNodeEnd, $setBlocksType } from "@lexical/selection";
+import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
+import {
+  FormatBold,
+  FormatItalic,
+  FormatStrikethrough,
+  FormatUnderlined,
+} from "@mui/icons-material";
 import { Divider, MenuItem, Select, ToggleButton } from "@mui/material";
 import {
   $createParagraphNode,
@@ -9,30 +30,10 @@ import {
   RangeSelection,
   SELECTION_CHANGE_COMMAND,
 } from "lexical";
-import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
-import {
-  INSERT_ORDERED_LIST_COMMAND,
-  INSERT_UNORDERED_LIST_COMMAND,
-  REMOVE_LIST_COMMAND,
-  $isListNode,
-  ListNode,
-} from "@lexical/list";
-import { $isLinkNode } from "@lexical/link";
-import { $isAtNodeEnd, $setBlocksType } from "@lexical/selection";
-import {
-  $isHeadingNode,
-  $createQuoteNode,
-  $createHeadingNode,
-} from "@lexical/rich-text";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import styles from "./ToolbarPlugin.less";
-import {
-  FormatBold,
-  FormatItalic,
-  FormatStrikethrough,
-  FormatUnderlined,
-} from "@mui/icons-material";
+
 import { HighlightButton } from "./HighlightButton";
+import styles from "./ToolbarPlugin.less";
 
 function getSelectedNode(selection: RangeSelection) {
   const anchor = selection.anchor;

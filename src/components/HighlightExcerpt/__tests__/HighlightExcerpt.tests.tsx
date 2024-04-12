@@ -10,6 +10,7 @@ import {
 } from "util/apollo/__tests__/apollo-test-utils";
 import { IpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
+
 import { HighlightExcerptConnected } from "../HighlightExcerptConnected";
 
 describe("HighlightExcerpt", () => {

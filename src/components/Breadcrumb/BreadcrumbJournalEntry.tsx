@@ -1,8 +1,9 @@
+import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import React from "react";
-import { useQuery } from "@apollo/client";
 import { gql } from "util/apollo";
 import { parseIpsumDateTime } from "util/dates";
+
 import { JournalEntryBreadcrumb } from "./types";
 
 interface BreadcrumbJournalEntryProps {

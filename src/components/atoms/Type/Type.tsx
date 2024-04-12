@@ -1,6 +1,6 @@
+import { Typography as MuiTypography } from "@mui/material";
 import React from "react";
 
-import { Typography as MuiTypography } from "@mui/material";
 import { TypeLineHeight, TypeSize, TypeVariant, TypeWeight } from "./types";
 
 interface TypeProps {

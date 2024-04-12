@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
 import { gql } from "util/apollo";
+
 import { ArcDetailContextValue } from "./types";
 
 export const ArcDetailContext = React.createContext<ArcDetailContextValue>({

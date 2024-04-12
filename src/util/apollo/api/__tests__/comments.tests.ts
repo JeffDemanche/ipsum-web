@@ -1,6 +1,7 @@
-import { initializeState, vars } from "util/apollo/client";
 import { EntryType } from "util/apollo/__generated__/graphql";
+import { initializeState, vars } from "util/apollo/client";
 import { IpsumDateTime } from "util/dates";
+
 import { createComment, deleteComment } from "../comments";
 import { createEntry } from "../entries";
 import { createHighlight } from "../highlights";

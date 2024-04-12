@@ -1,5 +1,5 @@
 import { BreadcrumbType } from "components/Breadcrumb";
-import { URLLayer, IpsumURLSearch } from "util/url";
+import { IpsumURLSearch,URLLayer } from "util/url";
 
 export interface Diptych {
   layers: URLLayer[];

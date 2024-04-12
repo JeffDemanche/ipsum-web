@@ -1,6 +1,6 @@
+import { EntryType } from "../__generated__/graphql";
 import { autosave } from "../autosave";
 import { UnhydratedType, vars } from "../client";
-import { EntryType } from "../__generated__/graphql";
 import { createEntry } from "./entries";
 
 export const createJournalEntry = (journalEntry: {

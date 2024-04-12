@@ -1,8 +1,9 @@
+import { ArrowLeft, ArrowRight } from "@mui/icons-material";
+import { Button, Divider, Typography } from "@mui/material";
 import React, { useCallback, useMemo, useRef } from "react";
 import { IpsumDay } from "util/dates";
+
 import styles from "./MonthlyPaginatedList.less";
-import { Button, Divider, Typography } from "@mui/material";
-import { ArrowLeft, ArrowRight } from "@mui/icons-material";
 
 interface ElementInfo {
   key: string;

@@ -1,13 +1,14 @@
-import React from "react";
-import { HighlightBox } from "../HighlightBox";
+import { ApolloProvider } from "@apollo/client";
 import { render, screen } from "@testing-library/react";
+import React from "react";
+import { client } from "util/apollo";
 import {
   mockEntries,
   mockHighlights,
 } from "util/apollo/__tests__/apollo-test-utils";
 import { IpsumTimeMachine } from "util/diff";
-import { ApolloProvider } from "@apollo/client";
-import { client } from "util/apollo";
+
+import { HighlightBox } from "../HighlightBox";
 
 describe("HighlightBox", () => {
   beforeEach(() => {

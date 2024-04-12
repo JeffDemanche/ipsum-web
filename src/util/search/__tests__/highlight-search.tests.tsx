@@ -1,8 +1,6 @@
-import React from "react";
-
 import { ApolloProvider } from "@apollo/client";
 import { renderHook } from "@testing-library/react";
-import { useSearchResults } from "../search";
+import React from "react";
 import { client } from "util/apollo";
 import {
   mockArcs,
@@ -12,6 +10,8 @@ import {
 } from "util/apollo/__tests__/apollo-test-utils";
 import { useIpsumSearchParams } from "util/url";
 import { IpsumURLSearch } from "util/url/types";
+
+import { useSearchResults } from "../search";
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

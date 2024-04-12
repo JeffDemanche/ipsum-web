@@ -1,6 +1,7 @@
 import { IpsumTimeMachine } from "util/diff";
-import { vars } from "../client";
+
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
+import { vars } from "../client";
 
 export const DayResolvers: StrictTypedTypePolicies = {
   Query: {

@@ -1,7 +1,8 @@
-import { vars, initializeState } from "util/apollo/client";
 import { EntryType } from "util/apollo/__generated__/graphql";
+import { initializeState,vars } from "util/apollo/client";
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
+
 import { createEntry, deleteEntry, updateEntry } from "../entries";
 
 jest.mock("../../autosave");

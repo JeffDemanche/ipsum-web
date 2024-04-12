@@ -4,9 +4,10 @@ import { IconButton, Tooltip } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import React, { useCallback, useContext } from "react";
 import { createHighlight } from "util/apollo";
+import { TestIds } from "util/test-ids";
+
 import { TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND } from "./HighlightAssignmentPlugin";
 import styles from "./HighlightButton.less";
-import { TestIds } from "util/test-ids";
 
 interface HighlightButtonProps {
   entryKey: string;

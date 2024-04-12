@@ -1,6 +1,7 @@
 import { Breadcrumb } from "components/Breadcrumb";
 import { DiptychContext } from "components/DiptychContext";
 import React, { useContext } from "react";
+
 import styles from "./BreadcrumbsHeader.less";
 
 export const BreadcrumbsHeader: React.FunctionComponent = () => {

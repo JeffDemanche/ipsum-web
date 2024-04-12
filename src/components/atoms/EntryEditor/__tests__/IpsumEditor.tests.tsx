@@ -2,6 +2,7 @@ import { ApolloProvider } from "@apollo/client";
 import { render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import { client, EntryType } from "util/apollo";
+
 import { IpsumEditor } from "../IpsumEditor";
 
 jest.mock("util/placeholders", () => ({

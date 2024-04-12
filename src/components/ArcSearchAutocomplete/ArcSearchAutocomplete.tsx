@@ -1,4 +1,3 @@
-import cx from "classnames";
 import { useQuery } from "@apollo/client";
 import { Add } from "@mui/icons-material";
 import {
@@ -7,10 +6,12 @@ import {
   IconButton,
   TextField,
 } from "@mui/material";
+import cx from "classnames";
 import { ArcChip, ArcChipConnected } from "components/ArcChip";
 import React, { useCallback, useMemo, useState } from "react";
 import { isString } from "underscore";
 import { gql } from "util/apollo";
+
 import styles from "./ArcSearchAutocomplete.less";
 
 interface ArcSearchAutocompleteProps {

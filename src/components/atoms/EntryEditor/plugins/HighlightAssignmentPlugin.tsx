@@ -15,14 +15,15 @@ import {
 import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { deleteHighlight, gql } from "util/apollo";
 import { usePrevious } from "util/hooks";
+
 import {
   $isHighlightAssignmentNode,
+  applyHighlightAssignment,
   fixHues,
   HighlightAssignmentNode,
-  removeHighlightAssignmentFromEditor,
-  applyHighlightAssignment,
-  ToggleHighlightAssignmentPayload,
   isIdenticalHighlight,
+  removeHighlightAssignmentFromEditor,
+  ToggleHighlightAssignmentPayload,
 } from "./HighlightAssignmentNode";
 
 interface HighlightAssignmentPluginProps {

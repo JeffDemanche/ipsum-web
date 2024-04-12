@@ -9,10 +9,11 @@ import React, {
   useMemo,
   useRef,
 } from "react";
+import { GroupedVirtuoso, GroupedVirtuosoHandle } from "react-virtuoso";
 import { gql, HighlightSortType } from "util/apollo";
 import { IpsumDay } from "util/dates";
+
 import styles from "./HighlightsList.less";
-import { GroupedVirtuoso, GroupedVirtuosoHandle } from "react-virtuoso";
 
 interface HighlightsListProps {
   highlightIds: string[];

@@ -1,11 +1,12 @@
+import { Button } from "@mui/material";
+import cx from "classnames";
 import React, { useMemo } from "react";
+
+import styles from "./Breadcrumb.less";
 import { BreadcrumbArc } from "./BreadcrumbArc";
 import { BreadcrumbHighlight } from "./BreadcrumbHighlight";
 import { BreadcrumbJournalEntry } from "./BreadcrumbJournalEntry";
-import styles from "./Breadcrumb.less";
 import { BreadcrumbType } from "./types";
-import { Button } from "@mui/material";
-import cx from "classnames";
 
 interface BreadcrumbProps {
   breadcrumb: BreadcrumbType;

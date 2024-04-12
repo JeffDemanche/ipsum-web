@@ -1,15 +1,16 @@
-import { ToggleButton } from "components/atoms/ToggleButton";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { FormattingControlsContext } from "./FormattingControlsContext";
 import {
   FormatBold,
   FormatItalic,
   FormatStrikethrough,
   FormatUnderlined,
 } from "@mui/icons-material";
-import { Select } from "components/atoms/Select";
 import { MenuItem } from "components/atoms/MenuItem";
+import { Select } from "components/atoms/Select";
+import { ToggleButton } from "components/atoms/ToggleButton";
+import React, { useContext, useEffect, useRef, useState } from "react";
+
 import styles from "./FormattingControls.less";
+import { FormattingControlsContext } from "./FormattingControlsContext";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface FormattingControlsProps {}

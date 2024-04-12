@@ -1,10 +1,11 @@
-import React, { useCallback, useContext, useState } from "react";
-import { Slider, TextField, Typography } from "@mui/material";
-import styles from "./ArcDetailPrefsBox.less";
-import { IpsumArcColor } from "util/colors";
-import { ArcDetailContext, ArcDetailSection } from "components/ArcDetail";
-import { gql, updateArc } from "util/apollo";
 import { useQuery } from "@apollo/client";
+import { Slider, TextField, Typography } from "@mui/material";
+import { ArcDetailContext, ArcDetailSection } from "components/ArcDetail";
+import React, { useCallback, useContext, useState } from "react";
+import { gql, updateArc } from "util/apollo";
+import { IpsumArcColor } from "util/colors";
+
+import styles from "./ArcDetailPrefsBox.less";
 
 const ArcDetailPrefsBoxQuery = gql(`
   query ArcDetailPrefsBox($arcId: ID!) {

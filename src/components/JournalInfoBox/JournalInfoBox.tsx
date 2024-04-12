@@ -1,8 +1,9 @@
 import { Button } from "components/Button";
 import React, { useCallback, useContext } from "react";
+import { ApolloSerializationContext } from "util/apollo";
+
 import styles from "./JournalInfoBox.less";
 import { JournalTitle } from "./JournalTitle";
-import { ApolloSerializationContext } from "util/apollo";
 
 export const JournalInfoBox: React.FC = () => {
   const { resetToInitial, saveToFile, loadFromFile } = useContext(

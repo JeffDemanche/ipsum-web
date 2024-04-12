@@ -1,9 +1,9 @@
 import { Chip, Popover } from "@mui/material";
+import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 import React from "react";
 import { IpsumDay } from "util/dates";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 
 interface DayChipProps {
   day: IpsumDay;

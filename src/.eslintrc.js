@@ -19,10 +19,11 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["react", "@typescript-eslint"],
+  plugins: ["react", "@typescript-eslint", "simple-import-sort"],
   rules: {
     quotes: ["error", "double", { avoidEscape: true }],
     semi: ["error", "always"],
+    "simple-import-sort/imports": "error",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-restricted-imports": [
       "error",

@@ -1,4 +1,5 @@
 import { IpsumDay } from "util/dates";
+
 import { highlightImportanceOnDay } from "..";
 
 describe("highlightImportanceOnDay", () => {

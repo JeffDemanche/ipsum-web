@@ -1,7 +1,8 @@
 import { IpsumDay } from "util/dates";
-import { UnhydratedType, vars } from "../client";
+
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
 import { QuerySearchHighlightsArgs } from "../__generated__/graphql";
+import { UnhydratedType, vars } from "../client";
 
 const highlightMatchesDays = (
   highlight: UnhydratedType["Highlight"],

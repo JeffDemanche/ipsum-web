@@ -1,24 +1,25 @@
-import React, { useCallback, useState } from "react";
-import styles from "./IpsumEditor.less";
+import { LinkNode } from "@lexical/link";
+import { ListItemNode, ListNode } from "@lexical/list";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
-import { LexicalEditor } from "lexical";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
-import { placeholderForDate } from "util/placeholders";
-import { IpsumDateTime } from "util/dates";
-import { LoadSavePlugin } from "./plugins/LoadSavePlugin";
-import { HighlightAssignmentNode } from "./plugins/HighlightAssignmentNode";
-import { editorTheme } from "./editor-theme";
-import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { ListItemNode, ListNode } from "@lexical/list";
-import { LinkNode } from "@lexical/link";
-import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import cx from "classnames";
-import { highlight } from "./plugins/HighlightAssignmentPlugin.less";
+import { LexicalEditor } from "lexical";
+import React, { useCallback, useState } from "react";
+import { IpsumDateTime } from "util/dates";
+import { placeholderForDate } from "util/placeholders";
+
+import { editorTheme } from "./editor-theme";
+import styles from "./IpsumEditor.less";
 import { FormattingPlugin } from "./plugins/FormattingPlugin";
+import { HighlightAssignmentNode } from "./plugins/HighlightAssignmentNode";
+import { highlight } from "./plugins/HighlightAssignmentPlugin.less";
+import { LoadSavePlugin } from "./plugins/LoadSavePlugin";
 
 export const highlightSpanClassname = highlight;
 

@@ -1,23 +1,24 @@
 import {
   $applyNodeReplacement,
-  EditorConfig,
-  LexicalNode,
-  NodeKey,
-  DOMConversionMap,
-  Spread,
-  DOMConversionOutput,
-  ElementNode,
-  SerializedElementNode,
-  $getSelection,
-  $isRangeSelection,
-  RangeSelection,
+  $createTextNode,
   $getNodeByKey,
+  $getRoot,
+  $getSelection,
+  $isElementNode,
+  $isRangeSelection,
   $nodesOfType,
   $selectAll,
-  $isElementNode,
-  $getRoot,
-  $createTextNode,
+  DOMConversionMap,
+  DOMConversionOutput,
+  EditorConfig,
+  ElementNode,
+  LexicalNode,
+  NodeKey,
+  RangeSelection,
+  SerializedElementNode,
+  Spread,
 } from "lexical";
+
 import styles from "./HighlightAssignmentPlugin.less";
 
 export interface HighlightAssignmentNodeAttributes {

@@ -1,7 +1,23 @@
+import { $isLinkNode } from "@lexical/link";
+import {
+  $isListNode,
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
+  ListNode,
+  REMOVE_LIST_COMMAND,
+} from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import {
+  $createHeadingNode,
+  $createQuoteNode,
+  $isHeadingNode,
+} from "@lexical/rich-text";
+import { $isAtNodeEnd, $setBlocksType } from "@lexical/selection";
+import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
 import { FormattingControlsContext } from "components/molecules/FormattingControls";
 import { FormattableEditor } from "components/molecules/FormattingControls/types";
 import {
+  $createParagraphNode,
   $getSelection,
   $isRangeSelection,
   BLUR_COMMAND,
@@ -10,7 +26,6 @@ import {
   FORMAT_TEXT_COMMAND,
   RangeSelection,
   SELECTION_CHANGE_COMMAND,
-  $createParagraphNode,
 } from "lexical";
 import React, {
   useCallback,
@@ -19,21 +34,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
-import { $isAtNodeEnd, $setBlocksType } from "@lexical/selection";
-import { $isLinkNode } from "@lexical/link";
-import {
-  $isListNode,
-  ListNode,
-  INSERT_ORDERED_LIST_COMMAND,
-  INSERT_UNORDERED_LIST_COMMAND,
-  REMOVE_LIST_COMMAND,
-} from "@lexical/list";
-import {
-  $isHeadingNode,
-  $createQuoteNode,
-  $createHeadingNode,
-} from "@lexical/rich-text";
+
 import { BlockType } from "../types";
 
 function getSelectedNode(selection: RangeSelection) {

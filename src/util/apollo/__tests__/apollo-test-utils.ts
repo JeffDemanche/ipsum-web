@@ -1,7 +1,8 @@
 import { IpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { UnhydratedType, vars } from "../client";
+
 import { EntryType } from "../__generated__/graphql";
+import { UnhydratedType, vars } from "../client";
 
 /**
  * Allows mocks to supply partials of types, with the unsupplied fields being

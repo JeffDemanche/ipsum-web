@@ -1,10 +1,11 @@
-import React, { useContext, useMemo } from "react";
-import styles from "./MedianSearchSection.less";
-import { useHighlightSearch } from "util/search";
-import { HighlightsList } from "components/HighlightsList";
-import { HighlightSearchCriteriaPanel } from "components/HighlightSearchCriteriaPanel";
-import { DiptychContext } from "components/DiptychContext";
 import { MenuItem, TextField } from "@mui/material";
+import { DiptychContext } from "components/DiptychContext";
+import { HighlightSearchCriteriaPanel } from "components/HighlightSearchCriteriaPanel";
+import { HighlightsList } from "components/HighlightsList";
+import React, { useContext, useMemo } from "react";
+import { useHighlightSearch } from "util/search";
+
+import styles from "./MedianSearchSection.less";
 
 export const MedianSearchSection: React.FunctionComponent = () => {
   const { isUserSearch, searchCriteria, searchResults } = useHighlightSearch();

@@ -1,9 +1,10 @@
-import { UnhydratedType, vars } from "../client";
-import { v4 as uuidv4 } from "uuid";
-import { autosave } from "../autosave";
-import { IpsumDateTime, IpsumDay } from "util/dates";
-import { upsertDay } from "./day";
 import _ from "lodash";
+import { IpsumDateTime, IpsumDay } from "util/dates";
+import { v4 as uuidv4 } from "uuid";
+
+import { autosave } from "../autosave";
+import { UnhydratedType, vars } from "../client";
+import { upsertDay } from "./day";
 
 export const createHighlight = ({
   entry,

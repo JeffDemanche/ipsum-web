@@ -1,8 +1,9 @@
 import { parseIpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { vars } from "../client";
+
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
 import { QueryJournalEntriesArgs } from "../__generated__/graphql";
+import { vars } from "../client";
 
 const isJournalEntryEmpty = (trackedHTMLString: string) =>
   IpsumTimeMachine.fromString(trackedHTMLString).currentValue !== "";

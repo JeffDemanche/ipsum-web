@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+
 import { IpsumEditor } from "./IpsumEditor";
 
 const meta: Meta<typeof IpsumEditor> = {

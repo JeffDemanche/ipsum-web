@@ -1,11 +1,10 @@
-import React, { CSSProperties } from "react";
-
 import { Button as MuiButton } from "@mui/material";
 import {
   font_family_inputs,
   font_size_inputs,
   font_weight_inputs,
 } from "components/styles";
+import React, { CSSProperties } from "react";
 
 interface ButtonProps {
   variant?: "text" | "outlined" | "contained" | "link";

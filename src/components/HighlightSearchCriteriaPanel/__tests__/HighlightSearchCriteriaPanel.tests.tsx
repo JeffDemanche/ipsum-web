@@ -1,12 +1,13 @@
-import { render, screen } from "@testing-library/react";
+import { ApolloProvider } from "@apollo/client";
 import { fireEvent } from "@testing-library/dom";
+import { render, screen } from "@testing-library/react";
 import React from "react";
-import { HighlightSearchCriteriaPanel } from "../HighlightSearchCriteriaPanel";
+import { client } from "util/apollo";
+import { IpsumDay } from "util/dates";
 import { useModifySearchParams } from "util/url";
 import { IpsumURLSearch } from "util/url/types";
-import { IpsumDay } from "util/dates";
-import { ApolloProvider } from "@apollo/client";
-import { client } from "util/apollo";
+
+import { HighlightSearchCriteriaPanel } from "../HighlightSearchCriteriaPanel";
 
 jest.mock("util/url");
 

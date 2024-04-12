@@ -1,6 +1,6 @@
-import { serializeVars, vars } from "./client";
-
 import { PathReporter } from "io-ts/PathReporter";
+
+import { serializeVars, vars } from "./client";
 import { SerializedSchema } from "./serializer-schema";
 
 /**

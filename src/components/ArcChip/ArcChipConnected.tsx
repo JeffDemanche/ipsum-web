@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
 import { gql } from "util/apollo";
+
 import { ArcChip, ArcChipProps } from "./ArcChip";
 
 interface ArcChipConnectedProps {

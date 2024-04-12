@@ -1,11 +1,13 @@
-import React from "react";
 import "normalize.css";
-import { IpsumRouter } from "../views/IpsumRouter";
+import "simplebar-react/dist/simplebar.min.css";
+
+import { ApolloProvider } from "@apollo/client";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "components/styles";
-import "simplebar-react/dist/simplebar.min.css";
-import { ApolloProvider } from "@apollo/client";
+import React from "react";
 import { client } from "util/apollo";
+
+import { IpsumRouter } from "../views/IpsumRouter";
 import { ErrorBoundary } from "./ErrorBoundary";
 
 export const App: React.FC = () => {

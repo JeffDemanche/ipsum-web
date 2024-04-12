@@ -2,11 +2,12 @@ import { BreadcrumbType } from "components/Breadcrumb";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import {
+  HighlightDetailURLLayer,
   URLLayer,
   useIpsumSearchParams,
   useModifySearchParams,
-  HighlightDetailURLLayer,
 } from "util/url";
+
 import { Diptych } from "./types";
 
 const isIdenticalLayer = (a: URLLayer, b: URLLayer) => {

@@ -3,6 +3,7 @@ import { IconButton } from "@mui/material";
 import { LayerContext } from "components/Diptych";
 import { DiptychContext } from "components/DiptychContext";
 import React, { useContext } from "react";
+
 import styles from "./LayerHeader.less";
 
 interface LayerHeaderProps {

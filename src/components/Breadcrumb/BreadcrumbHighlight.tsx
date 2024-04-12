@@ -1,6 +1,7 @@
-import React from "react";
-import styles from "./Breadcrumb.less";
 import { HighlightExcerptConnected } from "components/HighlightExcerpt";
+import React from "react";
+
+import styles from "./Breadcrumb.less";
 import { HighlightBreadcrumb } from "./types";
 
 interface BreadcrumbHighlightProps {

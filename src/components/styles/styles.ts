@@ -1,5 +1,6 @@
 import { createTheme } from "@mui/material";
-import { brown, amber, grey } from "@mui/material/colors";
+import { amber, brown, grey } from "@mui/material/colors";
+
 import {
   border_radius_inputs,
   font_family_inputs,

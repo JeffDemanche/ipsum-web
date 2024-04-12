@@ -2,6 +2,7 @@ import { BreadcrumbsHeader } from "components/BreadcrumbsHeader";
 import { DiptychContext } from "components/DiptychContext";
 import { Median } from "components/Median";
 import React, { useContext } from "react";
+
 import styles from "./Diptych.less";
 import { DiptychColumn } from "./DiptychColumn";
 

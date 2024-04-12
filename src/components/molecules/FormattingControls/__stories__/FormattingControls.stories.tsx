@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+
 import { WithEditor } from "./WithEditor";
 
 const meta: Meta<typeof WithEditor> = {

@@ -1,8 +1,9 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
 import { gql } from "util/apollo";
-import { HighlightComment } from "./HighlightComment";
 import { IpsumDay } from "util/dates";
+
+import { HighlightComment } from "./HighlightComment";
 import styles from "./HighlightDetail.less";
 
 interface HighlightDetailCommentsSectionProps {

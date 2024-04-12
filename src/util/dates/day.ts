@@ -1,11 +1,12 @@
 import { DateTime } from "luxon";
+import { useEffect, useState } from "react";
+
 import {
+  getCurrentLocalDateTime,
   IpsumDateFormatFrom,
   IpsumDateFormatTo,
   IpsumDateTime,
-  getCurrentLocalDateTime,
 } from "./dates";
-import { useEffect, useState } from "react";
 
 export const useToday = (refreshRate: number): IpsumDay => {
   const [day, setDay] = useState(

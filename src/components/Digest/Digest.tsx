@@ -1,11 +1,12 @@
+import { useQuery } from "@apollo/client";
+import cx from "classnames";
+import { DiptychContext } from "components/DiptychContext";
 import { HighlightTag } from "components/HighlightTag";
 import { HoveredHighlightsContext } from "components/HoveredHighlightsContext";
 import React, { useCallback, useContext, useMemo } from "react";
-import styles from "./Digest.less";
 import { gql } from "util/apollo";
-import { useQuery } from "@apollo/client";
-import { DiptychContext } from "components/DiptychContext";
-import cx from "classnames";
+
+import styles from "./Digest.less";
 
 interface DigestProps {
   entryKey: string;

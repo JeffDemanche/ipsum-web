@@ -1,18 +1,19 @@
+import { useQuery } from "@apollo/client";
+import { Typography } from "@mui/material";
 import cx from "classnames";
 import { Digest } from "components/Digest";
 import React from "react";
-import { IpsumDateTime, IpsumDay } from "util/dates";
-import styles from "./JournalEntry.less";
-import { Typography } from "@mui/material";
 import {
-  EntryType,
   createJournalEntry,
   deleteJournalEntry,
+  EntryType,
   gql,
   updateEntry,
 } from "util/apollo";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 import { IpsumEditor } from "util/editor";
-import { useQuery } from "@apollo/client";
+
+import styles from "./JournalEntry.less";
 import { JournalEntryComments } from "./JournalEntryComments";
 
 interface JournalEntryTodayProps {

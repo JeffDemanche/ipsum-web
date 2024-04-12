@@ -3,6 +3,7 @@ import { Button, IconButton, Tooltip } from "@mui/material";
 import { DiptychContext } from "components/DiptychContext";
 import React, { useCallback, useContext } from "react";
 import { deleteHighlight } from "util/apollo";
+
 import styles from "./HighlightBox.less";
 import { ImportanceRatingButton } from "./ImportanceRatingButton";
 

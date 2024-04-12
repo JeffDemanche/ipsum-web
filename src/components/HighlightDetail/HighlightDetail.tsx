@@ -6,6 +6,7 @@ import { LayerHeader } from "components/LayerHeader";
 import React, { useContext } from "react";
 import { gql } from "util/apollo";
 import { IpsumDateTime } from "util/dates";
+
 import styles from "./HighlightDetail.less";
 import { HighlightDetailCommentsSection } from "./HighlightDetailCommentsSection";
 import { HighlightDetailExcerptSection } from "./HighlightDetailExcerptSection";

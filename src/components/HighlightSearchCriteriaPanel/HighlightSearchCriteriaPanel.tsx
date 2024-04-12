@@ -1,14 +1,15 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { URLSearchCriteria, useModifySearchParams } from "util/url";
-import styles from "./HighlightSearchCriteriaPanel.less";
-import { ArcChipConnected } from "components/ArcChip";
-import { DayChip } from "components/DayChip";
-import { IpsumDay } from "util/dates";
-import { IconButton, Chip, Button, Typography } from "@mui/material";
 import { Add, Remove } from "@mui/icons-material";
+import { Button, Chip, IconButton, Typography } from "@mui/material";
 import cx from "classnames";
+import { ArcChipConnected } from "components/ArcChip";
 import { ArcSearchAutocomplete } from "components/ArcSearchAutocomplete";
+import { DayChip } from "components/DayChip";
+import React, { useCallback, useMemo, useState } from "react";
 import { createArc } from "util/apollo";
+import { IpsumDay } from "util/dates";
+import { URLSearchCriteria, useModifySearchParams } from "util/url";
+
+import styles from "./HighlightSearchCriteriaPanel.less";
 
 export interface HighlightSearchCriteriaPanelProps {
   searchCriteria: URLSearchCriteria;

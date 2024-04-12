@@ -1,6 +1,5 @@
-import React from "react";
-
 import { MenuItem as MuiMenuItem } from "@mui/material";
+import React from "react";
 
 type MenuItemProps = {
   children: React.ReactNode;

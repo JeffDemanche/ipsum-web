@@ -1,7 +1,6 @@
 /node_modules
 /dist
 /projects
-/.vscode
 /test-results/
 /playwright-report/
 /blob-report/

@@ -1,6 +1,7 @@
 import { createJournalEntry } from "util/apollo";
-import { initializeState, vars } from "util/apollo/client";
 import { EntryType } from "util/apollo/__generated__/graphql";
+import { initializeState, vars } from "util/apollo/client";
+
 import { deleteJournalEntry } from "../journalEntries";
 
 jest.mock("../../autosave");

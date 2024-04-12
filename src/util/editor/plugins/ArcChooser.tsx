@@ -8,6 +8,7 @@ import {
 } from "lexical";
 import React, { useCallback, useMemo, useState } from "react";
 import { createArc, createHighlight, createRelation, gql } from "util/apollo";
+
 import { TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND } from "./HighlightAssignmentPlugin";
 import styles from "./ToolbarPlugin.less";
 

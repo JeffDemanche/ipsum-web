@@ -1,12 +1,13 @@
-import React, { useEffect, useRef } from "react";
-import { useDebouncedCallback } from "util/hooks";
-import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
-import { $getRoot, EditorState, LexicalEditor } from "lexical";
-import { IpsumEditorMetadata } from "../IpsumEditor";
-import { gql } from "util/apollo";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useQuery } from "@apollo/client";
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { $getRoot, EditorState, LexicalEditor } from "lexical";
+import React, { useEffect, useRef } from "react";
+import { gql } from "util/apollo";
+import { useDebouncedCallback } from "util/hooks";
+
+import { IpsumEditorMetadata } from "../IpsumEditor";
 
 interface LoadSavePluginProps {
   timeout?: number;

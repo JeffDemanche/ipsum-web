@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ToggleButton } from "./ToggleButton";
 import React from "react";
+
+import { ToggleButton } from "./ToggleButton";
 
 const WithState: React.FunctionComponent = () => {
   const [selected, setSelected] = React.useState(false);

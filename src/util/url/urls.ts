@@ -1,7 +1,8 @@
 import qs from "qs";
 import { useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { View, IpsumURLSearch } from "./types";
+
+import { IpsumURLSearch,View } from "./types";
 
 export const EMPTY_ARRAY = "[]";
 export const EMPTY_OBJECT = "{}";

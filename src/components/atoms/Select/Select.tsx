@@ -1,6 +1,7 @@
-import React from "react";
-import styles from "./Select.less";
 import { Select as MuiSelect } from "@mui/material";
+import React from "react";
+
+import styles from "./Select.less";
 
 type SelectProps = {
   menuRef?: React.RefObject<HTMLDivElement>;

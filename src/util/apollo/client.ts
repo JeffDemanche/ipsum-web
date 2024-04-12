@@ -1,28 +1,29 @@
-import { ApolloClient, InMemoryCache, gql, makeVar } from "@apollo/client";
+import { ApolloClient, gql, InMemoryCache, makeVar } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 import { parseIpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { v4 as uuidv4 } from "uuid";
-import { ArcResolvers } from "./resolvers/arc-resolvers";
-import { HighlightResolvers } from "./resolvers/highlight-resolvers";
-import { SearchResolvers } from "./resolvers/search-resolvers";
-import { arcTypeDef } from "./schemas/arc-schema";
-import { highlightTypeDef } from "./schemas/highlight-schema";
-import { searchTypeDef } from "./schemas/search-schema";
+
 import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import {
   QueryArcEntriesArgs,
   QueryEntriesArgs,
   QueryRelationsArgs,
 } from "./__generated__/graphql";
-import { onError } from "@apollo/client/link/error";
-import { dayTypeDef } from "./schemas/day-schema";
-import { DayResolvers } from "./resolvers/day-resolvers";
-import { journalEntryTypeDef } from "./schemas/journal-entry-schema";
-import { JournalEntryResolvers } from "./resolvers/journal-entry-resolvers";
-import { commentTypeDef } from "./schemas/comment-schema";
-import { CommentResolvers } from "./resolvers/comment-resolvers";
-import { commentEntryTypeDef } from "./schemas/comment-entry-schema";
+import { ArcResolvers } from "./resolvers/arc-resolvers";
 import { CommentEntryResolvers } from "./resolvers/comment-entry-resolvers";
+import { CommentResolvers } from "./resolvers/comment-resolvers";
+import { DayResolvers } from "./resolvers/day-resolvers";
+import { HighlightResolvers } from "./resolvers/highlight-resolvers";
+import { JournalEntryResolvers } from "./resolvers/journal-entry-resolvers";
+import { SearchResolvers } from "./resolvers/search-resolvers";
+import { arcTypeDef } from "./schemas/arc-schema";
+import { commentEntryTypeDef } from "./schemas/comment-entry-schema";
+import { commentTypeDef } from "./schemas/comment-schema";
+import { dayTypeDef } from "./schemas/day-schema";
+import { highlightTypeDef } from "./schemas/highlight-schema";
+import { journalEntryTypeDef } from "./schemas/journal-entry-schema";
+import { searchTypeDef } from "./schemas/search-schema";
 
 const typeDefs = gql`
   type Query {

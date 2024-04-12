@@ -1,10 +1,11 @@
 import { ArcDetail } from "components/ArcDetail";
 import { DailyJournal } from "components/DailyJournal";
-import React, { useMemo } from "react";
-import styles from "./DiptychColumn.less";
-import { URLLayer } from "util/url";
-import { LayerProvider } from "./LayerContext";
 import { HighlightDetail } from "components/HighlightDetail";
+import React, { useMemo } from "react";
+import { URLLayer } from "util/url";
+
+import styles from "./DiptychColumn.less";
+import { LayerProvider } from "./LayerContext";
 
 interface DiptychColumnProps {
   layer: URLLayer;

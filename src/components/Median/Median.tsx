@@ -1,4 +1,5 @@
 import React from "react";
+
 import styles from "./Median.less";
 import { MedianSearchSection } from "./MedianSearchSection";
 

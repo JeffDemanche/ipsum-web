@@ -1,4 +1,5 @@
 import { initializeState, vars } from "util/apollo/client";
+
 import { createArcEntry, deleteArcEntry } from "../arcEntries";
 
 jest.mock("../../autosave");

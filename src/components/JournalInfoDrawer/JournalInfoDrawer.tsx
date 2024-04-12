@@ -1,11 +1,11 @@
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { Collapse, Drawer, IconButton } from "@mui/material";
+import cx from "classnames";
+import { JournalDateRangePicker } from "components/JournalDateRangePicker";
 import { JournalInfoBox } from "components/JournalInfoBox";
 import React, { useState } from "react";
-import styles from "./JournalInfoDrawer.less";
-import cx from "classnames";
 
-import { JournalDateRangePicker } from "components/JournalDateRangePicker";
+import styles from "./JournalInfoDrawer.less";
 
 export const JournalInfoDrawer: React.FunctionComponent = () => {
   const [open, setOpen] = useState(true);

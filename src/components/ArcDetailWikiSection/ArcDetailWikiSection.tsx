@@ -1,6 +1,6 @@
 import { ArcDetailContext, ArcDetailSection } from "components/ArcDetail";
 import React, { useContext, useMemo } from "react";
-import { EntryType, createArcEntry, updateEntry } from "util/apollo";
+import { createArcEntry, EntryType, updateEntry } from "util/apollo";
 import { IpsumEditor } from "util/editor";
 
 export const ArcDetailWikiSection: React.FunctionComponent = () => {

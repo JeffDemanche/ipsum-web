@@ -5,6 +5,7 @@ import { ArcDetailWikiSection } from "components/ArcDetailWikiSection";
 import { LayerContext } from "components/Diptych";
 import { LayerHeader } from "components/LayerHeader";
 import React, { useContext } from "react";
+
 import styles from "./ArcDetail.less";
 import { ArcDetailProvider } from "./ArcDetailContext";
 

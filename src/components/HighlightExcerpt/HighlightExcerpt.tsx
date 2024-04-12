@@ -1,6 +1,7 @@
-import cx from "classnames";
 import { Paper } from "@mui/material";
+import cx from "classnames";
 import React from "react";
+
 import styles from "./HighlightExcerpt.less";
 
 interface HighlightExcerptProps {

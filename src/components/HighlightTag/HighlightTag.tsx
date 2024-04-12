@@ -1,9 +1,10 @@
-import React, { CSSProperties, useState } from "react";
-import styles from "./HighlightTag.less";
-import { Link, Typography } from "@mui/material";
-import { IpsumArcColor } from "util/colors";
-import { gql } from "util/apollo";
 import { useQuery } from "@apollo/client";
+import { Link, Typography } from "@mui/material";
+import React, { CSSProperties, useState } from "react";
+import { gql } from "util/apollo";
+import { IpsumArcColor } from "util/colors";
+
+import styles from "./HighlightTag.less";
 
 interface HighlightTagProps {
   highlightId: string;

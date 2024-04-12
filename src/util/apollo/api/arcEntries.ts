@@ -1,8 +1,9 @@
-import { UnhydratedType, vars } from "../client";
 import { v4 as uuidv4 } from "uuid";
-import { createEntry } from "./entries";
+
 import { EntryType } from "../__generated__/graphql";
 import { autosave } from "../autosave";
+import { UnhydratedType, vars } from "../client";
+import { createEntry } from "./entries";
 
 export const createArcEntry = ({
   arcId,

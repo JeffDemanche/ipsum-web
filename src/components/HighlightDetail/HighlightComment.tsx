@@ -2,14 +2,15 @@ import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import React from "react";
 import {
-  EntryType,
   createComment,
   deleteComment,
+  EntryType,
   gql,
   updateEntry,
 } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumEditor } from "util/editor";
+
 import styles from "./HighlightDetail.less";
 
 interface HighlightCommentProps {

@@ -1,13 +1,14 @@
 import { Card, Typography } from "@mui/material";
-import { DiptychContext } from "components/DiptychContext";
-import React, { useCallback, useContext, useRef } from "react";
-import styles from "./HighlightBox.less";
 import cx from "classnames";
-import { IpsumDateTime, IpsumDay, parseIpsumDateTime } from "util/dates";
-import { HighlightBoxButtons } from "./HighlightBoxButtons";
-import { HighlightRelationsTable } from "../HighlightRelationsTable/HighlightRelationsTable";
-import { ImportanceRatingButton } from "./ImportanceRatingButton";
+import { DiptychContext } from "components/DiptychContext";
 import { HighlightExcerptConnected } from "components/HighlightExcerpt";
+import React, { useCallback, useContext, useRef } from "react";
+import { IpsumDateTime, IpsumDay, parseIpsumDateTime } from "util/dates";
+
+import { HighlightRelationsTable } from "../HighlightRelationsTable/HighlightRelationsTable";
+import styles from "./HighlightBox.less";
+import { HighlightBoxButtons } from "./HighlightBoxButtons";
+import { ImportanceRatingButton } from "./ImportanceRatingButton";
 
 interface HighlightBoxProps {
   className?: string;

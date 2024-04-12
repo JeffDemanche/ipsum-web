@@ -1,11 +1,12 @@
 import { gql } from "@apollo/client";
 import { IpsumDateTime } from "util/dates";
+
+import { EntryType } from "../__generated__/graphql";
 import { createArc } from "../api/arcs";
 import { createEntry } from "../api/entries";
 import { createHighlight } from "../api/highlights";
 import { createRelation } from "../api/relations";
 import { client, initializeState } from "../client";
-import { EntryType } from "../__generated__/graphql";
 
 jest.mock("../autosave");
 

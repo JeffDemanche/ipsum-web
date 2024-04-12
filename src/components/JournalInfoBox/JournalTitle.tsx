@@ -1,3 +1,4 @@
+import { useQuery } from "@apollo/client";
 import { Button, ClickAwayListener, TextField } from "@mui/material";
 import React, {
   useCallback,
@@ -6,9 +7,9 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styles from "./JournalTitle.less";
-import { useQuery } from "@apollo/client";
 import { gql, updateJournalTitle } from "util/apollo";
+
+import styles from "./JournalTitle.less";
 
 const JournalTitleQuery = gql(`
   query JournalTitle {

@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ApolloSerializationProvider } from "util/apollo";
+
 import { ViewHome } from "./ViewHome";
 import { ViewIndex } from "./ViewIndex";
 import { ViewJournal } from "./ViewJournal";

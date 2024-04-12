@@ -1,5 +1,3 @@
-import React from "react";
-
 import { ToggleButton as MuiToggleButton } from "@mui/material";
 import {
   font_family_inputs,
@@ -8,6 +6,7 @@ import {
   grey500,
   grid_x_5,
 } from "components/styles";
+import React from "react";
 
 type ToggleButtonProps = {
   variant?: "text" | "outlined";

@@ -1,11 +1,12 @@
-import { UnhydratedType, vars } from "../client";
 import { v4 as uuidv4 } from "uuid";
-import { createEntry } from "./entries";
+
 import { EntryType } from "../__generated__/graphql";
-import { initializeHistory } from "./history";
-import { updateHighlight } from "./highlights";
 import { autosave } from "../autosave";
+import { UnhydratedType, vars } from "../client";
 import { deleteCommentEntry } from "./commentEntries";
+import { createEntry } from "./entries";
+import { updateHighlight } from "./highlights";
+import { initializeHistory } from "./history";
 
 export const createComment = ({
   highlight,

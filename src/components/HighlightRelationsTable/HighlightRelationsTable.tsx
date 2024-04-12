@@ -6,9 +6,10 @@ import {
   ArcSearchResult,
 } from "components/ArcSearchAutocomplete";
 import { DiptychContext } from "components/DiptychContext";
-import React, { useCallback, useContext, useMemo } from "react";
 import { theme } from "components/styles";
+import React, { useCallback, useContext, useMemo } from "react";
 import { createArc, createRelation, deleteRelation, gql } from "util/apollo";
+
 import styles from "./HighlightRelationsTable.less";
 
 const HighlightRelationsTableQuery = gql(`
