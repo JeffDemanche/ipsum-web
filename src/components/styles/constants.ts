@@ -17,6 +17,10 @@ export const font_weight_inputs = 300;
 
 export const border_radius_inputs = "0px";
 
+export const grey100 = "#ffffff";
+export const grey200 = "#fafafa";
+export const grey300 = "#f5f5f5";
+export const grey400 = "#f0f0f0";
 export const grey500 = "#d9d9d9";
 export const grey600 = "#bfbfbf";
 export const grey700 = "#8c8c8c";

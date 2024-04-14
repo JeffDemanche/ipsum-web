@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-internal-modules
+// eslint-disable-next-line import/no-internal-modules, @typescript-eslint/no-restricted-imports
 import { highlight as highlightSpanClassname } from "util/editor/plugins/HighlightAssignmentPlugin.less";
 
 interface ExcerptOptions {
