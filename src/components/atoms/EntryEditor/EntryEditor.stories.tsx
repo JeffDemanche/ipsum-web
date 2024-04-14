@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { IpsumEditor } from "./IpsumEditor";
+import { EntryEditor } from "./EntryEditor";
 
-const meta: Meta<typeof IpsumEditor> = {
+const meta: Meta<typeof EntryEditor> = {
   title: "Atoms/IpsumEditor",
-  component: IpsumEditor,
+  component: EntryEditor,
 };
 
 export default meta;
-type Story = StoryObj<typeof IpsumEditor>;
+type Story = StoryObj<typeof EntryEditor>;
 
 export const IpsumEditorExample: Story = {
   args: {

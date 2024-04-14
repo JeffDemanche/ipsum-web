@@ -15,19 +15,27 @@ import { IpsumDateTime } from "util/dates";
 import { placeholderForDate } from "util/placeholders";
 
 import { editorTheme } from "./editor-theme";
-import styles from "./IpsumEditor.less";
+import styles from "./EntryEditor.less";
 import { FormattingPlugin } from "./plugins/FormattingPlugin";
 import { HighlightAssignmentNode } from "./plugins/HighlightAssignmentNode";
+import { HighlightAssignmentPlugin } from "./plugins/HighlightAssignmentPlugin";
 import { highlight } from "./plugins/HighlightAssignmentPlugin.less";
 import { LoadSavePlugin } from "./plugins/LoadSavePlugin";
 
 export const highlightSpanClassname = highlight;
 
-interface IpsumEditorProps {
+interface EntryEditorProps {
   defaultEntryKey?: string;
   editable?: boolean;
   allowHighlighting?: boolean;
   initialHtmlString?: string;
+  highlightsMap?: Record<
+    string,
+    {
+      id: string;
+      hue: number;
+    }
+  >;
   createEntry?: (htmlString: string) => string;
   updateEntry?: ({
     entryKey,
@@ -40,11 +48,12 @@ interface IpsumEditorProps {
   className?: string;
 }
 
-export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
+export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
   defaultEntryKey,
   editable = true,
   allowHighlighting = true,
   initialHtmlString,
+  highlightsMap,
   createEntry,
   updateEntry,
   deleteEntry,
@@ -75,11 +84,6 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
       }}
     >
       <div className={cx(className, styles["editor-container"])}>
-        {/* <ToolbarPlugin
-          entryKey={entryKey}
-          editable={!!entryKey && editable}
-          allowHighlighting={allowHighlighting}
-        /> */}
         <FormattingPlugin />
         <div className={styles["editor-inner"]}>
           <RichTextPlugin
@@ -105,12 +109,10 @@ export const IpsumEditor: React.FunctionComponent<IpsumEditorProps> = ({
             updateEntry={updateEntry}
             deleteEntry={deleteEntry}
           />
-          {/* {entryKey && (
-            <HighlightAssignmentPlugin
-              editable={editable}
-              entryKey={entryKey}
-            />
-          )} */}
+          <HighlightAssignmentPlugin
+            editable={editable}
+            highlightsMap={highlightsMap}
+          />
           <ListPlugin />
           <LinkPlugin />
           <HistoryPlugin />

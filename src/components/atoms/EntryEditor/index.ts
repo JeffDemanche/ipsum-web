@@ -1,1 +1,1 @@
-export { IpsumEditor } from "./IpsumEditor";
+export { EntryEditor } from "./EntryEditor";
