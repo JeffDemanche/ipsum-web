@@ -31,7 +31,7 @@ interface HighlightAssignmentPluginProps {
   highlightsMap?: Record<string, { id: string; hue: number }>;
 }
 
-export const TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND: LexicalCommand<ToggleHighlightAssignmentPayload | null> =
+export const CREATE_HIGHLIGHT_ASSIGNMENT_COMMAND: LexicalCommand<ToggleHighlightAssignmentPayload | null> =
   createCommand("toggle-highlight-assignment");
 
 export const REMOVE_HIGHLIGHT_ASSIGNMENT_COMMAND: LexicalCommand<ToggleHighlightAssignmentPayload | null> =
@@ -111,7 +111,7 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
   useEffect(() => {
     return mergeRegister(
       editor.registerCommand(
-        TOGGLE_HIGHLIGHT_ASSIGNMENT_COMMAND,
+        CREATE_HIGHLIGHT_ASSIGNMENT_COMMAND,
         (payload) => {
           applyHighlightAssignment(payload);
           return true;

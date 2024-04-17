@@ -45,6 +45,7 @@ interface EntryEditorProps {
     htmlString: string;
   }) => boolean;
   deleteEntry?: (entryKey: string) => void;
+  createHighlight?: () => string;
   className?: string;
 }
 
@@ -57,6 +58,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
   createEntry,
   updateEntry,
   deleteEntry,
+  createHighlight,
   className,
 }) => {
   const onError = useCallback((error: Error, editor: LexicalEditor) => {
@@ -84,8 +86,12 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
       }}
     >
       <div className={cx(className, styles["editor-container"])}>
-        <FormattingPlugin />
+        <FormattingPlugin createHighlight={createHighlight} />
         <div className={styles["editor-inner"]}>
+          <HighlightAssignmentPlugin
+            editable={editable}
+            highlightsMap={highlightsMap}
+          />
           <RichTextPlugin
             contentEditable={
               <ContentEditable
@@ -108,10 +114,6 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
             createEntry={createEntry}
             updateEntry={updateEntry}
             deleteEntry={deleteEntry}
-          />
-          <HighlightAssignmentPlugin
-            editable={editable}
-            highlightsMap={highlightsMap}
           />
           <ListPlugin />
           <LinkPlugin />

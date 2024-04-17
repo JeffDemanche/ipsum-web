@@ -21,6 +21,8 @@ export interface FormattableEditor {
 
   blockType: BlockType;
   setBlockType: React.Dispatch<React.SetStateAction<BlockType>>;
+
+  createHighlight: () => void;
 }
 
 export interface FormattingControlsContextType {

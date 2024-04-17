@@ -1,7 +1,18 @@
 import { Button as MuiButton, Tooltip } from "@mui/material";
 import React, { useMemo } from "react";
 
-interface ButtonProps extends React.ComponentProps<typeof MuiButton> {
+interface ButtonProps
+  extends Pick<
+    React.ComponentProps<typeof MuiButton>,
+    | "variant"
+    | "startIcon"
+    | "endIcon"
+    | "className"
+    | "style"
+    | "aria-label"
+    | "disabled"
+    | "onClick"
+  > {
   tooltip?: string;
   children: React.ReactNode;
 }
@@ -12,9 +23,20 @@ export const Button: React.FC<ButtonProps> = ({
   ...buttonProps
 }) => {
   const button = useMemo(
-    () => <MuiButton {...buttonProps}>{children}</MuiButton>,
+    () => (
+      <MuiButton
+        {...buttonProps}
+        style={{ minWidth: "42px", ...buttonProps.style }}
+      >
+        {children}
+      </MuiButton>
+    ),
     [buttonProps, children]
   );
 
-  return tooltip ? <Tooltip title={tooltip}>{button}</Tooltip> : button;
+  return tooltip && !buttonProps.disabled ? (
+    <Tooltip title={tooltip}>{button}</Tooltip>
+  ) : (
+    button
+  );
 };

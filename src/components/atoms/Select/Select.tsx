@@ -1,7 +1,6 @@
 import { Select as MuiSelect } from "@mui/material";
+import { border_radius_inputs } from "components/styles";
 import React from "react";
-
-import styles from "./Select.less";
 
 type SelectProps = {
   menuRef?: React.RefObject<HTMLDivElement>;
@@ -19,8 +18,8 @@ export const Select: React.FunctionComponent<SelectProps> = ({
   return (
     <MuiSelect
       {...muiProps}
-      className={styles["select"]}
       MenuProps={{ ref: menuRef }}
+      style={{ borderRadius: border_radius_inputs }}
     >
       {children}
     </MuiSelect>

@@ -3,10 +3,12 @@ import {
   FormatItalic,
   FormatStrikethrough,
   FormatUnderlined,
+  Highlight,
 } from "@mui/icons-material";
 import { MenuItem } from "components/atoms/MenuItem";
 import { Select } from "components/atoms/Select";
 import { ToggleButton } from "components/atoms/ToggleButton";
+import { Button } from "components/Button";
 import React, { useContext, useEffect, useRef, useState } from "react";
 
 import styles from "./FormattingControls.less";
@@ -56,6 +58,18 @@ export const FormattingControls: React.FunctionComponent<
 
   return (
     <div className={styles["formatting-controls"]} ref={controlsRef}>
+      <Button
+        aria-label="highlight"
+        variant="contained"
+        disabled={disableAll}
+        tooltip="Create highlight"
+        style={{ width: "42px" }}
+        onClick={() => {
+          activeEditor?.createHighlight();
+        }}
+      >
+        <Highlight fontSize="small" />
+      </Button>
       <ToggleButton
         aria-label="bold"
         value="check"

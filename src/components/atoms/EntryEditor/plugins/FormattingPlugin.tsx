@@ -36,6 +36,7 @@ import React, {
 } from "react";
 
 import { BlockType } from "../types";
+import { CREATE_HIGHLIGHT_ASSIGNMENT_COMMAND } from "./HighlightAssignmentPlugin";
 
 function getSelectedNode(selection: RangeSelection) {
   const anchor = selection.anchor;
@@ -53,7 +54,16 @@ function getSelectedNode(selection: RangeSelection) {
   }
 }
 
-export const FormattingPlugin: React.FunctionComponent = () => {
+interface FormattingPluginProps {
+  /**
+   * @returns ID of created highlight.
+   */
+  createHighlight?: () => string;
+}
+
+export const FormattingPlugin: React.FunctionComponent<
+  FormattingPluginProps
+> = ({ createHighlight }) => {
   const { setActiveEditor } = useContext(FormattingControlsContext);
   const [editor] = useLexicalComposerContext();
 
@@ -188,8 +198,30 @@ export const FormattingPlugin: React.FunctionComponent = () => {
             break;
         }
       },
+      createHighlight: () => {
+        const highlightId = createHighlight?.();
+
+        if (!highlightId) {
+          return;
+        }
+
+        editor.update(() => {
+          editor.dispatchCommand(CREATE_HIGHLIGHT_ASSIGNMENT_COMMAND, {
+            highlightId,
+          });
+        });
+      },
     }),
-    [blockType, bold, editor, editorFocused, italic, strikethrough, underline]
+    [
+      blockType,
+      bold,
+      createHighlight,
+      editor,
+      editorFocused,
+      italic,
+      strikethrough,
+      underline,
+    ]
   );
 
   useEffect(() => {
