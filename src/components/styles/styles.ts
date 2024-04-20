@@ -4,7 +4,7 @@ import { amber, brown, grey } from "@mui/material/colors";
 import {
   border_radius_inputs,
   font_family_inputs,
-  font_size_inputs,
+  font_size_inputs_small,
   font_weight_inputs,
   grid_x_4,
   grid_x_5,
@@ -213,7 +213,7 @@ export const theme = createTheme(
           outlined: {
             borderRadius: border_radius_inputs,
             fontFamily: font_family_inputs,
-            fontSize: font_size_inputs,
+            fontSize: font_size_inputs_small,
             fontWeight: font_weight_inputs,
           },
         },
@@ -221,7 +221,7 @@ export const theme = createTheme(
       MuiInputBase: {
         styleOverrides: {
           root: {
-            fontSize: font_size_inputs,
+            fontSize: font_size_inputs_small,
             fontFamily: font_family_inputs,
             fontWeight: font_weight_inputs,
             borderRadius: border_radius_inputs,
@@ -232,7 +232,7 @@ export const theme = createTheme(
       MuiMenuItem: {
         styleOverrides: {
           root: {
-            fontSize: font_size_inputs,
+            fontSize: font_size_inputs_small,
             fontFamily: font_family_inputs,
             fontWeight: font_weight_inputs,
           },

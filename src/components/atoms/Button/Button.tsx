@@ -1,7 +1,7 @@
 import { Button as MuiButton } from "@mui/material";
 import {
   font_family_inputs,
-  font_size_inputs,
+  font_size_inputs_small,
   font_weight_inputs,
 } from "components/styles";
 import React, { CSSProperties } from "react";
@@ -11,6 +11,8 @@ interface ButtonProps {
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   children: React.ReactNode;
+  style?: CSSProperties;
+  className?: string;
 }
 
 export const Button: React.FunctionComponent<ButtonProps> = ({
@@ -18,13 +20,15 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   startIcon,
   endIcon,
   children,
+  style,
+  className,
 }) => {
   const muiVariant = variant === "link" ? "text" : variant;
 
   const linkStyle: CSSProperties = {
     fontWeight: font_weight_inputs,
     fontFamily: font_family_inputs,
-    fontSize: font_size_inputs,
+    fontSize: font_size_inputs_small,
     textDecoration: "underline",
     backgroundColor: "transparent",
   };
@@ -32,7 +36,7 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   const nonLinkStyle: CSSProperties = {
     fontWeight: font_weight_inputs,
     fontFamily: font_family_inputs,
-    fontSize: font_size_inputs,
+    fontSize: font_size_inputs_small,
   };
 
   return (
@@ -41,7 +45,8 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
       startIcon={startIcon}
       endIcon={endIcon}
       disableRipple={variant === "link"}
-      style={variant === "link" ? linkStyle : nonLinkStyle}
+      style={{ ...(variant === "link" ? linkStyle : nonLinkStyle), ...style }}
+      className={className}
     >
       {children}
     </MuiButton>

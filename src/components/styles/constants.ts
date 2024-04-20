@@ -7,13 +7,18 @@ export const grid_x_4 = `${grid_size * 4}px`;
 export const grid_x_5 = `${grid_size * 5}px`;
 export const grid_x_6 = `${grid_size * 6}px`;
 
-export const font_size_inputs = "14px";
+export const font_size_citation = "12px";
+export const font_size_inputs_small = "14px";
+export const font_size_inputs_medium = "16px";
 
 export const font_family_heading = "Amstelvar";
+export const font_family_serif = "Amstelvar";
+export const font_family_sans = "Roboto";
 export const font_family_body = "Roboto";
 export const font_family_inputs = "Roboto";
 
 export const font_weight_inputs = 300;
+export const font_weight_citation = 400;
 
 export const border_radius_inputs = "0px";
 
