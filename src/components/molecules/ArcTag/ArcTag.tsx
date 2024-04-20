@@ -33,7 +33,12 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
   }[fontSize];
 
   return (
-    <div className={styles["arc-tag"]}>
+    <div
+      className={styles["arc-tag"]}
+      style={{
+        backgroundColor: `hsla(${hue}, 20%, 40%, 1)`,
+      }}
+    >
       <Button
         className={styles["link-button"]}
         style={{
@@ -45,9 +50,7 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
           minWidth: "0",
           maxHeight: elementMaxHeight,
           color: `hsla(${hue}, 40%, 95%, 1)`,
-          backgroundColor: `hsla(${hue}, 20%, 40%, 1)`,
         }}
-        variant="link"
       >
         {text}
       </Button>
@@ -57,7 +60,6 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
           style={{
             maxHeight: elementMaxHeight,
             color: `hsla(${hue}, 40%, 95%, 1)`,
-            backgroundColor: `hsla(${hue}, 20%, 40%, 1)`,
           }}
         >
           <Close fontSize="small" />

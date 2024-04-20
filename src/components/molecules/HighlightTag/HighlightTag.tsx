@@ -50,12 +50,18 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
     paddingTop: "0",
     paddingBottom: "0",
     color: `hsla(${hue}, 20%, 40%, 1)`,
-    backgroundColor: `hsla(${hue}, 80%, 95%, 1)`,
+    backgroundColor: "transparent",
     minHeight: elementMinHeight,
   };
 
   return (
-    <div className={styles["highlight-tag"]}>
+    <div
+      className={styles["highlight-tag"]}
+      style={{
+        backgroundColor: `hsla(${hue}, 80%, 95%, 1)`,
+        minHeight: elementMinHeight,
+      }}
+    >
       {objectText && (
         <Button
           style={{
