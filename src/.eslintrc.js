@@ -10,6 +10,7 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
+    "plugin:import/typescript",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -55,6 +56,7 @@ module.exports = {
   ],
   settings: {
     "import/resolver": {
+      typescript: {},
       webpack: {
         config: "./webpack.config.js",
       },

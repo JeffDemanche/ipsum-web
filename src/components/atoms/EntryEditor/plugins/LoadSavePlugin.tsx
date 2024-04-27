@@ -68,9 +68,7 @@ export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
         const htmlString = $generateHtmlFromNodes(editor, null);
 
         const root = $getRoot();
-        const isEmpty =
-          root.isEmpty() ||
-          (root.getFirstChild()?.isEmpty() && root.getChildrenSize() === 1);
+        const isEmpty = root.isEmpty() || root.getChildrenSize() === 1;
 
         if (isEmpty) {
           deleteEntry?.(entryKey);
