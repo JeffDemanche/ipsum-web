@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { BlurbWrapper } from "./BlurbWrapper";
+import { BlurbWrapper } from "../BlurbWrapper";
 
 const meta: Meta<typeof BlurbWrapper> = {
   title: "Atoms/BlurbWrapper",
