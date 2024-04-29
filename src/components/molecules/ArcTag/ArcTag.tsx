@@ -1,9 +1,9 @@
 import { Close } from "@mui/icons-material";
 import { Button } from "components/atoms/Button";
 import {
-  font_family_serif,
-  font_size_inputs_medium,
-  font_size_inputs_small,
+  font_family_sans,
+  font_size_medium,
+  font_size_small,
 } from "components/styles";
 import React from "react";
 
@@ -23,8 +23,8 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
   onDelete,
 }) => {
   const fontSizePx = {
-    small: font_size_inputs_small,
-    medium: font_size_inputs_medium,
+    small: font_size_small,
+    medium: font_size_medium,
   }[fontSize];
 
   const elementMaxHeight = {
@@ -45,7 +45,7 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
           gap: "4px",
           paddingTop: "0",
           paddingBottom: "0",
-          fontFamily: font_family_serif,
+          fontFamily: font_family_sans,
           fontSize: fontSizePx,
           minWidth: "0",
           maxHeight: elementMaxHeight,

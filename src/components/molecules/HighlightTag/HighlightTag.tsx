@@ -2,9 +2,9 @@ import { Button } from "components/atoms/Button";
 import {
   font_family_sans,
   font_family_serif,
-  font_size_citation,
-  font_size_inputs_medium,
-  font_size_inputs_small,
+  font_size_medium,
+  font_size_small,
+  font_size_x_small,
   font_weight_citation,
 } from "components/styles";
 import React, { useMemo } from "react";
@@ -29,8 +29,8 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   highlightNumber,
 }) => {
   const fontSizePx = {
-    small: font_size_inputs_small,
-    medium: font_size_inputs_medium,
+    small: font_size_small,
+    medium: font_size_medium,
   }[fontSize];
 
   const elementMinHeight = {
@@ -78,7 +78,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
                 style={{
                   color: `hsla(${hue}, 20%, 60%, 1)`,
                   textDecoration: "none",
-                  fontSize: font_size_citation,
+                  fontSize: font_size_x_small,
                   fontWeight: font_weight_citation,
                 }}
               >
@@ -101,7 +101,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
             style={{
               color: `hsla(${hue}, 20%, 60%, 1)`,
               fontFamily: font_family_sans,
-              fontSize: font_size_citation,
+              fontSize: font_size_x_small,
               fontWeight: font_weight_citation,
               paddingRight: "4px",
             }}

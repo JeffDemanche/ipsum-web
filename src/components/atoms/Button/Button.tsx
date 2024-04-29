@@ -1,9 +1,9 @@
 import { Button as MuiButton, Tooltip } from "@mui/material";
 import cx from "classnames";
 import {
-  font_family_inputs,
-  font_size_inputs_small,
-  font_weight_inputs,
+  font_family_sans,
+  font_size_small,
+  font_weight_light,
 } from "components/styles";
 import React, { CSSProperties } from "react";
 
@@ -31,30 +31,30 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   const muiVariant = variant === "link" ? "text" : variant;
 
   const linkStyle: CSSProperties = {
-    fontWeight: font_weight_inputs,
-    fontFamily: font_family_inputs,
-    fontSize: font_size_inputs_small,
+    fontWeight: font_weight_light,
+    fontFamily: font_family_sans,
+    fontSize: font_size_small,
     textDecoration: "underline",
     backgroundColor: "transparent",
   };
 
   const nonLinkStyle: CSSProperties = {
-    fontWeight: font_weight_inputs,
-    fontFamily: font_family_inputs,
-    fontSize: font_size_inputs_small,
+    fontWeight: font_weight_light,
+    fontFamily: font_family_sans,
+    fontSize: font_size_small,
   };
 
-  return (
-    <Tooltip title={tooltip}>
-      <MuiButton
-        variant={muiVariant}
-        disableRipple={variant === "link"}
-        style={{ ...(variant === "link" ? linkStyle : nonLinkStyle), ...style }}
-        className={cx(styles["button"], className)}
-        {...muiButtonProps}
-      >
-        {children}
-      </MuiButton>
-    </Tooltip>
+  const button = (
+    <MuiButton
+      variant={muiVariant}
+      disableRipple={variant === "link"}
+      style={{ ...(variant === "link" ? linkStyle : nonLinkStyle), ...style }}
+      className={cx(styles["button"], className)}
+      {...muiButtonProps}
+    >
+      {children}
+    </MuiButton>
   );
+
+  return tooltip ? <Tooltip title={tooltip}>{button}</Tooltip> : button;
 };

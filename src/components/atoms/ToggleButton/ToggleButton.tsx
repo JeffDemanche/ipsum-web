@@ -1,8 +1,8 @@
 import { ToggleButton as MuiToggleButton } from "@mui/material";
 import {
-  font_family_inputs,
-  font_size_inputs_small,
-  font_weight_inputs,
+  font_family_sans,
+  font_size_small,
+  font_weight_light,
   grey500,
   grid_x_5,
 } from "components/styles";
@@ -21,9 +21,9 @@ export const ToggleButton: React.FunctionComponent<ToggleButtonProps> = ({
   return (
     <MuiToggleButton
       style={{
-        fontWeight: font_weight_inputs,
-        fontFamily: font_family_inputs,
-        fontSize: font_size_inputs_small,
+        fontWeight: font_weight_light,
+        fontFamily: font_family_sans,
+        fontSize: font_size_small,
         height: grid_x_5,
         border: variant === "text" ? "none" : `1px solid ${grey500}`,
       }}
