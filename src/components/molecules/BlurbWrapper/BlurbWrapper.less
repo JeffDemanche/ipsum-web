@@ -1,0 +1,35 @@
+@import "../../styles/vars.less";
+
+.blurb-wrapper {
+  display: flex;
+  flex-direction: row;
+  border-left: 2px solid @grey500;
+
+  .selected {
+    border-left: 2px solid @grey800;
+    background-color: @grey300;
+  }
+
+  .collapse-column {
+    padding-left: @grid_x_1;
+
+    .collapse-button {
+      width: @grid_x_3;
+      height: @grid_x_3;
+
+      .button-icon {
+        transition: transform @transition_speed_fast @transition_interp_fast;
+        transform: rotate(0deg);
+
+        &.expanded {
+          transform: rotate(90deg);
+        }
+      }
+    }
+  }
+
+  .content {
+    margin-left: @grid_x_1;
+    overflow: hidden;
+  }
+}

@@ -1,4 +1,5 @@
-import { Button as MuiButton } from "@mui/material";
+import { Button as MuiButton, Tooltip } from "@mui/material";
+import cx from "classnames";
 import {
   font_family_inputs,
   font_size_inputs_small,
@@ -6,22 +7,26 @@ import {
 } from "components/styles";
 import React, { CSSProperties } from "react";
 
-interface ButtonProps {
+import styles from "./Button.less";
+
+type ButtonProps = {
   variant?: "text" | "outlined" | "contained" | "link";
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
-  children: React.ReactNode;
+  tooltip?: string;
+  children?: React.ReactNode;
   style?: CSSProperties;
   className?: string;
-}
+} & Pick<
+  React.ComponentProps<typeof MuiButton>,
+  "onClick" | "disabled" | "startIcon" | "endIcon"
+>;
 
 export const Button: React.FunctionComponent<ButtonProps> = ({
   variant,
-  startIcon,
-  endIcon,
+  tooltip,
   children,
   style,
   className,
+  ...muiButtonProps
 }) => {
   const muiVariant = variant === "link" ? "text" : variant;
 
@@ -40,15 +45,16 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   };
 
   return (
-    <MuiButton
-      variant={muiVariant}
-      startIcon={startIcon}
-      endIcon={endIcon}
-      disableRipple={variant === "link"}
-      style={{ ...(variant === "link" ? linkStyle : nonLinkStyle), ...style }}
-      className={className}
-    >
-      {children}
-    </MuiButton>
+    <Tooltip title={tooltip}>
+      <MuiButton
+        variant={muiVariant}
+        disableRipple={variant === "link"}
+        style={{ ...(variant === "link" ? linkStyle : nonLinkStyle), ...style }}
+        className={cx(styles["button"], className)}
+        {...muiButtonProps}
+      >
+        {children}
+      </MuiButton>
+    </Tooltip>
   );
 };

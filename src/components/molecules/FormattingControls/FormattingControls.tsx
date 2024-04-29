@@ -5,10 +5,10 @@ import {
   FormatUnderlined,
   Highlight,
 } from "@mui/icons-material";
+import { Button } from "components/atoms/Button";
 import { MenuItem } from "components/atoms/MenuItem";
 import { Select } from "components/atoms/Select";
 import { ToggleButton } from "components/atoms/ToggleButton";
-import { Button } from "components/Button";
 import React, { useContext, useEffect, useRef, useState } from "react";
 
 import styles from "./FormattingControls.less";

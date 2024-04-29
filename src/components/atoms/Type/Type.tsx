@@ -3,14 +3,14 @@ import React from "react";
 
 import { TypeLineHeight, TypeSize, TypeVariant, TypeWeight } from "./types";
 
-interface TypeProps {
-  variant: TypeVariant;
-  weight: TypeWeight;
-  size: TypeSize;
-  lineHeight: TypeLineHeight;
+type TypeProps = {
+  variant?: TypeVariant;
+  weight?: TypeWeight;
+  size?: TypeSize;
+  lineHeight?: TypeLineHeight;
   component?: React.ElementType;
   children: React.ReactNode;
-}
+} & Pick<React.ComponentProps<typeof MuiTypography>, "style">;
 
 const variantToMuiVariant = (variant: TypeVariant) => {
   switch (variant) {
@@ -20,18 +20,23 @@ const variantToMuiVariant = (variant: TypeVariant) => {
       return "caption";
     case "heading":
       return "h1";
+    case "serif":
+      return "h1";
+    case "sans":
+      return "body1";
     default:
       return "body1";
   }
 };
 
 export const Type: React.FunctionComponent<TypeProps> = ({
-  variant,
-  weight,
-  size,
-  lineHeight,
+  variant = "body",
+  weight = "regular",
+  size = "16pt",
+  lineHeight = 1.5,
   component,
   children,
+  ...muiTypographyProps
 }) => {
   return (
     <MuiTypography
@@ -40,6 +45,7 @@ export const Type: React.FunctionComponent<TypeProps> = ({
       fontSize={size}
       lineHeight={lineHeight}
       component={component}
+      {...muiTypographyProps}
     >
       {children}
     </MuiTypography>
