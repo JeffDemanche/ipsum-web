@@ -24,6 +24,7 @@ export const font_weight_citation = 400;
 
 export const border_radius_inputs = "0px";
 export const border_radius_mini = "2px";
+export const border_radius_popover = "4px";
 
 export const grey100 = "#ffffff";
 export const grey200 = "#fafafa";

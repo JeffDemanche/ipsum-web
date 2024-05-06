@@ -3,6 +3,8 @@ import { amber, brown, grey } from "@mui/material/colors";
 
 import {
   border_radius_inputs,
+  border_radius_popover,
+  box_shadow_primary,
   font_family_sans,
   font_size_small,
   font_weight_light,
@@ -47,13 +49,6 @@ declare module "@mui/material/Card" {
     translucent: true;
   }
 }
-
-const {
-  palette: { augmentColor },
-} = createTheme();
-
-const createColor = (mainColor: string) =>
-  augmentColor({ color: { main: mainColor } });
 
 const baseTheme = createTheme({
   typography: {
@@ -199,7 +194,14 @@ export const theme = createTheme(
           },
         },
       },
-      MuiPopover: {},
+      MuiPopover: {
+        styleOverrides: {
+          paper: {
+            borderRadius: border_radius_popover,
+            boxShadow: box_shadow_primary,
+          },
+        },
+      },
       MuiToggleButton: {
         styleOverrides: {
           root: {
