@@ -1,17 +1,19 @@
 @import '../../styles/vars.less';
 
 .arc-tag {
-  display: inline-block;
+  display: inline-flex;
   box-shadow: @box_shadow_primary;
   text-wrap: nowrap;
+  padding-right: @grid_x_0_5;
 
-  .link-button {
-    font-family: @font_family_serif;
-  }
-  
-  .delete-button {
-    min-width: 0;
-    padding-left: 4px;
-    padding-right: 4px;
+  .arc-tag-items {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: @grid_x_0_5;
+
+    .link-button {
+      font-family: @font_family_serif;
+    }
   }
 }

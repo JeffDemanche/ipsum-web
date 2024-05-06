@@ -1,5 +1,6 @@
-import { Close } from "@mui/icons-material";
+import { CloseSharp, EditSharp, FingerprintSharp } from "@mui/icons-material";
 import { Button } from "components/atoms/Button";
+import { MiniButton } from "components/atoms/MiniButton";
 import {
   font_family_sans,
   font_size_medium,
@@ -13,6 +14,10 @@ interface ArcTagProps {
   text: string;
   hue: number;
   fontSize?: "small" | "medium";
+
+  showAlias?: boolean;
+  showEdit?: boolean;
+
   onDelete?: () => void;
 }
 
@@ -20,6 +25,8 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
   text,
   hue,
   fontSize = "medium",
+  showAlias,
+  showEdit,
   onDelete,
 }) => {
   const fontSizePx = {
@@ -54,17 +61,26 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
       >
         {text}
       </Button>
-      {onDelete && (
-        <Button
-          className={styles["delete-button"]}
-          style={{
-            maxHeight: elementMaxHeight,
-            color: `hsla(${hue}, 40%, 95%, 1)`,
-          }}
-        >
-          <Close fontSize="small" />
-        </Button>
-      )}
+      <div className={styles["arc-tag-items"]}>
+        {showAlias && (
+          <MiniButton foregroundColor={`hsla(${hue}, 38%, 95%, 1)`}>
+            <FingerprintSharp fontSize="small" />
+          </MiniButton>
+        )}
+        {showEdit && (
+          <MiniButton
+            backgroundColor={`hsla(${hue}, 38%, 95%, 1)`}
+            foregroundColor={`hsla(${hue}, 20%, 40%, 1)`}
+          >
+            <EditSharp fontSize="small" />
+          </MiniButton>
+        )}
+        {onDelete && (
+          <MiniButton foregroundColor={`hsla(${hue}, 38%, 95%, 1)`}>
+            <CloseSharp fontSize="small" />
+          </MiniButton>
+        )}
+      </div>
     </div>
   );
 };

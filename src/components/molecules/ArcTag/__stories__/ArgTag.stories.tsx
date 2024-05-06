@@ -12,6 +12,8 @@ type Story = StoryObj<typeof ArcTag>;
 
 export const ArcTagExample: Story = {
   args: {
+    showAlias: true,
+    showEdit: true,
     text: "Tag",
     hue: 0,
     onDelete: () => {},

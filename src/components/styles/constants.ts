@@ -11,6 +11,8 @@ export const font_size_x_small = "12px";
 export const font_size_small = "14px";
 export const font_size_medium = "16px";
 
+export const box_shadow_primary = "0 1px 2px 0 rgba(0, 0, 0, 0.25)";
+
 export const font_family_serif = "Amstelvar";
 export const font_family_sans = "Roboto";
 
@@ -21,6 +23,7 @@ export const font_weight_inputs = 300;
 export const font_weight_citation = 400;
 
 export const border_radius_inputs = "0px";
+export const border_radius_mini = "2px";
 
 export const grey100 = "#ffffff";
 export const grey200 = "#fafafa";
