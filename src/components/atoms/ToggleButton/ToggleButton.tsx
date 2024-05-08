@@ -4,7 +4,6 @@ import {
   font_size_small,
   font_weight_light,
   grey500,
-  grid_x_5,
 } from "components/styles";
 import React from "react";
 
@@ -24,7 +23,6 @@ export const ToggleButton: React.FunctionComponent<ToggleButtonProps> = ({
         fontWeight: font_weight_light,
         fontFamily: font_family_sans,
         fontSize: font_size_small,
-        height: grid_x_5,
         border: variant === "text" ? "none" : `1px solid ${grey500}`,
       }}
       {...props}

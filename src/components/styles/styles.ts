@@ -8,6 +8,7 @@ import {
   font_family_sans,
   font_size_small,
   font_weight_light,
+  grid_x_1,
   grid_x_5,
 } from "./constants";
 
@@ -189,6 +190,10 @@ export const theme = createTheme(
         variants: [],
         styleOverrides: {
           root: {
+            minWidth: grid_x_5,
+            height: grid_x_5,
+            paddingRight: grid_x_1,
+            paddingLeft: grid_x_1,
             borderRadius: border_radius_inputs,
             textTransform: "none",
           },
@@ -205,7 +210,11 @@ export const theme = createTheme(
       MuiToggleButton: {
         styleOverrides: {
           root: {
+            height: grid_x_5,
+            paddingRight: grid_x_1,
+            paddingLeft: grid_x_1,
             borderRadius: border_radius_inputs,
+            textTransform: "none",
           },
         },
       },
