@@ -33,8 +33,9 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
     medium: font_size_medium,
   }[fontSize];
 
-  const elementMinHeight = {
-    small: "24px",
+  const elementHeight = {
+    xSmall: "18px",
+    small: "22px",
     medium: "28px",
   }[fontSize];
 
@@ -51,7 +52,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
     paddingBottom: "0",
     color: `hsla(${hue}, 20%, 40%, 1)`,
     backgroundColor: "transparent",
-    minHeight: elementMinHeight,
+    minHeight: elementHeight,
   };
 
   return (
@@ -59,7 +60,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
       className={styles["highlight-tag"]}
       style={{
         backgroundColor: `hsla(${hue}, 80%, 95%, 1)`,
-        minHeight: elementMinHeight,
+        minHeight: elementHeight,
       }}
     >
       {objectText && (
@@ -68,6 +69,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
             ...buttonStyle,
             paddingRight: "0px",
             textDecoration: "none",
+            height: elementHeight,
           }}
           variant="link"
         >
@@ -93,6 +95,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
           ...buttonStyle,
           textDecoration: "none",
           fontFamily: font_family_serif,
+          height: elementHeight,
         }}
         variant="link"
       >
