@@ -13,7 +13,10 @@ type Story = StoryObj<typeof HighlightBlurb>;
 export const HighlightBlurbExample: Story = {
   args: {
     highlightTagProps: {
+      highlightNumber: 1,
+      objectText: "1/2/2024",
       hue: 90,
+      arcNames: ["arc1", "arc2", "arc3"],
     },
     relations: [
       {

@@ -16,28 +16,28 @@ export const RelationsTableExample: Story = {
     relations: [
       {
         id: "1",
-        predicate: "predicate1",
+        predicate: "is",
         arc: {
           id: "1",
-          hue: 0,
+          hue: 124,
           name: "arc1",
         },
       },
       {
         id: "2",
-        predicate: "predicate1",
+        predicate: "relates to",
         arc: {
           id: "2",
-          hue: 0,
+          hue: 236,
           name: "arc2",
         },
       },
       {
         id: "3",
-        predicate: "predicate2",
+        predicate: "relates to",
         arc: {
           id: "3",
-          hue: 0,
+          hue: 85,
           name: "arc3",
         },
       },

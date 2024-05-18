@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { Type } from "components/atoms/Type";
 import React, { useMemo } from "react";
 
@@ -38,20 +39,35 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
     return Object.keys(relationsByPredicate).map((predicate) => {
       return (
         <div className={styles["predicate-row"]} key={predicate}>
-          <Type>{predicate}</Type>
+          <Type size="x-small" weight="light">
+            {predicate}
+          </Type>
           {relationsByPredicate[predicate].map((relation) => {
             return (
               <ArcTag
+                fontSize="small"
                 key={relation.arc.id}
                 hue={relation.arc.hue}
                 text={relation.arc.name}
+                showAlias={expanded}
+                showEdit={expanded}
+                showDelete={expanded}
               />
             );
           })}
         </div>
       );
     });
-  }, [relationsByPredicate]);
+  }, [expanded, relationsByPredicate]);
 
-  return <div className={styles["relations-table"]}>{predicateRows}</div>;
+  return (
+    <div
+      className={cx(
+        styles["relations-table"],
+        !expanded && styles["collapsed"]
+      )}
+    >
+      {predicateRows}
+    </div>
+  );
 };

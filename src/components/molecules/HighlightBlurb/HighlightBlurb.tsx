@@ -6,7 +6,12 @@ import { RelationsTable } from "../RelationsTable/RelationsTable";
 import styles from "./HighlightBlurb.less";
 
 interface HighlightBlurbProps {
-  highlightTagProps: React.ComponentProps<typeof HighlightTag>;
+  highlightTagProps: {
+    objectText: string;
+    hue: number;
+    highlightNumber: number;
+    arcNames: string[];
+  };
   relations: React.ComponentProps<typeof RelationsTable>["relations"];
 }
 
@@ -17,7 +22,8 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
   return (
     <BlurbWrapper collapsible>
       <div className={styles["blurb-content"]}>
-        <HighlightTag {...highlightTagProps} />
+        <HighlightTag fontSize="small" {...highlightTagProps} />
+        <div>excerpt text</div>
         <RelationsTable expanded relations={relations} />
       </div>
     </BlurbWrapper>

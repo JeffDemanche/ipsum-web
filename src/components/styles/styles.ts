@@ -190,7 +190,7 @@ export const theme = createTheme(
         variants: [],
         styleOverrides: {
           root: {
-            minWidth: grid_x_5,
+            minWidth: grid_x_1,
             height: grid_x_5,
             paddingRight: grid_x_1,
             paddingLeft: grid_x_1,

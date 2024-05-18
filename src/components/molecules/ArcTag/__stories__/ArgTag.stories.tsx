@@ -14,6 +14,7 @@ export const ArcTagExample: Story = {
   args: {
     showAlias: true,
     showEdit: true,
+    showDelete: true,
     text: "Tag",
     hue: 0,
     onDelete: () => {},

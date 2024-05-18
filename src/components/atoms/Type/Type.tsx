@@ -1,5 +1,5 @@
 import { Typography as MuiTypography } from "@mui/material";
-import React from "react";
+import React, { CSSProperties } from "react";
 
 import { TypeLineHeight, TypeSize, TypeVariant, TypeWeight } from "./types";
 
@@ -29,6 +29,31 @@ const variantToMuiVariant = (variant: TypeVariant) => {
   }
 };
 
+const sizeToCSSSize = (size: TypeSize): CSSProperties["fontSize"] => {
+  switch (size) {
+    case "8pt":
+      return "8pt";
+    case "12pt":
+      return "12pt";
+    case "14pt":
+      return "14pt";
+    case "16pt":
+      return "16pt";
+    case "24pt":
+      return "24pt";
+    case "36pt":
+      return "36pt";
+    case "x-small":
+      return "12px";
+    case "small":
+      return "14px";
+    case "medium":
+      return "18px";
+    default:
+      return "16pt";
+  }
+};
+
 export const Type: React.FunctionComponent<TypeProps> = ({
   variant = "body",
   weight = "regular",
@@ -42,7 +67,7 @@ export const Type: React.FunctionComponent<TypeProps> = ({
     <MuiTypography
       variant={variantToMuiVariant(variant)}
       fontWeight={weight}
-      fontSize={size}
+      fontSize={sizeToCSSSize(size)}
       lineHeight={lineHeight}
       component={component}
       {...muiTypographyProps}
