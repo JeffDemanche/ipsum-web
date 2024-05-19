@@ -2,10 +2,10 @@ import { Card, Typography } from "@mui/material";
 import cx from "classnames";
 import { DiptychContext } from "components/DiptychContext";
 import { HighlightExcerptConnected } from "components/HighlightExcerpt";
+import { HighlightRelationsTable } from "components/HighlightRelationsTable";
 import React, { useCallback, useContext, useRef } from "react";
 import { IpsumDateTime, IpsumDay, parseIpsumDateTime } from "util/dates";
 
-import { HighlightRelationsTable } from "../HighlightRelationsTable/HighlightRelationsTable";
 import styles from "./HighlightBox.less";
 import { HighlightBoxButtons } from "./HighlightBoxButtons";
 import { ImportanceRatingButton } from "./ImportanceRatingButton";

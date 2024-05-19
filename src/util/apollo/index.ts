@@ -14,5 +14,4 @@ export {
   ApolloSerializationProvider,
   ApolloSerializationContext,
 } from "./ApolloSerializationContext";
-export { EntryType } from "./__generated__/graphql";
 export { UnhydratedType } from "./client";

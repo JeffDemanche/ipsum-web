@@ -5,8 +5,6 @@ import React, { useCallback, useContext, useState } from "react";
 import { gql, updateArc } from "util/apollo";
 import { IpsumArcColor } from "util/colors";
 
-import styles from "./ArcDetailPrefsBox.less";
-
 const ArcDetailPrefsBoxQuery = gql(`
   query ArcDetailPrefsBox($arcId: ID!) {
     arc(id: $arcId) {

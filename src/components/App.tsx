@@ -6,8 +6,8 @@ import { ThemeProvider } from "@mui/material";
 import { theme } from "components/styles";
 import React from "react";
 import { client } from "util/apollo";
+import { IpsumRouter } from "views/IpsumRouter";
 
-import { IpsumRouter } from "../views/IpsumRouter";
 import { ErrorBoundary } from "./ErrorBoundary";
 
 export const App: React.FC = () => {

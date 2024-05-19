@@ -11,7 +11,8 @@
     "project-tools": "npx ts-node --project tsconfig.json scripts/project-tools/index.ts",
     "graphql-codegen": "npx graphql-codegen",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "lint": "eslint ./src"
   },
   "repository": {
     "type": "git",

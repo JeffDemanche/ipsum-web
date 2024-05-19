@@ -1,8 +1,8 @@
+import { BlurbWrapper } from "components/molecules/BlurbWrapper";
+import { HighlightTag } from "components/molecules/HighlightTag";
+import { RelationsTable } from "components/molecules/RelationsTable";
 import React from "react";
 
-import { BlurbWrapper } from "../BlurbWrapper/BlurbWrapper";
-import { HighlightTag } from "../HighlightTag";
-import { RelationsTable } from "../RelationsTable/RelationsTable";
 import styles from "./HighlightBlurb.less";
 
 interface HighlightBlurbProps {

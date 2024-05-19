@@ -14,8 +14,11 @@ import {
 } from "@lexical/rich-text";
 import { $isAtNodeEnd, $setBlocksType } from "@lexical/selection";
 import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
-import { FormattingControlsContext } from "components/molecules/FormattingControls";
-import { FormattableEditor } from "components/molecules/FormattingControls/types";
+import { BlockType } from "components/atoms/EntryEditor";
+import {
+  FormattableEditor,
+  FormattingControlsContext,
+} from "components/molecules/FormattingControls";
 import {
   $createParagraphNode,
   $getSelection,
@@ -35,7 +38,6 @@ import React, {
   useState,
 } from "react";
 
-import { BlockType } from "../types";
 import { CREATE_HIGHLIGHT_ASSIGNMENT_COMMAND } from "./HighlightAssignmentPlugin";
 
 function getSelectedNode(selection: RangeSelection) {

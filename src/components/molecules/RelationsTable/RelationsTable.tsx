@@ -1,8 +1,8 @@
 import cx from "classnames";
 import { Type } from "components/atoms/Type";
+import { ArcTag } from "components/molecules/ArcTag";
 import React, { useMemo } from "react";
 
-import { ArcTag } from "../ArcTag";
 import styles from "./RelationsTable.less";
 
 interface RelationsTableProps {

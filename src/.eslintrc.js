@@ -13,6 +13,7 @@ module.exports = {
     "plugin:import/typescript",
   ],
   parser: "@typescript-eslint/parser",
+  ignorePatterns: ["**/__generated__/*"],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -26,29 +27,42 @@ module.exports = {
     semi: ["error", "always"],
     "simple-import-sort/imports": "error",
     "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/no-restricted-imports": [
-      "error",
-      {
-        patterns: [
-          {
-            group: [
-              "components/*/*",
-              "!components/atoms/*",
-              "!components/molecules/*",
-            ],
-            message: "Don't reach into component packages",
-          },
-          {
-            group: ["util/*/*", "styles/*/*"],
-            message: "Don't reach into util or styles packages",
-          },
-        ],
-      },
-    ],
+    "@typescript-eslint/no-restricted-imports": 0,
+    "@typescript-eslint/no-unused-vars": "warn",
   },
   overrides: [
     {
-      files: ["**/__tests__/*"],
+      files: ["components/**/*"],
+      rules: {
+        "@typescript-eslint/no-restricted-imports": [
+          "error",
+          {
+            paths: ["components/*"],
+            patterns: [
+              {
+                group: ["../"],
+                message: "Don't reach into parent directories",
+              },
+              {
+                group: [
+                  "components/*/*/*",
+                  "!components/atoms/*",
+                  "!components/molecules/*",
+                  "!components/organisms/*",
+                ],
+                message: "Don't reach into component packages",
+              },
+              {
+                group: ["util/*/*", "styles/*/*"],
+                message: "Don't reach into util or styles packages",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      files: ["**/__tests__/*", "*.stories.*"],
       rules: {
         "@typescript-eslint/no-restricted-imports": 0,
       },

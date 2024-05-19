@@ -51,7 +51,7 @@ export const ArcChooser: React.FunctionComponent<ArcChooserProps> = ({
     [data.arcs]
   );
 
-  const filter = useCallback((options: ArcOption[], params: any) => {
+  const filter = useCallback((options: ArcOption[], params: unknown) => {
     return options;
   }, []);
 
