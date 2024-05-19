@@ -9,20 +9,17 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import cx from "classnames";
+import { editorTheme } from "components/styles/editor";
 import { LexicalEditor } from "lexical";
 import React, { useCallback, useState } from "react";
 import { IpsumDateTime } from "util/dates";
 import { placeholderForDate } from "util/placeholders";
 
-import { editorTheme } from "./editor-theme";
 import styles from "./EntryEditor.less";
 import { FormattingPlugin } from "./plugins/FormattingPlugin";
 import { HighlightAssignmentNode } from "./plugins/HighlightAssignmentNode";
 import { HighlightAssignmentPlugin } from "./plugins/HighlightAssignmentPlugin";
-import { highlight } from "./plugins/HighlightAssignmentPlugin.less";
 import { LoadSavePlugin } from "./plugins/LoadSavePlugin";
-
-export const highlightSpanClassname = highlight;
 
 interface EntryEditorProps {
   defaultEntryKey?: string;

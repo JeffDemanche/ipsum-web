@@ -28,6 +28,8 @@
 .editor-quote {
   font-family: @font_family_sans;
   font-weight: @font_weight_light;
+  margin-inline-start: @grid_x_2;
+  margin-inline-end: @grid_x_2;
   line-height: 2em;
   border-left: 2px solid rgba(0, 0, 0, 0.3);
   padding-left: 6px;
@@ -64,4 +66,21 @@
 .editor-link {
   color: rgb(33, 111, 219);
   text-decoration: none;
+}
+
+.styled-editor {
+  line-height: 1.75;
+
+  b { .editor-text-bold() }
+  em { .editor-text-italic() }
+  u { .editor-text-underline() }
+  s { .editor-text-strikethrough() }
+
+  p { .editor-paragraph() }
+  h1 { .editor-heading-h1() }
+  h2 { .editor-heading-h2() }
+  ul { .editor-list-ul() }
+  ol { .editor-list-ol() }
+  blockquote { .editor-quote() }
+  code { .editor-text-code() }
 }

@@ -19,8 +19,6 @@ import {
   Spread,
 } from "lexical";
 
-import styles from "./HighlightAssignmentPlugin.less";
-
 export interface HighlightAssignmentNodeAttributes {
   highlightId?: string;
   hue?: number;
@@ -386,24 +384,24 @@ export class HighlightAssignmentNode extends ElementNode {
   }
 
   addHueStyle(element: HTMLElement) {
-    element.classList.add(styles.highlight);
+    element.classList.add("ipsum-highlight");
     const hue = this.__attributes.hue;
     hue && element.style.setProperty("--hue", `${hue}`);
     element.style.setProperty("--lightness", `${hue ? "50%" : "0%"}`);
   }
 
   addDarkenedStyle(element: HTMLElement) {
-    element.classList.add(styles.hovered);
+    element.classList.add("hovered");
   }
 
   removeHueStyle(element: HTMLElement) {
-    element.classList.remove(styles.highlight);
+    element.classList.remove("ipsum-highlight");
     element.style.removeProperty("--hue");
     element.style.removeProperty("--lightness");
   }
 
   removeDarkenedStyle(element: HTMLElement) {
-    element.classList.remove(styles.hovered);
+    element.classList.remove("hovered");
   }
 
   createDOM(_config: EditorConfig): HTMLElement {
@@ -432,7 +430,7 @@ export class HighlightAssignmentNode extends ElementNode {
     } else {
       _dom.removeAttribute("data-highlight-id");
       _dom.removeAttribute("data-hue");
-      _dom.classList.remove(styles.highlight);
+      _dom.classList.remove("ipsum-highlight");
       this.removeHueStyle(_dom);
     }
 

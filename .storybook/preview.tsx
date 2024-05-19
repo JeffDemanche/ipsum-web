@@ -3,6 +3,9 @@ import { ThemeProvider } from "@mui/material";
 import React from "react";
 import { theme } from "../src/components/styles";
 
+// Global highlight styles, doesn't use Less-loader.
+import "../src/components/styles/static-highlight.css";
+
 const preview: Preview = {
   parameters: {
     controls: {

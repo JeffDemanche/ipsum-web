@@ -1,9 +1,5 @@
-:root {
-  --hue: 0;
-  --lightness: 0%;
-}
-
-.highlight {
+/* Second classname is for legacy purposes. */
+.ipsum-highlight, .HighlightAssignmentPlugin__highlight___ztR5x {
   background-color: hsla(var(--hue), 90%, var(--lightness), 0.05);
   box-shadow: 0 2px 0 0 hsla(var(--hue), 90%, var(--lightness), 0.35);
 
