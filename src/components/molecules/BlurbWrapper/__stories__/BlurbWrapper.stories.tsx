@@ -16,6 +16,7 @@ export const BlurbWrapperExample: Story = {
   args: {
     style: { width: "400px" },
     collapsible: true,
+    defaultExpanded: true,
     maxHeightCollapsed: "100px",
     children: (
       <Type variant="sans" size="12pt" weight="light">

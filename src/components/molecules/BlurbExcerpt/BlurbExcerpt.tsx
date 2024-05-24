@@ -1,7 +1,4 @@
-import { MoreHoriz } from "@mui/icons-material";
 import cx from "classnames";
-import { MiniButton } from "components/atoms/MiniButton";
-import { grey700 } from "components/styles";
 import { editorStyles } from "components/styles/editor";
 import React, { useMemo } from "react";
 import { excerptDivString } from "util/excerpt";
@@ -18,18 +15,12 @@ interface BlurbExcerptProps {
    * prop.
    */
   highlightId: string | undefined;
+  highlightHue: number | undefined;
 
   /**
    * Will default to displaying the entire HTML string.
    */
   showAll?: boolean;
-
-  highlightHue?: number;
-
-  /**
-   * Allow showing non-highlight text above and below the visible range.
-   */
-  allowContext?: boolean;
 }
 
 export const BlurbExcerpt: React.FunctionComponent<BlurbExcerptProps> = ({
@@ -38,10 +29,7 @@ export const BlurbExcerpt: React.FunctionComponent<BlurbExcerptProps> = ({
   highlightId,
   showAll,
   highlightHue,
-  allowContext = true,
 }) => {
-  const showContextButtons = !showAll && allowContext;
-
   const excerptedHtmlString = useMemo(() => {
     if (showAll || !highlightId) {
       return htmlString;
@@ -56,11 +44,6 @@ export const BlurbExcerpt: React.FunctionComponent<BlurbExcerptProps> = ({
 
   return (
     <div className={styles["excerpt"]}>
-      {showContextButtons && (
-        <MiniButton foregroundColor={grey700}>
-          <MoreHoriz fontSize="small" />
-        </MiniButton>
-      )}
       <div
         style={{ WebkitLineClamp: maxLines, lineClamp: maxLines }}
         className={cx(
@@ -74,11 +57,6 @@ export const BlurbExcerpt: React.FunctionComponent<BlurbExcerptProps> = ({
               : "<p><em>(No excerpt)</em></p>",
         }}
       />
-      {showContextButtons && (
-        <MiniButton foregroundColor={grey700}>
-          <MoreHoriz fontSize="small" />
-        </MiniButton>
-      )}
     </div>
   );
 };

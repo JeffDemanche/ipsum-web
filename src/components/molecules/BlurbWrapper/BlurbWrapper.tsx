@@ -8,9 +8,12 @@ import styles from "./BlurbWrapper.less";
 
 interface BlurbWrapperProps {
   collapsible?: boolean;
-  defaultCollapsed?: boolean;
   maxHeightCollapsed?: CSSProperties["maxHeight"];
   maxHeightExpanded?: CSSProperties["maxHeight"];
+
+  defaultExpanded?: boolean;
+  onExpand?: () => void;
+  onCollapse?: () => void;
 
   style?: React.CSSProperties;
   className?: string;
@@ -19,16 +22,28 @@ interface BlurbWrapperProps {
 
 export const BlurbWrapper: React.FunctionComponent<BlurbWrapperProps> = ({
   collapsible,
-  defaultCollapsed,
   maxHeightCollapsed,
   maxHeightExpanded,
+  defaultExpanded,
+  onExpand,
+  onCollapse,
   style,
   className,
   children,
 }) => {
-  const [collapsed, setCollapsed] = useState(defaultCollapsed);
+  const [expanded, setExpanded] = useState(defaultExpanded);
 
-  const buttonLabel = collapsed ? "Expand" : "Collapse";
+  const toggleExpanded = () => {
+    const newExpanded = !expanded;
+    if (newExpanded) {
+      onExpand?.();
+    } else {
+      onCollapse?.();
+    }
+    setExpanded(newExpanded);
+  };
+
+  const buttonLabel = expanded ? "Collapse" : "Expand";
 
   const collapseColumn = collapsible ? (
     <div className={styles["collapse-column"]}>
@@ -37,14 +52,11 @@ export const BlurbWrapper: React.FunctionComponent<BlurbWrapperProps> = ({
         tooltip={buttonLabel}
         className={styles["collapse-button"]}
         onClick={() => {
-          setCollapsed(!collapsed);
+          toggleExpanded();
         }}
       >
         <KeyboardArrowRight
-          className={cx(
-            styles["button-icon"],
-            !collapsed && styles["expanded"]
-          )}
+          className={cx(styles["button-icon"], expanded && styles["expanded"])}
         />
       </Button>
     </div>
@@ -53,7 +65,7 @@ export const BlurbWrapper: React.FunctionComponent<BlurbWrapperProps> = ({
   return (
     <div
       style={{
-        maxHeight: collapsed ? maxHeightCollapsed : maxHeightExpanded,
+        maxHeight: expanded ? maxHeightExpanded : maxHeightCollapsed,
         ...style,
       }}
       className={cx(styles["blurb-wrapper"], className)}

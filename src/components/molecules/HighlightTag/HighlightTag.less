@@ -1,7 +1,11 @@
 @import '../../styles/vars.less';
 
-.highlight-tag {
-  box-shadow: @box_shadow_primary;  
+.highlight-tag-wrapper {
   display: flex;
-  text-wrap: nowrap;
+
+  .highlight-tag {
+    box-shadow: @box_shadow_primary;  
+    display: flex;
+    text-wrap: nowrap;
+  }
 }

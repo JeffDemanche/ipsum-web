@@ -1,16 +1,21 @@
 @import '../../styles/vars.less';
 
 .editor-paragraph {
+  margin-block-start: @grid_x_1;
+  margin-block-end: @grid_x_1;
+  font-size: @font_size_small;
   font-family: @font_family_sans;
   font-weight: @font_weight_light;
 }
 
 .editor-heading-h1 {
+  font-size: @font_size_large;
   font-family: @font_family_sans;
   font-weight: normal;
 }
 
 .editor-heading-h2 {
+  font-size: @font_size_medium;
   font-family: @font_family_sans;
   font-weight: normal;
 }
@@ -69,7 +74,8 @@
 }
 
 .styled-editor {
-  line-height: 1.75;
+  font-size: @font_size_small;
+  line-height: @line_height_small;
 
   b { .editor-text-bold() }
   em { .editor-text-italic() }

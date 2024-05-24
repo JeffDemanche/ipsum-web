@@ -56,64 +56,66 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   };
 
   return (
-    <div
-      className={styles["highlight-tag"]}
-      style={{
-        backgroundColor: `hsla(${hue}, 80%, 95%, 1)`,
-        minHeight: elementHeight,
-      }}
-    >
-      {objectText && (
+    <div className={styles["highlight-tag-wrapper"]}>
+      <div
+        className={styles["highlight-tag"]}
+        style={{
+          backgroundColor: `hsla(${hue}, 80%, 95%, 1)`,
+          minHeight: elementHeight,
+        }}
+      >
+        {objectText && (
+          <Button
+            style={{
+              ...buttonStyle,
+              paddingRight: "0px",
+              textDecoration: "none",
+              height: elementHeight,
+            }}
+            variant="link"
+          >
+            <span>
+              {objectText}
+              {highlightNumber !== undefined && (
+                <sup
+                  style={{
+                    color: `hsla(${hue}, 20%, 60%, 1)`,
+                    textDecoration: "none",
+                    fontSize: font_size_x_small,
+                    fontWeight: font_weight_citation,
+                  }}
+                >
+                  {highlightNumber}
+                </sup>
+              )}
+            </span>
+          </Button>
+        )}
         <Button
           style={{
             ...buttonStyle,
-            paddingRight: "0px",
             textDecoration: "none",
+            fontFamily: font_family_serif,
             height: elementHeight,
           }}
           variant="link"
         >
-          <span>
-            {objectText}
-            {highlightNumber !== undefined && (
-              <sup
-                style={{
-                  color: `hsla(${hue}, 20%, 60%, 1)`,
-                  textDecoration: "none",
-                  fontSize: font_size_x_small,
-                  fontWeight: font_weight_citation,
-                }}
-              >
-                {highlightNumber}
-              </sup>
-            )}
-          </span>
+          {!objectText && highlightNumber !== undefined && (
+            <span
+              style={{
+                color: `hsla(${hue}, 20%, 60%, 1)`,
+                fontFamily: font_family_sans,
+                fontSize: font_size_x_small,
+                fontWeight: font_weight_citation,
+                paddingRight: "4px",
+              }}
+            >
+              {highlightNumber}
+            </span>
+          )}
+          {arcsText}
         </Button>
-      )}
-      <Button
-        style={{
-          ...buttonStyle,
-          textDecoration: "none",
-          fontFamily: font_family_serif,
-          height: elementHeight,
-        }}
-        variant="link"
-      >
-        {!objectText && highlightNumber !== undefined && (
-          <span
-            style={{
-              color: `hsla(${hue}, 20%, 60%, 1)`,
-              fontFamily: font_family_sans,
-              fontSize: font_size_x_small,
-              fontWeight: font_weight_citation,
-              paddingRight: "4px",
-            }}
-          >
-            {highlightNumber}
-          </span>
-        )}
-        {arcsText}
-      </Button>
+      </div>
     </div>
   );
 };
