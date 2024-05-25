@@ -9,6 +9,7 @@ export const grid_x_6 = `${grid_size * 6}px`;
 
 export const box_shadow_primary = "0 1px 2px 0 rgba(0, 0, 0, 0.25)";
 
+export const font_size_x_x_small = "10px";
 export const font_size_x_small = "12px";
 export const font_size_small = "14px";
 export const font_size_medium = "16px";

@@ -88,6 +88,10 @@ export class IpsumDay {
     );
   }
 
+  isSameMonthAs(day: IpsumDay): boolean {
+    return this._month === day._month && this._year === day._year;
+  }
+
   isToday(): boolean {
     return this.equals(IpsumDay.today());
   }

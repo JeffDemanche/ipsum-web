@@ -15,6 +15,8 @@ export type IpsumDateFormatTo =
   | "entry-printed-date-nice-with-year"
   | "month-word"
   | "month-and-year"
+  | "day"
+  | "year"
   | "url-format"
   | "iso"
   | "relative-calendar";
@@ -90,15 +92,15 @@ export const compareDatesAsc = (a: IpsumDateTime, b: IpsumDateTime) =>
   a.dateTime.valueOf() === b.dateTime.valueOf()
     ? 0
     : a.dateTime.valueOf() > b.dateTime.valueOf()
-    ? 1
-    : -1;
+      ? 1
+      : -1;
 
 export const compareDatesDesc = (a: IpsumDateTime, b: IpsumDateTime) =>
   a.dateTime.valueOf() === b.dateTime.valueOf()
     ? 0
     : a.dateTime.valueOf() < b.dateTime.valueOf()
-    ? 1
-    : -1;
+      ? 1
+      : -1;
 
 export const sortDates = (
   dates: IpsumDateTime[],
@@ -176,6 +178,10 @@ export class IpsumDateTime {
           month: "long",
           year: "numeric",
         });
+      case "day":
+        return this._luxonDateTime.toLocaleString({ day: "numeric" });
+      case "year":
+        return this._luxonDateTime.toLocaleString({ year: "numeric" });
       case "url-format":
         return this._luxonDateTime.toFormat("MM-dd-yyyy");
       case "iso":
