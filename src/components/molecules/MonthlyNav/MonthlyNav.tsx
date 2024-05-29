@@ -1,4 +1,4 @@
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, Today } from "@mui/icons-material";
 import cx from "classnames";
 import { Button } from "components/atoms/Button";
 import React, { useMemo, useState } from "react";
@@ -10,12 +10,12 @@ interface MonthlyNavProps {
   className?: string;
 
   entryDates: IpsumDay[];
-  selectedDay?: IpsumDay;
+  selectedDay: IpsumDay;
   today: IpsumDay;
   defaultMonth?: IpsumDay;
 
-  onDaySelect: (day: IpsumDay) => void;
-  onMonthChange: (month: IpsumDay) => void;
+  onDaySelect?: (day: IpsumDay) => void;
+  onMonthChange?: (month: IpsumDay) => void;
 }
 
 export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
@@ -24,6 +24,8 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
   selectedDay,
   today,
   defaultMonth,
+  onDaySelect,
+  onMonthChange,
 }) => {
   const earliestEntry = useMemo(
     () =>
@@ -52,20 +54,26 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
   const nextMonth = month.add(0, 1);
   const prevMonth = month.add(0, -1);
 
-  const nextMonthExists = nextMonth.isBefore(today.lastDayOfMonth());
+  const nextMonthExists =
+    nextMonth.isBefore(today.lastDayOfMonth()) &&
+    latestEntry &&
+    (nextMonth.isBefore(latestEntry) || nextMonth.equals(latestEntry));
   const prevMonthExists =
-    prevMonth.isAfter(earliestEntry.firstDayOfMonth()) ||
-    prevMonth.equals(earliestEntry.firstDayOfMonth());
+    earliestEntry &&
+    (prevMonth.isAfter(earliestEntry.firstDayOfMonth()) ||
+      prevMonth.equals(earliestEntry.firstDayOfMonth()));
 
   const goToNextMonth = () => {
     if (nextMonthExists) {
       setMonth(nextMonth);
+      onMonthChange?.(nextMonth);
     }
   };
 
   const goToPrevMonth = () => {
     if (prevMonthExists) {
       setMonth(prevMonth);
+      onMonthChange?.(prevMonth);
     }
   };
 
@@ -75,7 +83,17 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
   );
 
   const entryButtons = entriesThisMonth.map((day) => (
-    <Button variant="link" key={day.toString("day")}>
+    <Button
+      key={day.toString("day")}
+      className={cx(
+        styles["day-button"],
+        day.equals(selectedDay) && styles["selected"]
+      )}
+      variant="link"
+      onClick={() => {
+        onDaySelect?.(day);
+      }}
+    >
       {day.toString("day")}
     </Button>
   ));
@@ -97,6 +115,9 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
         </div>
       </Button>
       <div>
+        <Button variant="link" startIcon={<Today />}>
+          Today
+        </Button>
         <Button variant="link">{month.toString("month-word")}</Button>
         {entryButtons}
       </div>

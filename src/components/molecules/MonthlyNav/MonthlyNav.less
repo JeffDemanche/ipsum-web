@@ -1,6 +1,7 @@
 @import "../../styles/vars.less";
 
 .monthly-nav {
+  color: @grey700;
   display: flex;
   justify-content: space-between;
 
@@ -16,5 +17,11 @@
     .nav-button-bottom-span {
       font-size: @font_size_x_x_small;
     }
+  }
+
+  .day-button {
+    &.selected {
+      font-weight: @font_weight_regular !important;
+    } 
   }
 }
