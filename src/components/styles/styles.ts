@@ -127,7 +127,7 @@ export const theme = createTheme(
         },
       },
       MuiDrawer: {
-        styleOverrides: { paper: { backgroundColor: brown[100] } },
+        styleOverrides: {},
       },
       MuiCard: {
         variants: [

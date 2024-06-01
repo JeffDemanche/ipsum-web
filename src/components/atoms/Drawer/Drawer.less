@@ -1,0 +1,33 @@
+@import "../../styles/vars.less";
+
+.drawer {
+  .visible-content {
+    display: flex;
+  }
+
+  .hidden-content {
+    padding: @grid_x_1;
+  }
+
+  display: flex;
+
+  &.left {
+    flex-direction: row;
+    
+    .visible-content {
+      flex-direction: column;
+    }
+  }
+   
+  &.right {
+    flex-direction: row-reverse;
+  }
+
+  &.up {
+    flex-direction: column;
+  }
+
+  &.down {
+    flex-direction: column-reverse;
+  }
+}
