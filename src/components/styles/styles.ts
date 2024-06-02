@@ -8,6 +8,7 @@ import {
   font_family_sans,
   font_size_small,
   font_weight_light,
+  grey500,
   grid_x_1,
   grid_x_5,
 } from "./constants";
@@ -127,7 +128,11 @@ export const theme = createTheme(
         },
       },
       MuiDrawer: {
-        styleOverrides: {},
+        styleOverrides: {
+          paper: {
+            borderColor: grey500,
+          },
+        },
       },
       MuiCard: {
         variants: [
