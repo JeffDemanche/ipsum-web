@@ -3,18 +3,22 @@ import React, { useState } from "react";
 
 import { ToggleButton } from "../ToggleButton";
 
-const WithState: React.FunctionComponent = () => {
+const WithState: React.FunctionComponent<{
+  variant: "text" | "outlined";
+  children: React.ReactNode;
+}> = ({ variant, children }) => {
   const [selected, setSelected] = useState(false);
 
   return (
     <ToggleButton
+      variant={variant}
       value={"check"}
       selected={selected}
       onClick={() => {
         setSelected(!selected);
       }}
     >
-      Toggle Button
+      {children}
     </ToggleButton>
   );
 };
@@ -29,6 +33,7 @@ type Story = StoryObj<typeof WithState>;
 
 export const ToggleButtonExample: Story = {
   args: {
+    variant: "outlined",
     children: "Toggle Button",
   },
 };

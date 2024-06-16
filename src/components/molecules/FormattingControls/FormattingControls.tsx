@@ -78,6 +78,7 @@ export const FormattingControls: React.FunctionComponent<
         onClick={() => {
           activeEditor?.setBold((bold) => !bold);
         }}
+        disableShadow
       >
         <FormatBold fontSize="small" />
       </ToggleButton>
@@ -89,6 +90,7 @@ export const FormattingControls: React.FunctionComponent<
         onClick={() => {
           activeEditor?.setItalic((italic) => !italic);
         }}
+        disableShadow
       >
         <FormatItalic fontSize="small" />
       </ToggleButton>
@@ -100,6 +102,7 @@ export const FormattingControls: React.FunctionComponent<
         onClick={() => {
           activeEditor?.setUnderline((underline) => !underline);
         }}
+        disableShadow
       >
         <FormatUnderlined fontSize="small" />
       </ToggleButton>
@@ -111,6 +114,7 @@ export const FormattingControls: React.FunctionComponent<
         onClick={() => {
           activeEditor?.setStrikethrough((strikethrough) => !strikethrough);
         }}
+        disableShadow
       >
         <FormatStrikethrough fontSize="small" />
       </ToggleButton>

@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { border_radius_mini } from "components/styles";
+import { border_radius_mini, box_shadow_primary } from "components/styles";
 import React, { CSSProperties } from "react";
 
 import styles from "./MiniButton.less";
@@ -38,6 +38,7 @@ export const MiniButton: React.FunctionComponent<MiniButtonProps> = ({
         backgroundColor: backgroundColor ?? "transparent",
         color: foregroundColor,
         borderRadius: border_radius_mini,
+        boxShadow: backgroundColor ? box_shadow_primary : "none",
         ...style,
       }}
     >

@@ -1,5 +1,12 @@
 import { Select as MuiSelect } from "@mui/material";
-import { border_radius_inputs } from "components/styles";
+import {
+  border_radius_inputs,
+  box_shadow_primary,
+  font_family_sans,
+  font_size_small,
+  font_weight_light,
+  grey700,
+} from "components/styles";
 import React from "react";
 
 type SelectProps = {
@@ -18,8 +25,16 @@ export const Select: React.FunctionComponent<SelectProps> = ({
   return (
     <MuiSelect
       {...muiProps}
+      variant="outlined"
       MenuProps={{ ref: menuRef }}
-      style={{ borderRadius: border_radius_inputs }}
+      style={{
+        color: grey700,
+        borderRadius: border_radius_inputs,
+        fontFamily: font_family_sans,
+        fontSize: font_size_small,
+        fontWeight: font_weight_light,
+        boxShadow: box_shadow_primary,
+      }}
     >
       {children}
     </MuiSelect>

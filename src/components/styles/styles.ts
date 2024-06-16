@@ -202,6 +202,12 @@ export const theme = createTheme(
             borderRadius: border_radius_inputs,
             textTransform: "none",
           },
+          outlined: {
+            boxShadow: box_shadow_primary,
+          },
+          contained: {
+            boxShadow: box_shadow_primary,
+          },
         },
       },
       MuiPopover: {
@@ -223,16 +229,7 @@ export const theme = createTheme(
           },
         },
       },
-      MuiSelect: {
-        styleOverrides: {
-          outlined: {
-            borderRadius: border_radius_inputs,
-            fontFamily: font_family_sans,
-            fontSize: font_size_small,
-            fontWeight: font_weight_light,
-          },
-        },
-      },
+      MuiSelect: {},
       MuiInputBase: {
         styleOverrides: {
           root: {
