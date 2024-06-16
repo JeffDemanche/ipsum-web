@@ -162,13 +162,13 @@ export class IpsumDateTime {
         return this._luxonDateTime.toLocaleString({
           weekday: "long",
           month: "long",
-          day: "2-digit",
+          day: "numeric",
         });
       case "entry-printed-date-nice-with-year":
         return this._luxonDateTime.toLocaleString({
           weekday: "long",
           month: "long",
-          day: "2-digit",
+          day: "numeric",
           year: "numeric",
         });
       case "month-word":

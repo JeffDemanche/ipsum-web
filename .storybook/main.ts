@@ -20,6 +20,7 @@ const config: StorybookConfig = {
   docs: {
     autodocs: "tag",
   },
+  staticDirs: ["../src/assets"],
   webpackFinal: async (config) => {
     const lessLoaderChain = {
       test: /\.less$/,

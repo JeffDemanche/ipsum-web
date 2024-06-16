@@ -55,24 +55,24 @@ declare module "@mui/material/Card" {
 const baseTheme = createTheme({
   typography: {
     allVariants: {},
-    h1: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "96px" },
-    h2: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "60px" },
+    h1: { fontFamily: "Amstelvar", fontWeight: "100", fontSize: "96px" },
+    h2: { fontFamily: "Amstelvar", fontWeight: "100", fontSize: "60px" },
     h3: {
-      fontFamily: "Inria Sans",
+      fontFamily: "Amstelvar",
       fontWeight: "100",
       fontSize: "30px",
       color: `${grey[50]} !important`,
       backgroundColor: grey[900],
     },
     h4: {
-      fontFamily: "Inria Sans",
+      fontFamily: "Amstelvar",
       fontWeight: "100",
       fontSize: "24px",
       color: `${grey[50]} !important`,
       backgroundColor: grey[900],
     },
-    h5: { fontFamily: "Inria Sans", fontWeight: "100", fontSizz: "20px" },
-    h6: { fontFamily: "Inria Sans", fontWeight: "100", fontSize: "16px" },
+    h5: { fontFamily: "Amstelvar", fontWeight: "100", fontSizz: "20px" },
+    h6: { fontFamily: "Amstelvar", fontWeight: "100", fontSize: "16px" },
     body1: {
       fontFamily: "Roboto",
       fontWeight: "light",
@@ -84,7 +84,7 @@ const baseTheme = createTheme({
       fontSize: "14px",
     },
     subtitle1: {
-      fontFamily: "Inria Sans",
+      fontFamily: "Amstelvar",
       fontWeight: "100",
       fontSize: "14px",
     },

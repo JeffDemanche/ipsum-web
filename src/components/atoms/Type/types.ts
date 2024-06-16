@@ -11,6 +11,7 @@ export type TypeSize =
   | "36pt"
   | "x-small"
   | "small"
-  | "medium";
+  | "medium"
+  | "large";
 
 export type TypeLineHeight = 1 | 1.5 | 2;
