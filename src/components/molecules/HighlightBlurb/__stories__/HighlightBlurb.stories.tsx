@@ -35,12 +35,12 @@ export const HighlightBlurbExample: Story = {
         excerptPieces: [
           {
             blockType: "paragraph",
-            innerHtml: siddhartha.chapter1[1],
+            innerHtml: siddhartha.chapter1TheSonOfTheBrahman[1],
             highlight: { id: "highlight-id", hue: 90 },
           },
           {
             blockType: "paragraph",
-            innerHtml: siddhartha.chapter1[2],
+            innerHtml: siddhartha.chapter1TheSonOfTheBrahman[2],
             highlight: { id: "highlight-id", hue: 90 },
           },
         ],
