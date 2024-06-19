@@ -21,7 +21,7 @@ type Story = StoryObj<typeof MonthlyNav>;
 
 export const MonthlyNavWithNoEntries: Story = {
   args: {
-    entryDates: [],
+    entryDays: [],
     selectedDay: IpsumDay.today(),
     today: IpsumDay.today(),
   },
@@ -29,7 +29,7 @@ export const MonthlyNavWithNoEntries: Story = {
 
 export const MonthlyNavWithEntries: Story = {
   args: {
-    entryDates: [
+    entryDays: [
       new IpsumDay(2, 4, 2024),
       new IpsumDay(6, 4, 2024),
       new IpsumDay(8, 4, 2024),

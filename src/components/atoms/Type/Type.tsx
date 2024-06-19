@@ -10,7 +10,7 @@ type TypeProps = {
   lineHeight?: TypeLineHeight;
   component?: React.ElementType;
   children: React.ReactNode;
-} & Pick<React.ComponentProps<typeof MuiTypography>, "style">;
+} & Pick<React.ComponentProps<typeof MuiTypography>, "color" | "style">;
 
 const variantToMuiVariant = (variant: TypeVariant) => {
   switch (variant) {
@@ -63,6 +63,7 @@ export const Type: React.FunctionComponent<TypeProps> = ({
   lineHeight = 1.5,
   component,
   children,
+  color,
   ...muiTypographyProps
 }) => {
   return (
@@ -72,6 +73,7 @@ export const Type: React.FunctionComponent<TypeProps> = ({
       fontSize={sizeToCSSSize(size)}
       lineHeight={lineHeight}
       component={component}
+      color={color}
       {...muiTypographyProps}
     >
       {children}

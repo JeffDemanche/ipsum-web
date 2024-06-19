@@ -9,7 +9,7 @@ import styles from "./MonthlyNav.less";
 interface MonthlyNavProps {
   className?: string;
 
-  entryDates: IpsumDay[];
+  entryDays: IpsumDay[];
   selectedDay: IpsumDay;
   today: IpsumDay;
   defaultMonth?: IpsumDay;
@@ -20,7 +20,7 @@ interface MonthlyNavProps {
 
 export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
   className,
-  entryDates,
+  entryDays,
   selectedDay,
   today,
   defaultMonth,
@@ -29,20 +29,20 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
 }) => {
   const earliestEntry = useMemo(
     () =>
-      entryDates.reduce(
+      entryDays.reduce(
         (prev, curr) => (prev.isBefore(curr) ? prev : curr),
-        entryDates[0]
+        entryDays[0]
       ),
-    [entryDates]
+    [entryDays]
   );
 
   const latestEntry = useMemo(
     () =>
-      entryDates.reduce(
+      entryDays.reduce(
         (prev, curr) => (prev.isAfter(curr) ? prev : curr),
-        entryDates[0]
+        entryDays[0]
       ),
-    [entryDates]
+    [entryDays]
   );
 
   const [month, setMonth] = useState<IpsumDay>(
@@ -78,8 +78,8 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
   };
 
   const entriesThisMonth = useMemo(
-    () => entryDates.filter((date) => date.isSameMonthAs(month)),
-    [entryDates, month]
+    () => entryDays.filter((date) => date.isSameMonthAs(month)),
+    [entryDays, month]
   );
 
   const entryButtons = entriesThisMonth.map((day) => (

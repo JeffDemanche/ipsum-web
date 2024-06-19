@@ -12,7 +12,7 @@ describe("molecules/MonthlyNav", () => {
     overrides: Partial<React.ComponentProps<typeof MonthlyNav>> = {}
   ): React.ComponentProps<typeof MonthlyNav> => {
     return {
-      entryDates: [
+      entryDays: [
         new IpsumDay(30, 11, 2023),
         new IpsumDay(31, 11, 2023),
         new IpsumDay(1, 0, 2024),

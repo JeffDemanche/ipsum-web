@@ -1,5 +1,5 @@
-import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from "@apollo/client/cache";
-export type ArcKeySpecifier = ("arcEntry" | "color" | "highlights" | "history" | "id" | "incomingRelations" | "name" | "outgoingRelations" | ArcKeySpecifier)[];
+import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
+export type ArcKeySpecifier = ('arcEntry' | 'color' | 'highlights' | 'history' | 'id' | 'incomingRelations' | 'name' | 'outgoingRelations' | ArcKeySpecifier)[];
 export type ArcFieldPolicy = {
 	arcEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	color?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -10,12 +10,12 @@ export type ArcFieldPolicy = {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	outgoingRelations?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ArcEntryKeySpecifier = ("arc" | "entry" | ArcEntryKeySpecifier)[];
+export type ArcEntryKeySpecifier = ('arc' | 'entry' | ArcEntryKeySpecifier)[];
 export type ArcEntryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CommentKeySpecifier = ("commentEntry" | "highlight" | "history" | "id" | "parent" | CommentKeySpecifier)[];
+export type CommentKeySpecifier = ('commentEntry' | 'highlight' | 'history' | 'id' | 'parent' | CommentKeySpecifier)[];
 export type CommentFieldPolicy = {
 	commentEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	highlight?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -23,12 +23,12 @@ export type CommentFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	parent?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CommentEntryKeySpecifier = ("comment" | "entry" | CommentEntryKeySpecifier)[];
+export type CommentEntryKeySpecifier = ('comment' | 'entry' | CommentEntryKeySpecifier)[];
 export type CommentEntryFieldPolicy = {
 	comment?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type DayKeySpecifier = ("changedArcEntries" | "comments" | "day" | "hasJournalEntry" | "journalEntry" | "ratedHighlights" | DayKeySpecifier)[];
+export type DayKeySpecifier = ('changedArcEntries' | 'comments' | 'day' | 'hasJournalEntry' | 'journalEntry' | 'ratedHighlights' | DayKeySpecifier)[];
 export type DayFieldPolicy = {
 	changedArcEntries?: FieldPolicy<any> | FieldReadFunction<any>,
 	comments?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -37,7 +37,7 @@ export type DayFieldPolicy = {
 	journalEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	ratedHighlights?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type EntryKeySpecifier = ("date" | "entryKey" | "entryType" | "highlights" | "history" | "htmlString" | "trackedHTMLString" | EntryKeySpecifier)[];
+export type EntryKeySpecifier = ('date' | 'entryKey' | 'entryType' | 'highlights' | 'history' | 'htmlString' | 'trackedHTMLString' | EntryKeySpecifier)[];
 export type EntryFieldPolicy = {
 	date?: FieldPolicy<any> | FieldReadFunction<any>,
 	entryKey?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -47,7 +47,7 @@ export type EntryFieldPolicy = {
 	htmlString?: FieldPolicy<any> | FieldReadFunction<any>,
 	trackedHTMLString?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type HighlightKeySpecifier = ("arc" | "arcs" | "comments" | "currentImportance" | "entry" | "excerpt" | "history" | "hue" | "id" | "importanceRatings" | "outgoingRelations" | HighlightKeySpecifier)[];
+export type HighlightKeySpecifier = ('arc' | 'arcs' | 'comments' | 'currentImportance' | 'entry' | 'excerpt' | 'history' | 'hue' | 'id' | 'importanceRatings' | 'outgoingRelations' | HighlightKeySpecifier)[];
 export type HighlightFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcs?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -61,25 +61,25 @@ export type HighlightFieldPolicy = {
 	importanceRatings?: FieldPolicy<any> | FieldReadFunction<any>,
 	outgoingRelations?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type HistoryKeySpecifier = ("dateCreated" | HistoryKeySpecifier)[];
+export type HistoryKeySpecifier = ('dateCreated' | HistoryKeySpecifier)[];
 export type HistoryFieldPolicy = {
 	dateCreated?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ImportanceRatingKeySpecifier = ("day" | "value" | ImportanceRatingKeySpecifier)[];
+export type ImportanceRatingKeySpecifier = ('day' | 'value' | ImportanceRatingKeySpecifier)[];
 export type ImportanceRatingFieldPolicy = {
 	day?: FieldPolicy<any> | FieldReadFunction<any>,
 	value?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type JournalEntryKeySpecifier = ("entry" | "entryKey" | JournalEntryKeySpecifier)[];
+export type JournalEntryKeySpecifier = ('entry' | 'entryKey' | JournalEntryKeySpecifier)[];
 export type JournalEntryFieldPolicy = {
 	entry?: FieldPolicy<any> | FieldReadFunction<any>,
 	entryKey?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type JournalMetadataKeySpecifier = ("lastArcHue" | JournalMetadataKeySpecifier)[];
+export type JournalMetadataKeySpecifier = ('lastArcHue' | JournalMetadataKeySpecifier)[];
 export type JournalMetadataFieldPolicy = {
 	lastArcHue?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ("arc" | "arcEntries" | "arcEntry" | "arcs" | "comment" | "commentEntries" | "commentEntry" | "comments" | "commentsForDay" | "day" | "entries" | "entry" | "entryKeys" | "highlight" | "highlights" | "journalEntries" | "journalEntry" | "journalEntryDates" | "journalEntryKeys" | "journalId" | "journalMetadata" | "journalTitle" | "recentEntries" | "recentJournalEntries" | "relation" | "relations" | "searchHighlights" | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('arc' | 'arcEntries' | 'arcEntry' | 'arcs' | 'comment' | 'commentEntries' | 'commentEntry' | 'comments' | 'commentsForDay' | 'day' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'searchHighlights' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcEntries?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -109,7 +109,7 @@ export type QueryFieldPolicy = {
 	relations?: FieldPolicy<any> | FieldReadFunction<any>,
 	searchHighlights?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type RelationKeySpecifier = ("id" | "object" | "predicate" | "subject" | RelationKeySpecifier)[];
+export type RelationKeySpecifier = ('id' | 'object' | 'predicate' | 'subject' | RelationKeySpecifier)[];
 export type RelationFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	object?: FieldPolicy<any> | FieldReadFunction<any>,
