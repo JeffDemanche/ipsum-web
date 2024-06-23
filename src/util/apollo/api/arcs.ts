@@ -1,4 +1,5 @@
 import { nextHue } from "util/colors";
+import { IpsumDay } from "util/dates";
 import { v4 as uuidv4 } from "uuid";
 
 import { autosave } from "../autosave";
@@ -8,8 +9,10 @@ import { initializeHistory } from "./history";
 
 export const createArc = ({
   name,
+  dayCreated,
 }: {
   name: string;
+  dayCreated?: IpsumDay;
 }): UnhydratedType["Arc"] => {
   const arcId = uuidv4();
   const color = nextHue(vars.journalMetadata().lastArcHue ?? 0);
@@ -24,7 +27,7 @@ export const createArc = ({
     name,
     color,
     arcEntry: arcEntry.entry,
-    history: initializeHistory(),
+    history: initializeHistory({ dateCreated: dayCreated }),
     incomingRelations: [],
     outgoingRelations: [],
   };

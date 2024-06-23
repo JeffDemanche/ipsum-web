@@ -1,29 +1,38 @@
+import { IpsumDay } from "util/dates";
 import { v4 as uuidv4 } from "uuid";
 
 import { EntryType } from "../__generated__/graphql";
 import { autosave } from "../autosave";
 import { UnhydratedType, vars } from "../client";
 import { deleteCommentEntry } from "./commentEntries";
+import { addCommentToDay, upsertDay } from "./day";
 import { createEntry } from "./entries";
 import { updateHighlight } from "./highlights";
 import { initializeHistory } from "./history";
 
 export const createComment = ({
+  id,
   highlight,
   htmlString,
+  dayCreated,
 }: {
+  id?: string;
   highlight: string;
   htmlString?: string;
+  dayCreated?: IpsumDay;
 }): UnhydratedType["Comment"] => {
   if (!vars.highlights()[highlight]) {
     throw new Error(`createComment: highlight ${highlight} not found`);
   }
 
-  const commentId = uuidv4();
+  const commentId = id ?? uuidv4();
 
   const commentEntryKey = `comment-entry:${commentId}`;
 
+  const commentDay = dayCreated ?? IpsumDay.today();
+
   createEntry({
+    dayCreated: commentDay,
     entryKey: commentEntryKey,
     htmlString: htmlString ?? "",
     entryType: EntryType.Comment,
@@ -46,13 +55,19 @@ export const createComment = ({
     parent: null,
     highlight,
     commentEntry: commentEntryKey,
-    history: initializeHistory(),
+    history: initializeHistory({ dateCreated: dayCreated }),
   };
   vars.comments({ ...vars.comments(), [commentId]: result });
 
   updateHighlight({
     id: highlight,
     comments: [...vars.highlights()[highlight].comments, commentId],
+  });
+
+  upsertDay({ day: commentDay.toString("stored-day") });
+  addCommentToDay({
+    day: commentDay.toString("stored-day"),
+    commentId: commentId,
   });
 
   autosave();

@@ -25,7 +25,7 @@ export const DailyJournalEntryConnectedExample: StoryDailyJournalEntryConnected 
       mockSiddhartha();
     },
     args: {
-      entryDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
+      entryDay: IpsumDay.fromString("3/4/2020", "entry-printed-date"),
     },
     decorators: [
       (Story) => (

@@ -12,6 +12,7 @@ import styles from "./Button.less";
 type ButtonProps = {
   variant?: "text" | "outlined" | "contained" | "link";
   tooltip?: string;
+  disableRipple?: boolean;
   children?: React.ReactNode;
   style?: CSSProperties;
   className?: string;
@@ -23,6 +24,7 @@ type ButtonProps = {
 export const Button: React.FunctionComponent<ButtonProps> = ({
   variant,
   tooltip,
+  disableRipple,
   children,
   style,
   className,
@@ -47,7 +49,9 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   const button = (
     <MuiButton
       variant={muiVariant}
-      disableRipple={variant === "link"}
+      disableRipple={
+        disableRipple !== undefined ? disableRipple : variant === "link"
+      }
       style={{ ...(variant === "link" ? linkStyle : nonLinkStyle), ...style }}
       className={cx(styles["button"], className)}
       {...muiButtonProps}

@@ -1,1 +1,1 @@
-export * as siddhartha from "./corpus";
+export * as siddhartha from "./journal-entries";

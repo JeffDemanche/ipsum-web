@@ -1,10 +1,14 @@
-import { IpsumDateTime } from "util/dates";
+import { IpsumDateTime, IpsumDay } from "util/dates";
 
 import { UnhydratedType } from "../client";
 
-export const initializeHistory = (): UnhydratedType["History"] => {
+export const initializeHistory = ({
+  dateCreated,
+}: {
+  dateCreated?: IpsumDay;
+}): UnhydratedType["History"] => {
   return {
     __typename: "History",
-    dateCreated: IpsumDateTime.today().toString("iso"),
+    dateCreated: (dateCreated ?? IpsumDateTime.today()).toString("iso"),
   };
 };

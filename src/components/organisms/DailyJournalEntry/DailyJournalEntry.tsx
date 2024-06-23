@@ -1,7 +1,9 @@
+import { Type } from "components/atoms/Type";
+import { CommentBlurb } from "components/molecules/CommentBlurb";
 import { MonthlyNav } from "components/molecules/MonthlyNav";
 import { PageHeaderDailyJournal } from "components/molecules/PageHeader";
 import { Entry } from "components/organisms/Entry";
-import React from "react";
+import React, { useMemo } from "react";
 import { IpsumDay } from "util/dates";
 
 interface DailyJournalEntryProps {
@@ -13,6 +15,18 @@ interface DailyJournalEntryProps {
     highlightNumber: number;
     hue: number;
     arcNames: string[];
+  }[];
+  comments: {
+    id: string;
+    day: IpsumDay;
+    htmlString: string;
+    highlight: {
+      id: string;
+      objectText: string;
+      hue: number;
+      highlightNumber: number;
+      arcNames: string[];
+    };
   }[];
   editable: boolean;
   htmlString?: string;
@@ -36,6 +50,7 @@ export const DailyJournalEntry: React.FunctionComponent<
   selectedDay,
   entryDays,
   highlights,
+  comments,
   editable,
   htmlString,
   createEntry,
@@ -44,6 +59,30 @@ export const DailyJournalEntry: React.FunctionComponent<
   createHighlight,
   onDaySelect,
 }) => {
+  const commentsMarkup = useMemo(() => {
+    if (!comments?.length) return null;
+
+    return (
+      <div>
+        <Type>Comments</Type>
+        {comments?.map((comment) => (
+          <CommentBlurb
+            key={comment.id}
+            selected={false}
+            onSelect={() => {}}
+            defaultExpanded={false}
+            onExpand={() => {}}
+            onCollapse={() => {}}
+            excerptProps={{
+              htmlString: comment.htmlString,
+            }}
+            comment={comment}
+          />
+        ))}
+      </div>
+    );
+  }, [comments]);
+
   return (
     <div>
       <PageHeaderDailyJournal day={selectedDay} />
@@ -63,6 +102,7 @@ export const DailyJournalEntry: React.FunctionComponent<
         updateEntry={updateEntry}
         createHighlight={createHighlight}
       />
+      {commentsMarkup}
     </div>
   );
 };

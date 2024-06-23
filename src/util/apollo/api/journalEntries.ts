@@ -1,14 +1,18 @@
+import { IpsumDay } from "util/dates";
+
 import { EntryType } from "../__generated__/graphql";
 import { autosave } from "../autosave";
 import { UnhydratedType, vars } from "../client";
 import { createEntry } from "./entries";
 
 export const createJournalEntry = (journalEntry: {
+  dayCreated?: IpsumDay;
   entryKey: string;
   htmlString: string;
   entryType: EntryType;
 }): UnhydratedType["JournalEntry"] => {
   const entry = createEntry({
+    dayCreated: journalEntry.dayCreated ?? IpsumDay.today(),
     entryKey: journalEntry.entryKey,
     htmlString: journalEntry.htmlString,
     entryType: journalEntry.entryType,

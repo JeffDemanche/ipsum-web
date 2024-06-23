@@ -7,6 +7,7 @@ type TypeProps = {
   variant?: TypeVariant;
   weight?: TypeWeight;
   size?: TypeSize;
+  underline?: boolean;
   lineHeight?: TypeLineHeight;
   component?: React.ElementType;
   children: React.ReactNode;
@@ -60,6 +61,7 @@ export const Type: React.FunctionComponent<TypeProps> = ({
   variant = "body",
   weight = "regular",
   size = "16pt",
+  underline = false,
   lineHeight = 1.5,
   component,
   children,
@@ -74,6 +76,7 @@ export const Type: React.FunctionComponent<TypeProps> = ({
       lineHeight={lineHeight}
       component={component}
       color={color}
+      sx={{ textDecoration: underline ? "underline" : "none" }}
       {...muiTypographyProps}
     >
       {children}

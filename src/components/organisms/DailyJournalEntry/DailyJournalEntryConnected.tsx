@@ -10,13 +10,32 @@ interface DailyJournalEntryConnectedProps {
 }
 
 const DailyJournalEntryQuery = gql(`
-  query DailyJournalEntryQuery($entryKey: ID!) {
+  query DailyJournalEntryQuery($entryKey: ID!, $day: String!) {
     journalEntryDates(includeEmpty: false)
     journalEntry(entryKey: $entryKey) {
       entryKey
       entry {
         htmlString
         highlights {
+          id
+          hue
+          arcs {
+            id
+            name
+          }
+        }
+      }
+    }
+    day(day: $day) {
+      comments {
+        id
+        commentEntry {
+          entry {
+            entryKey
+            htmlString
+          }
+        }
+        highlight {
           id
           hue
           arcs {
@@ -35,6 +54,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
   const { data, loading, error } = useQuery(DailyJournalEntryQuery, {
     variables: {
       entryKey: entryDay.toString("entry-printed-date"),
+      day: entryDay.toString("entry-printed-date"),
     },
   });
 
@@ -50,6 +70,25 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
       })),
     [data.journalEntry.entry.highlights]
   );
+
+  console.log(data.day);
+
+  const comments = useMemo(() => {
+    if (!data.day.comments) return [];
+
+    return data.day.comments.map((comment) => ({
+      id: comment.id,
+      day: entryDay,
+      htmlString: comment.commentEntry.entry.htmlString,
+      highlight: {
+        id: comment.highlight.id,
+        objectText: comment.commentEntry.entry.entryKey,
+        hue: comment.highlight.hue,
+        highlightNumber: 0, // TODO
+        arcNames: comment.highlight.arcs.map((arc) => arc.name),
+      },
+    }));
+  }, [data.day.comments, entryDay]);
 
   if (loading || error) {
     return <div>Loading...</div>;
@@ -91,6 +130,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
       htmlString={data.journalEntry.entry.htmlString}
       editable={editable}
       highlights={highlights}
+      comments={comments}
       createEntry={createEntry}
       deleteEntry={deleteEntry}
       updateEntry={updateEntry}

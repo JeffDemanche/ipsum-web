@@ -1,5 +1,6 @@
 import { IpsumDay } from "util/dates";
 
+import { autosave } from "../autosave";
 import { vars } from "../client";
 
 export const upsertDay = ({
@@ -29,6 +30,26 @@ export const upsertDay = ({
       comments: [],
     },
   });
+};
+
+export const addCommentToDay = ({
+  day,
+  commentId,
+}: {
+  day: string;
+  commentId: string;
+}) => {
+  const dayObj = vars.days()[day];
+  if (!dayObj) return;
+
+  const newDay = {
+    ...dayObj,
+    comments: [...dayObj.comments, commentId],
+  };
+
+  vars.days({ ...vars.days(), [day]: newDay });
+
+  autosave();
 };
 
 export const upsertDayForToday = () => {

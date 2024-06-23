@@ -4,9 +4,10 @@ import { IpsumTimeMachine } from "util/diff";
 import { EntryType } from "../__generated__/graphql";
 import { autosave } from "../autosave";
 import { UnhydratedType, vars } from "../client";
-import { deleteDayIfEmpty, upsertDayForToday } from "./day";
+import { deleteDayIfEmpty, upsertDay, upsertDayForToday } from "./day";
 
 export const createEntry = (entry: {
+  dayCreated?: IpsumDay;
   entryKey: string;
   htmlString: string;
   entryType: EntryType;
@@ -28,7 +29,11 @@ export const createEntry = (entry: {
     [entry.entryKey]: newEntry,
   });
 
-  upsertDayForToday();
+  upsertDay({
+    day:
+      entry.dayCreated?.toString("stored-day") ??
+      IpsumDay.today().toString("stored-day"),
+  });
   autosave();
   return newEntry;
 };

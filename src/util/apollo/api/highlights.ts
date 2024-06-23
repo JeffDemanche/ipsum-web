@@ -7,13 +7,15 @@ import { UnhydratedType, vars } from "../client";
 import { upsertDay } from "./day";
 
 export const createHighlight = ({
+  id,
   entry,
   outgoingRelations,
 }: {
+  id?: string;
   entry: string;
   outgoingRelations?: string[];
 }): UnhydratedType["Highlight"] => {
-  const highlightId = uuidv4();
+  const highlightId = id ?? uuidv4();
 
   const result: UnhydratedType["Highlight"] = {
     __typename: "Highlight",

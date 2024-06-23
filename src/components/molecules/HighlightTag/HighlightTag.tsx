@@ -13,7 +13,7 @@ import styles from "./HighlightTag.less";
 
 interface HighlightTagProps {
   hue: number;
-  fontSize?: "small" | "medium";
+  fontSize?: "x-small" | "small" | "medium";
 
   /** I.e. date, arc, whatever the highlight is on, etc. */
   objectText?: string;
@@ -29,12 +29,13 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   highlightNumber,
 }) => {
   const fontSizePx = {
+    "x-small": font_size_x_small,
     small: font_size_small,
     medium: font_size_medium,
   }[fontSize];
 
   const elementHeight = {
-    xSmall: "18px",
+    "x-small": "18px",
     small: "22px",
     medium: "28px",
   }[fontSize];
@@ -73,6 +74,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
               height: elementHeight,
             }}
             variant="link"
+            disableRipple={false}
           >
             <span>
               {objectText}
@@ -81,8 +83,8 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
                   style={{
                     color: `hsla(${hue}, 20%, 60%, 1)`,
                     textDecoration: "none",
-                    fontSize: font_size_x_small,
                     fontWeight: font_weight_citation,
+                    lineHeight: 0,
                   }}
                 >
                   {highlightNumber}
@@ -99,6 +101,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
             height: elementHeight,
           }}
           variant="link"
+          disableRipple={false}
         >
           {!objectText && highlightNumber !== undefined && (
             <span

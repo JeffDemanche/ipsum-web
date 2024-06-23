@@ -35,6 +35,9 @@ export const DayResolvers: StrictTypedTypePolicies = {
 
         return timeMachine.currentValue && timeMachine.currentValue !== "";
       },
+      comments(comments) {
+        return comments.map((commentId: string) => vars.comments()[commentId]);
+      },
     },
   },
 };
