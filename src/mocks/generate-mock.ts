@@ -4,7 +4,6 @@ import {
   createJournalEntry,
   EntryType,
 } from "util/apollo";
-import { upsertDay } from "util/apollo/api/day";
 import { IpsumDay } from "util/dates";
 
 import { processEntrySections } from "./mock-utils";

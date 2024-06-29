@@ -4,7 +4,25 @@ import { IpsumDay } from "util/dates";
 export const journalEntry1_TheSonOfTheBrahman: MockedEntry = {
   entryKey: "1/1/2020",
   sections: [
-    "Tonight, under the serene glow of the full moon, I sit by the riverbank, feeling the soft caress of the cool breeze. The murmurs of the flowing water create a symphony that resonates with the depths of my soul. It has been a day of profound contemplation, one that has stirred the depths of my being and ignited within me a thirst for knowledge and understanding.",
+    {
+      text: "Tonight, under the serene glow of the full moon, I sit by the riverbank, feeling the soft caress of the cool breeze. The murmurs of the flowing water create a symphony that resonates with the depths of my soul. It has been a day of profound contemplation, one that has stirred the depths of my being and ignited within me a thirst for knowledge and understanding.",
+      highlight: {
+        entryKey: "1/1/2020",
+        hue: 301,
+        id: "highlight-chapter1-p-0",
+        comments: [
+          {
+            id: "comment1-chapter1-p-0",
+            highlightId: "highlight-chapter1-p-0",
+            mockedEntry: {
+              entryKey: "commentEntry1-chapter1-p-0",
+              sections: ["This is a comment on the first journal entry."],
+            },
+            dayCreated: IpsumDay.fromString("3/4/2020"),
+          },
+        ],
+      },
+    },
 
     "I have spent the day in deep conversation with my friend Govinda, discussing the teachings of our revered teacher, the illustrious Gotama. His words have left an indelible mark upon my consciousness, stirring within me a longing to embark on a journey of self-discovery and enlightenment.",
 
@@ -177,10 +195,10 @@ export const journalEntry9_TheFerryman: MockedEntry = {
             id: "comment1-chapter9-p-0",
             highlightId: "highlight-chapter9-p-0",
             mockedEntry: {
-              entryKey: "journalEntry1",
+              entryKey: "commentEntry1-chapter9-p-0",
               sections: ["This is a comment on the first journal entry."],
             },
-            dayCreated: IpsumDay.fromString("3/4/2024"),
+            dayCreated: IpsumDay.fromString("3/4/2020"),
           },
         ],
       },

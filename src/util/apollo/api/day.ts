@@ -27,9 +27,11 @@ export const upsertDay = ({
       ratedHighlights: ratedHighlights ?? existingDay?.ratedHighlights ?? [],
       // TODO
       changedArcEntries: [],
-      comments: [],
+      comments: existingDay?.comments ?? [],
     },
   });
+
+  autosave();
 };
 
 export const addCommentToDay = ({
