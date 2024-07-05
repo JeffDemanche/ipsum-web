@@ -20,6 +20,15 @@ export class ProjectCollection<T> {
     return this.values()[key]();
   }
 
+  getAll(): Record<string, T> {
+    const values = this.values();
+    const obj: Record<string, T> = {};
+    for (const key in values) {
+      obj[key] = values[key]();
+    }
+    return obj;
+  }
+
   getReactiveVar(key: string): ReactiveVar<T> | undefined {
     return this.values()[key];
   }
@@ -36,12 +45,13 @@ export class ProjectCollection<T> {
     return deleted;
   }
 
-  create(key: string, value: T): void {
+  create(key: string, value: T): T {
     const existingValues = this.values();
     if (key in existingValues) {
       return;
     }
     this.values({ ...existingValues, [key]: makeVar(value) });
+    return value;
   }
 
   toObject(): Record<string, T> {

@@ -1,5 +1,5 @@
 import { StrictTypedTypePolicies } from "../__generated__/apollo-helpers";
-import { ArcSortType,QueryArcsArgs } from "../__generated__/graphql";
+import { ArcSortType, QueryArcsArgs } from "../__generated__/graphql";
 import { UnhydratedType, vars } from "../client";
 
 export const ArcResolvers: StrictTypedTypePolicies = {

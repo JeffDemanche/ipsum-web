@@ -11,8 +11,10 @@ describe("ProjectState", () => {
   });
 
   describe("react updates", () => {
-    it("updates to one collection entry do not cause re-renders for users of other entries", async () => {
-      const state = new ProjectState();
+    let state: ProjectState;
+
+    beforeEach(() => {
+      state = new ProjectState();
 
       state.collection("arcs").create("1", {
         __typename: "Arc",
@@ -34,7 +36,9 @@ describe("ProjectState", () => {
         incomingRelations: [],
         outgoingRelations: [],
       });
+    });
 
+    it("updates to one collection entry do not cause re-renders for users of other entries", async () => {
       const getArc1Reactive = jest.fn(() =>
         state.collection("arcs").getReactiveVar("1")
       );
