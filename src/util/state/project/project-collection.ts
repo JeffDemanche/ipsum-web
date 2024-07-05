@@ -20,6 +20,10 @@ export class ProjectCollection<T> {
     return this.values()[key]();
   }
 
+  getReactiveVar(key: string): ReactiveVar<T> | undefined {
+    return this.values()[key];
+  }
+
   set(key: string, value: Partial<T>): void {
     const currentValue = this.get(key);
     this.values()[key]({ ...currentValue, ...value });
