@@ -16,7 +16,7 @@ import {
 } from "./journal-entries";
 
 export const mockSiddhartha = () => {
-  generateMock({
+  return generateMock({
     journalEntries: [
       journalEntry1_TheSonOfTheBrahman,
       journalEntry2_WithTheSamanas,

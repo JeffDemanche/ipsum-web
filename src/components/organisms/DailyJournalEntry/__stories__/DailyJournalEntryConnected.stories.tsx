@@ -1,10 +1,8 @@
-import { ApolloProvider } from "@apollo/client";
 import type { Meta, StoryObj } from "@storybook/react";
 import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import React from "react";
-import { client } from "util/apollo";
-import { initializeState } from "util/apollo/client";
 import { IpsumDay } from "util/dates";
+import { IpsumStateProvider } from "util/state/IpsumStateContext";
 
 import { DailyJournalEntryConnected } from "../DailyJournalEntryConnected";
 
@@ -20,18 +18,14 @@ type StoryDailyJournalEntryConnected = StoryObj<
 
 export const DailyJournalEntryConnectedExample: StoryDailyJournalEntryConnected =
   {
-    beforeEach: async () => {
-      await initializeState();
-      mockSiddhartha();
-    },
     args: {
       entryDay: IpsumDay.fromString("3/4/2020", "entry-printed-date"),
     },
     decorators: [
       (Story) => (
-        <ApolloProvider client={client}>
+        <IpsumStateProvider projectState={mockSiddhartha().projectState}>
           <Story />
-        </ApolloProvider>
+        </IpsumStateProvider>
       ),
     ],
   };
