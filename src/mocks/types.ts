@@ -1,4 +1,9 @@
 import { IpsumDay } from "util/dates";
+import { ProjectState } from "util/state/project";
+
+export interface GeneratedMock {
+  projectState: ProjectState;
+}
 
 export interface MockedHighlight {
   id: string;

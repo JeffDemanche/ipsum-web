@@ -3,25 +3,29 @@ import { IpsumDay } from "util/dates";
 
 import { APIFunction } from "../types";
 import { InMemoryJournalEntry } from "util/state/project/types";
-import { createEntry } from "util/apollo/api/entries";
+import { createEntry } from "./create-entry";
 
 export const createJournalEntry: APIFunction<
   {
     dayCreated?: IpsumDay;
     entryKey: string;
     htmlString: string;
-    entryType: EntryType;
   },
   InMemoryJournalEntry
 > = async (args, context) => {
-  const entry = createEntry({
-    dayCreated: args.dayCreated,
-    entryKey: args.entryKey,
-    htmlString: args.htmlString,
-    entryType: args.entryType,
-  });
+  const { projectState } = context;
 
-  const journalEntry = context.state
+  const entry = await createEntry(
+    {
+      dayCreated: args.dayCreated,
+      entryKey: args.entryKey,
+      htmlString: args.htmlString,
+      entryType: EntryType.Journal,
+    },
+    context
+  );
+
+  const journalEntry = projectState
     .collection("journalEntries")
     .create(entry.entryKey, {
       __typename: "JournalEntry",

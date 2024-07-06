@@ -1,13 +1,13 @@
 import {
-  createComment,
-  createHighlight,
-  createJournalEntry,
-  EntryType,
-} from "util/apollo";
+  apiCreateComment,
+  apiCreateHighlight,
+  apiCreateJournalEntry,
+} from "util/api/project-actions";
 import { IpsumDay } from "util/dates";
+import { ProjectState } from "util/state/project";
 
 import { processEntrySections } from "./mock-utils";
-import { MockedComment, MockedEntry } from "./types";
+import { GeneratedMock, MockedComment, MockedEntry } from "./types";
 
 interface GenerateMockProps {
   /**
@@ -18,31 +18,43 @@ interface GenerateMockProps {
   comments?: MockedComment[];
 }
 
-export const generateMock = (props: GenerateMockProps): void => {
+export const generateMock = (props: GenerateMockProps): GeneratedMock => {
+  const projectState = new ProjectState();
+
   props.journalEntries?.forEach((journalEntry) => {
     const { htmlString, highlights } = processEntrySections(journalEntry);
 
-    createJournalEntry({
-      dayCreated: IpsumDay.fromString(journalEntry.entryKey, "stored-day"),
-      entryKey: journalEntry.entryKey,
-      entryType: EntryType.Journal,
-      htmlString,
-    });
+    apiCreateJournalEntry(
+      {
+        dayCreated: IpsumDay.fromString(journalEntry.entryKey, "stored-day"),
+        entryKey: journalEntry.entryKey,
+        htmlString,
+      },
+      { projectState }
+    );
 
     highlights?.forEach((highlight) => {
-      createHighlight({
-        id: highlight.id,
-        entry: highlight.entryKey,
-      });
+      apiCreateHighlight(
+        {
+          id: highlight.id,
+          entryKey: highlight.entryKey,
+        },
+        { projectState }
+      );
 
       highlight.comments.forEach((comment) => {
-        createComment({
-          id: comment.id,
-          highlight: comment.highlightId,
-          htmlString: processEntrySections(comment.mockedEntry).htmlString,
-          dayCreated: comment.dayCreated,
-        });
+        apiCreateComment(
+          {
+            id: comment.id,
+            highlight: comment.highlightId,
+            htmlString: processEntrySections(comment.mockedEntry).htmlString,
+            dayCreated: comment.dayCreated,
+          },
+          { projectState }
+        );
       });
     });
   });
+
+  return { projectState };
 };

@@ -17,7 +17,7 @@ export class ProjectCollection<T> {
   }
 
   get(key: string): T | undefined {
-    return this.values()[key]();
+    return this.values()[key]?.();
   }
 
   getAll(): Record<string, T> {

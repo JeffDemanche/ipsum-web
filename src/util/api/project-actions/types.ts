@@ -1,7 +1,7 @@
 import { ProjectState } from "util/state/project";
 
 interface APIActionContext {
-  state: ProjectState;
+  projectState: ProjectState;
 }
 
 export type APIFunction<T, U> = (

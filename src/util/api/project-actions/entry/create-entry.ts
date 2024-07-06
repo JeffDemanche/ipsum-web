@@ -13,16 +13,17 @@ export const createEntry: APIFunction<
     entryType: EntryType;
   },
   InMemoryEntry
-> = async (args, { state }) => {
-  if (state.collection("entries").get(args.entryKey)) return;
+> = async (args, { projectState }) => {
+  if (projectState.collection("entries").get(args.entryKey)) return;
 
-  const entry = state.collection("entries").create(args.entryKey, {
+  const entry = projectState.collection("entries").create(args.entryKey, {
     __typename: "Entry",
     entryKey: args.entryKey,
     trackedHTMLString: IpsumTimeMachine.create(args.htmlString).toString(),
     history: {
       __typename: "History",
-      dateCreated: IpsumDay.today().toString("iso"),
+      dateCreated:
+        args.dayCreated?.toString("iso") ?? IpsumDay.today().toString("iso"),
     },
     entryType: args.entryType,
   });

@@ -165,6 +165,7 @@ export type UnhydratedType = {
   };
 };
 
+// TODO remove
 export const vars = {
   journalId: makeVar(uuidv4()),
   journalTitle: makeVar("new journal"),
@@ -187,6 +188,7 @@ export const vars = {
 // @ts-expect-error Expose vars for debugging
 global.apollo_vars = vars;
 
+// TODO remove
 export const serializeVars: (keyof typeof vars)[] = [
   "journalId",
   "journalTitle",
@@ -221,6 +223,7 @@ export const initializeState = async () => {
   vars.comments({});
 };
 
+// TODO remove
 const typePolicies: StrictTypedTypePolicies = {
   Query: {
     fields: {
