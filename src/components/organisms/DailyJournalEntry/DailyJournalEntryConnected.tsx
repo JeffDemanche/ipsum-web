@@ -71,8 +71,6 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     [data.journalEntry.entry.highlights]
   );
 
-  console.log(data.day.comments);
-
   const comments = useMemo(() => {
     if (!data.day.comments) return [];
 

@@ -12,10 +12,10 @@ export const createJournalEntry: APIFunction<
     htmlString: string;
   },
   InMemoryJournalEntry
-> = async (args, context) => {
+> = (args, context) => {
   const { projectState } = context;
 
-  const entry = await createEntry(
+  const entry = createEntry(
     {
       dayCreated: args.dayCreated,
       entryKey: args.entryKey,

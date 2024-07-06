@@ -4,6 +4,7 @@ import { IpsumTimeMachine } from "util/diff";
 import { InMemoryEntry } from "util/state/project/types";
 
 import { APIFunction } from "../types";
+import { createDay } from "../day/create-day";
 
 export const createEntry: APIFunction<
   {
@@ -13,8 +14,10 @@ export const createEntry: APIFunction<
     entryType: EntryType;
   },
   InMemoryEntry
-> = async (args, { projectState }) => {
+> = (args, { projectState }) => {
   if (projectState.collection("entries").get(args.entryKey)) return;
+
+  const dayCreated = args.dayCreated ?? IpsumDay.today();
 
   const entry = projectState.collection("entries").create(args.entryKey, {
     __typename: "Entry",
@@ -22,11 +25,12 @@ export const createEntry: APIFunction<
     trackedHTMLString: IpsumTimeMachine.create(args.htmlString).toString(),
     history: {
       __typename: "History",
-      dateCreated:
-        args.dayCreated?.toString("iso") ?? IpsumDay.today().toString("iso"),
+      dateCreated: dayCreated.toString("iso"),
     },
     entryType: args.entryType,
   });
+
+  createDay({ day: dayCreated }, { projectState });
 
   return entry;
 };

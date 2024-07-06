@@ -4,7 +4,4 @@ interface APIActionContext {
   projectState: ProjectState;
 }
 
-export type APIFunction<T, U> = (
-  args: T,
-  context: APIActionContext
-) => Promise<U>;
+export type APIFunction<T, U> = (args: T, context: APIActionContext) => U;

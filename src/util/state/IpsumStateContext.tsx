@@ -19,16 +19,16 @@ interface IpsumStateProviderProps {
 export let PROJECT_STATE: ProjectState;
 
 export const IpsumStateProvider: React.FC<IpsumStateProviderProps> = ({
-  projectState = PROJECT_STATE,
+  projectState,
   children,
 }) => {
+  if (!PROJECT_STATE) {
+    PROJECT_STATE = projectState ?? new ProjectState();
+  }
+
   useEffect(() => {
     PROJECT_STATE = projectState ?? new ProjectState();
   }, [projectState]);
 
-  return (
-    <IpsumStateContext.Provider value={{ projectState }}>
-      <ApolloProvider client={client}>{children}</ApolloProvider>
-    </IpsumStateContext.Provider>
-  );
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };

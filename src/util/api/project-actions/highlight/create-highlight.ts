@@ -11,7 +11,7 @@ export const createHighlight: APIFunction<
     dayCreated?: IpsumDay;
   },
   InMemoryHighlight
-> = async (args, context) => {
+> = (args, context) => {
   const { projectState } = context;
 
   const id = args.id ?? uuidv4();

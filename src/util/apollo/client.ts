@@ -21,7 +21,7 @@ import {
   JournalEntryResolvers,
   RelationResolvers,
   SearchResolvers,
-} from "util/api/project-resolvers";
+} from "util/api";
 import { PROJECT_STATE } from "util/state";
 import { relationTypeDef } from "./schemas/relation-schema";
 import { arcEntryTypeDef } from "./schemas/arc-entry-schema";

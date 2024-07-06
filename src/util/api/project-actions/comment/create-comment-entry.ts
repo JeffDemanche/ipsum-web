@@ -12,11 +12,11 @@ export const createCommentEntry: APIFunction<
     htmlString?: string;
   },
   InMemoryCommentEntry
-> = async (args, context) => {
+> = (args, context) => {
   const { projectState } = context;
 
   const dayCreated =
-    args.dayCreated.toString("iso") ?? IpsumDay.today().toString("iso");
+    args.dayCreated?.toString("iso") ?? IpsumDay.today().toString("iso");
 
   const entry = projectState.collection("entries").create(args.entryKey, {
     __typename: "Entry",

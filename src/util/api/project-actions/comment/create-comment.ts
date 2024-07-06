@@ -13,7 +13,7 @@ export const createComment: APIFunction<
     htmlString: string;
   },
   InMemoryComment
-> = async (args, context) => {
+> = (args, context) => {
   const { projectState } = context;
 
   const id = args.id ?? uuidv4();
@@ -22,7 +22,7 @@ export const createComment: APIFunction<
 
   const commentEntryKey = `comment-entry:${id}`;
 
-  const commentEntry = await apiCreateCommentEntry(
+  const commentEntry = apiCreateCommentEntry(
     {
       comment: id,
       entryKey: commentEntryKey,
