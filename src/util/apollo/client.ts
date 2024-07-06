@@ -1,22 +1,8 @@
 import { ApolloClient, gql, InMemoryCache, makeVar } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
-import { parseIpsumDateTime } from "util/dates";
-import { IpsumTimeMachine } from "util/diff";
 import { v4 as uuidv4 } from "uuid";
 
 import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
-import {
-  QueryArcEntriesArgs,
-  QueryEntriesArgs,
-  QueryRelationsArgs,
-} from "./__generated__/graphql";
-import { ArcResolvers } from "./resolvers/arc-resolvers";
-import { CommentEntryResolvers } from "./resolvers/comment-entry-resolvers";
-import { CommentResolvers } from "./resolvers/comment-resolvers";
-import { DayResolvers } from "./resolvers/day-resolvers";
-import { HighlightResolvers } from "./resolvers/highlight-resolvers";
-import { JournalEntryResolvers } from "./resolvers/journal-entry-resolvers";
-import { SearchResolvers } from "./resolvers/search-resolvers";
 import { arcTypeDef } from "./schemas/arc-schema";
 import { commentEntryTypeDef } from "./schemas/comment-entry-schema";
 import { commentTypeDef } from "./schemas/comment-schema";
@@ -24,23 +10,28 @@ import { dayTypeDef } from "./schemas/day-schema";
 import { highlightTypeDef } from "./schemas/highlight-schema";
 import { journalEntryTypeDef } from "./schemas/journal-entry-schema";
 import { searchTypeDef } from "./schemas/search-schema";
+import {
+  ArcEntryResolvers,
+  ArcResolvers,
+  CommentEntryResolvers,
+  CommentResolvers,
+  DayResolvers,
+  EntryResolvers,
+  HighlightResolvers,
+  JournalEntryResolvers,
+  RelationResolvers,
+  SearchResolvers,
+} from "util/api/project-resolvers";
+import { PROJECT_STATE } from "util/state";
+import { relationTypeDef } from "./schemas/relation-schema";
+import { arcEntryTypeDef } from "./schemas/arc-entry-schema";
+import { entryTypeDef } from "./schemas/entry-schema";
 
 const typeDefs = gql`
   type Query {
     journalId: String!
     journalTitle: String!
     journalMetadata: JournalMetadata!
-
-    entry(entryKey: ID!): Entry
-    entries(entryKeys: [ID!]): [Entry]
-    recentEntries(count: Int!): [Entry!]!
-    entryKeys: [String!]!
-
-    arcEntry(arcId: ID!): ArcEntry
-    arcEntries(entryKeys: [ID!]): [ArcEntry]
-
-    relation(id: ID!): Relation
-    relations(ids: [ID!]): [Relation]
   }
 
   # Generalized type that can be used on objects that have a history
@@ -50,36 +41,6 @@ const typeDefs = gql`
 
   type JournalMetadata {
     lastArcHue: Int!
-  }
-
-  enum EntryType {
-    JOURNAL
-    ARC
-    COMMENT
-  }
-
-  type Entry {
-    entryKey: String!
-    date: String!
-    htmlString: String!
-    trackedHTMLString: String!
-    highlights: [Highlight!]!
-    entryType: EntryType!
-    history: History!
-  }
-
-  type ArcEntry {
-    entry: Entry!
-    arc: Arc!
-  }
-
-  union RelationSubject = Arc | Highlight
-
-  type Relation {
-    id: ID!
-    subject: RelationSubject!
-    predicate: String!
-    object: Arc!
   }
 `;
 
@@ -228,71 +189,17 @@ const typePolicies: StrictTypedTypePolicies = {
   Query: {
     fields: {
       journalId() {
-        return vars.journalId();
+        return PROJECT_STATE.get("journalId");
       },
       journalTitle() {
-        return vars.journalTitle();
+        return PROJECT_STATE.get("journalTitle");
       },
       journalMetadata() {
-        return vars.journalMetadata();
+        return PROJECT_STATE.get("journalMetadata");
       },
-      entry(_, { args }) {
-        if (args.entryKey) {
-          return vars.entries()[args.entryKey] ?? null;
-        }
-        return null;
-      },
-      entries(_, { args }: { args: QueryEntriesArgs }) {
-        if (args?.entryKeys) {
-          return args.entryKeys
-            .map((entryKey) => vars.entries()[entryKey])
-            .filter(Boolean);
-        }
-        return Object.values(vars.entries());
-      },
-      recentEntries(_, { args }) {
-        return Object.values(vars.entries())
-          .sort(
-            (a, b) =>
-              parseIpsumDateTime(b.history.dateCreated)
-                .dateTime.toJSDate()
-                .getTime() -
-              parseIpsumDateTime(a.history.dateCreated)
-                .dateTime.toJSDate()
-                .getTime()
-          )
-          .slice(0, args.count);
-      },
-      entryKeys() {
-        return Object.values(vars.entries()).map((entry) => entry.entryKey);
-      },
-      arcEntry(_, { args }) {
-        if (args?.arcId) {
-          const arcEntryKey = Object.values(vars.arcs()).find(
-            (arc) => arc.id === args.arcId
-          ).arcEntry;
-          return vars.arcEntries()[arcEntryKey];
-        }
-        return null;
-      },
-      arcEntries(_, { args }: { args: QueryArcEntriesArgs }) {
-        if (args?.entryKeys) {
-          return args.entryKeys.map((entryKey) => vars.arcEntries()[entryKey]);
-        }
-        return Object.values(vars.arcEntries());
-      },
-      relation(_, { args }) {
-        if (args?.id) {
-          return vars.relations()[args.id];
-        }
-        return undefined;
-      },
-      relations(_, { args }: { args?: QueryRelationsArgs }) {
-        if (args?.ids) {
-          return args.ids.map((id) => vars.relations()[id]);
-        }
-        return Object.values(vars.relations());
-      },
+      ...EntryResolvers.Query.fields,
+      ...ArcResolvers.Query.fields,
+      ...RelationResolvers.Query.fields,
       ...HighlightResolvers.Query.fields,
       ...SearchResolvers.Query.fields,
       ...ArcResolvers.Query.fields,
@@ -302,64 +209,9 @@ const typePolicies: StrictTypedTypePolicies = {
       ...CommentEntryResolvers.Query.fields,
     },
   },
-  Entry: {
-    keyFields: ["entryKey"],
-    fields: {
-      highlights(_, { readField }) {
-        return Object.values(vars.highlights()).filter(
-          (highlight) => highlight.entry === readField("entryKey")
-        );
-      },
-      date(_, { readField }) {
-        return readField<UnhydratedType["History"]>("history").dateCreated;
-      },
-      htmlString(_, { readField }) {
-        const trackedHTMLString = readField<string>("trackedHTMLString");
-        const timeMachine = IpsumTimeMachine.fromString(trackedHTMLString);
-        return timeMachine.currentValue;
-      },
-      history(h) {
-        return h;
-      },
-    },
-  },
-  ArcEntry: {
-    keyFields: ["entry"],
-    fields: {
-      arc(arcId) {
-        return vars.arcs()[arcId];
-      },
-      entry(entryKey) {
-        const entry = vars.entries()[entryKey];
-        if (!entry) {
-          throw new Error(`No entry found with key: ${entryKey}`);
-        }
-        return entry;
-      },
-    },
-  },
-  Relation: {
-    keyFields: ["id"],
-    fields: {
-      subject(subjectId: string, { readField }) {
-        const id: string = readField("id");
-        const type = vars.relations()[id].subjectType;
-        if (type === "Arc") {
-          return vars.arcs()[subjectId];
-        } else if (type === "Highlight") {
-          return vars.highlights()[subjectId];
-        }
-      },
-      object(objectId: string, { readField }) {
-        const id: string = readField("id");
-        const type = vars.relations()[id].objectType;
-
-        if (type === "Arc") {
-          return vars.arcs()[objectId];
-        }
-      },
-    },
-  },
+  Entry: EntryResolvers.Entry,
+  ArcEntry: ArcEntryResolvers.ArcEntry,
+  Relation: RelationResolvers.Relation,
   Arc: ArcResolvers.Arc,
   Highlight: HighlightResolvers.Highlight,
   ImportanceRating: HighlightResolvers.ImportanceRating,
@@ -381,6 +233,9 @@ export const client = new ApolloClient({
   cache,
   typeDefs: [
     typeDefs,
+    entryTypeDef,
+    arcEntryTypeDef,
+    relationTypeDef,
     arcTypeDef,
     searchTypeDef,
     highlightTypeDef,
