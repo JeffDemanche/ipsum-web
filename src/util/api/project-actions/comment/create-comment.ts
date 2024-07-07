@@ -1,5 +1,5 @@
 import { IpsumDay } from "util/dates";
-import { InMemoryComment } from "util/state/project/types";
+import { InMemoryComment } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { apiCreateCommentEntry } from "..";

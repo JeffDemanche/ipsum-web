@@ -1,4 +1,4 @@
-import { StrictTypedTypePolicies } from "util/apollo/__generated__/apollo-helpers";
+import { StrictTypedTypePolicies } from "util/apollo";
 import { IpsumTimeMachine } from "util/diff";
 import { PROJECT_STATE } from "util/state";
 

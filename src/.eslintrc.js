@@ -32,17 +32,13 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["components/**/*"],
+      files: ["components/**/*", "util/**/*"],
       rules: {
         "@typescript-eslint/no-restricted-imports": [
           "error",
           {
-            paths: ["components/*"],
+            paths: ["components/*", "util/**/*"],
             patterns: [
-              {
-                group: ["../"],
-                message: "Don't reach into parent directories",
-              },
               {
                 group: [
                   "components/*/*/*",

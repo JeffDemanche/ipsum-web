@@ -1,15 +1,5 @@
 import { ApolloClient, gql, InMemoryCache, makeVar } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
-import { v4 as uuidv4 } from "uuid";
-
-import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
-import { arcTypeDef } from "./schemas/arc-schema";
-import { commentEntryTypeDef } from "./schemas/comment-entry-schema";
-import { commentTypeDef } from "./schemas/comment-schema";
-import { dayTypeDef } from "./schemas/day-schema";
-import { highlightTypeDef } from "./schemas/highlight-schema";
-import { journalEntryTypeDef } from "./schemas/journal-entry-schema";
-import { searchTypeDef } from "./schemas/search-schema";
 import {
   ArcEntryResolvers,
   ArcResolvers,
@@ -23,9 +13,19 @@ import {
   SearchResolvers,
 } from "util/api";
 import { PROJECT_STATE } from "util/state";
-import { relationTypeDef } from "./schemas/relation-schema";
+import { v4 as uuidv4 } from "uuid";
+
+import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import { arcEntryTypeDef } from "./schemas/arc-entry-schema";
+import { arcTypeDef } from "./schemas/arc-schema";
+import { commentEntryTypeDef } from "./schemas/comment-entry-schema";
+import { commentTypeDef } from "./schemas/comment-schema";
+import { dayTypeDef } from "./schemas/day-schema";
 import { entryTypeDef } from "./schemas/entry-schema";
+import { highlightTypeDef } from "./schemas/highlight-schema";
+import { journalEntryTypeDef } from "./schemas/journal-entry-schema";
+import { relationTypeDef } from "./schemas/relation-schema";
+import { searchTypeDef } from "./schemas/search-schema";
 
 const typeDefs = gql`
   type Query {

@@ -1,13 +1,12 @@
-import { QueryHighlightsArgs } from "util/apollo";
-import { StrictTypedTypePolicies } from "util/apollo/__generated__/apollo-helpers";
+import { QueryHighlightsArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumTimeMachine } from "util/diff";
 import { excerptDivString } from "util/excerpt";
 import { highlightImportanceOnDay } from "util/importance";
-import { PROJECT_STATE } from "util/state";
 import {
   InMemoryHighlight,
   InMemoryImportanceRating,
-} from "util/state/project/types";
+  PROJECT_STATE,
+} from "util/state";
 
 export const HighlightResolvers: StrictTypedTypePolicies = {
   Query: {

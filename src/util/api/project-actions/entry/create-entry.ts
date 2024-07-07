@@ -1,10 +1,10 @@
 import { EntryType } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { InMemoryEntry } from "util/state/project/types";
+import { InMemoryEntry } from "util/state";
 
-import { APIFunction } from "../types";
 import { createDay } from "../day/create-day";
+import { APIFunction } from "../types";
 
 export const createEntry: APIFunction<
   {

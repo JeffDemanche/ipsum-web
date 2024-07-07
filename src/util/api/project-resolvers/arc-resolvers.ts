@@ -1,7 +1,9 @@
-import { ArcSortType, QueryArcsArgs } from "util/apollo";
-import { StrictTypedTypePolicies } from "util/apollo/__generated__/apollo-helpers";
-import { PROJECT_STATE } from "util/state";
-import { InMemoryArc } from "util/state/project/types";
+import {
+  ArcSortType,
+  QueryArcsArgs,
+  StrictTypedTypePolicies,
+} from "util/apollo";
+import { InMemoryArc, PROJECT_STATE } from "util/state";
 
 export const ArcResolvers: StrictTypedTypePolicies = {
   Query: {

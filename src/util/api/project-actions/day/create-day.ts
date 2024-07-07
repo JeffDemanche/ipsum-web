@@ -1,6 +1,7 @@
-import { InMemoryDay } from "util/state/project/types";
-import { APIFunction } from "../types";
 import { IpsumDay } from "util/dates";
+import { InMemoryDay } from "util/state";
+
+import { APIFunction } from "../types";
 
 export const createDay: APIFunction<{ day: IpsumDay }, InMemoryDay> = (
   { day },

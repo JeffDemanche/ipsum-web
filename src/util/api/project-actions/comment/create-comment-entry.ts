@@ -1,6 +1,6 @@
 import { EntryType } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { InMemoryCommentEntry } from "util/state/project/types";
+import { InMemoryCommentEntry } from "util/state";
 
 import { APIFunction } from "../types";
 

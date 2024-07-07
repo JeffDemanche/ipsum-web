@@ -1,9 +1,7 @@
-import { QueryEntriesArgs } from "util/apollo";
-import { StrictTypedTypePolicies } from "util/apollo/__generated__/apollo-helpers";
+import { QueryEntriesArgs, StrictTypedTypePolicies } from "util/apollo";
 import { parseIpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { PROJECT_STATE } from "util/state";
-import { InMemoryHistory } from "util/state/project/types";
+import { InMemoryHistory, PROJECT_STATE } from "util/state";
 
 export const EntryResolvers: StrictTypedTypePolicies = {
   Query: {

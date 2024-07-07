@@ -1,5 +1,4 @@
-import { QueryCommentsArgs } from "util/apollo";
-import { StrictTypedTypePolicies } from "util/apollo/__generated__/apollo-helpers";
+import { QueryCommentsArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { PROJECT_STATE } from "util/state";
 

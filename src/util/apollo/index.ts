@@ -15,3 +15,4 @@ export {
   ApolloSerializationContext,
 } from "./ApolloSerializationContext";
 export { UnhydratedType } from "./client";
+export { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";

@@ -1,5 +1,5 @@
 import { IpsumDay } from "util/dates";
-import { InMemoryHighlight } from "util/state/project/types";
+import { InMemoryHighlight } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { APIFunction } from "../types";

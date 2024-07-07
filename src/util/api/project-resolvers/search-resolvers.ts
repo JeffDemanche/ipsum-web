@@ -1,8 +1,9 @@
-import { QuerySearchHighlightsArgs } from "util/apollo";
-import { StrictTypedTypePolicies } from "util/apollo/__generated__/apollo-helpers";
+import {
+  QuerySearchHighlightsArgs,
+  StrictTypedTypePolicies,
+} from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { PROJECT_STATE } from "util/state";
-import { InMemoryHighlight } from "util/state/project/types";
+import { InMemoryHighlight, PROJECT_STATE } from "util/state";
 
 const highlightMatchesDays = (highlight: InMemoryHighlight, days: string[]) => {
   if (!highlight) return false;

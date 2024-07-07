@@ -1,7 +1,7 @@
 import { ApolloProvider } from "@apollo/client";
 import React, { createContext, useEffect } from "react";
 import { client } from "util/apollo";
-import { ProjectState } from "util/state/project/project-state";
+import { ProjectState } from "util/state";
 
 interface IpsumStateContextType {
   projectState: ProjectState;

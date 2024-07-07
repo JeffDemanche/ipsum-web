@@ -1,18 +1,18 @@
 import { useContext } from "react";
 import { idbWrapper } from "util/indexed-db";
-import { ProjectStateContext } from "util/state/project";
+import { IpsumStateContext } from "util/state";
 
 import { APIFunction } from "./types";
 
 export const useApiAction = <T, U>(f: APIFunction<T, U>) => {
-  const { state } = useContext(ProjectStateContext);
+  const { projectState } = useContext(IpsumStateContext);
 
   return [
     (args: T, options?: { autosave?: boolean }) => {
-      const result = f(args, { projectState: state });
+      const result = f(args, { projectState });
 
       if (options?.autosave) {
-        idbWrapper?.putAutosaveValue(state.toSerialized());
+        idbWrapper?.putAutosaveValue(projectState.toSerialized());
       }
 
       return result;

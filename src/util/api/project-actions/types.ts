@@ -1,4 +1,4 @@
-import { ProjectState } from "util/state/project";
+import { ProjectState } from "util/state";
 
 interface APIActionContext {
   projectState: ProjectState;
