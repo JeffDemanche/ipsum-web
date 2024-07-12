@@ -1,4 +1,6 @@
+import { ExpandMore } from "@mui/icons-material";
 import { Select as MuiSelect } from "@mui/material";
+import cx from "classnames";
 import {
   border_radius_inputs,
   box_shadow_primary,
@@ -8,6 +10,8 @@ import {
   grey700,
 } from "components/styles";
 import React from "react";
+
+import styles from "./Select.less";
 
 type SelectProps = {
   menuRef?: React.RefObject<HTMLDivElement>;
@@ -35,6 +39,8 @@ export const Select: React.FunctionComponent<SelectProps> = ({
         fontWeight: font_weight_light,
         boxShadow: box_shadow_primary,
       }}
+      IconComponent={ExpandMore}
+      className={cx(muiProps.className, styles["select"])}
     >
       {children}
     </MuiSelect>

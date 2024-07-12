@@ -12,16 +12,25 @@ import styles from "./Drawer.less";
 
 interface DrawerProps {
   direction?: "down" | "up" | "left" | "right";
-  visibleContent?: React.ReactNode;
-  children: React.ReactNode;
+  defaultOpen?: boolean;
+  handleContent?: React.ReactNode;
+  closedContent?: React.ReactNode;
+  openedContent: React.ReactNode;
+
+  onOpen?: () => void;
+  onClose?: () => void;
 }
 
 export const Drawer: React.FunctionComponent<DrawerProps> = ({
   direction = "down",
-  visibleContent,
-  children,
+  defaultOpen,
+  handleContent,
+  openedContent,
+  closedContent,
+  onOpen,
+  onClose,
 }) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(defaultOpen);
 
   const Chevron = useMemo(() => {
     switch (direction) {
@@ -60,6 +69,15 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
     }
   }, [direction]);
 
+  const toggle = () => {
+    if (open) {
+      onClose?.();
+    } else {
+      onOpen?.();
+    }
+    setOpen(!open);
+  };
+
   return (
     <MuiDrawer
       PaperProps={{ className: cx(styles["drawer"], styles[direction]) }}
@@ -70,15 +88,18 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
       <div className={styles["visible-content"]}>
         <Button
           onClick={() => {
-            setOpen(!open);
+            toggle();
           }}
         >
           <Chevron />
         </Button>
-        {visibleContent}
+        {handleContent}
       </div>
+      <Collapse in={!open} orientation={orientation}>
+        <div className={styles["hidden-content"]}>{closedContent}</div>
+      </Collapse>
       <Collapse in={open} orientation={orientation}>
-        <div className={cx(styles["hidden-content"])}>{children}</div>
+        <div className={styles["hidden-content"]}>{openedContent}</div>
       </Collapse>
     </MuiDrawer>
   );

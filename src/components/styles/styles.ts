@@ -9,6 +9,7 @@ import {
   font_size_small,
   font_weight_light,
   grey500,
+  grey700,
   grid_x_1,
   grid_x_5,
 } from "./constants";
@@ -195,6 +196,8 @@ export const theme = createTheme(
         variants: [],
         styleOverrides: {
           root: {
+            color: grey700,
+            borderColor: grey700,
             minWidth: grid_x_1,
             height: grid_x_5,
             paddingRight: grid_x_1,
@@ -229,10 +232,22 @@ export const theme = createTheme(
           },
         },
       },
-      MuiSelect: {},
+      MuiSelect: {
+        styleOverrides: {
+          nativeInput: {
+            color: grey700,
+            borderColor: grey700,
+          },
+          outlined: {
+            paddingLeft: grid_x_1,
+          },
+        },
+      },
       MuiInputBase: {
         styleOverrides: {
           root: {
+            color: grey700,
+            borderColor: grey700,
             fontSize: font_size_small,
             fontFamily: font_family_sans,
             fontWeight: font_weight_light,

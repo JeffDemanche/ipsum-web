@@ -15,17 +15,28 @@ type Story = StoryObj<typeof Drawer>;
 
 export const DrawerExample: Story = {
   args: {
-    children: <Typography>Content</Typography>,
+    openedContent: <Typography>Content</Typography>,
   },
 };
 
-export const DrawerWithVisibleContent: Story = {
+export const DrawerWithHandleContent: Story = {
   args: {
-    children: <Typography>Content</Typography>,
-    visibleContent: (
+    openedContent: <Typography>Content</Typography>,
+    handleContent: (
       <Button>
         <Today />
       </Button>
     ),
+  },
+};
+
+export const DrawerWithClosedContent: Story = {
+  args: {
+    openedContent: (
+      <Typography>
+        Opened<br></br>Content
+      </Typography>
+    ),
+    closedContent: <Typography>Closed</Typography>,
   },
 };
