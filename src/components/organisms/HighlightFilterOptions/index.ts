@@ -1,0 +1,1 @@
+export { HighlightFilterOptions } from "./HighlightFilterOptions";

@@ -22,7 +22,14 @@ interface HighlightSortOptionsProps {
 
 export const HighlightSortOptions: React.FunctionComponent<
   HighlightSortOptionsProps
-> = ({ expanded, sortType, sortDay, onSortTypeChange, onSortDayChange }) => {
+> = ({
+  className,
+  expanded,
+  sortType,
+  sortDay,
+  onSortTypeChange,
+  onSortDayChange,
+}) => {
   const sortTypeSelect = (
     <Select className={styles["input-element"]} value={sortType}>
       {sortTypes.map((type) => (
@@ -38,7 +45,7 @@ export const HighlightSortOptions: React.FunctionComponent<
   );
 
   return (
-    <div className={styles["highlight-sort-options"]}>
+    <div className={cx(className, styles["highlight-sort-options"])}>
       {expanded && (
         <Type variant="sans" size="small" weight="light">
           Sort

@@ -7,6 +7,9 @@ import styles from "./RelationsTable.less";
 
 interface RelationsTableProps {
   expanded: boolean;
+  showAlias?: boolean;
+  showEdit?: boolean;
+  showDelete?: boolean;
   relations: {
     id: string;
     predicate: string;
@@ -20,6 +23,9 @@ interface RelationsTableProps {
 
 export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
   expanded,
+  showAlias,
+  showEdit,
+  showDelete,
   relations,
 }) => {
   const relationsByPredicate = useMemo(() => {
@@ -45,20 +51,20 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
           {relationsByPredicate[predicate].map((relation) => {
             return (
               <ArcTag
-                fontSize="small"
+                fontSize="x-small"
                 key={relation.arc.id}
                 hue={relation.arc.hue}
                 text={relation.arc.name}
-                showAlias={expanded}
-                showEdit={expanded}
-                showDelete={expanded}
+                showAlias={showAlias ?? expanded}
+                showEdit={showEdit ?? expanded}
+                showDelete={showDelete ?? expanded}
               />
             );
           })}
         </div>
       );
     });
-  }, [expanded, relationsByPredicate]);
+  }, [expanded, relationsByPredicate, showAlias, showDelete, showEdit]);
 
   return (
     <div

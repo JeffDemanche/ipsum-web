@@ -3,6 +3,7 @@ import React from "react";
 import { IpsumDay } from "util/dates";
 import { SortType } from "util/sort";
 
+import { HighlightFilterOptions } from "../HighlightFilterOptions";
 import { HighlightSortOptions } from "../HighlightSortOptions";
 
 interface HighlightResultsOptionsDrawerProps {
@@ -14,6 +15,17 @@ interface HighlightResultsOptionsDrawerProps {
   sortDay: IpsumDay;
   onSortTypeChange: (sortType: string) => void;
   onSortDayChange: (sortDay: IpsumDay) => void;
+
+  relations: {
+    id: string;
+    predicate: string;
+    arc: {
+      id: string;
+      hue: number;
+      name: string;
+    };
+  }[];
+  onCreateRelation: (predicate: string) => void;
 }
 
 export const HighlightResultsOptionsDrawer: React.FunctionComponent<
@@ -26,6 +38,8 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
   sortDay,
   onSortDayChange,
   onSortTypeChange,
+  relations,
+  onCreateRelation,
 }) => {
   const openedContent = (
     <div>
@@ -36,17 +50,29 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
         onSortDayChange={onSortDayChange}
         expanded
       />
+      <HighlightFilterOptions
+        expanded
+        relations={relations}
+        onCreateRelation={onCreateRelation}
+      />
     </div>
   );
 
   const closedContent = (
-    <HighlightSortOptions
-      sortType={sortType}
-      sortDay={sortDay}
-      onSortTypeChange={onSortTypeChange}
-      onSortDayChange={onSortDayChange}
-      expanded={false}
-    />
+    <div>
+      <HighlightSortOptions
+        sortType={sortType}
+        sortDay={sortDay}
+        onSortTypeChange={onSortTypeChange}
+        onSortDayChange={onSortDayChange}
+        expanded={false}
+      />
+      <HighlightFilterOptions
+        expanded={false}
+        relations={relations}
+        onCreateRelation={onCreateRelation}
+      />
+    </div>
   );
 
   return (

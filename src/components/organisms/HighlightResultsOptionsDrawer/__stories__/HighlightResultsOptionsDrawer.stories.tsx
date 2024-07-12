@@ -19,5 +19,25 @@ export const HighlightResultsOptionsDrawerExample: StoryHighlightResultsOptionsD
       expanded: true,
       sortDay: IpsumDay.today(),
       sortType: "Importance",
+      relations: [
+        {
+          id: "1",
+          predicate: "is",
+          arc: {
+            id: "1",
+            hue: 0,
+            name: "opinion",
+          },
+        },
+        {
+          id: "1",
+          predicate: "relates to",
+          arc: {
+            id: "2",
+            hue: 294,
+            name: "bananas",
+          },
+        },
+      ],
     },
   };

@@ -6,6 +6,7 @@ import {
   font_family_sans,
   font_size_medium,
   font_size_small,
+  font_size_x_small,
 } from "components/styles";
 import React from "react";
 
@@ -14,7 +15,7 @@ import styles from "./ArcTag.less";
 interface ArcTagProps {
   text: string;
   hue: number;
-  fontSize?: "small" | "medium";
+  fontSize?: "x-small" | "small" | "medium";
 
   showAlias?: boolean;
   showEdit?: boolean;
@@ -33,16 +34,24 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
   onDelete,
 }) => {
   const fontSizePx = {
+    "x-small": font_size_x_small,
     small: font_size_small,
     medium: font_size_medium,
   }[fontSize];
 
   const elementMaxHeight = {
+    "x-small": "18px",
     small: "24px",
     medium: "28px",
   }[fontSize];
 
   const visibleIcons = showAlias || showEdit || showDelete;
+
+  const miniButtonSize: "x-small" | "small" = {
+    "x-small": "x-small",
+    small: "small",
+    medium: "small",
+  }[fontSize] as "x-small" | "small";
 
   return (
     <div
@@ -68,12 +77,16 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
       </Button>
       <div className={styles["arc-tag-items"]}>
         {showAlias && (
-          <MiniButton foregroundColor={`hsla(${hue}, 38%, 95%, 1)`}>
+          <MiniButton
+            fontSize={miniButtonSize}
+            foregroundColor={`hsla(${hue}, 38%, 95%, 1)`}
+          >
             <FingerprintSharp fontSize="small" />
           </MiniButton>
         )}
         {showEdit && (
           <MiniButton
+            fontSize={miniButtonSize}
             backgroundColor={`hsla(${hue}, 38%, 95%, 1)`}
             foregroundColor={`hsla(${hue}, 20%, 40%, 1)`}
           >
@@ -82,6 +95,7 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
         )}
         {showDelete && (
           <MiniButton
+            fontSize={miniButtonSize}
             foregroundColor={`hsla(${hue}, 38%, 95%, 1)`}
             onClick={onDelete}
           >
