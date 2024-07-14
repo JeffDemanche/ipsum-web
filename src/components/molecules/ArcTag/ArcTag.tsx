@@ -47,12 +47,6 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
 
   const visibleIcons = showAlias || showEdit || showDelete;
 
-  const miniButtonSize: "x-small" | "small" = {
-    "x-small": "x-small",
-    small: "small",
-    medium: "small",
-  }[fontSize] as "x-small" | "small";
-
   return (
     <div
       className={cx(styles["arc-tag"], visibleIcons && styles["visible-icons"])}
@@ -64,12 +58,10 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
         className={styles["link-button"]}
         style={{
           gap: "4px",
-          paddingTop: "0",
-          paddingBottom: "0",
           fontFamily: font_family_sans,
           fontSize: fontSizePx,
           minWidth: "0",
-          maxHeight: elementMaxHeight,
+          height: "unset",
           color: `hsla(${hue}, 40%, 95%, 1)`,
         }}
       >
@@ -78,28 +70,28 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
       <div className={styles["arc-tag-items"]}>
         {showAlias && (
           <MiniButton
-            fontSize={miniButtonSize}
+            fontSize={fontSize}
             foregroundColor={`hsla(${hue}, 38%, 95%, 1)`}
           >
-            <FingerprintSharp fontSize="small" />
+            <FingerprintSharp style={{ height: fontSizePx }} />
           </MiniButton>
         )}
         {showEdit && (
           <MiniButton
-            fontSize={miniButtonSize}
+            fontSize={fontSize}
             backgroundColor={`hsla(${hue}, 38%, 95%, 1)`}
             foregroundColor={`hsla(${hue}, 20%, 40%, 1)`}
           >
-            <EditSharp fontSize="small" />
+            <EditSharp style={{ height: fontSizePx }} />
           </MiniButton>
         )}
         {showDelete && (
           <MiniButton
-            fontSize={miniButtonSize}
+            fontSize={fontSize}
             foregroundColor={`hsla(${hue}, 38%, 95%, 1)`}
             onClick={onDelete}
           >
-            <CloseSharp fontSize="small" />
+            <CloseSharp style={{ height: fontSizePx }} />
           </MiniButton>
         )}
       </div>

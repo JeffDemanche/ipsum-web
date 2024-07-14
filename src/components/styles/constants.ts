@@ -37,3 +37,5 @@ export const grey600 = "#bfbfbf";
 export const grey700 = "#8c8c8c";
 export const grey800 = "#595959";
 export const grey900 = "#262626";
+
+export const border_dashed = `1px dashed ${grey700}`;

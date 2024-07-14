@@ -5,7 +5,7 @@ import React, { CSSProperties } from "react";
 import styles from "./MiniButton.less";
 
 interface MiniButtonProps {
-  fontSize?: "x-small" | "small";
+  fontSize?: "x-small" | "small" | "medium";
   foregroundColor: CSSProperties["color"];
   backgroundColor?: CSSProperties["backgroundColor"];
   children: React.ReactNode;
@@ -22,8 +22,9 @@ export const MiniButton: React.FunctionComponent<MiniButtonProps> = ({
   style,
 }) => {
   const size = {
-    "x-small": "16px",
-    small: "20px",
+    "x-small": "12px",
+    small: "14px",
+    medium: "16px",
   }[fontSize];
 
   return (

@@ -1,6 +1,7 @@
 import cx from "classnames";
 import { Type } from "components/atoms/Type";
 import { ArcTag } from "components/molecules/ArcTag";
+import { grey800 } from "components/styles";
 import React, { useMemo } from "react";
 
 import styles from "./RelationsTable.less";
@@ -45,7 +46,7 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
     return Object.keys(relationsByPredicate).map((predicate) => {
       return (
         <div className={styles["predicate-row"]} key={predicate}>
-          <Type size="x-small" weight="light">
+          <Type color={grey800} size="x-small" weight="light">
             {predicate}
           </Type>
           {relationsByPredicate[predicate].map((relation) => {

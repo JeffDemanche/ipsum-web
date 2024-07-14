@@ -5,6 +5,7 @@ import { SortType } from "util/sort";
 
 import { HighlightFilterOptions } from "../HighlightFilterOptions";
 import { HighlightSortOptions } from "../HighlightSortOptions";
+import styles from "./HighlightResultsOptionsDrawer.less";
 
 interface HighlightResultsOptionsDrawerProps {
   expanded: boolean;
@@ -42,7 +43,7 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
   onCreateRelation,
 }) => {
   const openedContent = (
-    <div>
+    <div className={styles["opened-container"]}>
       <HighlightSortOptions
         sortType={sortType}
         sortDay={sortDay}
@@ -59,7 +60,7 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
   );
 
   const closedContent = (
-    <div>
+    <div className={styles["closed-container"]}>
       <HighlightSortOptions
         sortType={sortType}
         sortDay={sortDay}
