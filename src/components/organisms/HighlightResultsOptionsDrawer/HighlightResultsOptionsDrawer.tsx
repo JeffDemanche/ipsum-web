@@ -1,10 +1,11 @@
 import { Drawer } from "components/atoms/Drawer";
+import { HighlightFilterOptions } from "components/molecules/HighlightFilterOptions";
+import { HighlightSortOptions } from "components/molecules/HighlightSortOptions";
+import { border_dashed } from "components/styles";
 import React from "react";
 import { IpsumDay } from "util/dates";
 import { SortType } from "util/sort";
 
-import { HighlightFilterOptions } from "../HighlightFilterOptions";
-import { HighlightSortOptions } from "../HighlightSortOptions";
 import styles from "./HighlightResultsOptionsDrawer.less";
 
 interface HighlightResultsOptionsDrawerProps {
@@ -51,6 +52,7 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
         onSortDayChange={onSortDayChange}
         expanded
       />
+      <hr style={{ border: "none", borderTop: border_dashed }} />
       <HighlightFilterOptions
         expanded
         relations={relations}

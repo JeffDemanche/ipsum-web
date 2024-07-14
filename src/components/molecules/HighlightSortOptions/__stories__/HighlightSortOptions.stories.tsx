@@ -3,7 +3,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import { HighlightSortOptions } from "../HighlightSortOptions";
 
 const meta: Meta<typeof HighlightSortOptions> = {
-  title: "Organisms/HighlightSortOptions",
+  title: "Molecules/HighlightSortOptions",
   component: HighlightSortOptions,
 };
 

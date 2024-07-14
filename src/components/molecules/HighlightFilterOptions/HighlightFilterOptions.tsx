@@ -51,10 +51,7 @@ export const HighlightFilterOptions: React.FunctionComponent<
           Filter
         </Type>
       )}
-      <div
-        className={styles["date-filters"]}
-        style={{ marginBottom: expanded ? "0" : grid_x_1 }}
-      >
+      <div className={styles["date-filters"]}>
         <Type color={grey800} variant="sans" size="x-small" weight="light">
           from
         </Type>
@@ -68,9 +65,6 @@ export const HighlightFilterOptions: React.FunctionComponent<
           {dateLabel(dateFilterTo)}
         </Button>
       </div>
-      {expanded && (
-        <hr style={{ border: "none", borderTop: border_dashed }}></hr>
-      )}
       <RelationsTable
         expanded={expanded}
         showAlias
