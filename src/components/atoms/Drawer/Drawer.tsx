@@ -81,6 +81,14 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
   return (
     <MuiDrawer
       PaperProps={{ className: cx(styles["drawer"], styles[direction]) }}
+      sx={{
+        "& .MuiDrawer-root": {
+          position: "relative",
+        },
+        "& .MuiPaper-root": {
+          position: "relative",
+        },
+      }}
       anchor={anchor}
       variant="permanent"
       open={open}

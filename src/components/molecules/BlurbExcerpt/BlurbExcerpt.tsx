@@ -45,7 +45,10 @@ export const BlurbExcerpt: React.FunctionComponent<BlurbExcerptProps> = ({
   return (
     <div className={styles["excerpt"]}>
       <div
-        style={{ WebkitLineClamp: maxLines, lineClamp: maxLines }}
+        style={{
+          WebkitLineClamp: maxLines,
+          lineClamp: maxLines,
+        }}
         className={cx(
           editorStyles["styled-editor"],
           maxLines && styles["truncate"]

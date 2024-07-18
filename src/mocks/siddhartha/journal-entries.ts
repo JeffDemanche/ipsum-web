@@ -24,7 +24,15 @@ export const journalEntry1_TheSonOfTheBrahman: MockedEntry = {
       },
     },
 
-    "I have spent the day in deep conversation with my friend Govinda, discussing the teachings of our revered teacher, the illustrious Gotama. His words have left an indelible mark upon my consciousness, stirring within me a longing to embark on a journey of self-discovery and enlightenment.",
+    {
+      text: "I have spent the day in deep conversation with my friend Govinda, discussing the teachings of our revered teacher, the illustrious Gotama. His words have left an indelible mark upon my consciousness, stirring within me a longing to embark on a journey of self-discovery and enlightenment.",
+      highlight: {
+        entryKey: "1/1/2020",
+        hue: 231,
+        id: "highlight-chapter1-p-1",
+        comments: [],
+      },
+    },
 
     "As I gaze upon the tranquil waters of the river, I cannot help but feel a sense of restlessness stirring within me. The life of luxury and privilege that surrounds me in my father's home no longer holds the allure it once did. The path to true enlightenment lies beyond the confines of material wealth and societal expectations.",
 

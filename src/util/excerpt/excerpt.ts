@@ -44,6 +44,7 @@ export const excerptDivString = ({
 }: ExcerptOptions) => {
   const div = document.createElement("div");
   div.innerHTML = entryDomString;
+  div.classList.add("ipsum-excerpt");
 
   const truncatedDiv =
     removeNonHighlightChildren(div, highlightId, highlightHue) ?? div;

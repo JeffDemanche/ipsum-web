@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { constructExcerpt } from "mocks/excerpts";
 import { siddhartha } from "mocks/siddhartha";
+import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import React from "react";
+import { IpsumTimeMachine } from "util/diff";
 
 import { HighlightBlurb } from "../HighlightBlurb";
 
@@ -17,6 +19,12 @@ const meta: Meta<typeof HighlightBlurb> = {
 
 export default meta;
 type Story = StoryObj<typeof HighlightBlurb>;
+
+const siddharthaMock = mockSiddhartha();
+const highlights = siddharthaMock.projectState
+  .collection("highlights")
+  .getAll();
+const entries = siddharthaMock.projectState.collection("entries").getAll();
 
 export const HighlightBlurbExample: Story = {
   parameters: {
@@ -35,13 +43,15 @@ export const HighlightBlurbExample: Story = {
         excerptPieces: [
           {
             blockType: "paragraph",
-            innerHtml: siddhartha.journalEntry1_TheSonOfTheBrahman[1],
-            highlight: { id: "highlight-id", hue: 90 },
+            innerHtml:
+              "I have spent the day in deep conversation with my friend Govinda, discussing the teachings of our revered teacher, the illustrious Gotama. His words have left an indelible mark upon my consciousness, stirring within me a longing to embark on a journey of self-discovery and enlightenment.",
+            highlight: { id: "highlight-2", hue: 90 },
           },
           {
             blockType: "paragraph",
-            innerHtml: siddhartha.journalEntry1_TheSonOfTheBrahman[2],
-            highlight: { id: "highlight-id", hue: 90 },
+            innerHtml:
+              "As I gaze upon the tranquil waters of the river, I cannot help but feel a sense of restlessness stirring within me. The life of luxury and privilege that surrounds me in my father's home no longer holds the allure it once did. The path to true enlightenment lies beyond the confines of material wealth and societal expectations.",
+            highlight: { id: "highlight-2", hue: 90 },
           },
         ],
       }),

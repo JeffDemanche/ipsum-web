@@ -9,9 +9,9 @@ import { SortType } from "util/sort";
 import styles from "./HighlightResultsOptionsDrawer.less";
 
 interface HighlightResultsOptionsDrawerProps {
-  expanded: boolean;
-  onExpand: () => void;
-  onCollapse: () => void;
+  defaultExpanded: boolean;
+  onExpand?: () => void;
+  onCollapse?: () => void;
 
   sortType: SortType;
   sortDay: IpsumDay;
@@ -27,13 +27,13 @@ interface HighlightResultsOptionsDrawerProps {
       name: string;
     };
   }[];
-  onCreateRelation: (predicate: string) => void;
+  onAddRelationFilter?: (predicate: string) => void;
 }
 
 export const HighlightResultsOptionsDrawer: React.FunctionComponent<
   HighlightResultsOptionsDrawerProps
 > = ({
-  expanded,
+  defaultExpanded,
   onExpand,
   onCollapse,
   sortType,
@@ -41,7 +41,7 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
   onSortDayChange,
   onSortTypeChange,
   relations,
-  onCreateRelation,
+  onAddRelationFilter,
 }) => {
   const openedContent = (
     <div className={styles["opened-container"]}>
@@ -56,7 +56,7 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
       <HighlightFilterOptions
         expanded
         relations={relations}
-        onCreateRelation={onCreateRelation}
+        onCreateRelation={onAddRelationFilter}
       />
     </div>
   );
@@ -73,7 +73,7 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
       <HighlightFilterOptions
         expanded={false}
         relations={relations}
-        onCreateRelation={onCreateRelation}
+        onCreateRelation={onAddRelationFilter}
       />
     </div>
   );
@@ -81,6 +81,9 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
   return (
     <Drawer
       direction="down"
+      defaultOpen={defaultExpanded}
+      onOpen={onExpand}
+      onClose={onCollapse}
       openedContent={openedContent}
       closedContent={closedContent}
     />

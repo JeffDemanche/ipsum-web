@@ -16,7 +16,7 @@ type StoryHighlightResultsOptionsDrawer = StoryObj<
 export const HighlightResultsOptionsDrawerExample: StoryHighlightResultsOptionsDrawer =
   {
     args: {
-      expanded: true,
+      defaultExpanded: true,
       sortDay: IpsumDay.today(),
       sortType: "Importance",
       relations: [

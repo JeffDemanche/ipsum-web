@@ -71,9 +71,7 @@ export const BlurbWrapper: React.FunctionComponent<BlurbWrapperProps> = ({
       className={cx(styles["blurb-wrapper"], className)}
     >
       {collapseColumn}
-      <div className={styles["content"]}>
-        <Type weight="light">{children}</Type>
-      </div>
+      <div className={styles["content"]}>{children}</div>
     </div>
   );
 };

@@ -7,3 +7,11 @@
     background-color: hsla(var(--hue), 90%, var(--lightness), 0.2);
   }
 }
+
+.ipsum-excerpt :first-child {
+  margin-block-start: 0 !important;
+}
+
+.ipsum-excerpt :last-child {
+  margin-block-end: 0 !important;
+}
