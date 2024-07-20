@@ -8,8 +8,8 @@ import {
   mockHighlights,
   mockRelations,
 } from "util/apollo/__tests__/apollo-test-utils";
-import { useIpsumSearchParams } from "util/url";
-import { IpsumURLSearch } from "util/url/types";
+import { useIpsumSearchParams } from "util/state/url";
+import { IpsumURLSearch } from "util/state/url/types";
 
 import { useSearchResults } from "../search";
 

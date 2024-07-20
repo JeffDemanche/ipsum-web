@@ -7,7 +7,7 @@ import { DayChip } from "components/DayChip";
 import React, { useCallback, useMemo, useState } from "react";
 import { createArc } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { URLSearchCriteria, useModifySearchParams } from "util/url";
+import { URLSearchCriteria, useModifySearchParams } from "util/state/url";
 
 import styles from "./HighlightSearchCriteriaPanel.less";
 

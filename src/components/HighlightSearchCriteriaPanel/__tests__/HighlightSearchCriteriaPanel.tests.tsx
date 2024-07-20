@@ -4,8 +4,8 @@ import { render, screen } from "@testing-library/react";
 import React from "react";
 import { client } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { useModifySearchParams } from "util/url";
-import { IpsumURLSearch } from "util/url/types";
+import { useModifySearchParams } from "util/state/url";
+import { IpsumURLSearch } from "util/state/url/types";
 
 import { HighlightSearchCriteriaPanel } from "../HighlightSearchCriteriaPanel";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { URLLayer } from "util/url";
+import { URLLayer } from "util/state/url";
 
 interface LayerContextValue {
   layer: URLLayer;

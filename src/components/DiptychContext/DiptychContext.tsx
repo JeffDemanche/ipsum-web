@@ -6,7 +6,7 @@ import {
   URLLayer,
   useIpsumSearchParams,
   useModifySearchParams,
-} from "util/url";
+} from "util/state/url";
 
 import { Diptych } from "./types";
 
@@ -104,11 +104,11 @@ export const DiptychProvider: React.FunctionComponent<DiptychProviderProps> = ({
                   "entry-printed-date"
                 ).toString("stored-day")
               : layer.focusedDate
-              ? IpsumDateTime.fromString(
-                  layer.focusedDate,
-                  "url-format"
-                ).toString("entry-printed-date")
-              : IpsumDay.today().toString("entry-printed-date"),
+                ? IpsumDateTime.fromString(
+                    layer.focusedDate,
+                    "url-format"
+                  ).toString("entry-printed-date")
+                : IpsumDay.today().toString("entry-printed-date"),
             visible,
           };
         case "arc_detail":

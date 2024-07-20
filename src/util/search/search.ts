@@ -3,7 +3,7 @@ import { DiptychContext } from "components/DiptychContext";
 import { useContext, useMemo } from "react";
 import { gql } from "util/apollo";
 import { compareDatesDesc, IpsumDateTime, IpsumDay } from "util/dates";
-import { URLSearchCriteria, useIpsumSearchParams } from "util/url";
+import { URLSearchCriteria, useIpsumSearchParams } from "util/state/url";
 
 interface UseHighlightSearchResultsResult {
   isUserSearch: boolean;

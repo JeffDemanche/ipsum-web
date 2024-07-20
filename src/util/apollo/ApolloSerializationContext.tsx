@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { readFromFile, writeToFile } from "util/file";
 import { useIpsumIDBWrapper } from "util/indexed-db";
-import { useModifySearchParams } from "util/url";
+import { useModifySearchParams } from "util/state/url";
 
 import { autosave } from "./autosave";
 import { initializeState, vars } from "./client";

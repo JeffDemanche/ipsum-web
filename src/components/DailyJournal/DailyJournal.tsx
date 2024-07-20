@@ -9,7 +9,7 @@ import React, { useCallback, useContext, useMemo } from "react";
 import { gql } from "util/apollo";
 import { IpsumDay, useToday } from "util/dates";
 import { TestIds } from "util/test-ids";
-import { DailyJournalURLLayer, useModifySearchParams } from "util/url";
+import { DailyJournalURLLayer, useModifySearchParams } from "util/state/url";
 
 import styles from "./DailyJournal.less";
 import { JournalEntryPast } from "./JournalEntryPast";

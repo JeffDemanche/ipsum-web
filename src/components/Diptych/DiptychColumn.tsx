@@ -2,7 +2,7 @@ import { ArcDetail } from "components/ArcDetail";
 import { DailyJournal } from "components/DailyJournal";
 import { HighlightDetail } from "components/HighlightDetail";
 import React, { useMemo } from "react";
-import { URLLayer } from "util/url";
+import { URLLayer } from "util/state/url";
 
 import styles from "./DiptychColumn.less";
 import { LayerProvider } from "./LayerContext";
