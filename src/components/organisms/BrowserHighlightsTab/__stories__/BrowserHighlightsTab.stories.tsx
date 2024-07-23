@@ -1,5 +1,4 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import { IpsumDay } from "util/dates";
 
 import { BrowserHighlightsTab } from "../BrowserHighlightsTab";
@@ -17,20 +16,53 @@ export const BrowserHighlightsTabExample: Story = {
     layout: "fullscreen",
   },
   args: {
-    sort: {
-      onSortDayChange: () => {},
-      onSortTypeChange: () => {},
+    optionsDrawerProps: {
+      defaultExpanded: true,
       sortDay: IpsumDay.today(),
       sortType: "Importance",
-    },
-    filters: {
-      relations: [
-        {
-          id: "1",
-          predicate: "is",
-          arc: { id: "arc1", hue: 0, name: "opinion" },
+      onSortDayChange: () => {},
+      onSortTypeChange: () => {},
+      filterOptionsProps: {
+        onCreateClause: () => {},
+        dateFilterFrom: undefined,
+        dateFilterTo: undefined,
+        clauses: {
+          and: [
+            {
+              orRelations: [
+                {
+                  predicate: "is",
+                  arc: {
+                    id: "1",
+                    hue: 124,
+                    name: "arc1",
+                  },
+                },
+                {
+                  predicate: "relates to",
+                  arc: {
+                    id: "2",
+                    hue: 236,
+                    name: "arc2",
+                  },
+                },
+              ],
+            },
+            {
+              orRelations: [
+                {
+                  predicate: "relates to",
+                  arc: {
+                    id: "3",
+                    hue: 85,
+                    name: "arc3",
+                  },
+                },
+              ],
+            },
+          ],
         },
-      ],
+      },
     },
     highlights: [
       {
@@ -47,7 +79,6 @@ export const BrowserHighlightsTabExample: Story = {
         },
         relationsProps: [
           {
-            id: "1",
             predicate: "is",
             arc: { id: "arc1", hue: 0, name: "opinion" },
           },

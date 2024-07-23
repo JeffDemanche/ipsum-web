@@ -3,31 +3,14 @@ import { HighlightBlurb } from "components/molecules/HighlightBlurb";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import React from "react";
 import { IpsumDay } from "util/dates";
-import { SortType } from "util/sort";
 
 import { HighlightResultsOptionsDrawer } from "../HighlightResultsOptionsDrawer/HighlightResultsOptionsDrawer";
 import styles from "./BrowserHighlightsTab.less";
 
 interface BrowserHighlightsTabProps {
-  optionsExpanded: boolean;
-
-  sort: {
-    sortType: SortType;
-    sortDay: IpsumDay;
-    onSortTypeChange: (sortType: string) => void;
-    onSortDayChange: (sortDay: IpsumDay) => void;
-  };
-  filters: {
-    relations: {
-      id: string;
-      predicate: string;
-      arc: {
-        id: string;
-        hue: number;
-        name: string;
-      };
-    }[];
-  };
+  optionsDrawerProps: React.ComponentProps<
+    typeof HighlightResultsOptionsDrawer
+  >;
   highlights: {
     day: IpsumDay;
     highlightProps: React.ComponentProps<
@@ -36,21 +19,11 @@ interface BrowserHighlightsTabProps {
     excerptProps: React.ComponentProps<typeof HighlightBlurb>["excerptProps"];
     relationsProps: React.ComponentProps<typeof RelationsTable>["relations"];
   }[];
-
-  onOptionsExpand: () => void;
-  onOptionsCollapse: () => void;
 }
 
 export const BrowserHighlightsTab: React.FunctionComponent<
   BrowserHighlightsTabProps
-> = ({
-  optionsExpanded,
-  sort,
-  filters,
-  highlights,
-  onOptionsExpand,
-  onOptionsCollapse,
-}) => {
+> = ({ optionsDrawerProps, highlights }) => {
   const groupedHighlights = highlights.reduce(
     (acc, highlight) => {
       const day = highlight.day.toString("url-format");
@@ -65,14 +38,7 @@ export const BrowserHighlightsTab: React.FunctionComponent<
 
   return (
     <div>
-      <HighlightResultsOptionsDrawer
-        defaultExpanded={false}
-        onSortDayChange={sort.onSortDayChange}
-        onSortTypeChange={sort.onSortTypeChange}
-        relations={filters.relations}
-        sortDay={sort.sortDay}
-        sortType={sort.sortType}
-      />
+      <HighlightResultsOptionsDrawer {...optionsDrawerProps} />
       <div className={styles["highlight-results"]}>
         {Object.entries(groupedHighlights).map(([dayString, highlights]) => {
           const day = IpsumDay.fromString(dayString, "url-format");

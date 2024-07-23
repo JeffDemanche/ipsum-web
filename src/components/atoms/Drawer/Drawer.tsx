@@ -11,6 +11,9 @@ import React, { useMemo, useState } from "react";
 import styles from "./Drawer.less";
 
 interface DrawerProps {
+  style?: React.CSSProperties;
+  className?: string;
+
   direction?: "down" | "up" | "left" | "right";
   defaultOpen?: boolean;
   handleContent?: React.ReactNode;
@@ -22,6 +25,8 @@ interface DrawerProps {
 }
 
 export const Drawer: React.FunctionComponent<DrawerProps> = ({
+  style,
+  className,
   direction = "down",
   defaultOpen,
   handleContent,
@@ -80,6 +85,8 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
 
   return (
     <MuiDrawer
+      style={style}
+      className={className}
       PaperProps={{ className: cx(styles["drawer"], styles[direction]) }}
       sx={{
         "& .MuiDrawer-root": {
@@ -103,9 +110,11 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
         </Button>
         {handleContent}
       </div>
-      <Collapse in={!open} orientation={orientation}>
-        <div className={styles["hidden-content"]}>{closedContent}</div>
-      </Collapse>
+      {closedContent && (
+        <Collapse in={!open} orientation={orientation}>
+          <div className={styles["hidden-content"]}>{closedContent}</div>
+        </Collapse>
+      )}
       <Collapse in={open} orientation={orientation}>
         <div className={styles["hidden-content"]}>{openedContent}</div>
       </Collapse>

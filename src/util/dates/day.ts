@@ -163,6 +163,8 @@ export class IpsumDay {
     dateString: string,
     format?: IpsumDateFormatFrom
   ): IpsumDay {
+    if (!dateString) return undefined;
+
     return IpsumDay.fromIpsumDateTime(
       IpsumDateTime.fromString(dateString, format ?? "stored-day")
     );

@@ -1,15 +1,16 @@
 @import "../../styles/vars.less";
 
 .drawer {
+  display: flex;
+
   .visible-content {
     display: flex;
+    align-items: flex-start;
   }
 
   .hidden-content {
     padding: @grid_x_1;
   }
-
-  display: flex;
 
   &.left {
     flex-direction: row;
@@ -28,6 +29,7 @@
   }
 
   &.down {
+    overflow: hidden;
     flex-direction: column-reverse;
   }
 }

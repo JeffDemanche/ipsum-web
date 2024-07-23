@@ -13,25 +13,41 @@ type Story = StoryObj<typeof HighlightFilterOptions>;
 export const HighlightFilterOptionsExample: Story = {
   args: {
     expanded: true,
-    relations: [
-      {
-        id: "1",
-        predicate: "is",
-        arc: {
-          id: "1",
-          hue: 0,
-          name: "opinion",
+    clauses: {
+      and: [
+        {
+          orRelations: [
+            {
+              predicate: "is",
+              arc: {
+                id: "1",
+                hue: 124,
+                name: "arc1",
+              },
+            },
+            {
+              predicate: "relates to",
+              arc: {
+                id: "2",
+                hue: 236,
+                name: "arc2",
+              },
+            },
+          ],
         },
-      },
-      {
-        id: "1",
-        predicate: "relates to",
-        arc: {
-          id: "2",
-          hue: 294,
-          name: "bananas",
+        {
+          orRelations: [
+            {
+              predicate: "relates to",
+              arc: {
+                id: "3",
+                hue: 85,
+                name: "arc3",
+              },
+            },
+          ],
         },
-      },
-    ],
+      ],
+    },
   },
 };

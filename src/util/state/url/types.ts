@@ -1,3 +1,5 @@
+import { SortType } from "util/sort";
+
 export type View = "" | "journal";
 
 export type LayerType =
@@ -33,27 +35,44 @@ export type URLLayer =
   | HighlightDetailURLLayer;
 
 interface URLHighlightCriterion {
-  days?: {
-    days: string[];
-  };
   relatesToArc?: {
     arcId: string;
-    predicates?: string[];
-  };
-  relatesToHighlight?: {
-    highlightId: string;
+    predicate: string;
   };
 }
 
-export interface URLSearchCriteria {
+export interface URLHighlightFilterCriteria {
+  dateFrom?: string;
+  dateTo?: string;
   and?: {
     or: URLHighlightCriterion[];
   }[];
 }
 
+export interface URLHighlightSortCriteria {
+  day: string;
+  type: SortType;
+}
+
+export interface HighlightsBrowserTab {
+  type: "highlights";
+  optionsOpen: boolean;
+  filters: URLHighlightFilterCriteria;
+  sort: URLHighlightSortCriteria;
+}
+
+type TabState = HighlightsBrowserTab;
+
+interface URLBrowserState {
+  open: boolean;
+  tab: TabState;
+}
+
 interface URLJournalView {
   layers?: URLLayer[];
-  searchCriteria?: URLSearchCriteria;
+  browser?: URLBrowserState;
+
+  // searchCriteria?: URLHighlightSearchCriteria;
   highlight?: string;
   sort?: "date" | "importance";
 }

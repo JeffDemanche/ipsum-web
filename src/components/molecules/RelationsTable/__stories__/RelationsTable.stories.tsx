@@ -15,7 +15,6 @@ export const RelationsTableExample: Story = {
     expanded: true,
     relations: [
       {
-        id: "1",
         predicate: "is",
         arc: {
           id: "1",
@@ -24,7 +23,6 @@ export const RelationsTableExample: Story = {
         },
       },
       {
-        id: "2",
         predicate: "relates to",
         arc: {
           id: "2",
@@ -33,7 +31,6 @@ export const RelationsTableExample: Story = {
         },
       },
       {
-        id: "3",
         predicate: "relates to",
         arc: {
           id: "3",
@@ -42,5 +39,55 @@ export const RelationsTableExample: Story = {
         },
       },
     ],
+  },
+};
+
+export const RelationsTableExampleWithClauses: Story = {
+  args: {
+    expanded: true,
+    clauses: {
+      and: [
+        {
+          orRelations: [
+            {
+              predicate: "is",
+              arc: {
+                id: "1",
+                hue: 124,
+                name: "arc1",
+              },
+            },
+            {
+              predicate: "relates to",
+              arc: {
+                id: "2",
+                hue: 236,
+                name: "arc2",
+              },
+            },
+          ],
+        },
+        {
+          orRelations: [
+            {
+              predicate: "relates to",
+              arc: {
+                id: "3",
+                hue: 85,
+                name: "arc3",
+              },
+            },
+            {
+              predicate: "relates to",
+              arc: {
+                id: "4",
+                hue: 124,
+                name: "arc4",
+              },
+            },
+          ],
+        },
+      ],
+    },
   },
 };

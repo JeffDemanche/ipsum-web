@@ -10,5 +10,5 @@ export {
   URLLayer,
   DailyJournalURLLayer,
   HighlightDetailURLLayer,
-  URLSearchCriteria,
+  URLHighlightFilterCriteria as URLSearchCriteria,
 } from "./types";

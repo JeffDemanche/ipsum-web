@@ -14,12 +14,18 @@ export default meta;
 type Story = StoryObj<typeof Drawer>;
 
 export const DrawerExample: Story = {
+  parameters: {
+    layout: "fullscreen",
+  },
   args: {
     openedContent: <Typography>Content</Typography>,
   },
 };
 
 export const DrawerWithHandleContent: Story = {
+  parameters: {
+    layout: "fullscreen",
+  },
   args: {
     openedContent: <Typography>Content</Typography>,
     handleContent: (
@@ -31,6 +37,9 @@ export const DrawerWithHandleContent: Story = {
 };
 
 export const DrawerWithClosedContent: Story = {
+  parameters: {
+    layout: "fullscreen",
+  },
   args: {
     openedContent: (
       <Typography>

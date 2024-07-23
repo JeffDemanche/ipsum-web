@@ -18,16 +18,10 @@ interface HighlightResultsOptionsDrawerProps {
   onSortTypeChange: (sortType: string) => void;
   onSortDayChange: (sortDay: IpsumDay) => void;
 
-  relations: {
-    id: string;
-    predicate: string;
-    arc: {
-      id: string;
-      hue: number;
-      name: string;
-    };
-  }[];
-  onAddRelationFilter?: (predicate: string) => void;
+  filterOptionsProps: Omit<
+    React.ComponentProps<typeof HighlightFilterOptions>,
+    "expanded"
+  >;
 }
 
 export const HighlightResultsOptionsDrawer: React.FunctionComponent<
@@ -40,8 +34,7 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
   sortDay,
   onSortDayChange,
   onSortTypeChange,
-  relations,
-  onAddRelationFilter,
+  filterOptionsProps,
 }) => {
   const openedContent = (
     <div className={styles["opened-container"]}>
@@ -55,8 +48,10 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
       <hr style={{ border: "none", borderTop: border_dashed }} />
       <HighlightFilterOptions
         expanded
-        relations={relations}
-        onCreateRelation={onAddRelationFilter}
+        clauses={filterOptionsProps.clauses}
+        dateFilterFrom={filterOptionsProps.dateFilterFrom}
+        dateFilterTo={filterOptionsProps.dateFilterTo}
+        onCreateClause={filterOptionsProps.onCreateClause}
       />
     </div>
   );
@@ -72,8 +67,10 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
       />
       <HighlightFilterOptions
         expanded={false}
-        relations={relations}
-        onCreateRelation={onAddRelationFilter}
+        clauses={filterOptionsProps.clauses}
+        dateFilterFrom={filterOptionsProps.dateFilterFrom}
+        dateFilterTo={filterOptionsProps.dateFilterTo}
+        onCreateClause={filterOptionsProps.onCreateClause}
       />
     </div>
   );
