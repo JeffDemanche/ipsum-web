@@ -62,9 +62,10 @@ export const HighlightFilterOptions: React.FunctionComponent<
         </Button>
       </div>
       <RelationsTable
+        editable={expanded}
         expanded={expanded}
-        showAlias
-        showDelete
+        showAlias={false}
+        showEdit={false}
         clauses={clauses}
       />
     </div>

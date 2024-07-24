@@ -12,7 +12,10 @@ type Story = StoryObj<typeof RelationsTable>;
 
 export const RelationsTableExample: Story = {
   args: {
+    editable: true,
     expanded: true,
+    showAlias: false,
+    showEdit: false,
     relations: [
       {
         predicate: "is",
@@ -44,7 +47,10 @@ export const RelationsTableExample: Story = {
 
 export const RelationsTableExampleWithClauses: Story = {
   args: {
+    editable: true,
     expanded: true,
+    showAlias: false,
+    showEdit: false,
     clauses: {
       and: [
         {

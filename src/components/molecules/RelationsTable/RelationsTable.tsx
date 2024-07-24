@@ -1,4 +1,6 @@
+import { Add } from "@mui/icons-material";
 import cx from "classnames";
+import { MiniButton } from "components/atoms/MiniButton";
 import { Type } from "components/atoms/Type";
 import { ArcTag } from "components/molecules/ArcTag";
 import { grey700, grey800 } from "components/styles";
@@ -16,10 +18,14 @@ interface Relation {
 }
 
 interface RelationsTableProps {
+  editable?: boolean;
   expanded: boolean;
+
+  onCreateRelation?: () => void;
+  onDeleteRelation?: (relation: Relation) => void;
+
   showAlias?: boolean;
   showEdit?: boolean;
-  showDelete?: boolean;
 
   relations?: Relation[];
   clauses?: {
@@ -30,10 +36,12 @@ interface RelationsTableProps {
 }
 
 export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
+  editable,
   expanded,
+  onCreateRelation,
+  onDeleteRelation,
   showAlias,
   showEdit,
-  showDelete,
   relations,
   clauses,
 }) => {
@@ -95,12 +103,18 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                   key={relation.arc.id}
                   hue={relation.arc.hue}
                   text={relation.arc.name}
+                  onDelete={() => onDeleteRelation?.(relation)}
                   showAlias={showAlias ?? expanded}
                   showEdit={showEdit ?? expanded}
-                  showDelete={showDelete ?? expanded}
+                  showDelete={editable}
                 />
               );
             })}
+            {editable && (
+              <MiniButton fontSize="small" foregroundColor={grey700}>
+                <Add />
+              </MiniButton>
+            )}
           </div>
         );
       });
@@ -130,24 +144,31 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                     key={relation.arc.id}
                     hue={relation.arc.hue}
                     text={relation.arc.name}
+                    onDelete={() => onDeleteRelation?.(relation)}
                     showAlias={showAlias ?? expanded}
                     showEdit={showEdit ?? expanded}
-                    showDelete={showDelete ?? expanded}
+                    showDelete={editable}
                   />
                 );
               })}
+              {editable && (
+                <MiniButton fontSize="small" foregroundColor={grey700}>
+                  <Add />
+                </MiniButton>
+              )}
             </div>
           );
         });
       });
     }
   }, [
+    editable,
     expanded,
+    onDeleteRelation,
     relations,
     relationsByPredicate,
     relationsByPredicateAndClause,
     showAlias,
-    showDelete,
     showEdit,
   ]);
 

@@ -38,3 +38,7 @@ export interface MockedComment {
   mockedEntry: MockedEntry;
   dayCreated: IpsumDay;
 }
+
+export interface MockedArc {
+  id: string;
+}

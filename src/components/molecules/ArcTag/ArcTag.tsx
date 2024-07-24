@@ -73,7 +73,7 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
             fontSize={fontSize}
             foregroundColor={`hsla(${hue}, 38%, 95%, 1)`}
           >
-            <FingerprintSharp style={{ height: fontSizePx }} />
+            <FingerprintSharp fontSize="small" />
           </MiniButton>
         )}
         {showEdit && (
@@ -82,7 +82,7 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
             backgroundColor={`hsla(${hue}, 38%, 95%, 1)`}
             foregroundColor={`hsla(${hue}, 20%, 40%, 1)`}
           >
-            <EditSharp style={{ height: fontSizePx }} />
+            <EditSharp fontSize="small" />
           </MiniButton>
         )}
         {showDelete && (
@@ -91,7 +91,7 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
             foregroundColor={`hsla(${hue}, 38%, 95%, 1)`}
             onClick={onDelete}
           >
-            <CloseSharp style={{ height: fontSizePx }} />
+            <CloseSharp fontSize="small" />
           </MiniButton>
         )}
       </div>

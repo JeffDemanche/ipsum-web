@@ -22,9 +22,9 @@ export const MiniButton: React.FunctionComponent<MiniButtonProps> = ({
   style,
 }) => {
   const size = {
-    "x-small": "12px",
-    small: "14px",
-    medium: "16px",
+    "x-small": "16px",
+    small: "20px",
+    medium: "24px",
   }[fontSize];
 
   return (
