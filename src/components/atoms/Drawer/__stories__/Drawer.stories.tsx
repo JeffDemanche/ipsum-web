@@ -18,6 +18,7 @@ export const DrawerExample: Story = {
     layout: "fullscreen",
   },
   args: {
+    showInsideBorder: true,
     openedContent: <Typography>Content</Typography>,
   },
 };

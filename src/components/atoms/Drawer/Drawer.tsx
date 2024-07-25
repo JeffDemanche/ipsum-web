@@ -20,6 +20,8 @@ interface DrawerProps {
   closedContent?: React.ReactNode;
   openedContent: React.ReactNode;
 
+  showInsideBorder?: boolean;
+
   onOpen?: () => void;
   onClose?: () => void;
 }
@@ -32,6 +34,7 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
   handleContent,
   openedContent,
   closedContent,
+  showInsideBorder = true,
   onOpen,
   onClose,
 }) => {
@@ -87,7 +90,9 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
     <MuiDrawer
       style={style}
       className={className}
-      PaperProps={{ className: cx(styles["drawer"], styles[direction]) }}
+      PaperProps={{
+        className: cx(styles["drawer"], styles[direction]),
+      }}
       sx={{
         "& .MuiDrawer-root": {
           position: "relative",
@@ -100,7 +105,12 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
       variant="permanent"
       open={open}
     >
-      <div className={styles["visible-content"]}>
+      <div
+        className={cx(
+          styles["visible-content"],
+          showInsideBorder && styles["inside-border"]
+        )}
+      >
         <Button
           onClick={() => {
             toggle();

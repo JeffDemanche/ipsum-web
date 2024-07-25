@@ -22,6 +22,7 @@ export const BrowserDrawerConnectedExample: StoryBrowserDrawerConnected = {
   args: {
     style: {
       height: "100%",
+      maxWidth: "500px",
     },
   },
   decorators: [

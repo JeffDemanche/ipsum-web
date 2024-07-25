@@ -37,7 +37,7 @@ export const BrowserHighlightsTab: React.FunctionComponent<
   );
 
   return (
-    <div>
+    <div className={styles["highlights-drawer"]}>
       <HighlightResultsOptionsDrawer {...optionsDrawerProps} />
       <div className={styles["highlight-results"]}>
         {Object.entries(groupedHighlights).map(([dayString, highlights]) => {

@@ -1,12 +1,14 @@
 @import '../../styles/vars.less';
 
-.highlight-results {
-  display: flex;
-  padding: @grid_x_1;
-
-  .day-group {
+.highlights-drawer {
+  .highlight-results {
+    margin: @grid_x_1;
     display: flex;
-    flex-direction: column;
-    gap: @grid_x_1;
+  
+    .day-group {
+      display: flex;
+      flex-direction: column;
+      gap: @grid_x_1;
+    }
   }
 }

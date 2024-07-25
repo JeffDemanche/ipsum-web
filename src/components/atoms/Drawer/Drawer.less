@@ -8,28 +8,46 @@
     align-items: flex-start;
   }
 
-  .hidden-content {
-    padding: @grid_x_1;
-  }
-
   &.left {
     flex-direction: row;
     
     .visible-content {
       flex-direction: column;
+
+      &.inside-border {
+        border-right: 1px solid @grey500;
+      }
     }
   }
    
   &.right {
     flex-direction: row-reverse;
+
+    .visible-content{
+      &.inside-border {
+        border-left: 1px solid @grey500;
+      }
+    }
   }
 
   &.up {
     flex-direction: column;
+
+    .visible-content {
+      &.inside-border {
+        border-bottom: 1px solid @grey500;
+      }
+    }
   }
 
   &.down {
     overflow: hidden;
     flex-direction: column-reverse;
+
+    .visible-content {
+      &.inside-border {
+        border-top: 1px solid @grey500;
+      }
+    }
   }
 }
