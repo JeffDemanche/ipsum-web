@@ -7,11 +7,11 @@ import { createJournalEntry } from "../entry/create-journal-entry";
 
 describe("API entry actions", () => {
   describe("createEntry", () => {
-    it("should create an entry and a journalEntry", async () => {
+    it("should create an entry and a journalEntry", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
-      const journalEntry = await createJournalEntry(
+      const journalEntry = createJournalEntry(
         {
           dayCreated,
           entryKey: "entry1",

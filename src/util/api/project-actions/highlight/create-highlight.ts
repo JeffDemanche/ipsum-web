@@ -16,22 +16,27 @@ export const createHighlight: APIFunction<
 
   const id = args.id ?? uuidv4();
 
-  const dayCreated = args.dayCreated?.toString() ?? IpsumDay.today().toString();
+  const dayCreated =
+    args.dayCreated?.toString("iso") ?? IpsumDay.today().toString("iso");
 
-  const highlight = projectState
-    .collection("highlights")
-    .create(args.entryKey, {
-      __typename: "Highlight",
-      id,
-      entry: args.entryKey,
-      comments: [],
-      history: {
-        __typename: "History",
-        dateCreated: dayCreated,
-      },
-      outgoingRelations: [],
-      importanceRatings: [],
-    });
+  if (!projectState.collection("entries").has(args.entryKey)) {
+    throw new Error(
+      `No entry with key ${args.entryKey} exists in the project state`
+    );
+  }
+
+  const highlight = projectState.collection("highlights").create(id, {
+    __typename: "Highlight",
+    id,
+    entry: args.entryKey,
+    comments: [],
+    history: {
+      __typename: "History",
+      dateCreated: dayCreated,
+    },
+    outgoingRelations: [],
+    importanceRatings: [],
+  });
 
   return highlight;
 };

@@ -11,17 +11,12 @@ export const searchTypeDef = gql`
 
   input SearchCriterionRelatesToArc {
     arcId: String!
-    predicates: [String!]
-  }
-
-  input SearchCriterionRelatesToHighlight {
-    highlightId: String!
+    predicate: String!
   }
 
   input SearchCriterion {
     days: SearchCriterionDays
     relatesToArc: SearchCriterionRelatesToArc
-    relatesToHighlight: SearchCriterionRelatesToHighlight
   }
 
   input SearchCriteriaAnd {

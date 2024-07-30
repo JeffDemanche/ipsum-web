@@ -21,6 +21,8 @@ export const highlightTypeDef = gql`
     hue: Int!
     excerpt: String!
     comments: [Comment!]!
+    number: Int!
+    objectText: String!
 
     importanceRatings: [ImportanceRating!]!
     currentImportance: Float!

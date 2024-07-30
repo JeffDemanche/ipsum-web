@@ -3,9 +3,11 @@ import { RelationsTable } from "components/molecules/RelationsTable";
 import React, { useMemo } from "react";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
 import { SortType } from "util/sort";
 import { useIpsumSearchParams, useModifySearchParams } from "util/state";
 
+import { BrowserHighlightsTab } from "../BrowserHighlightsTab";
 import { BrowserDrawer } from "./BrowserDrawer";
 
 interface BrowserDrawerConnectedProps {
@@ -19,6 +21,32 @@ const BrowserDrawerQuery = gql(`
       id
       name
       color
+    }
+  }
+`);
+
+const BrowserDrawerHighlightsSearchQuery = gql(`
+  query BrowserDrawerHighlightsSearch($criteria: SearchCriteria!) {
+    searchHighlights(criteria: $criteria) {
+      id
+      excerpt
+      hue
+      outgoingRelations {
+        id
+        predicate
+        object {
+          ... on Arc {
+            id
+            name
+            color
+          }
+        }
+      }
+      number
+      objectText
+      history {
+        dateCreated
+      }
     }
   }
 `);
@@ -50,6 +78,53 @@ export const BrowserDrawerConnected: React.FunctionComponent<
     variables: {
       filterArcIds,
     },
+  });
+
+  const { data: highlightsData } = useQuery(
+    BrowserDrawerHighlightsSearchQuery,
+    {
+      variables: {
+        criteria: {
+          and: browserUrlParams?.tab?.filters?.and ?? [],
+        },
+      },
+    }
+  );
+
+  const highlights: React.ComponentProps<
+    typeof BrowserHighlightsTab
+  >["highlights"] = highlightsData.searchHighlights.map((searchHighlight) => {
+    const arcRelations = searchHighlight.outgoingRelations.filter(
+      (relation) => relation.object.__typename === "Arc"
+    );
+
+    console.log(searchHighlight);
+
+    return {
+      day: IpsumDay.fromString(
+        searchHighlight.history.dateCreated,
+        "stored-day"
+      ),
+      excerptProps: {
+        htmlString: searchHighlight.excerpt,
+        maxLines: 3,
+      },
+      highlightProps: {
+        highlightId: searchHighlight.id,
+        highlightNumber: searchHighlight.number,
+        arcNames: arcRelations.map((relation) => relation.object.name),
+        hue: searchHighlight.hue,
+        objectText: searchHighlight.objectText,
+      },
+      relationsProps: arcRelations.map((relation) => ({
+        predicate: relation.predicate,
+        arc: {
+          id: relation.object.id,
+          hue: relation.object.color,
+          name: relation.object.name,
+        },
+      })),
+    };
   });
 
   const clauses: React.ComponentProps<typeof RelationsTable>["clauses"] =
@@ -146,7 +221,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
       onClose={onClose}
       tab={browserUrlParams?.tab?.type ?? "highlights"}
       highlightsTabProps={{
-        highlights: [],
+        highlights,
         optionsDrawerProps: {
           defaultExpanded: browserUrlParams?.tab?.optionsOpen ?? false,
           onExpand: onHighlightsOpensDrawerOpen,

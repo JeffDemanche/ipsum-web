@@ -25,7 +25,10 @@ export { createEntry as apiCreateEntry } from "./entry/create-entry";
 export { createJournalEntry as apiCreateJournalEntry } from "./entry/create-journal-entry";
 
 export { createHighlight as apiCreateHighlight } from "./highlight/create-highlight";
+export { createRelationFromHighlight as apiCreateRelationFromHighlight } from "./highlight/create-relation-from-highlight";
 
 export { createCommentEntry as apiCreateCommentEntry } from "./comment/create-comment-entry";
 
 export { createComment as apiCreateComment } from "./comment/create-comment";
+
+export { createArc as apiCreateArc } from "./arc/create-arc";

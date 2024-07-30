@@ -95,15 +95,6 @@ export const SearchResolvers: StrictTypedTypePolicies = {
                   someClauseMatches ||
                   highlightMatchesArc(highlight, expression.relatesToArc.arcId);
               }
-
-              if (expression.relatesToHighlight) {
-                someClauseMatches =
-                  someClauseMatches ||
-                  highlightMatchesHighlight(
-                    highlight,
-                    expression.relatesToHighlight.highlightId
-                  );
-              }
             });
             if (!someClauseMatches) allAndsMatch = false;
           });

@@ -16,6 +16,10 @@ export class ProjectCollection<T> {
     this.values = makeVar({});
   }
 
+  has(key: string): boolean {
+    return key in this.values();
+  }
+
   get(key: string): T | undefined {
     return this.values()[key]?.();
   }

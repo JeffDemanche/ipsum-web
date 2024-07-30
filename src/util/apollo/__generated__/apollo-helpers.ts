@@ -47,7 +47,7 @@ export type EntryFieldPolicy = {
 	htmlString?: FieldPolicy<any> | FieldReadFunction<any>,
 	trackedHTMLString?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type HighlightKeySpecifier = ('arc' | 'arcs' | 'comments' | 'currentImportance' | 'entry' | 'excerpt' | 'history' | 'hue' | 'id' | 'importanceRatings' | 'outgoingRelations' | HighlightKeySpecifier)[];
+export type HighlightKeySpecifier = ('arc' | 'arcs' | 'comments' | 'currentImportance' | 'entry' | 'excerpt' | 'history' | 'hue' | 'id' | 'importanceRatings' | 'number' | 'objectText' | 'outgoingRelations' | HighlightKeySpecifier)[];
 export type HighlightFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcs?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -59,6 +59,8 @@ export type HighlightFieldPolicy = {
 	hue?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	importanceRatings?: FieldPolicy<any> | FieldReadFunction<any>,
+	number?: FieldPolicy<any> | FieldReadFunction<any>,
+	objectText?: FieldPolicy<any> | FieldReadFunction<any>,
 	outgoingRelations?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type HistoryKeySpecifier = ('dateCreated' | HistoryKeySpecifier)[];

@@ -33,6 +33,7 @@ const documents = {
     "\n  query JournalDateRangeEntryKeys {\n    journalEntryKeys\n  }\n": types.JournalDateRangeEntryKeysDocument,
     "\n  query JournalTitle {\n    journalTitle\n  }\n": types.JournalTitleDocument,
     "\n  query BrowserDrawer($filterArcIds: [ID!]!) {\n    arcs(ids: $filterArcIds) {\n      id\n      name\n      color\n    }\n  }\n": types.BrowserDrawerDocument,
+    "\n  query BrowserDrawerHighlightsSearch($criteria: SearchCriteria!) {\n    searchHighlights(criteria: $criteria) {\n      id\n      excerpt\n      hue\n      outgoingRelations {\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            name\n            color\n          }\n        }\n      }\n      number\n      objectText\n      history {\n        dateCreated\n      }\n    }\n  }\n": types.BrowserDrawerHighlightsSearchDocument,
     "\n  query DailyJournalEntryQuery($entryKey: ID!, $day: String!) {\n    journalEntryDates(includeEmpty: false)\n    journalEntry(entryKey: $entryKey) {\n      entryKey\n      entry {\n        htmlString\n        highlights {\n          id\n          hue\n          arcs {\n            id\n            name\n          }\n        }\n      }\n    }\n    day(day: $day) {\n      comments {\n        id\n        commentEntry {\n          entry {\n            entryKey\n            htmlString\n          }\n        }\n        highlight {\n          id\n          hue\n          arcs {\n            id\n            name\n          }\n        }\n      }\n    }\n  }\n": types.DailyJournalEntryQueryDocument,
     "\n  query ArcChooser {\n    arcs {\n      id\n      color\n      name\n    }\n  }\n": types.ArcChooserDocument,
     "\n  query HighlightAssignmentPlugin($entryKey: ID!) {\n    entry (entryKey: $entryKey) {\n      highlights {\n        id\n        entry {\n          entryKey\n          date\n        }\n        hue\n      }\n    }\n  }\n": types.HighlightAssignmentPluginDocument,
@@ -135,6 +136,10 @@ export function gql(source: "\n  query JournalTitle {\n    journalTitle\n  }\n")
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query BrowserDrawer($filterArcIds: [ID!]!) {\n    arcs(ids: $filterArcIds) {\n      id\n      name\n      color\n    }\n  }\n"): (typeof documents)["\n  query BrowserDrawer($filterArcIds: [ID!]!) {\n    arcs(ids: $filterArcIds) {\n      id\n      name\n      color\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query BrowserDrawerHighlightsSearch($criteria: SearchCriteria!) {\n    searchHighlights(criteria: $criteria) {\n      id\n      excerpt\n      hue\n      outgoingRelations {\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            name\n            color\n          }\n        }\n      }\n      number\n      objectText\n      history {\n        dateCreated\n      }\n    }\n  }\n"): (typeof documents)["\n  query BrowserDrawerHighlightsSearch($criteria: SearchCriteria!) {\n    searchHighlights(criteria: $criteria) {\n      id\n      excerpt\n      hue\n      outgoingRelations {\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            name\n            color\n          }\n        }\n      }\n      number\n      objectText\n      history {\n        dateCreated\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

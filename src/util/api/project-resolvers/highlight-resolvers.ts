@@ -1,8 +1,9 @@
 import { QueryHighlightsArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumTimeMachine } from "util/diff";
-import { excerptDivString } from "util/excerpt";
+import { excerptDivString, getHighlightOrder } from "util/excerpt";
 import { highlightImportanceOnDay } from "util/importance";
 import {
+  InMemoryArc,
   InMemoryHighlight,
   InMemoryImportanceRating,
   PROJECT_STATE,
@@ -110,7 +111,8 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
         >("arcs");
         const averageHue =
           arcs.reduce((acc, cur) => acc + cur.color, 0) / arcs.length;
-        return Math.floor(averageHue);
+
+        return isNaN(averageHue) ? null : Math.floor(averageHue);
       },
       excerpt(_, { readField }) {
         const entry = readField<{
@@ -137,6 +139,22 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
       comments(commentIds: string[]) {
         const comments = PROJECT_STATE.collection("comments").getAll();
         return commentIds.map((id) => comments[id]);
+      },
+      number(_, { readField }) {
+        const entry = readField<{ trackedHTMLString: string }>("entry");
+        const domString = IpsumTimeMachine.fromString(
+          entry.trackedHTMLString
+        ).currentValue;
+        const highlightOrder = getHighlightOrder(domString);
+
+        return highlightOrder.findIndex((id) => id === readField("id")) + 1;
+      },
+      objectText(_, { readField }) {
+        const arcs = readField<InMemoryArc[]>("arcs");
+        return arcs
+          .slice(0, 3)
+          .map((arc) => arc.name)
+          .join(", ");
       },
     },
   },

@@ -5,11 +5,18 @@ export interface GeneratedMock {
   projectState: ProjectState;
 }
 
+export interface MockedRelationToArc {
+  id: string;
+  predicate: string;
+  arcId: string;
+}
+
 export interface MockedHighlight {
   id: string;
   hue: number;
   entryKey: string;
   comments?: MockedComment[];
+  outgoingRelations?: MockedRelationToArc[];
 }
 
 export type MockableTag = "p" | "h1" | "h2";
@@ -41,4 +48,7 @@ export interface MockedComment {
 
 export interface MockedArc {
   id: string;
+  name: string;
+  hue: number;
+  arcEntry?: MockedEntry;
 }
