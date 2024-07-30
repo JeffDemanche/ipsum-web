@@ -1,7 +1,7 @@
-import { MockedEntry } from "mocks/types";
+import { MockedJournalEntry } from "mocks/types";
 import { IpsumDay } from "util/dates";
 
-export const journalEntry1_TheSonOfTheBrahman: MockedEntry = {
+export const journalEntry1_TheSonOfTheBrahman: MockedJournalEntry = {
   entryKey: "1/1/2020",
   sections: [
     {
@@ -10,6 +10,13 @@ export const journalEntry1_TheSonOfTheBrahman: MockedEntry = {
         entryKey: "1/1/2020",
         hue: 301,
         id: "highlight-chapter1-p-0",
+        outgoingRelations: [
+          {
+            id: "relation-highlight-chapter1-p-0-arc3-understanding",
+            predicate: "relates to",
+            arcId: "arc3_understanding",
+          },
+        ],
         comments: [
           {
             id: "comment1-chapter1-p-0",
@@ -46,7 +53,7 @@ export const journalEntry1_TheSonOfTheBrahman: MockedEntry = {
   ],
 };
 
-export const journalEntry2_WithTheSamanas: MockedEntry = {
+export const journalEntry2_WithTheSamanas: MockedJournalEntry = {
   entryKey: "1/8/2020",
   sections: [
     "As I journey forth from the comforts of my home, each step I take feels like a liberation from the shackles of worldly attachments. The road ahead stretches infinitely, winding its way through verdant forests and sun-kissed meadows. With each passing moment, I feel myself drawing closer to the truth that lies beyond the veil of illusion.",
@@ -67,7 +74,7 @@ export const journalEntry2_WithTheSamanas: MockedEntry = {
   ],
 };
 
-export const journalEntry3_Gotama: MockedEntry = {
+export const journalEntry3_Gotama: MockedJournalEntry = {
   entryKey: "1/15/2020",
   sections: [
     "Tonight, under the enveloping darkness of the new moon, I find myself at a pivotal juncture in my journey. Govinda and I have joined the followers of Gotama, the Illustrious Buddha. The radiance of his presence, the tranquility of his being, and the profundity of his teachings have left an indelible mark upon my soul.",
@@ -84,7 +91,7 @@ export const journalEntry3_Gotama: MockedEntry = {
   ],
 };
 
-export const journalEntry4_Awakening: MockedEntry = {
+export const journalEntry4_Awakening: MockedJournalEntry = {
   entryKey: "1/22/2020",
   sections: [
     "As I walk away from Gotama's grove, a profound sense of solitude envelops me, yet it is accompanied by a newfound clarity and purpose. The teachings of the Illustrious One, though enlightening, have reaffirmed my belief that the path to true understanding lies not in following others, but in listening to the voice within.",
@@ -103,7 +110,7 @@ export const journalEntry4_Awakening: MockedEntry = {
   ],
 };
 
-export const journalEntry5_Kamala: MockedEntry = {
+export const journalEntry5_Kamala: MockedJournalEntry = {
   entryKey: "1/29/2020",
   sections: [
     "The city of Samsara lies before me, a bustling hive of activity, filled with the scents, sounds, and sights of human endeavor. As I step into this new world, I am struck by the contrast between the simplicity of my former life and the complexity of this urban existence. Yet, I am not deterred. Rather, I am filled with a sense of curiosity and openness, ready to embrace the experiences that await me.",
@@ -124,7 +131,7 @@ export const journalEntry5_Kamala: MockedEntry = {
   ],
 };
 
-export const journalEntry6_WithTheChildlikePeople: MockedEntry = {
+export const journalEntry6_WithTheChildlikePeople: MockedJournalEntry = {
   entryKey: "2/5/2020",
   sections: [
     'Living among the childlike people of Samsara has brought forth a new chapter in my journey, one that both fascinates and perplexes me. These people, whom Kamala calls "childlike," are absorbed in the pursuits of daily life, immersed in their desires, fears, and joys with an intensity that is at once enviable and pitiable.',
@@ -145,7 +152,7 @@ export const journalEntry6_WithTheChildlikePeople: MockedEntry = {
   ],
 };
 
-export const journalEntry7_Sansara: MockedEntry = {
+export const journalEntry7_Sansara: MockedJournalEntry = {
   entryKey: "2/12/2020",
   sections: [
     "The years have flowed like the river, and I find myself deeply enmeshed in the world of Samsara. Wealth, pleasure, and the endless pursuit of material success have become the rhythms of my life. I have played the role of the merchant, the lover, and the man of the city, yet the fulfillment I once sought eludes me.",
@@ -170,7 +177,7 @@ export const journalEntry7_Sansara: MockedEntry = {
   ],
 };
 
-export const journalEntry8_ByTheRiver: MockedEntry = {
+export const journalEntry8_ByTheRiver: MockedJournalEntry = {
   entryKey: "2/19/2020",
   sections: [
     "Today, I find myself by the river once more, a place that holds both the past and the promise of renewal. After leaving the city and the life of Samsara behind, I wander aimlessly, overwhelmed by a sense of despair and emptiness. The wealth, pleasure, and status that once defined my existence have crumbled into insignificance. I am left with nothing but the haunting silence of my own disillusionment.",
@@ -189,7 +196,7 @@ export const journalEntry8_ByTheRiver: MockedEntry = {
   ],
 };
 
-export const journalEntry9_TheFerryman: MockedEntry = {
+export const journalEntry9_TheFerryman: MockedJournalEntry = {
   entryKey: "2/26/2020",
   sections: [
     {
@@ -228,7 +235,7 @@ export const journalEntry9_TheFerryman: MockedEntry = {
   ],
 };
 
-export const journalEntry10_TheSon: MockedEntry = {
+export const journalEntry10_TheSon: MockedJournalEntry = {
   entryKey: "3/4/2020",
   sections: [
     "Life, in its ever-changing currents, has brought me an unexpected challenge and a profound opportunity for growth. My son, young Siddhartha, has come to live with me, and the experience has awakened in me feelings and struggles I had not anticipated.",
@@ -249,7 +256,7 @@ export const journalEntry10_TheSon: MockedEntry = {
   ],
 };
 
-export const journalEntry11_Om: MockedEntry = {
+export const journalEntry11_Om: MockedJournalEntry = {
   entryKey: "3/11/2020",
   sections: [
     'Today, I experienced a profound revelation that has brought clarity and deepened my understanding of existence. It began with a simple moment of meditation by the river, as I listened to the gentle flow of water and the rustling of leaves in the wind. In that tranquil state, I focused on the sacred sound of "Om."',
@@ -270,7 +277,7 @@ export const journalEntry11_Om: MockedEntry = {
   ],
 };
 
-export const journalEntry12_Govinda: MockedEntry = {
+export const journalEntry12_Govinda: MockedJournalEntry = {
   entryKey: "3/19/2020",
   sections: [
     "Today, I had the unexpected joy of reuniting with Govinda, my childhood friend and fellow seeker of truth. Our paths had diverged after our time with the Samanas, yet fate has brought us together once more by the river where Vasudeva and I dwell.",

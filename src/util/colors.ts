@@ -84,21 +84,25 @@ export class IpsumColor {
 }
 
 export class IpsumArcColor {
-  private _hue: number;
+  private _hue: number | undefined;
 
-  constructor(hue: number) {
+  constructor(hue: number | undefined) {
     this._hue = hue;
   }
 
   toIpsumColor({ saturation, lightness }: SaturationLightness): IpsumColor {
-    return new IpsumColor("hsl", [this._hue, saturation, lightness]);
+    return new IpsumColor("hsl", [
+      this._hue ?? 0,
+      this._hue ? saturation : 0,
+      lightness,
+    ]);
   }
 
   toRgb({ saturation, lightness }: SaturationLightness) {
-    return hslToRgb([this._hue, saturation, lightness]);
+    return hslToRgb([this._hue ?? 0, this._hue ? saturation : 0, lightness]);
   }
 
   toHsl({ saturation, lightness }: SaturationLightness) {
-    return [this._hue, saturation, lightness];
+    return [this._hue ?? 0, this._hue ? saturation : 0, lightness];
   }
 }

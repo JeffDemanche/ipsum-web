@@ -3,7 +3,6 @@ import { RelationsTable } from "components/molecules/RelationsTable";
 import React, { useMemo } from "react";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { IpsumTimeMachine } from "util/diff";
 import { SortType } from "util/sort";
 import { useIpsumSearchParams, useModifySearchParams } from "util/state";
 
@@ -98,13 +97,8 @@ export const BrowserDrawerConnected: React.FunctionComponent<
       (relation) => relation.object.__typename === "Arc"
     );
 
-    console.log(searchHighlight);
-
     return {
-      day: IpsumDay.fromString(
-        searchHighlight.history.dateCreated,
-        "stored-day"
-      ),
+      day: IpsumDay.fromString(searchHighlight.history.dateCreated, "iso"),
       excerptProps: {
         htmlString: searchHighlight.excerpt,
         maxLines: 3,

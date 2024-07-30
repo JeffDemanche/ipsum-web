@@ -1,8 +1,6 @@
 import {
   MockableTag,
-  MockedComment,
   MockedEntry,
-  MockedEntrySection,
   MockedHighlight,
   ProcessedEntrySections,
 } from "./types";
@@ -25,6 +23,10 @@ export const wrapSectionWithHighlight = (
 export const processEntrySections = (
   mockedEntry: MockedEntry
 ): ProcessedEntrySections => {
+  if (!mockedEntry) {
+    return { htmlString: "", highlights: [] };
+  }
+
   const highlights: MockedHighlight[] = [];
 
   const htmlString = mockedEntry.sections

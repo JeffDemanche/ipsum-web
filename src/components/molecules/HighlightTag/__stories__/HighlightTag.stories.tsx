@@ -27,3 +27,11 @@ export const HighlightTagWithoutDay: Story = {
     highlightNumber: 1,
   },
 };
+
+export const HighlightTagWithoutArcs: Story = {
+  args: {
+    hue: 0,
+    objectText: IpsumDay.today().toString("entry-printed-date"),
+    highlightNumber: 1,
+  },
+};

@@ -3,6 +3,7 @@ import {
   apiCreateComment,
   apiCreateHighlight,
   apiCreateJournalEntry,
+  apiCreateRelationFromHighlight,
 } from "util/api/project-actions";
 import { IpsumDay } from "util/dates";
 import { ProjectState } from "util/state/project";
@@ -12,8 +13,8 @@ import {
   GeneratedMock,
   MockedArc,
   MockedComment,
-  MockedEntry,
   MockedHighlight,
+  MockedJournalEntry,
 } from "./types";
 
 interface GenerateMockProps {
@@ -21,7 +22,7 @@ interface GenerateMockProps {
    * Array of string "sections" that will be added to htmlString. Also all
    * highlights on journal entries are defined in here.
    */
-  journalEntries?: MockedEntry[];
+  journalEntries?: MockedJournalEntry[];
   arcs?: MockedArc[];
   comments?: MockedComment[];
 }
@@ -40,6 +41,18 @@ export const generateMock = (props: GenerateMockProps): GeneratedMock => {
         { projectState }
       );
 
+      highlight.outgoingRelations?.forEach((relation) => {
+        apiCreateRelationFromHighlight(
+          {
+            id: relation.id,
+            arcId: relation.arcId,
+            highlightId: highlight.id,
+            predicate: relation.predicate,
+          },
+          { projectState }
+        );
+      });
+
       highlight.comments?.forEach((comment) => {
         apiCreateComment(
           {
@@ -54,17 +67,24 @@ export const generateMock = (props: GenerateMockProps): GeneratedMock => {
     });
   };
 
+  // Create arcs
   props.arcs?.forEach((arc) => {
-    const { htmlString, highlights } = processEntrySections(arc.arcEntry);
+    const { htmlString } = processEntrySections(arc.arcEntry);
 
     apiCreateArc(
       {
         id: arc.id,
         name: arc.name,
         entryHtmlString: htmlString,
+        hue: arc.hue,
       },
       { projectState }
     );
+  });
+
+  // Create highlights on arcs
+  props.arcs?.forEach((arc) => {
+    const { highlights } = processEntrySections(arc.arcEntry);
 
     createMockHighlights(highlights);
   });

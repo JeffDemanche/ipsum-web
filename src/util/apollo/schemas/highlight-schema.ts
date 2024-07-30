@@ -18,7 +18,7 @@ export const highlightTypeDef = gql`
     arc: Arc
     arcs: [Arc!]!
     outgoingRelations: [Relation!]!
-    hue: Int!
+    hue: Int
     excerpt: String!
     comments: [Comment!]!
     number: Int!

@@ -1,9 +1,10 @@
 import { QueryHighlightsArgs, StrictTypedTypePolicies } from "util/apollo";
+import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { excerptDivString, getHighlightOrder } from "util/excerpt";
 import { highlightImportanceOnDay } from "util/importance";
 import {
-  InMemoryArc,
+  InMemoryEntry,
   InMemoryHighlight,
   InMemoryImportanceRating,
   PROJECT_STATE,
@@ -150,11 +151,18 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
         return highlightOrder.findIndex((id) => id === readField("id")) + 1;
       },
       objectText(_, { readField }) {
-        const arcs = readField<InMemoryArc[]>("arcs");
-        return arcs
-          .slice(0, 3)
-          .map((arc) => arc.name)
-          .join(", ");
+        const entry = readField<InMemoryEntry>("entry");
+        switch (entry.entryType) {
+          case "JOURNAL":
+            return IpsumDay.fromString(
+              entry.history.dateCreated,
+              "iso"
+            ).toString("entry-printed-date");
+          case "ARC":
+            return entry.entryKey.split(":")[1] ?? "(arc not found)";
+          case "COMMENT":
+            return "Comment";
+        }
       },
     },
   },

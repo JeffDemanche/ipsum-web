@@ -41,17 +41,17 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   }[fontSize];
 
   const arcsText = useMemo(() => {
-    if (arcNames) {
+    if (arcNames && arcNames.length > 0) {
       return arcNames.join(", ");
     }
-    return "no arcs";
+    return "no relations";
   }, [arcNames]);
 
   const buttonStyle = {
     fontSize: fontSizePx,
     paddingTop: "0",
     paddingBottom: "0",
-    color: `hsla(${hue}, 20%, 40%, 1)`,
+    color: `hsla(${hue ?? 0}, ${hue === null ? "0%" : "20%"}, 40%, 1)`,
     backgroundColor: "transparent",
     minHeight: elementHeight,
   };
@@ -61,7 +61,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
       <div
         className={styles["highlight-tag"]}
         style={{
-          backgroundColor: `hsla(${hue}, 80%, 95%, 1)`,
+          backgroundColor: `hsla(${hue ?? 0}, ${hue === null ? "0%" : "80%"}, 95%, 1)`,
           minHeight: elementHeight,
         }}
       >
@@ -81,7 +81,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
               {highlightNumber !== undefined && (
                 <sup
                   style={{
-                    color: `hsla(${hue}, 20%, 60%, 1)`,
+                    color: `hsla(${hue ?? 0}, ${hue === null ? "0%" : "20%"}, 60%, 1)`,
                     textDecoration: "none",
                     fontWeight: font_weight_citation,
                     lineHeight: 0,
@@ -106,7 +106,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
           {!objectText && highlightNumber !== undefined && (
             <span
               style={{
-                color: `hsla(${hue}, 20%, 60%, 1)`,
+                color: `hsla(${hue ?? 0}, ${hue === null ? "0%" : "20%"}, 60%, 1)`,
                 fontFamily: font_family_sans,
                 fontSize: font_size_x_small,
                 fontWeight: font_weight_citation,

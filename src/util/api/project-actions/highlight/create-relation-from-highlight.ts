@@ -36,5 +36,11 @@ export const createRelationFromHighlight: APIFunction<
     object: args.arcId,
   });
 
+  projectState
+    .collection("highlights")
+    .mutate(args.highlightId, ({ outgoingRelations }) => ({
+      outgoingRelations: [...outgoingRelations, relation.id],
+    }));
+
   return relation;
 };

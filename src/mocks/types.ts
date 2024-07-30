@@ -30,9 +30,14 @@ export type MockedEntrySection =
   | string;
 
 export type MockedEntry = {
-  entryKey: string;
   sections: MockedEntrySection[];
 };
+
+export type MockedJournalEntry = MockedEntry & {
+  entryKey: string;
+};
+
+export type MockedArcEntry = MockedEntry;
 
 export interface ProcessedEntrySections {
   htmlString: string;
@@ -42,7 +47,7 @@ export interface ProcessedEntrySections {
 export interface MockedComment {
   id: string;
   highlightId: string;
-  mockedEntry: MockedEntry;
+  mockedEntry: MockedJournalEntry;
   dayCreated: IpsumDay;
 }
 
@@ -50,5 +55,5 @@ export interface MockedArc {
   id: string;
   name: string;
   hue: number;
-  arcEntry?: MockedEntry;
+  arcEntry?: MockedArcEntry;
 }

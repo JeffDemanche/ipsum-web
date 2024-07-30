@@ -1,6 +1,12 @@
 import { generateMock } from "mocks/generate-mock";
 
 import {
+  arc1_attachment,
+  arc2_knowledge,
+  arc3_understanding,
+  arc4_asceticism,
+} from "./arcs";
+import {
   journalEntry1_TheSonOfTheBrahman,
   journalEntry2_WithTheSamanas,
   journalEntry3_Gotama,
@@ -30,6 +36,12 @@ export const mockSiddhartha = () => {
       journalEntry10_TheSon,
       journalEntry11_Om,
       journalEntry12_Govinda,
+    ],
+    arcs: [
+      arc1_attachment,
+      arc2_knowledge,
+      arc3_understanding,
+      arc4_asceticism,
     ],
   });
 };

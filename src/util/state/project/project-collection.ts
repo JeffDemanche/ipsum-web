@@ -42,6 +42,10 @@ export class ProjectCollection<T> {
     this.values()[key]({ ...currentValue, ...value });
   }
 
+  mutate(key: string, setter: (v: T) => Partial<T>): void {
+    return this.set(key, setter(this.get(key)));
+  }
+
   delete(key: string): boolean {
     const newValues = { ...this.values() };
     const deleted = delete newValues[key];
