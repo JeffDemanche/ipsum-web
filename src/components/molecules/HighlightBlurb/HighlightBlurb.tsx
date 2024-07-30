@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
 import { BlurbWrapper } from "components/molecules/BlurbWrapper";
 import { HighlightTag } from "components/molecules/HighlightTag";
@@ -53,7 +54,11 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
 
   return (
     <BlurbWrapper
-      className={className}
+      className={cx(
+        className,
+        styles["highlight-blurb-wrapper"],
+        expanded && styles["expanded"]
+      )}
       collapsible
       onExpand={onBlurbWrapperExpand}
       onCollapse={onBlurbWrapperCollapse}
@@ -72,7 +77,9 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
           htmlString={excerptProps.htmlString}
           maxLines={expanded ? 0 : excerptProps.maxLines ?? 3}
         />
-        <RelationsTable expanded={expanded} relations={relations} />
+        {expanded && (
+          <RelationsTable expanded={expanded} relations={relations} />
+        )}
       </div>
     </BlurbWrapper>
   );

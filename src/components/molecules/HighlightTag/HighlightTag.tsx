@@ -69,7 +69,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
           <Button
             style={{
               ...buttonStyle,
-              paddingRight: "0px",
+              paddingRight: "4px",
               textDecoration: "none",
               height: elementHeight,
             }}
@@ -97,6 +97,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
           style={{
             ...buttonStyle,
             textDecoration: "none",
+            paddingLeft: "4px",
             fontFamily: font_family_serif,
             height: elementHeight,
           }}
