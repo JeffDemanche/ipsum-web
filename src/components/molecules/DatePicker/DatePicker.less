@@ -1,0 +1,30 @@
+@import "../../styles/vars.less";
+
+.date-picker-wrapper {
+  display: flex;
+  
+  .button-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .calendar {
+    margin: 0;
+  }
+
+  .day-with-dots-wrapper {
+    position: relative;
+  
+    .dot-group {
+      position: absolute;
+      top: 40%;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      text-align: center;
+      pointer-events: none;
+      font-weight: @font_weight_bold;
+    }
+  }
+}

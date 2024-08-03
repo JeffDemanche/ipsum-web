@@ -20,6 +20,7 @@ export const font_family_sans = "Roboto";
 
 export const font_weight_light = 300;
 export const font_weight_regular = 400;
+export const font_weight_bold = 700;
 
 export const font_weight_inputs = 300;
 export const font_weight_citation = 400;
