@@ -32,3 +32,5 @@ export { createCommentEntry as apiCreateCommentEntry } from "./comment/create-co
 export { createComment as apiCreateComment } from "./comment/create-comment";
 
 export { createArc as apiCreateArc } from "./arc/create-arc";
+
+export { updateJournalTitle as apiUpdateJournalTitle } from "./journal/update-journal-title";

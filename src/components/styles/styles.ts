@@ -8,6 +8,7 @@ import {
   font_family_sans,
   font_size_small,
   font_weight_light,
+  grey100,
   grey500,
   grey700,
   grid_x_1,
@@ -181,7 +182,13 @@ export const theme = createTheme(
           },
         ],
       },
-      MuiOutlinedInput: {},
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: {
+            borderRadius: "0px",
+          },
+        },
+      },
       MuiTextField: {},
       MuiDivider: {},
       MuiIconButton: {
@@ -209,6 +216,8 @@ export const theme = createTheme(
             boxShadow: box_shadow_primary,
           },
           contained: {
+            backgroundColor: grey700,
+            color: grey100,
             boxShadow: box_shadow_primary,
           },
         },

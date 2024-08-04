@@ -30,5 +30,11 @@ export const IpsumStateProvider: React.FC<IpsumStateProviderProps> = ({
     PROJECT_STATE = projectState ?? new ProjectState();
   }, [projectState]);
 
-  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+  return (
+    <ApolloProvider client={client}>
+      <IpsumStateContext.Provider value={{ projectState }}>
+        {children}
+      </IpsumStateContext.Provider>
+    </ApolloProvider>
+  );
 };

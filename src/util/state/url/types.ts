@@ -64,8 +64,13 @@ export interface URLBrowserState {
   tab: TabState;
 }
 
+export interface URLJournalSettingsState {
+  open: boolean;
+}
+
 export interface URLJournalView {
   layers: URLLayer[];
+  settings: URLJournalSettingsState;
   browser: URLBrowserState;
 }
 

@@ -58,7 +58,7 @@ export class ProjectState {
           __typename: "JournalMetadata",
           lastArcHue: 0,
         }),
-        journalTitle: makeVar(""),
+        journalTitle: makeVar("New journal"),
       },
       collections: {
         entries: new ProjectCollection<InMemoryEntry>(),

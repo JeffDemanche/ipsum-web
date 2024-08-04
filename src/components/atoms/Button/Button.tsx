@@ -18,7 +18,7 @@ type ButtonProps = {
   className?: string;
 } & Pick<
   React.ComponentProps<typeof MuiButton>,
-  "onClick" | "disabled" | "startIcon" | "endIcon" | "ref"
+  "onClick" | "disabled" | "startIcon" | "endIcon" | "ref" | "aria-hidden"
 >;
 
 export const Button: React.FunctionComponent<ButtonProps> = ({

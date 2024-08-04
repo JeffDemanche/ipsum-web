@@ -1,0 +1,1 @@
+export { JournalSettingsDrawerConnected } from "./JournalSettingsDrawerConnected";
