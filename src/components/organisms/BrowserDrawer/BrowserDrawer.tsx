@@ -6,8 +6,11 @@ import { BrowserHighlightsTab } from "../BrowserHighlightsTab";
 import styles from "./BrowserDrawer.less";
 
 interface BrowserDrawerProps {
-  style?: React.CSSProperties;
-  className?: string;
+  drawerStyle?: React.CSSProperties;
+  drawerClassName?: string;
+
+  closedContentStyle?: React.CSSProperties;
+  closedContentClassName?: string;
 
   defaultOpen: boolean;
   onOpen: () => void;
@@ -18,8 +21,10 @@ interface BrowserDrawerProps {
 }
 
 export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
-  style,
-  className,
+  drawerStyle,
+  drawerClassName,
+  closedContentStyle,
+  closedContentClassName,
   defaultOpen,
   onOpen,
   onClose,
@@ -29,16 +34,20 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
   const openedContent = useMemo(() => {
     switch (tab) {
       case "highlights":
-        return <BrowserHighlightsTab {...highlightsTabProps} />;
+        return (
+          <div style={closedContentStyle} className={closedContentClassName}>
+            <BrowserHighlightsTab {...highlightsTabProps} />
+          </div>
+        );
       default:
         return null;
     }
-  }, [highlightsTabProps, tab]);
+  }, [closedContentClassName, closedContentStyle, highlightsTabProps, tab]);
 
   return (
     <Drawer
-      style={style}
-      className={className}
+      style={drawerStyle}
+      className={drawerClassName}
       direction="left"
       defaultOpen={defaultOpen}
       onOpen={onOpen}

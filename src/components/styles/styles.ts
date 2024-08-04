@@ -253,6 +253,7 @@ export const theme = createTheme(
             fontWeight: font_weight_light,
             borderRadius: border_radius_inputs,
             height: grid_x_5,
+            padding: "0",
           },
         },
       },

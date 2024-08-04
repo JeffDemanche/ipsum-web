@@ -8,6 +8,7 @@ import { useIpsumSearchParams, useModifySearchParams } from "util/state";
 
 import { BrowserHighlightsTab } from "../BrowserHighlightsTab";
 import { BrowserDrawer } from "./BrowserDrawer";
+import styles from "./BrowserDrawer.less";
 
 interface BrowserDrawerConnectedProps {
   style?: React.CSSProperties;
@@ -268,8 +269,9 @@ export const BrowserDrawerConnected: React.FunctionComponent<
 
   return (
     <BrowserDrawer
-      style={style}
-      className={className}
+      drawerStyle={style}
+      drawerClassName={className}
+      closedContentClassName={styles["closed-content"]}
       defaultOpen={browserUrlParams?.open ?? true}
       onOpen={onOpen}
       onClose={onClose}
