@@ -2,11 +2,7 @@ import { SortType } from "util/sort";
 
 export type View = "" | "journal";
 
-export type LayerType =
-  | "connection_only"
-  | "daily_journal"
-  | "arc_detail"
-  | "highlight_detail";
+export type LayerType = "daily_journal" | "arc_detail" | "highlight_detail";
 
 export type BaseURLLayer = {
   type: LayerType;
@@ -63,18 +59,14 @@ export interface HighlightsBrowserTab {
 
 type TabState = HighlightsBrowserTab;
 
-interface URLBrowserState {
+export interface URLBrowserState {
   open: boolean;
   tab: TabState;
 }
 
-interface URLJournalView {
-  layers?: URLLayer[];
-  browser?: URLBrowserState;
-
-  // searchCriteria?: URLHighlightSearchCriteria;
-  highlight?: string;
-  sort?: "date" | "importance";
+export interface URLJournalView {
+  layers: URLLayer[];
+  browser: URLBrowserState;
 }
 
 type EmptySearchData = unknown;

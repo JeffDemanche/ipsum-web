@@ -18,7 +18,10 @@ interface DrawerProps {
   defaultOpen?: boolean;
   handleContent?: React.ReactNode;
   closedContent?: React.ReactNode;
+  closedContentClassName?: string;
+
   openedContent: React.ReactNode;
+  openedContentClassName?: string;
 
   showInsideBorder?: boolean;
 
@@ -33,7 +36,9 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
   defaultOpen,
   handleContent,
   openedContent,
+  openedContentClassName,
   closedContent,
+  closedContentClassName,
   showInsideBorder = true,
   onOpen,
   onClose,
@@ -122,11 +127,15 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
       </div>
       {closedContent && (
         <Collapse in={!open} orientation={orientation}>
-          <div className={styles["hidden-content"]}>{closedContent}</div>
+          <div className={cx(styles["hidden-content"], closedContentClassName)}>
+            {closedContent}
+          </div>
         </Collapse>
       )}
       <Collapse in={open} orientation={orientation}>
-        <div className={styles["hidden-content"]}>{openedContent}</div>
+        <div className={cx(styles["hidden-content"], openedContentClassName)}>
+          {openedContent}
+        </div>
       </Collapse>
     </MuiDrawer>
   );

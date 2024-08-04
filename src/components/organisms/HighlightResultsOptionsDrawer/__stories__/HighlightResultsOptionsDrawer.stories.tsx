@@ -18,26 +18,38 @@ export const HighlightResultsOptionsDrawerExample: StoryHighlightResultsOptionsD
     args: {
       defaultExpanded: true,
       sortDay: IpsumDay.today(),
+      onSortDayChange: () => {},
       sortType: "Importance",
-      relations: [
-        {
-          id: "1",
-          predicate: "is",
-          arc: {
-            id: "1",
-            hue: 0,
-            name: "opinion",
-          },
+      filterOptionsProps: {
+        onCreateClause: () => {},
+        clauses: {
+          and: [
+            {
+              orRelations: [
+                {
+                  predicate: "is",
+                  arc: {
+                    id: "1",
+                    hue: 0,
+                    name: "opinion",
+                  },
+                },
+              ],
+            },
+            {
+              orRelations: [
+                {
+                  predicate: "relates to",
+                  arc: {
+                    id: "2",
+                    hue: 294,
+                    name: "bananas",
+                  },
+                },
+              ],
+            },
+          ],
         },
-        {
-          id: "1",
-          predicate: "relates to",
-          arc: {
-            id: "2",
-            hue: 294,
-            name: "bananas",
-          },
-        },
-      ],
+      },
     },
   };

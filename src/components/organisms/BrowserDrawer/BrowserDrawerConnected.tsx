@@ -16,6 +16,7 @@ interface BrowserDrawerConnectedProps {
 
 const BrowserDrawerQuery = gql(`
   query BrowserDrawer($filterArcIds: [ID!]!) {
+    journalEntryDates(includeEmpty: false)
     arcs(ids: $filterArcIds) {
       id
       name
@@ -145,17 +146,60 @@ export const BrowserDrawerConnected: React.FunctionComponent<
       };
     }, [browserUrlParams, data.arcs]);
 
+  const earliestEntryDay = data?.journalEntryDates.reduce((acc, cur) => {
+    if (IpsumDay.fromString(cur, "entry-printed-date").isBefore(acc)) {
+      return IpsumDay.fromString(cur, "entry-printed-date");
+    } else {
+      return acc;
+    }
+  }, IpsumDay.today());
+
   const dateFilterFrom = IpsumDay.fromString(
-    browserUrlParams?.tab?.filters?.dateFrom,
-    "url-format"
-  );
-  const dateFilterTo = IpsumDay.fromString(
-    browserUrlParams?.tab?.filters?.dateTo,
+    browserUrlParams?.tab?.filters?.dateFrom ??
+      earliestEntryDay.toString("url-format"),
     "url-format"
   );
 
+  const onChangeDateFilterFrom = (date: IpsumDay) => {
+    modifySearchParams((params) => {
+      params.browser = {
+        ...params.browser,
+        tab: {
+          ...params.browser?.tab,
+          filters: {
+            ...params.browser?.tab?.filters,
+            dateFrom: date.toString("url-format"),
+          },
+        },
+      };
+      return params;
+    });
+  };
+
+  const dateFilterTo = IpsumDay.fromString(
+    browserUrlParams?.tab?.filters?.dateTo ??
+      IpsumDay.today().toString("url-format"),
+    "url-format"
+  );
+
+  const onChangeDateFilterTo = (date: IpsumDay) => {
+    modifySearchParams((params) => {
+      params.browser = {
+        ...params.browser,
+        tab: {
+          ...params.browser?.tab,
+          filters: {
+            ...params.browser?.tab?.filters,
+            dateTo: date.toString("url-format"),
+          },
+        },
+      };
+      return params;
+    });
+  };
+
   const sortDay = IpsumDay.fromString(
-    browserUrlParams?.tab?.sort?.day,
+    browserUrlParams?.tab?.sort?.day ?? IpsumDay.today().toString("url-format"),
     "url-format"
   );
   const sortType: SortType = browserUrlParams?.tab?.sort?.type ?? "Importance";
@@ -206,6 +250,22 @@ export const BrowserDrawerConnected: React.FunctionComponent<
     });
   };
 
+  const onSortDayChange = (sortDay: IpsumDay) => {
+    modifySearchParams((params) => {
+      params.browser = {
+        ...params.browser,
+        tab: {
+          ...params.browser?.tab,
+          sort: {
+            ...params.browser?.tab?.sort,
+            day: sortDay.toString("url-format"),
+          },
+        },
+      };
+      return params;
+    });
+  };
+
   return (
     <BrowserDrawer
       style={style}
@@ -224,12 +284,14 @@ export const BrowserDrawerConnected: React.FunctionComponent<
             clauses,
             dateFilterFrom,
             dateFilterTo,
+            onChangeDateFilterFrom,
+            onChangeDateFilterTo,
             onCreateClause: () => {},
           },
           sortDay,
           sortType,
           onSortTypeChange: () => {},
-          onSortDayChange: () => {},
+          onSortDayChange,
         },
       }}
     />

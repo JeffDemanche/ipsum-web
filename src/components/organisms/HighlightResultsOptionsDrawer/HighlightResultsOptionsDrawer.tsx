@@ -52,6 +52,8 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
         dateFilterFrom={filterOptionsProps.dateFilterFrom}
         dateFilterTo={filterOptionsProps.dateFilterTo}
         onCreateClause={filterOptionsProps.onCreateClause}
+        onChangeDateFilterFrom={filterOptionsProps.onChangeDateFilterFrom}
+        onChangeDateFilterTo={filterOptionsProps.onChangeDateFilterTo}
       />
     </div>
   );
@@ -71,6 +73,8 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
         dateFilterFrom={filterOptionsProps.dateFilterFrom}
         dateFilterTo={filterOptionsProps.dateFilterTo}
         onCreateClause={filterOptionsProps.onCreateClause}
+        onChangeDateFilterFrom={filterOptionsProps.onChangeDateFilterFrom}
+        onChangeDateFilterTo={filterOptionsProps.onChangeDateFilterTo}
       />
     </div>
   );

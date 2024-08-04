@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
+import { IpsumDay } from "util/dates";
 
 import { HighlightSortOptions } from "../HighlightSortOptions";
 
@@ -14,5 +15,7 @@ export const HighlightSortOptionsExample: Story = {
   args: {
     expanded: true,
     sortType: "Importance",
+    onSortDayChange: () => {},
+    sortDay: IpsumDay.today(),
   },
 };

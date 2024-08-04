@@ -2,7 +2,7 @@ import qs from "qs";
 import { useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { IpsumURLSearch,View } from "./types";
+import { IpsumURLSearch, View } from "./types";
 
 export const EMPTY_ARRAY = "[]";
 export const EMPTY_OBJECT = "{}";
@@ -70,7 +70,7 @@ export const urlToData = <V extends View>(url: string): IpsumURLSearch<V> => {
 export const searchParamsToData = <V extends View>(
   search: string
 ): IpsumURLSearch<V> => {
-  return deserializeEmpty(qs.parse(search, { depth: 12 }) as IpsumURLSearch<V>);
+  return deserializeEmpty(qs.parse(search, { depth: 12 })) as IpsumURLSearch<V>;
 };
 
 /**
@@ -94,7 +94,7 @@ export const useIpsumSearchParams = <V extends View>(): IpsumURLSearch<V> => {
   const [searchParams] = useSearchParams();
 
   const selectedFields = useMemo(
-    () => nativeSearchParamsToData(searchParams),
+    () => nativeSearchParamsToData<V>(searchParams),
     [searchParams]
   );
 

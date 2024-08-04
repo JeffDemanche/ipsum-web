@@ -3,6 +3,7 @@ import React, { FunctionComponent, useMemo } from "react";
 import { HighlightsBrowserTab } from "util/state";
 
 import { BrowserHighlightsTab } from "../BrowserHighlightsTab";
+import styles from "./BrowserDrawer.less";
 
 interface BrowserDrawerProps {
   style?: React.CSSProperties;
@@ -43,6 +44,7 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
       onOpen={onOpen}
       onClose={onClose}
       openedContent={openedContent}
+      openedContentClassName={styles["opened-content"]}
     />
   );
 };
