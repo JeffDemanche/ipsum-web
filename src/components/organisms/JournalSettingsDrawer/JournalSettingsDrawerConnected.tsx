@@ -43,6 +43,18 @@ export const JournalSettingsDrawerConnected: React.FC<
     updateJournalTitle({ title: value });
   };
 
+  const onNew = () => {
+    // TODO
+  };
+
+  const onSave = () => {
+    // TODO
+  };
+
+  const onLoad = () => {
+    // TODO
+  };
+
   return (
     <JournalSettingsDrawer
       journalTitle={data?.journalTitle ?? "(No title)"}
@@ -50,6 +62,9 @@ export const JournalSettingsDrawerConnected: React.FC<
       defaultOpen={settingsUrlParams?.open ?? true}
       onOpen={onDrawerOpen}
       onClose={onDrawerClose}
+      onNewClick={onNew}
+      onSaveClick={onSave}
+      onLoadClick={onLoad}
     />
   );
 };

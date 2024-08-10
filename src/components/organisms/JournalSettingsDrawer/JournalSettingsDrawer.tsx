@@ -11,11 +11,24 @@ interface JournalSettingsDrawerProps {
   defaultOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
+
+  onNewClick: () => void;
+  onSaveClick: () => void;
+  onLoadClick: () => void;
 }
 
 export const JournalSettingsDrawer: FunctionComponent<
   JournalSettingsDrawerProps
-> = ({ journalTitle, onJournalTitleChange, defaultOpen, onOpen, onClose }) => {
+> = ({
+  journalTitle,
+  onJournalTitleChange,
+  defaultOpen,
+  onOpen,
+  onClose,
+  onNewClick,
+  onSaveClick,
+  onLoadClick,
+}) => {
   const openedContent = (
     <div className={styles["journal-settings"]}>
       <PersistentTextField
@@ -23,9 +36,15 @@ export const JournalSettingsDrawer: FunctionComponent<
         onChange={onJournalTitleChange}
       />
       <div className={styles["file-options-buttons"]}>
-        <Button variant="contained">New</Button>
-        <Button variant="contained">Save</Button>
-        <Button variant="contained">Load</Button>
+        <Button onClick={onNewClick} variant="contained">
+          New
+        </Button>
+        <Button onClick={onSaveClick} variant="contained">
+          Save
+        </Button>
+        <Button onClick={onLoadClick} variant="contained">
+          Load
+        </Button>
       </div>
     </div>
   );
