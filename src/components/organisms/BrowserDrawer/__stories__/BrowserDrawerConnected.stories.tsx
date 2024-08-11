@@ -7,7 +7,7 @@ import { IpsumStateProvider } from "util/state";
 import { BrowserDrawerConnected } from "../BrowserDrawerConnected";
 
 const meta: Meta<typeof BrowserDrawerConnected> = {
-  title: "Organisms/BrowserDrawer/BrowserDrawerConnected",
+  title: "Organisms/BrowserDrawer",
   component: BrowserDrawerConnected,
 };
 

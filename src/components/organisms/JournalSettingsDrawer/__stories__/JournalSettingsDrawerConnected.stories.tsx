@@ -7,7 +7,7 @@ import { IpsumStateProvider } from "util/state";
 import { JournalSettingsDrawerConnected } from "../JournalSettingsDrawerConnected";
 
 const meta: Meta<typeof JournalSettingsDrawerConnected> = {
-  title: "Organisms/JournalSettingsDrawer/JournalSettingsDrawerConnected",
+  title: "Organisms/JournalSettingsDrawer",
   component: JournalSettingsDrawerConnected,
 };
 

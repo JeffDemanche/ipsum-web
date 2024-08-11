@@ -7,7 +7,7 @@ import { IpsumStateProvider } from "util/state/IpsumStateContext";
 import { DailyJournalEntryConnected } from "../DailyJournalEntryConnected";
 
 const meta: Meta<typeof DailyJournalEntryConnected> = {
-  title: "Organisms/DailyJournalEntry/DailyJournalEntryConnected",
+  title: "Organisms/DailyJournalEntry",
   component: DailyJournalEntryConnected,
 };
 

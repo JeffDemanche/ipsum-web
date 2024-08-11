@@ -3,7 +3,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import { PageHeaderHighlight } from "../PageHeaderHighlight";
 
 const meta: Meta<typeof PageHeaderHighlight> = {
-  title: "Molecules/PageHeader/PageHeaderHighlight",
+  title: "Molecules/PageHeader",
   component: PageHeaderHighlight,
 };
 

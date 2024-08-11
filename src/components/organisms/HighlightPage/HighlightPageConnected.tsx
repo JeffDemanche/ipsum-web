@@ -1,0 +1,50 @@
+import { useQuery } from "@apollo/client";
+import React from "react";
+import { gql } from "util/apollo";
+
+import { HighlightPage } from "./HighlightPage";
+
+interface HighlightPageConnectedProps {
+  highlightId: string;
+}
+
+const HighlightPageQuery = gql(`
+  query HighlightPage($highlightId: ID!) {
+    highlight(id: $highlightId) {
+      id
+      arcs {
+        id
+        name
+      }
+      hue
+      number
+      objectText
+    }
+  }  
+`);
+
+export const HighlightPageConnected: React.FunctionComponent<
+  HighlightPageConnectedProps
+> = ({ highlightId }) => {
+  const { data } = useQuery(HighlightPageQuery, {
+    variables: {
+      highlightId,
+    },
+  });
+
+  const highlight = data.highlight;
+
+  return (
+    <HighlightPage
+      highlight={{
+        arcNames: highlight.arcs.map((arc) => arc.name),
+        highlightNumber: highlight.number,
+        hue: highlight.hue,
+        objectText: highlight.objectText,
+      }}
+      expanded
+      onExpand={() => {}}
+      onCollapse={() => {}}
+    />
+  );
+};

@@ -3,7 +3,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import { PageHeaderArc } from "../PageHeaderArc";
 
 const meta: Meta<typeof PageHeaderArc> = {
-  title: "Molecules/PageHeader/PageHeaderArc",
+  title: "Molecules/PageHeader",
   component: PageHeaderArc,
 };
 

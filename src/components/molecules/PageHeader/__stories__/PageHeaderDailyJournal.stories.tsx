@@ -4,7 +4,7 @@ import { IpsumDay } from "util/dates";
 import { PageHeaderDailyJournal } from "../PageHeaderDailyJournal";
 
 const meta: Meta<typeof PageHeaderDailyJournal> = {
-  title: "Molecules/PageHeader/DailyJournal",
+  title: "Molecules/PageHeader",
   component: PageHeaderDailyJournal,
 };
 
