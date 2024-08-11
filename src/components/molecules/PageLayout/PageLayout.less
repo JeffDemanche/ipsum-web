@@ -1,0 +1,21 @@
+@import "../../styles/vars.less";
+
+.page-layout {
+  display: flex;
+  flex-direction: column;
+  gap: @grid_x_1;
+  padding: @grid_x_1;
+
+  .page-layout-row {
+    display: flex;
+    gap: @grid_x_1;
+    flex-direction: row;
+
+    .page-layout-section {
+      display: flex;
+      flex: 1;
+      background-color: white;
+      box-shadow: @box_shadow_primary;
+    }
+  }
+}

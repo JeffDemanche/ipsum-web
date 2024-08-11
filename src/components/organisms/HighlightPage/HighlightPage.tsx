@@ -1,8 +1,13 @@
 import cx from "classnames";
 import { PageHeaderHighlight } from "components/molecules/PageHeader";
+import { PageLayout } from "components/molecules/PageLayout";
+import { hueSwatch } from "components/styles";
 import React, { FunctionComponent } from "react";
 
 import styles from "./HighlightPage.less";
+import { HighlightPageSectionAttributes } from "./HighlightPageSectionAttributes";
+import { HighlightPageSectionComments } from "./HighlightPageSectionComments";
+import { HighlightPageSectionExcerpt } from "./HighlightPageSectionExcerpt";
 
 interface HighlightPageProps {
   className?: string;
@@ -39,7 +44,26 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
         onExpand={onExpand}
         onCollapse={onCollapse}
       />
-      Highlight page content
+      <div
+        className={styles["highlight-page-content"]}
+        style={{
+          backgroundColor: hueSwatch(highlight.hue, "light_background"),
+        }}
+      >
+        <PageLayout
+          rows={[
+            {
+              sections: [
+                { component: <HighlightPageSectionExcerpt /> },
+                { component: <HighlightPageSectionAttributes /> },
+              ],
+            },
+            {
+              sections: [{ component: <HighlightPageSectionComments /> }],
+            },
+          ]}
+        />
+      </div>
     </div>
   );
 };

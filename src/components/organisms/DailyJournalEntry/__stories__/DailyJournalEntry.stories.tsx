@@ -33,5 +33,9 @@ export const DailyJournalEntryExample: StoryDailyJournalEntry = {
     ],
     entryDays: [],
     editable: true,
+    headerProps: {
+      day: IpsumDay.fromString("1/7/2024"),
+      expanded: true,
+    },
   },
 };

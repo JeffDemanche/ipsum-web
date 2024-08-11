@@ -1,8 +1,12 @@
 import cx from "classnames";
 import { PageHeaderArc } from "components/molecules/PageHeader";
+import { PageLayout } from "components/molecules/PageLayout";
+import { hueSwatch } from "components/styles";
 import React, { FunctionComponent } from "react";
 
 import styles from "./ArcPage.less";
+import { ArcPageSectionAbout } from "./ArcPageSectionAbout";
+import { ArcPageSectionRelations } from "./ArcPageSectionRelations";
 
 interface ArcPageProps {
   className?: string;
@@ -32,7 +36,17 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
         onExpand={onExpand}
         onCollapse={onCollapse}
       />
-      <div>Arc page content</div>
+      <div
+        className={styles["arc-page-content"]}
+        style={{ backgroundColor: hueSwatch(arc.hue, "dark_background") }}
+      >
+        <PageLayout
+          rows={[
+            { sections: [{ component: <ArcPageSectionRelations /> }] },
+            { sections: [{ component: <ArcPageSectionAbout /> }] },
+          ]}
+        />
+      </div>
     </div>
   );
 };

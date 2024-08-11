@@ -6,6 +6,8 @@ import { Entry } from "components/organisms/Entry";
 import React, { ComponentProps, useMemo } from "react";
 import { IpsumDay } from "util/dates";
 
+import styles from "./DailyJournalEntry.less";
+
 interface DailyJournalEntryProps {
   headerProps: ComponentProps<typeof PageHeaderDailyJournal>;
   today: IpsumDay;
@@ -86,25 +88,27 @@ export const DailyJournalEntry: React.FunctionComponent<
   }, [comments]);
 
   return (
-    <div>
+    <div className={styles["daily-journal-page"]}>
       <PageHeaderDailyJournal {...headerProps} />
-      <MonthlyNav
-        today={today}
-        selectedDay={selectedDay}
-        entryDays={entryDays}
-        onDaySelect={onDaySelect}
-      />
-      <Entry
-        entryDay={selectedDay}
-        highlights={highlights}
-        editable={editable}
-        htmlString={htmlString}
-        createEntry={createEntry}
-        deleteEntry={deleteEntry}
-        updateEntry={updateEntry}
-        createHighlight={createHighlight}
-      />
-      {commentsMarkup}
+      <div className={styles["daily-journal-page-content"]}>
+        <MonthlyNav
+          today={today}
+          selectedDay={selectedDay}
+          entryDays={entryDays}
+          onDaySelect={onDaySelect}
+        />
+        <Entry
+          entryDay={selectedDay}
+          highlights={highlights}
+          editable={editable}
+          htmlString={htmlString}
+          createEntry={createEntry}
+          deleteEntry={deleteEntry}
+          updateEntry={updateEntry}
+          createHighlight={createHighlight}
+        />
+        {commentsMarkup}
+      </div>
     </div>
   );
 };
