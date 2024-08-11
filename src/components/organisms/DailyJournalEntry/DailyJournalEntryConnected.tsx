@@ -122,6 +122,10 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   return (
     <DailyJournalEntry
+      headerProps={{
+        day: entryDay,
+        expanded: true,
+      }}
       today={today}
       selectedDay={entryDay}
       entryDays={entryDays}

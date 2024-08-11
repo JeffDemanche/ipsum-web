@@ -3,10 +3,11 @@ import { CommentBlurb } from "components/molecules/CommentBlurb";
 import { MonthlyNav } from "components/molecules/MonthlyNav";
 import { PageHeaderDailyJournal } from "components/molecules/PageHeader";
 import { Entry } from "components/organisms/Entry";
-import React, { useMemo } from "react";
+import React, { ComponentProps, useMemo } from "react";
 import { IpsumDay } from "util/dates";
 
 interface DailyJournalEntryProps {
+  headerProps: ComponentProps<typeof PageHeaderDailyJournal>;
   today: IpsumDay;
   selectedDay: IpsumDay;
   entryDays: IpsumDay[];
@@ -46,6 +47,7 @@ interface DailyJournalEntryProps {
 export const DailyJournalEntry: React.FunctionComponent<
   DailyJournalEntryProps
 > = ({
+  headerProps,
   today,
   selectedDay,
   entryDays,
@@ -85,7 +87,7 @@ export const DailyJournalEntry: React.FunctionComponent<
 
   return (
     <div>
-      <PageHeaderDailyJournal day={selectedDay} />
+      <PageHeaderDailyJournal {...headerProps} />
       <MonthlyNav
         today={today}
         selectedDay={selectedDay}

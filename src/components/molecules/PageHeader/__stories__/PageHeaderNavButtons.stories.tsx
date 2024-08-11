@@ -10,7 +10,7 @@ const meta: Meta<typeof PageHeaderNavButtons> = {
 export default meta;
 type StoryDailyJournal = StoryObj<typeof PageHeaderNavButtons>;
 
-export const PageHeadeNavButtonsExample: StoryDailyJournal = {
+export const PageHeaderNavButtonsExample: StoryDailyJournal = {
   args: {
     showExpand: true,
     showCollapse: false,
