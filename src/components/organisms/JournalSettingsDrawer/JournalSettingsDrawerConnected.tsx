@@ -1,8 +1,13 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
-import { apiUpdateJournalTitle, useApiAction } from "util/api";
+import {
+  apiUpdateJournalTitle,
+  urlSetJournalSettingsDrawerOpen,
+  useApiAction,
+  useUrlAction,
+} from "util/api";
 import { gql } from "util/apollo";
-import { useIpsumSearchParams, useModifySearchParams } from "util/state";
+import { useIpsumSearchParams } from "util/state";
 
 import { JournalSettingsDrawer } from "./JournalSettingsDrawer";
 
@@ -21,20 +26,16 @@ export const JournalSettingsDrawerConnected: React.FC<
 
   const { settings: settingsUrlParams } = useIpsumSearchParams<"journal">();
 
-  const modifySearchParams = useModifySearchParams<"journal">();
+  const setJournalSettingsDrawerOpen = useUrlAction(
+    urlSetJournalSettingsDrawerOpen
+  );
 
   const onDrawerOpen = () => {
-    modifySearchParams((params) => {
-      params.settings = { ...params.settings, open: true };
-      return params;
-    });
+    setJournalSettingsDrawerOpen(true);
   };
 
   const onDrawerClose = () => {
-    modifySearchParams((params) => {
-      params.settings = { ...params.settings, open: false };
-      return params;
-    });
+    setJournalSettingsDrawerOpen(false);
   };
 
   const [updateJournalTitle] = useApiAction(apiUpdateJournalTitle);

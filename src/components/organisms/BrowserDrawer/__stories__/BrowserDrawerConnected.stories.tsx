@@ -17,7 +17,6 @@ type StoryBrowserDrawerConnected = StoryObj<typeof BrowserDrawerConnected>;
 export const BrowserDrawerConnectedExample: StoryBrowserDrawerConnected = {
   parameters: {
     layout: "fullscreen",
-    query: {},
   },
   args: {
     style: {

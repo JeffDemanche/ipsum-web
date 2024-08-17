@@ -70,12 +70,13 @@ export const HighlightFilterOptions: React.FunctionComponent<
           onClick={(e) => {
             setDayFromAnchorRef(e.currentTarget);
           }}
+          aria-label="Highlight filter date from"
         >
           {dateLabel(dateFilterFrom) ?? "beginning"}
         </Button>
         <Popover
           onClose={() => {
-            setDayToAnchorRef(null);
+            setDayFromAnchorRef(null);
           }}
           anchorEl={dayFromAnchorRef}
           anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
@@ -97,6 +98,7 @@ export const HighlightFilterOptions: React.FunctionComponent<
           onClick={(e) => {
             setDayToAnchorRef(e.currentTarget);
           }}
+          aria-label="Highlight filter date to"
         >
           {dateLabel(dateFilterTo) ?? "today"}
         </Button>

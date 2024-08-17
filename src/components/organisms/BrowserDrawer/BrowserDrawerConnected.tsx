@@ -1,10 +1,16 @@
 import { useQuery } from "@apollo/client";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import React, { useMemo } from "react";
+import {
+  urlSetBrowserDrawerHighlightsOptions,
+  urlSetBrowserDrawerOpen,
+  urlSetHighlightsOptionsDrawerOpen,
+  useUrlAction,
+} from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { SortType } from "util/sort";
-import { useIpsumSearchParams, useModifySearchParams } from "util/state";
+import { useIpsumSearchParams } from "util/state";
 
 import { BrowserHighlightsTab } from "../BrowserHighlightsTab";
 import { BrowserDrawer } from "./BrowserDrawer";
@@ -57,7 +63,13 @@ export const BrowserDrawerConnected: React.FunctionComponent<
 > = ({ style, className }) => {
   const { browser: browserUrlParams } = useIpsumSearchParams<"journal">();
 
-  const modifySearchParams = useModifySearchParams<"journal">();
+  const setBrowserDrawerOpen = useUrlAction(urlSetBrowserDrawerOpen);
+  const setHighlightsOptionsDrawerOpen = useUrlAction(
+    urlSetHighlightsOptionsDrawerOpen
+  );
+  const setBrowserDrawerHighlightsOptions = useUrlAction(
+    urlSetBrowserDrawerHighlightsOptions
+  );
 
   const filterArcIds = useMemo(() => {
     if (!browserUrlParams?.tab?.filters?.and) return [];
@@ -162,18 +174,8 @@ export const BrowserDrawerConnected: React.FunctionComponent<
   );
 
   const onChangeDateFilterFrom = (date: IpsumDay) => {
-    modifySearchParams((params) => {
-      params.browser = {
-        ...params.browser,
-        tab: {
-          ...params.browser?.tab,
-          filters: {
-            ...params.browser?.tab?.filters,
-            dateFrom: date.toString("url-format"),
-          },
-        },
-      };
-      return params;
+    setBrowserDrawerHighlightsOptions({
+      filters: { dateFrom: date.toString("url-format") },
     });
   };
 
@@ -184,18 +186,8 @@ export const BrowserDrawerConnected: React.FunctionComponent<
   );
 
   const onChangeDateFilterTo = (date: IpsumDay) => {
-    modifySearchParams((params) => {
-      params.browser = {
-        ...params.browser,
-        tab: {
-          ...params.browser?.tab,
-          filters: {
-            ...params.browser?.tab?.filters,
-            dateTo: date.toString("url-format"),
-          },
-        },
-      };
-      return params;
+    setBrowserDrawerHighlightsOptions({
+      filters: { dateTo: date.toString("url-format") },
     });
   };
 
@@ -206,64 +198,24 @@ export const BrowserDrawerConnected: React.FunctionComponent<
   const sortType: SortType = browserUrlParams?.tab?.sort?.type ?? "Importance";
 
   const onOpen = () => {
-    modifySearchParams((params) => {
-      params.browser = {
-        ...params.browser,
-        open: true,
-      };
-      return params;
-    });
+    setBrowserDrawerOpen(true);
   };
 
   const onClose = () => {
-    modifySearchParams((params) => {
-      params.browser = {
-        ...params.browser,
-        open: false,
-      };
-      return params;
-    });
+    setBrowserDrawerOpen(false);
   };
 
-  const onHighlightsOpensDrawerOpen = () => {
-    modifySearchParams((params) => {
-      params.browser = {
-        ...params.browser,
-        tab: {
-          ...params.browser?.tab,
-          optionsOpen: true,
-        },
-      };
-      return params;
-    });
+  const onHighlightsOptionsDrawerOpen = () => {
+    setHighlightsOptionsDrawerOpen(true);
   };
 
   const onHighlightsOptionsDrawerClose = () => {
-    modifySearchParams((params) => {
-      params.browser = {
-        ...params.browser,
-        tab: {
-          ...params.browser?.tab,
-          optionsOpen: false,
-        },
-      };
-      return params;
-    });
+    setHighlightsOptionsDrawerOpen(false);
   };
 
   const onSortDayChange = (sortDay: IpsumDay) => {
-    modifySearchParams((params) => {
-      params.browser = {
-        ...params.browser,
-        tab: {
-          ...params.browser?.tab,
-          sort: {
-            ...params.browser?.tab?.sort,
-            day: sortDay.toString("url-format"),
-          },
-        },
-      };
-      return params;
+    setBrowserDrawerHighlightsOptions({
+      sort: { day: sortDay.toString("url-format") },
     });
   };
 
@@ -280,7 +232,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
         highlights,
         optionsDrawerProps: {
           defaultExpanded: browserUrlParams?.tab?.optionsOpen ?? false,
-          onExpand: onHighlightsOpensDrawerOpen,
+          onExpand: onHighlightsOptionsDrawerOpen,
           onCollapse: onHighlightsOptionsDrawerClose,
           filterOptionsProps: {
             clauses,

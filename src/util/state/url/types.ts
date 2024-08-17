@@ -32,8 +32,8 @@ export type URLLayer =
 
 interface URLHighlightCriterion {
   relatesToArc?: {
-    arcId: string;
-    predicate: string;
+    arcId?: string;
+    predicate?: string;
   };
 }
 
@@ -41,37 +41,37 @@ export interface URLHighlightFilterCriteria {
   dateFrom?: string;
   dateTo?: string;
   and?: {
-    or: URLHighlightCriterion[];
+    or?: URLHighlightCriterion[];
   }[];
 }
 
 export interface URLHighlightSortCriteria {
-  day: string;
-  type: SortType;
+  day?: string;
+  type?: SortType;
 }
 
 export interface HighlightsBrowserTab {
-  type: "highlights";
-  optionsOpen: boolean;
-  filters: URLHighlightFilterCriteria;
-  sort: URLHighlightSortCriteria;
+  type?: "highlights";
+  optionsOpen?: boolean;
+  filters?: URLHighlightFilterCriteria;
+  sort?: URLHighlightSortCriteria;
 }
 
 type TabState = HighlightsBrowserTab;
 
 export interface URLBrowserState {
-  open: boolean;
-  tab: TabState;
+  open?: boolean;
+  tab?: TabState;
 }
 
 export interface URLJournalSettingsState {
-  open: boolean;
+  open?: boolean;
 }
 
 export interface URLJournalView {
-  layers: URLLayer[];
-  settings: URLJournalSettingsState;
-  browser: URLBrowserState;
+  layers?: URLLayer[];
+  settings?: URLJournalSettingsState;
+  browser?: URLBrowserState;
 }
 
 type EmptySearchData = unknown;

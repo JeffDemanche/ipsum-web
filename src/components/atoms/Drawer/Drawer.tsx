@@ -91,6 +91,53 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
     setOpen(!open);
   };
 
+  const handle = (
+    <div
+      className={cx(
+        styles["visible-content"],
+        showInsideBorder && styles["inside-border"]
+      )}
+    >
+      <Button
+        onClick={() => {
+          toggle();
+        }}
+      >
+        <Chevron />
+      </Button>
+      {handleContent}
+    </div>
+  );
+
+  const content = (
+    <>
+      {closedContent && (
+        <Collapse in={!open} orientation={orientation}>
+          <div
+            className={cx(
+              styles["hidden-content"],
+              styles["closed-container"],
+              closedContentClassName
+            )}
+          >
+            {closedContent}
+          </div>
+        </Collapse>
+      )}
+      <Collapse in={open} orientation={orientation}>
+        <div
+          className={cx(
+            styles["hidden-content"],
+            styles["opened-container"],
+            openedContentClassName
+          )}
+        >
+          {openedContent}
+        </div>
+      </Collapse>
+    </>
+  );
+
   return (
     <MuiDrawer
       style={style}
@@ -110,33 +157,17 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
       variant="permanent"
       open={open}
     >
-      <div
-        className={cx(
-          styles["visible-content"],
-          showInsideBorder && styles["inside-border"]
-        )}
-      >
-        <Button
-          onClick={() => {
-            toggle();
-          }}
-        >
-          <Chevron />
-        </Button>
-        {handleContent}
-      </div>
-      {closedContent && (
-        <Collapse in={!open} orientation={orientation}>
-          <div className={cx(styles["hidden-content"], closedContentClassName)}>
-            {closedContent}
-          </div>
-        </Collapse>
+      {direction === "right" || direction === "down" ? (
+        <>
+          {content}
+          {handle}
+        </>
+      ) : (
+        <>
+          {handle}
+          {content}
+        </>
       )}
-      <Collapse in={open} orientation={orientation}>
-        <div className={cx(styles["hidden-content"], openedContentClassName)}>
-          {openedContent}
-        </div>
-      </Collapse>
     </MuiDrawer>
   );
 };
