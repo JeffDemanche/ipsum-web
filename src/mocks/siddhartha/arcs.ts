@@ -1,4 +1,5 @@
 import { MockedArc } from "mocks/types";
+import { IpsumDay } from "util/dates";
 
 export const arc1_attachment: MockedArc = {
   id: "arc1_attachment",
@@ -36,6 +37,7 @@ export const arc3_understanding: MockedArc = {
           id: "highlight-understanding-p-3",
           hue: 172,
           entryKey: "arc-entry:understanding:arc3_understanding",
+          dayCreated: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
           comments: [],
           outgoingRelations: [
             {
@@ -67,5 +69,56 @@ export const arc4_asceticism: MockedArc = {
 
       "It was through these experiences that I learned that while asceticism can discipline the body and mind, it is not the ultimate path to enlightenment. True spiritual growth requires embracing the fullness of life, including its pleasures and pains, rather than fleeing from them. Asceticism is a valuable teacher, showing the strength and resolve within, but it must be balanced with a deeper, more holistic approach to understanding oneself and the world. Through my travels, I realized that enlightenment comes from integrating all aspects of life, not just rejecting them.",
     ],
+  },
+};
+
+export const arc5_govinda: MockedArc = {
+  id: "arc5_govinda",
+  name: "govinda",
+  hue: 34,
+  arcEntry: {
+    sections: [
+      {
+        text: "From my perspective, my relationship with Govinda has been one of deep connection and mutual growth, though our paths have often diverged. Govinda has been my loyal friend since childhood, a fellow seeker who, like me, yearned for spiritual awakening. He followed me through the different stages of my journey—from our early days as Brahmins, to the harsh life of asceticism with the Samanas, and eventually to the teachings of Gotama, the Buddha.",
+        highlight: {
+          id: "highlight-govinda-p-0",
+          hue: 34,
+          entryKey: "arc-entry:govinda:arc5_govinda",
+          dayCreated: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
+          comments: [],
+          outgoingRelations: [
+            {
+              id: "relation-highlight-govinda-p-0-arc6_journey_of_self_discovery",
+              arcId: "arc6_journey_of_self_discovery",
+              predicate: "relates to",
+            },
+          ],
+        },
+      },
+
+      "Yet, while our friendship has always been strong, our spiritual paths have differed. Govinda found solace in following teachers and doctrines, finding meaning in devotion and loyalty to a specific path, such as the Buddha's teachings. I, on the other hand, felt the need to explore life independently, guided by my own experiences and inner voice.",
+
+      "Throughout the years, Govinda has remained dedicated to his search for enlightenment, while I wandered through different realms of existence—asceticism, pleasure, and simplicity by the river. Despite these differences, our bond has endured, shaped by mutual respect and shared memories. Govinda represents a part of me that seeks answers in established truths, while I have come to trust in the fluid and personal nature of the journey.",
+
+      "When our paths crossed again in later years, it was clear that although we had chosen different approaches to our spiritual quests, our connection remained unbroken. Govinda will always be a brother to me—a reflection of the seeker I once was, and a reminder of the many ways one can pursue the truth.",
+    ],
+  },
+};
+
+export const arc6_journey_of_self_discovery: MockedArc = {
+  id: "arc6_journey_of_self_discovery",
+  name: "journey of self discovery",
+  hue: 236,
+  arcEntry: {
+    sections: [],
+  },
+};
+
+export const arc7_vasudeva: MockedArc = {
+  id: "arc7_vasudeva",
+  name: "vasudeva",
+  hue: 12,
+  arcEntry: {
+    sections: [],
   },
 };

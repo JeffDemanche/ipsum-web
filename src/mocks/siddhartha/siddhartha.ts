@@ -5,6 +5,9 @@ import {
   arc2_knowledge,
   arc3_understanding,
   arc4_asceticism,
+  arc5_govinda,
+  arc6_journey_of_self_discovery,
+  arc7_vasudeva,
 } from "./arcs";
 import {
   journalEntry1_TheSonOfTheBrahman,
@@ -42,6 +45,9 @@ export const mockSiddhartha = () => {
       arc2_knowledge,
       arc3_understanding,
       arc4_asceticism,
+      arc5_govinda,
+      arc6_journey_of_self_discovery,
+      arc7_vasudeva,
     ],
   });
 };

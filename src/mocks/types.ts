@@ -17,6 +17,7 @@ export interface MockedHighlight {
   entryKey: string;
   comments?: MockedComment[];
   outgoingRelations?: MockedRelationToArc[];
+  dayCreated?: IpsumDay;
 }
 
 export type MockableTag = "p" | "h1" | "h2";

@@ -37,6 +37,7 @@ export const generateMock = (props: GenerateMockProps): GeneratedMock => {
         {
           id: highlight.id,
           entryKey: highlight.entryKey,
+          dayCreated: highlight.dayCreated,
         },
         { projectState }
       );

@@ -8,6 +8,7 @@ export const journalEntry1_TheSonOfTheBrahman: MockedJournalEntry = {
       text: "Tonight, under the serene glow of the full moon, I sit by the riverbank, feeling the soft caress of the cool breeze. The murmurs of the flowing water create a symphony that resonates with the depths of my soul. It has been a day of profound contemplation, one that has stirred the depths of my being and ignited within me a thirst for knowledge and understanding.",
       highlight: {
         entryKey: "1/1/2020",
+        dayCreated: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
         hue: 301,
         id: "highlight-chapter1-p-0",
         outgoingRelations: [
@@ -25,7 +26,7 @@ export const journalEntry1_TheSonOfTheBrahman: MockedJournalEntry = {
               entryKey: "commentEntry1-chapter1-p-0",
               sections: ["This is a comment on the first journal entry."],
             },
-            dayCreated: IpsumDay.fromString("3/4/2020"),
+            dayCreated: IpsumDay.fromString("3/4/2020", "entry-printed-date"),
           },
         ],
       },
@@ -35,15 +36,39 @@ export const journalEntry1_TheSonOfTheBrahman: MockedJournalEntry = {
       text: "I have spent the day in deep conversation with my friend Govinda, discussing the teachings of our revered teacher, the illustrious Gotama. His words have left an indelible mark upon my consciousness, stirring within me a longing to embark on a journey of self-discovery and enlightenment.",
       highlight: {
         entryKey: "1/1/2020",
+        dayCreated: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
         hue: 231,
         id: "highlight-chapter1-p-1",
+        outgoingRelations: [
+          {
+            id: "relation-highlight-chapter1-p-1-arc5-govinda",
+            predicate: "relates to",
+            arcId: "arc5_govinda",
+          },
+        ],
         comments: [],
       },
     },
 
     "As I gaze upon the tranquil waters of the river, I cannot help but feel a sense of restlessness stirring within me. The life of luxury and privilege that surrounds me in my father's home no longer holds the allure it once did. The path to true enlightenment lies beyond the confines of material wealth and societal expectations.",
 
-    "Tonight, as I sit beneath the luminous canopy of the night sky, I vow to embark on a journey of self-discovery, to seek the truths that lie beyond the veil of illusion. The river, with its ceaseless flow, whispers secrets of the universe, beckoning me to venture forth into the unknown.",
+    {
+      text: "Tonight, as I sit beneath the luminous canopy of the night sky, I vow to embark on a journey of self-discovery, to seek the truths that lie beyond the veil of illusion. The river, with its ceaseless flow, whispers secrets of the universe, beckoning me to venture forth into the unknown.",
+      highlight: {
+        entryKey: "1/1/2020",
+        dayCreated: IpsumDay.fromString("1/4/2020", "entry-printed-date"),
+        hue: 190,
+        id: "highlight-chapter1-p-3",
+        outgoingRelations: [
+          {
+            id: "relation-highlight-chapter1-p-1-arc6-journey-of-self-discovery",
+            predicate: "relates to",
+            arcId: "arc6_journey_of_self_discovery",
+          },
+        ],
+        comments: [],
+      },
+    },
 
     "With each passing moment, I feel the call of destiny growing stronger within me. I know not where this path will lead me, but I am filled with a sense of purpose and determination. Like the river that flows endlessly towards the sea, I shall follow the currents of my own destiny, guided by the inner light of truth and wisdom.",
 
@@ -205,6 +230,14 @@ export const journalEntry9_TheFerryman: MockedJournalEntry = {
         id: "highlight-chapter9-p-0",
         hue: 163,
         entryKey: "2/26/2020",
+        dayCreated: IpsumDay.fromString("2/26/2020", "entry-printed-date"),
+        outgoingRelations: [
+          {
+            id: "relation-highlight-chapter9-p-0-arc7-vasudeva",
+            arcId: "arc7_vasudeva",
+            predicate: "relates to",
+          },
+        ],
         comments: [
           {
             id: "comment1-chapter9-p-0",
@@ -213,7 +246,7 @@ export const journalEntry9_TheFerryman: MockedJournalEntry = {
               entryKey: "commentEntry1-chapter9-p-0",
               sections: ["This is a comment on the first journal entry."],
             },
-            dayCreated: IpsumDay.fromString("3/4/2020"),
+            dayCreated: IpsumDay.fromString("3/4/2020", "entry-printed-date"),
           },
         ],
       },
@@ -246,7 +279,23 @@ export const journalEntry10_TheSon: MockedJournalEntry = {
 
     "Each day, I strive to connect with him, to teach him the lessons I have learned. I share with him the stories of my journey, hoping to impart the understanding that true peace comes from within and that the river's flow mirrors the flow of life. Yet, he remains distant, his heart closed to my words. His defiance and disdain for our way of life remind me of my own youthful rebellion and the path that led me to seek my own truths.",
 
-    "Vasudeva, ever the wise and patient guide, reminds me that love and patience are the keys to reaching my son. He teaches me that the river’s way is not to force its course but to flow naturally, embracing all obstacles and changes with grace. I must learn to do the same with my son, to allow him to find his own path and to be there for him with unwavering love and support.",
+    {
+      text: "Vasudeva, ever the wise and patient guide, reminds me that love and patience are the keys to reaching my son. He teaches me that the river’s way is not to force its course but to flow naturally, embracing all obstacles and changes with grace. I must learn to do the same with my son, to allow him to find his own path and to be there for him with unwavering love and support.",
+      highlight: {
+        id: "highlight-chapter10-p-4",
+        hue: 30,
+        entryKey: "3/4/2020",
+        dayCreated: IpsumDay.fromString("3/4/2020", "entry-printed-date"),
+        outgoingRelations: [
+          {
+            id: "relation-highlight-chapter10-p-4-arc8-vasudeva",
+            arcId: "arc7_vasudeva",
+            predicate: "relates to",
+          },
+        ],
+        comments: [],
+      },
+    },
 
     "In moments of quiet reflection, I realize that my son's presence is a mirror, reflecting my own struggles and the lessons I still need to learn. His resistance challenges my patience, his pain stirs my compassion, and his spirit ignites my hope. Through him, I am learning to let go of control, to trust in the flow of life, and to find peace in the midst of turmoil.",
 
