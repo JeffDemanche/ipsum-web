@@ -16,6 +16,8 @@ interface EntryProps {
   }[];
   editable?: boolean;
   htmlString?: string;
+  maxLines?: number;
+  showHighlights?: boolean;
 
   createEntry?: (htmlString: string) => string;
   updateEntry?: ({
@@ -34,6 +36,8 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
   highlights,
   editable = false,
   htmlString,
+  maxLines,
+  showHighlights = true,
   createEntry,
   updateEntry,
   deleteEntry,
@@ -56,11 +60,14 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
           {entryDay.toString("entry-printed-date-nice-with-year")}
         </Type>
       )}
-      <div className={styles["highlights-list"]}>{highlightsMarkup}</div>
+      {showHighlights && (
+        <div className={styles["highlights-list"]}>{highlightsMarkup}</div>
+      )}
       <EntryEditor
         className={styles["entry-ipsum-editor"]}
         editable={editable}
         initialHtmlString={htmlString}
+        maxLines={maxLines}
         createEntry={createEntry}
         updateEntry={updateEntry}
         deleteEntry={deleteEntry}

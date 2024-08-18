@@ -3,7 +3,6 @@
 .blurb-wrapper {
   display: flex;
   flex-direction: row;
-  border-left: 2px solid @grey500;
 
   .selected {
     border-left: 2px solid @grey800;
@@ -11,7 +10,9 @@
   }
 
   .collapse-column {
-    padding-left: @grid_x_1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     .collapse-button {
       width: @grid_x_3;
@@ -25,6 +26,16 @@
           transform: rotate(90deg);
         }
       }
+    }
+
+    .button-icon {
+      color: @grey700;
+    }
+
+    .collapse-bar {
+      background-color: @grey700;
+      width: 2px;
+      flex-grow: 1;
     }
   }
 

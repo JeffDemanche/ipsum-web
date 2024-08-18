@@ -34,6 +34,17 @@ const HighlightPageQuery = gql(`
           }
         }
       }
+      comments {
+        id
+        highlight {
+          id
+        }
+        commentEntry {
+          entry {
+            entryKey
+          }
+        }
+      }
     }
   }  
 `);
@@ -64,6 +75,15 @@ export const HighlightPageConnected: React.FunctionComponent<
             id: relation.object.id,
             hue: relation.object.color,
             name: relation.object.name,
+          },
+        })),
+        comments: highlight.comments.map((comment) => ({
+          id: comment.id,
+          highlight: {
+            id: comment.highlight.id,
+          },
+          commentEntry: {
+            entryKey: comment.commentEntry.entry.entryKey,
           },
         })),
       }}

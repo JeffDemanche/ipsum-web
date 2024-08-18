@@ -3,6 +3,7 @@ import { PageHeaderHighlight } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
 import { hueSwatch } from "components/styles";
 import React, { FunctionComponent } from "react";
+import { IpsumDay } from "util/dates";
 
 import styles from "./HighlightPage.less";
 import { HighlightPageSectionAttributes } from "./HighlightPageSectionAttributes";
@@ -26,7 +27,13 @@ interface HighlightPageProps {
     relations: React.ComponentProps<
       typeof HighlightPageSectionAttributes
     >["relations"];
+
+    comments: React.ComponentProps<
+      typeof HighlightPageSectionComments
+    >["comments"];
   };
+
+  today: IpsumDay;
 }
 
 export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
@@ -35,6 +42,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
   expanded,
   onExpand,
   onCollapse,
+  today,
 }) => {
   return (
     <div className={cx(className, styles["highlight-page-wrapper"])}>
@@ -78,7 +86,16 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
               ],
             },
             {
-              sections: [{ component: <HighlightPageSectionComments /> }],
+              sections: [
+                {
+                  component: (
+                    <HighlightPageSectionComments
+                      today={today}
+                      comments={highlight.comments}
+                    />
+                  ),
+                },
+              ],
             },
           ]}
         />

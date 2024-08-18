@@ -11,7 +11,7 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import cx from "classnames";
 import { editorTheme } from "components/styles/editor";
 import { LexicalEditor } from "lexical";
-import React, { useCallback, useState } from "react";
+import React, { CSSProperties, useCallback, useState } from "react";
 import { IpsumDateTime } from "util/dates";
 import { placeholderForDate } from "util/placeholders";
 
@@ -33,6 +33,7 @@ interface EntryEditorProps {
       hue: number;
     }
   >;
+  maxLines?: number;
   createEntry?: (htmlString: string) => string;
   updateEntry?: ({
     entryKey,
@@ -52,6 +53,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
   allowHighlighting = true,
   initialHtmlString,
   highlightsMap,
+  maxLines,
   createEntry,
   updateEntry,
   deleteEntry,
@@ -63,6 +65,10 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
   }, []);
 
   const [entryKey, setEntryKey] = useState(defaultEntryKey);
+
+  const lineClampStyle: CSSProperties = maxLines
+    ? { WebkitLineClamp: maxLines, lineClamp: maxLines }
+    : {};
 
   return (
     <LexicalComposer
@@ -82,7 +88,14 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
         ],
       }}
     >
-      <div className={cx(className, styles["editor-container"])}>
+      <div
+        style={lineClampStyle}
+        className={cx(
+          className,
+          styles["editor-container"],
+          maxLines && styles["truncate"]
+        )}
+      >
         <FormattingPlugin createHighlight={createHighlight} />
         <div className={styles["editor-inner"]}>
           <HighlightAssignmentPlugin

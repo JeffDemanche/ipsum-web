@@ -1,7 +1,6 @@
 import { KeyboardArrowRight } from "@mui/icons-material";
 import cx from "classnames";
 import { Button } from "components/atoms/Button";
-import { Type } from "components/atoms/Type";
 import React, { CSSProperties, useState } from "react";
 
 import styles from "./BlurbWrapper.less";
@@ -59,6 +58,7 @@ export const BlurbWrapper: React.FunctionComponent<BlurbWrapperProps> = ({
           className={cx(styles["button-icon"], expanded && styles["expanded"])}
         />
       </Button>
+      <div className={styles["collapse-bar"]}></div>
     </div>
   ) : null;
 

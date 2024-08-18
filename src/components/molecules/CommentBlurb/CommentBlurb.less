@@ -1,5 +1,13 @@
 @import '../../styles/vars.less';
 
+.comment-blurb-wrapper {
+  opacity: 0.65;
+  
+  &.expanded {
+    opacity: unset;
+  }
+}
+
 .blurb-content {
   display: flex;
   flex-direction: column;
@@ -8,6 +16,7 @@
     display: flex;
     flex-direction: row;
     gap: @grid_x_1;
-    align-items: baseline;
+    align-items: center;
+    height: @grid_x_3;
   }
 }
