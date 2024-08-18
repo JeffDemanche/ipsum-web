@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
 import { gql } from "util/apollo";
+import { IpsumDay } from "util/dates";
 
 import { HighlightPage } from "./HighlightPage";
 
@@ -36,12 +37,45 @@ const HighlightPageQuery = gql(`
       }
       comments {
         id
+        history {
+          dateCreated
+        }
         highlight {
           id
+          number
+          hue
+          objectText
+          outgoingRelations {
+            id
+            predicate
+            object {
+              ... on Arc {
+                id
+                name
+                color
+              }
+            }
+          }
         }
         commentEntry {
           entry {
             entryKey
+            highlights {
+              id
+              number
+              hue
+              outgoingRelations {
+                id
+                predicate
+                object {
+                  ... on Arc {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+            htmlString
           }
         }
       }
@@ -79,14 +113,33 @@ export const HighlightPageConnected: React.FunctionComponent<
         })),
         comments: highlight.comments.map((comment) => ({
           id: comment.id,
+          day: IpsumDay.fromString(comment.history.dateCreated, "iso"),
           highlight: {
             id: comment.highlight.id,
+            arcNames: comment.highlight.outgoingRelations.map(
+              (relation) => relation.object.name
+            ),
+            highlightNumber: comment.highlight.number,
+            hue: comment.highlight.hue,
+            objectText: comment.highlight.objectText,
           },
           commentEntry: {
             entryKey: comment.commentEntry.entry.entryKey,
+            highlights: comment.commentEntry.entry.highlights.map(
+              (highlight) => ({
+                highlightId: highlight.id,
+                highlightNumber: highlight.number,
+                hue: highlight.hue,
+                arcNames: highlight.outgoingRelations.map(
+                  (relation) => relation.object.name
+                ),
+              })
+            ),
+            htmlString: comment.commentEntry.entry.htmlString,
           },
         })),
       }}
+      today={IpsumDay.today()}
       expanded
       onExpand={() => {}}
       onCollapse={() => {}}

@@ -16,6 +16,18 @@ export const createComment: APIFunction<
 > = (args, context) => {
   const { projectState } = context;
 
+  if (!projectState.collection("highlights").has(args.highlight)) {
+    throw new Error(
+      `No highlight with key ${args.highlight} exists in the project state`
+    );
+  }
+
+  if (projectState.collection("comments").has(args.id)) {
+    throw new Error(
+      `Comment with id ${args.id} already exists in the project state`
+    );
+  }
+
   const id = args.id ?? uuidv4();
   const dayCreated =
     args.dayCreated.toString("iso") ?? IpsumDay.today().toString("iso");
@@ -26,9 +38,15 @@ export const createComment: APIFunction<
     {
       comment: id,
       entryKey: commentEntryKey,
+      htmlString: args.htmlString,
     },
     context
   );
+
+  projectState.collection("highlights").mutate(args.highlight, (highlight) => ({
+    ...highlight,
+    comments: [...highlight.comments, id],
+  }));
 
   const comment = projectState.collection("comments").create(id, {
     __typename: "Comment",

@@ -1,5 +1,6 @@
 import { EntryType } from "util/apollo";
 import { IpsumDay } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
 import { InMemoryCommentEntry } from "util/state";
 
 import { APIFunction } from "../types";
@@ -26,7 +27,9 @@ export const createCommentEntry: APIFunction<
       __typename: "History",
       dateCreated: dayCreated,
     },
-    trackedHTMLString: args.htmlString ?? "",
+    trackedHTMLString: IpsumTimeMachine.create(
+      args.htmlString ?? ""
+    ).toString(),
   });
 
   const commentEntry = projectState
