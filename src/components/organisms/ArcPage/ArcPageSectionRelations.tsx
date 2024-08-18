@@ -1,9 +1,18 @@
+import { RelationsTable } from "components/molecules/RelationsTable";
 import React, { FunctionComponent } from "react";
 
-interface ArcPageSectionRelationsProps {}
+import styles from "./ArcPage.less";
+
+interface ArcPageSectionRelationsProps {
+  relations: React.ComponentProps<typeof RelationsTable>["relations"];
+}
 
 export const ArcPageSectionRelations: FunctionComponent<
   ArcPageSectionRelationsProps
-> = () => {
-  return <div>relations</div>;
+> = ({ relations }) => {
+  return (
+    <div className={styles["page-section"]}>
+      <RelationsTable expanded relations={relations} />
+    </div>
+  );
 };

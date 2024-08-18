@@ -7,7 +7,7 @@ import { IpsumDay } from "util/dates";
 import styles from "./Entry.less";
 
 interface EntryProps {
-  entryDay: IpsumDay;
+  entryDay?: IpsumDay;
   highlights: {
     highlightId: string;
     highlightNumber: number;
@@ -51,9 +51,11 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
 
   return (
     <div className={styles["entry"]}>
-      <Type variant="serif" size="large">
-        {entryDay.toString("entry-printed-date-nice-with-year")}
-      </Type>
+      {entryDay && (
+        <Type variant="serif" size="large">
+          {entryDay.toString("entry-printed-date-nice-with-year")}
+        </Type>
+      )}
       <div className={styles["highlights-list"]}>{highlightsMarkup}</div>
       <EntryEditor
         className={styles["entry-ipsum-editor"]}

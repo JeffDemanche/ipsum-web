@@ -18,6 +18,14 @@ interface ArcPageProps {
   arc: {
     name: string;
     hue: number;
+    relations: React.ComponentProps<
+      typeof ArcPageSectionRelations
+    >["relations"];
+  };
+
+  arcEntry: {
+    highlights: React.ComponentProps<typeof ArcPageSectionAbout>["highlights"];
+    htmlString: string;
   };
 }
 
@@ -27,6 +35,7 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
   onExpand,
   onCollapse,
   arc,
+  arcEntry,
 }) => {
   return (
     <div className={cx(className, styles["arc-page-wrapper"])}>
@@ -42,8 +51,27 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
       >
         <PageLayout
           rows={[
-            { sections: [{ component: <ArcPageSectionRelations /> }] },
-            { sections: [{ component: <ArcPageSectionAbout /> }] },
+            {
+              sections: [
+                {
+                  component: (
+                    <ArcPageSectionRelations relations={arc.relations} />
+                  ),
+                },
+              ],
+            },
+            {
+              sections: [
+                {
+                  component: (
+                    <ArcPageSectionAbout
+                      highlights={arcEntry.highlights}
+                      htmlString={arcEntry.htmlString}
+                    />
+                  ),
+                },
+              ],
+            },
           ]}
         />
       </div>
