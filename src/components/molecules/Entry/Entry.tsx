@@ -60,7 +60,7 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
           {entryDay.toString("entry-printed-date-nice-with-year")}
         </Type>
       )}
-      {showHighlights && (
+      {showHighlights && !!highlights.length && (
         <div className={styles["highlights-list"]}>{highlightsMarkup}</div>
       )}
       <EntryEditor
