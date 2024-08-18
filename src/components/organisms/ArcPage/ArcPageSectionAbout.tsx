@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 
-import { Entry } from "../Entry";
+import { Entry } from "../../molecules/Entry";
 import styles from "./ArcPage.less";
 
 interface ArcPageSectionAboutProps {

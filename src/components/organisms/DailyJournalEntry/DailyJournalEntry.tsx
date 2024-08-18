@@ -2,7 +2,7 @@ import { Type } from "components/atoms/Type";
 import { CommentBlurb } from "components/molecules/CommentBlurb";
 import { MonthlyNav } from "components/molecules/MonthlyNav";
 import { PageHeaderDailyJournal } from "components/molecules/PageHeader";
-import { Entry } from "components/organisms/Entry";
+import { Entry } from "components/molecules/Entry";
 import React, { ComponentProps, useMemo } from "react";
 import { IpsumDay } from "util/dates";
 
