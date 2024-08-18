@@ -17,10 +17,15 @@ interface HighlightPageProps {
   onCollapse: () => void;
 
   highlight: {
+    id: string;
+    htmlString: string;
     hue: number;
     arcNames: string[];
     highlightNumber: number;
     objectText: string;
+    relations: React.ComponentProps<
+      typeof HighlightPageSectionAttributes
+    >["relations"];
   };
 }
 
@@ -54,8 +59,22 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
           rows={[
             {
               sections: [
-                { component: <HighlightPageSectionExcerpt /> },
-                { component: <HighlightPageSectionAttributes /> },
+                {
+                  component: (
+                    <HighlightPageSectionExcerpt
+                      highlightId={highlight.id}
+                      highlightHue={highlight.hue}
+                      htmlString={highlight.htmlString}
+                    />
+                  ),
+                },
+                {
+                  component: (
+                    <HighlightPageSectionAttributes
+                      relations={highlight.relations}
+                    />
+                  ),
+                },
               ],
             },
             {

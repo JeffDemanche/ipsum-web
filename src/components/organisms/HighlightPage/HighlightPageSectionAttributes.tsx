@@ -1,9 +1,18 @@
+import { RelationsTable } from "components/molecules/RelationsTable";
 import React, { FunctionComponent } from "react";
 
-interface HighlightPageSectionAttributesProps {}
+import styles from "./HighlightPage.less";
+
+interface HighlightPageSectionAttributesProps {
+  relations: React.ComponentProps<typeof RelationsTable>["relations"];
+}
 
 export const HighlightPageSectionAttributes: FunctionComponent<
   HighlightPageSectionAttributesProps
-> = () => {
-  return <div>attributes</div>;
+> = ({ relations }) => {
+  return (
+    <div className={styles["page-section"]}>
+      <RelationsTable expanded relations={relations} editable />
+    </div>
+  );
 };
