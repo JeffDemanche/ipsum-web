@@ -27,8 +27,11 @@ export const DailyJournalEntryExample: StoryDailyJournalEntry = {
           objectText: "1/2/2024",
           arcNames: ["sam"],
         },
-        htmlString:
-          "<p>Lorem ipsum dolor sit amet.</p><p>Consectetur adipiscing elit.</p><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>",
+        commentEntry: {
+          htmlString:
+            "<p>Lorem ipsum dolor sit amet.</p><p>Consectetur adipiscing elit.</p><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>",
+          highlights: [],
+        },
       },
     ],
     entryDays: [],

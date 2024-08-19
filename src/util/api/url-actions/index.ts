@@ -17,3 +17,7 @@ export { setHighlightsOptionsDrawerOpen as urlSetHighlightsOptionsDrawerOpen } f
 export { setBrowserDrawerHighlightsOptions as urlSetBrowserDrawerHighlightsOptions } from "./browser/set-browser-highlights-options";
 
 export { setJournalSettingsDrawerOpen as urlSetJournalSettingsDrawerOpen } from "./journal-settings/set-journal-settings-drawer-open";
+
+export { insertLayer as urlInsertLayer } from "./layers/insert-layer";
+export { setDailyJournalLayerDay as urlSetDailyJournalLayerDay } from "./layers/set-daily-journal-layer-day";
+export { setLayerExpanded as urlSetLayerExpanded } from "./layers/set-layer-expanded";

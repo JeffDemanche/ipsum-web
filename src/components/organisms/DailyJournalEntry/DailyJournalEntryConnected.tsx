@@ -1,12 +1,14 @@
 import { useQuery } from "@apollo/client";
-import React, { useMemo } from "react";
+import React, { ComponentProps, useMemo } from "react";
+import { urlSetDailyJournalLayerDay, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay, useToday } from "util/dates";
+import { useIpsumSearchParams } from "util/state";
 
 import { DailyJournalEntry } from "./DailyJournalEntry";
 
 interface DailyJournalEntryConnectedProps {
-  entryDay: IpsumDay;
+  layerIndex: number;
 }
 
 const DailyJournalEntryQuery = gql(`
@@ -33,6 +35,15 @@ const DailyJournalEntryQuery = gql(`
           entry {
             entryKey
             htmlString
+            highlights {
+              id
+              hue
+              number
+              arcs {
+                id
+                name
+              }
+            }
           }
         }
         highlight {
@@ -50,7 +61,22 @@ const DailyJournalEntryQuery = gql(`
 
 export const DailyJournalEntryConnected: React.FunctionComponent<
   DailyJournalEntryConnectedProps
-> = ({ entryDay }) => {
+> = ({ layerIndex }) => {
+  const { layers } = useIpsumSearchParams<"journal">();
+
+  const layer = layers?.[layerIndex];
+
+  console.log(layers);
+
+  if (!layer || layer.type !== "daily_journal") {
+    throw new Error(`Layer at index ${layerIndex} does not exist in URL`);
+  }
+
+  const setDailyJournalLayerDay = useUrlAction(urlSetDailyJournalLayerDay);
+
+  const entryDay =
+    IpsumDay.fromString(layer.day, "url-format") ?? IpsumDay.today();
+
   const { data, loading, error } = useQuery(DailyJournalEntryQuery, {
     variables: {
       entryKey: entryDay.toString("entry-printed-date"),
@@ -71,7 +97,9 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     [data.journalEntry.entry.highlights]
   );
 
-  const comments = useMemo(() => {
+  const comments = useMemo((): ComponentProps<
+    typeof DailyJournalEntry
+  >["comments"] => {
     if (!data.day.comments) return [];
 
     return data.day.comments.map((comment) => ({
@@ -84,6 +112,15 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
         hue: comment.highlight.hue,
         highlightNumber: 0, // TODO
         arcNames: comment.highlight.arcs.map((arc) => arc.name),
+      },
+      commentEntry: {
+        highlights: comment.commentEntry.entry.highlights.map((highlight) => ({
+          highlightId: highlight.id,
+          hue: highlight.hue,
+          arcNames: highlight.arcs.map((arc) => arc.name),
+          highlightNumber: highlight.number,
+        })),
+        htmlString: comment.commentEntry.entry.htmlString,
       },
     }));
   }, [data.day.comments, entryDay]);
@@ -116,7 +153,9 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     return "highlight_id";
   };
 
-  const onDaySelect = (day: IpsumDay) => {};
+  const onDaySelect = (day: IpsumDay) => {
+    setDailyJournalLayerDay({ index: layerIndex, day });
+  };
 
   const editable = today.equals(entryDay);
 

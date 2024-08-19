@@ -6,23 +6,22 @@ export type LayerType = "daily_journal" | "arc_detail" | "highlight_detail";
 
 export type BaseURLLayer = {
   type: LayerType;
+  expanded?: boolean;
 };
 
 export interface DailyJournalURLLayer extends BaseURLLayer {
   type: "daily_journal";
-  mode?: "today" | "past";
-  focusedDate?: string;
-  visibleDates?: string[];
+  day?: string;
 }
 
 export interface ArcDetailURLLayer extends BaseURLLayer {
   type: "arc_detail";
-  arcId: string;
+  arcId?: string;
 }
 
 export interface HighlightDetailURLLayer extends BaseURLLayer {
   type: "highlight_detail";
-  highlightId: string;
+  highlightId?: string;
 }
 
 export type URLLayer =

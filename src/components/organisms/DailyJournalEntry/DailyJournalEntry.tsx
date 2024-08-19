@@ -1,8 +1,8 @@
 import { Type } from "components/atoms/Type";
 import { CommentBlurb } from "components/molecules/CommentBlurb";
+import { Entry } from "components/molecules/Entry";
 import { MonthlyNav } from "components/molecules/MonthlyNav";
 import { PageHeaderDailyJournal } from "components/molecules/PageHeader";
-import { Entry } from "components/molecules/Entry";
 import React, { ComponentProps, useMemo } from "react";
 import { IpsumDay } from "util/dates";
 
@@ -19,18 +19,7 @@ interface DailyJournalEntryProps {
     hue: number;
     arcNames: string[];
   }[];
-  comments: {
-    id: string;
-    day: IpsumDay;
-    htmlString: string;
-    highlight: {
-      id: string;
-      objectText: string;
-      hue: number;
-      highlightNumber: number;
-      arcNames: string[];
-    };
-  }[];
+  comments: ComponentProps<typeof CommentBlurb>["comment"][];
   editable: boolean;
   htmlString?: string;
   createEntry: (htmlString: string) => string;
@@ -78,7 +67,7 @@ export const DailyJournalEntry: React.FunctionComponent<
             onExpand={() => {}}
             onCollapse={() => {}}
             excerptProps={{
-              htmlString: comment.htmlString,
+              htmlString: comment.commentEntry.htmlString,
             }}
             comment={comment}
           />
