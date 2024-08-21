@@ -1,0 +1,1 @@
+export { JournalViewPagesSectionConnected } from "./JournalViewPagesSectionConnected";

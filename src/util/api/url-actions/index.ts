@@ -12,6 +12,8 @@ export const useUrlAction = <T, V extends View>(
   };
 };
 
+export { overwriteJournalUrl as urlOverwriteJournalUrl } from "./overwrite-journal-url";
+
 export { setBrowserDrawerOpen as urlSetBrowserDrawerOpen } from "./browser/set-browser-drawer-open";
 export { setHighlightsOptionsDrawerOpen as urlSetHighlightsOptionsDrawerOpen } from "./browser/set-highlights-options-drawer-open";
 export { setBrowserDrawerHighlightsOptions as urlSetBrowserDrawerHighlightsOptions } from "./browser/set-browser-highlights-options";

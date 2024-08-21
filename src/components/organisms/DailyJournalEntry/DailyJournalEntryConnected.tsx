@@ -8,7 +8,8 @@ import { useIpsumSearchParams } from "util/state";
 import { DailyJournalEntry } from "./DailyJournalEntry";
 
 interface DailyJournalEntryConnectedProps {
-  layerIndex: number;
+  day: IpsumDay;
+  onDayChange: (day: IpsumDay) => void;
 }
 
 const DailyJournalEntryQuery = gql(`
@@ -61,21 +62,8 @@ const DailyJournalEntryQuery = gql(`
 
 export const DailyJournalEntryConnected: React.FunctionComponent<
   DailyJournalEntryConnectedProps
-> = ({ layerIndex }) => {
-  const { layers } = useIpsumSearchParams<"journal">();
-
-  const layer = layers?.[layerIndex];
-
-  console.log(layers);
-
-  if (!layer || layer.type !== "daily_journal") {
-    throw new Error(`Layer at index ${layerIndex} does not exist in URL`);
-  }
-
-  const setDailyJournalLayerDay = useUrlAction(urlSetDailyJournalLayerDay);
-
-  const entryDay =
-    IpsumDay.fromString(layer.day, "url-format") ?? IpsumDay.today();
+> = ({ day, onDayChange }) => {
+  const entryDay = day ?? IpsumDay.today();
 
   const { data, loading, error } = useQuery(DailyJournalEntryQuery, {
     variables: {
@@ -84,23 +72,29 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     },
   });
 
+  const isNew = !data.journalEntry?.entry;
+
   const today = useToday(5000);
 
   const highlights = useMemo(
     () =>
-      data.journalEntry.entry.highlights.map((highlight, index: number) => ({
-        highlightId: highlight.id,
-        highlightNumber: 0, // TODO
-        hue: highlight.hue,
-        arcNames: highlight.arcs.map((arc) => arc.name),
-      })),
-    [data.journalEntry.entry.highlights]
+      isNew
+        ? []
+        : data.journalEntry.entry.highlights.map(
+            (highlight, index: number) => ({
+              highlightId: highlight.id,
+              highlightNumber: 0, // TODO
+              hue: highlight.hue,
+              arcNames: highlight.arcs.map((arc) => arc.name),
+            })
+          ),
+    [data.journalEntry?.entry?.highlights, isNew]
   );
 
   const comments = useMemo((): ComponentProps<
     typeof DailyJournalEntry
   >["comments"] => {
-    if (!data.day.comments) return [];
+    if (isNew || !data.day.comments) return [];
 
     return data.day.comments.map((comment) => ({
       id: comment.id,
@@ -123,7 +117,9 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
         htmlString: comment.commentEntry.entry.htmlString,
       },
     }));
-  }, [data.day.comments, entryDay]);
+  }, [data.day?.comments, entryDay, isNew]);
+
+  const htmlString = isNew ? "" : data.journalEntry.entry.htmlString;
 
   if (loading || error) {
     return <div>Loading...</div>;
@@ -153,10 +149,6 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     return "highlight_id";
   };
 
-  const onDaySelect = (day: IpsumDay) => {
-    setDailyJournalLayerDay({ index: layerIndex, day });
-  };
-
   const editable = today.equals(entryDay);
 
   return (
@@ -168,7 +160,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
       today={today}
       selectedDay={entryDay}
       entryDays={entryDays}
-      htmlString={data.journalEntry.entry.htmlString}
+      htmlString={htmlString}
       editable={editable}
       highlights={highlights}
       comments={comments}
@@ -176,7 +168,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
       deleteEntry={deleteEntry}
       updateEntry={updateEntry}
       createHighlight={createHighlight}
-      onDaySelect={onDaySelect}
+      onDaySelect={onDayChange}
     />
   );
 };
