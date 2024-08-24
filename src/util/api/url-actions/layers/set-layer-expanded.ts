@@ -8,6 +8,6 @@ export const setLayerExpanded: URLFunction<
     throw new Error(`Layer at index ${props.index} does not exist in URL`);
   }
 
-  state.layers[props.index].expanded = props.expanded;
+  state.layers[props.index].expanded = `${props.expanded}`;
   return state;
 };

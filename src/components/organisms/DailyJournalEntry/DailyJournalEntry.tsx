@@ -1,3 +1,4 @@
+import { Collapse } from "@mui/material";
 import { Type } from "components/atoms/Type";
 import { CommentBlurb } from "components/molecules/CommentBlurb";
 import { Entry } from "components/molecules/Entry";
@@ -79,25 +80,27 @@ export const DailyJournalEntry: React.FunctionComponent<
   return (
     <div className={styles["daily-journal-page"]}>
       <PageHeaderDailyJournal {...headerProps} />
-      <div className={styles["daily-journal-page-content"]}>
-        <MonthlyNav
-          today={today}
-          selectedDay={selectedDay}
-          entryDays={entryDays}
-          onDaySelect={onDaySelect}
-        />
-        <Entry
-          entryDay={selectedDay}
-          highlights={highlights}
-          editable={editable}
-          htmlString={htmlString}
-          createEntry={createEntry}
-          deleteEntry={deleteEntry}
-          updateEntry={updateEntry}
-          createHighlight={createHighlight}
-        />
-        {commentsMarkup}
-      </div>
+      <Collapse in={headerProps.expanded} orientation="vertical">
+        <div className={styles["daily-journal-page-content"]}>
+          <MonthlyNav
+            today={today}
+            selectedDay={selectedDay}
+            entryDays={entryDays}
+            onDaySelect={onDaySelect}
+          />
+          <Entry
+            entryDay={selectedDay}
+            highlights={highlights}
+            editable={editable}
+            htmlString={htmlString}
+            createEntry={createEntry}
+            deleteEntry={deleteEntry}
+            updateEntry={updateEntry}
+            createHighlight={createHighlight}
+          />
+          {commentsMarkup}
+        </div>
+      </Collapse>
     </div>
   );
 };

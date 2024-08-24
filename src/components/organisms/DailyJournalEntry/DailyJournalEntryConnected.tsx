@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import React, { ComponentProps, useMemo } from "react";
-import { urlSetDailyJournalLayerDay, useUrlAction } from "util/api";
+import { urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay, useToday } from "util/dates";
 import { useIpsumSearchParams } from "util/state";
@@ -8,6 +8,7 @@ import { useIpsumSearchParams } from "util/state";
 import { DailyJournalEntry } from "./DailyJournalEntry";
 
 interface DailyJournalEntryConnectedProps {
+  layerIndex: number;
   day: IpsumDay;
   onDayChange: (day: IpsumDay) => void;
 }
@@ -62,7 +63,7 @@ const DailyJournalEntryQuery = gql(`
 
 export const DailyJournalEntryConnected: React.FunctionComponent<
   DailyJournalEntryConnectedProps
-> = ({ day, onDayChange }) => {
+> = ({ layerIndex, day, onDayChange }) => {
   const entryDay = day ?? IpsumDay.today();
 
   const { data, loading, error } = useQuery(DailyJournalEntryQuery, {
@@ -121,6 +122,16 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   const htmlString = isNew ? "" : data.journalEntry.entry.htmlString;
 
+  const { layers } = useIpsumSearchParams<"journal">();
+
+  const layerExpanded = layers?.[layerIndex]?.expanded === "true";
+
+  const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
+
+  const onSetExpanded = (expanded: boolean) => {
+    setLayerExpanded({ index: layerIndex, expanded });
+  };
+
   if (loading || error) {
     return <div>Loading...</div>;
   }
@@ -155,7 +166,13 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     <DailyJournalEntry
       headerProps={{
         day: entryDay,
-        expanded: true,
+        expanded: layerExpanded,
+        onExpand: () => {
+          onSetExpanded(true);
+        },
+        onCollapse: () => {
+          onSetExpanded(false);
+        },
       }}
       today={today}
       selectedDay={entryDay}

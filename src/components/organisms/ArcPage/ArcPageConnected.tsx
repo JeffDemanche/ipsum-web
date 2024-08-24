@@ -1,10 +1,13 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
+import { urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
+import { useIpsumSearchParams } from "util/state";
 
 import { ArcPage } from "./ArcPage";
 
 interface ArcPageConnectedProps {
+  layerIndex: number;
   arcId: string;
 }
 
@@ -53,7 +56,7 @@ const ArcPageQuery = gql(`
 
 export const ArcPageConnected: React.FunctionComponent<
   ArcPageConnectedProps
-> = ({ arcId }) => {
+> = ({ layerIndex, arcId }) => {
   const { data } = useQuery(ArcPageQuery, {
     variables: {
       arcId,
@@ -86,12 +89,20 @@ export const ArcPageConnected: React.FunctionComponent<
     })
   );
 
+  const { layers } = useIpsumSearchParams<"journal">();
+
+  const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
+
   return (
     <ArcPage
       arc={{ hue: arc.color, name: arc.name, relations: arcOutgoingRelations }}
-      expanded
-      onExpand={() => {}}
-      onCollapse={() => {}}
+      expanded={layers?.[layerIndex]?.expanded === "true"}
+      onExpand={() => {
+        setLayerExpanded({ index: layerIndex, expanded: true });
+      }}
+      onCollapse={() => {
+        setLayerExpanded({ index: layerIndex, expanded: false });
+      }}
       arcEntry={{
         highlights: arcEntryHighlights,
         htmlString: arc.arcEntry.entry.htmlString,

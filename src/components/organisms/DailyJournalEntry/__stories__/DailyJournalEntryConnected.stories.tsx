@@ -32,6 +32,7 @@ export const DailyJournalEntryConnectedExample: StoryDailyJournalEntryConnected 
                   {
                     type: "daily_journal",
                     day: "03-04-2020",
+                    expanded: "false",
                   },
                 ],
               })}`,

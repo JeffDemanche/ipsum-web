@@ -6,7 +6,7 @@ export type LayerType = "daily_journal" | "arc_detail" | "highlight_detail";
 
 export type BaseURLLayer = {
   type: LayerType;
-  expanded?: boolean;
+  expanded?: string;
 };
 
 export interface DailyJournalURLLayer extends BaseURLLayer {

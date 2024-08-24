@@ -33,15 +33,23 @@ export const JournalViewPagesSectionConnected: React.FunctionComponent<
             key={layer.day}
             day={IpsumDay.fromString(layer.day, "url-format")}
             onDayChange={(day) => onDailyJournalDayChange(i, day)}
+            layerIndex={i}
           />
         );
       case "arc_detail":
-        return <ArcPageConnected key={layer.arcId} arcId={layer.arcId} />;
+        return (
+          <ArcPageConnected
+            key={layer.arcId}
+            arcId={layer.arcId}
+            layerIndex={i}
+          />
+        );
       case "highlight_detail":
         return (
           <HighlightPageConnected
             key={layer.highlightId}
             highlightId={layer.highlightId}
+            layerIndex={i}
           />
         );
       default:

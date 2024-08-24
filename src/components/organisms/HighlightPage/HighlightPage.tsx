@@ -1,3 +1,4 @@
+import { Collapse } from "@mui/material";
 import cx from "classnames";
 import { PageHeaderHighlight } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
@@ -57,49 +58,51 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
         onExpand={onExpand}
         onCollapse={onCollapse}
       />
-      <div
-        className={styles["highlight-page-content"]}
-        style={{
-          backgroundColor: hueSwatch(highlight.hue, "light_background"),
-        }}
-      >
-        <PageLayout
-          rows={[
-            {
-              sections: [
-                {
-                  component: (
-                    <HighlightPageSectionExcerpt
-                      highlightId={highlight.id}
-                      highlightHue={highlight.hue}
-                      htmlString={highlight.htmlString}
-                    />
-                  ),
-                },
-                {
-                  component: (
-                    <HighlightPageSectionAttributes
-                      relations={highlight.relations}
-                    />
-                  ),
-                },
-              ],
-            },
-            {
-              sections: [
-                {
-                  component: (
-                    <HighlightPageSectionComments
-                      today={today}
-                      comments={highlight.comments}
-                    />
-                  ),
-                },
-              ],
-            },
-          ]}
-        />
-      </div>
+      <Collapse in={expanded} orientation="vertical">
+        <div
+          className={styles["highlight-page-content"]}
+          style={{
+            backgroundColor: hueSwatch(highlight.hue, "light_background"),
+          }}
+        >
+          <PageLayout
+            rows={[
+              {
+                sections: [
+                  {
+                    component: (
+                      <HighlightPageSectionExcerpt
+                        highlightId={highlight.id}
+                        highlightHue={highlight.hue}
+                        htmlString={highlight.htmlString}
+                      />
+                    ),
+                  },
+                  {
+                    component: (
+                      <HighlightPageSectionAttributes
+                        relations={highlight.relations}
+                      />
+                    ),
+                  },
+                ],
+              },
+              {
+                sections: [
+                  {
+                    component: (
+                      <HighlightPageSectionComments
+                        today={today}
+                        comments={highlight.comments}
+                      />
+                    ),
+                  },
+                ],
+              },
+            ]}
+          />
+        </div>
+      </Collapse>
     </div>
   );
 };

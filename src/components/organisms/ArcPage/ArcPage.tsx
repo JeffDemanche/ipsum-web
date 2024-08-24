@@ -1,3 +1,4 @@
+import { Collapse } from "@mui/material";
 import cx from "classnames";
 import { PageHeaderArc } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
@@ -45,36 +46,38 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
         onExpand={onExpand}
         onCollapse={onCollapse}
       />
-      <div
-        className={styles["arc-page-content"]}
-        style={{ backgroundColor: hueSwatch(arc.hue, "dark_background") }}
-      >
-        <PageLayout
-          rows={[
-            {
-              sections: [
-                {
-                  component: (
-                    <ArcPageSectionRelations relations={arc.relations} />
-                  ),
-                },
-              ],
-            },
-            {
-              sections: [
-                {
-                  component: (
-                    <ArcPageSectionAbout
-                      highlights={arcEntry.highlights}
-                      htmlString={arcEntry.htmlString}
-                    />
-                  ),
-                },
-              ],
-            },
-          ]}
-        />
-      </div>
+      <Collapse in={expanded} orientation="vertical">
+        <div
+          className={styles["arc-page-content"]}
+          style={{ backgroundColor: hueSwatch(arc.hue, "dark_background") }}
+        >
+          <PageLayout
+            rows={[
+              {
+                sections: [
+                  {
+                    component: (
+                      <ArcPageSectionRelations relations={arc.relations} />
+                    ),
+                  },
+                ],
+              },
+              {
+                sections: [
+                  {
+                    component: (
+                      <ArcPageSectionAbout
+                        highlights={arcEntry.highlights}
+                        htmlString={arcEntry.htmlString}
+                      />
+                    ),
+                  },
+                ],
+              },
+            ]}
+          />
+        </div>
+      </Collapse>
     </div>
   );
 };

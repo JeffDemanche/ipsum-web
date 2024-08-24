@@ -37,7 +37,7 @@ const normalizeJournalUrl = (
       {
         type: "daily_journal",
         day: IpsumDay.today().toString("url-format"),
-        expanded: true,
+        expanded: "true",
       },
     ];
   }

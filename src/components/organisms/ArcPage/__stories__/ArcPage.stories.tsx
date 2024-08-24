@@ -15,6 +15,11 @@ export const ArcPageExample: StoryArcPage = {
     arc: {
       hue: 120,
       name: "Arc 1",
+      relations: [],
+    },
+    arcEntry: {
+      highlights: [],
+      htmlString: "<p>Arc content</p>",
     },
     expanded: true,
     onCollapse: () => {},

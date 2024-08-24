@@ -1,11 +1,14 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
+import { urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
+import { useIpsumSearchParams } from "util/state";
 
 import { HighlightPage } from "./HighlightPage";
 
 interface HighlightPageConnectedProps {
+  layerIndex: number;
   highlightId: string;
 }
 
@@ -85,7 +88,7 @@ const HighlightPageQuery = gql(`
 
 export const HighlightPageConnected: React.FunctionComponent<
   HighlightPageConnectedProps
-> = ({ highlightId }) => {
+> = ({ layerIndex, highlightId }) => {
   const { data } = useQuery(HighlightPageQuery, {
     variables: {
       highlightId,
@@ -93,6 +96,10 @@ export const HighlightPageConnected: React.FunctionComponent<
   });
 
   const highlight = data.highlight;
+
+  const { layers } = useIpsumSearchParams<"journal">();
+
+  const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
 
   return (
     <HighlightPage
@@ -140,9 +147,13 @@ export const HighlightPageConnected: React.FunctionComponent<
         })),
       }}
       today={IpsumDay.today()}
-      expanded
-      onExpand={() => {}}
-      onCollapse={() => {}}
+      expanded={layers?.[0]?.expanded === "true"}
+      onExpand={() => {
+        setLayerExpanded({ index: layerIndex, expanded: true });
+      }}
+      onCollapse={() => {
+        setLayerExpanded({ index: layerIndex, expanded: false });
+      }}
     />
   );
 };

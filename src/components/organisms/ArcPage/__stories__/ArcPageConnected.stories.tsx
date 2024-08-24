@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import React from "react";
-import { IpsumStateProvider } from "util/state";
+import { MemoryRouter } from "react-router";
+import { dataToSearchParams, IpsumStateProvider } from "util/state";
 
 import { ArcPageConnected } from "../ArcPageConnected";
 
@@ -15,13 +16,28 @@ type StoryArcPageConnected = StoryObj<typeof ArcPageConnected>;
 
 export const ArcPageConnectedExample: StoryArcPageConnected = {
   args: {
+    layerIndex: 0,
     arcId: "arc1_attachment",
   },
   decorators: [
     (Story) => (
-      <IpsumStateProvider projectState={mockSiddhartha().projectState}>
-        <Story />
-      </IpsumStateProvider>
+      <MemoryRouter
+        initialEntries={[
+          `?${dataToSearchParams<"journal">({
+            layers: [
+              {
+                type: "highlight_detail",
+                highlightId: "highlight-chapter1-p-0",
+                expanded: "true",
+              },
+            ],
+          })}`,
+        ]}
+      >
+        <IpsumStateProvider projectState={mockSiddhartha().projectState}>
+          <Story />
+        </IpsumStateProvider>
+      </MemoryRouter>
     ),
   ],
 };
