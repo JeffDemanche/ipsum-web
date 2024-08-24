@@ -1,1 +1,0 @@
-export { DayChip } from "./DayChip";

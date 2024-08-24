@@ -1,1 +1,0 @@
-export { HighlightRelationsTable } from "./HighlightRelationsTable";

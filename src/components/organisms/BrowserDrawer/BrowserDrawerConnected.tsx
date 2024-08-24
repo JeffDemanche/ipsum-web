@@ -224,7 +224,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
       drawerStyle={style}
       drawerClassName={className}
       closedContentClassName={styles["closed-content"]}
-      defaultOpen={browserUrlParams?.open ?? true}
+      defaultOpen={(browserUrlParams?.open ?? "true") === "true"}
       onOpen={onOpen}
       onClose={onClose}
       tab={browserUrlParams?.tab?.type ?? "highlights"}

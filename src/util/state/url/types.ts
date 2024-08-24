@@ -59,12 +59,12 @@ export interface HighlightsBrowserTab {
 type TabState = HighlightsBrowserTab;
 
 export interface URLBrowserState {
-  open?: boolean;
+  open?: string;
   tab?: TabState;
 }
 
 export interface URLJournalSettingsState {
-  open?: boolean;
+  open?: string;
 }
 
 export interface URLJournalView {

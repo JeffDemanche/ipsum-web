@@ -1,1 +1,0 @@
-export { ArcDetailWikiSection } from "./ArcDetailWikiSection";

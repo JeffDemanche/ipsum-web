@@ -4,6 +4,6 @@ export const setJournalSettingsDrawerOpen: URLFunction<boolean, "journal"> = (
   open,
   state
 ) => {
-  state.settings = { ...state.settings, open: true };
+  state.settings = { ...state.settings, open: `${true}` };
   return state;
 };

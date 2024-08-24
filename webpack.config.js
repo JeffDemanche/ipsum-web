@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = (env) => ({
   entry: "./src/index.tsx",
@@ -64,6 +65,9 @@ module.exports = (env) => ({
       template: __dirname + "/src/index.html",
       filename: "index.html",
       favicon: __dirname + "/src/assets/favicon.svg",
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: "./src/assets" }],
     }),
   ],
   devServer: {

@@ -1,1 +1,0 @@
-export { JournalInfoDrawer } from "./JournalInfoDrawer";

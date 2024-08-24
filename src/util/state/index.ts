@@ -14,5 +14,6 @@ export {
   useIpsumSearchParams,
   useModifySearchParams,
   getParams,
+  useNormalizeUrl,
 } from "./url";
 export * from "./url/types";

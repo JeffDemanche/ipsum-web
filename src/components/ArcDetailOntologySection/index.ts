@@ -1,1 +1,0 @@
-export { ArcDetailOntologySection } from "./ArcDetailOntologySection";

@@ -1,6 +1,3 @@
-// eslint-disable-next-line import/no-internal-modules, @typescript-eslint/no-restricted-imports
-import { highlight as highlightSpanClassname } from "util/editor/plugins/HighlightAssignmentPlugin.less";
-
 interface ExcerptOptions {
   entryDomString: string;
   highlightId: string;
@@ -18,7 +15,7 @@ const removeNonHighlightChildren = (
     const highlightElement = element.cloneNode(true) as HTMLElement;
     highlightElement.style.setProperty("--hue", `${highlightHue}`);
     highlightElement.style.setProperty("--lightness", "50%");
-    highlightElement.classList.add(highlightSpanClassname);
+    highlightElement.classList.add("ipsum-highlight");
     return highlightElement;
   } else if (!element.hasChildNodes()) {
     return null;

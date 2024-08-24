@@ -60,7 +60,7 @@ export const JournalSettingsDrawerConnected: React.FC<
     <JournalSettingsDrawer
       journalTitle={data?.journalTitle ?? "(No title)"}
       onJournalTitleChange={onJournalTitleChange}
-      defaultOpen={settingsUrlParams?.open ?? true}
+      defaultOpen={(settingsUrlParams?.open ?? true) === "true"}
       onOpen={onDrawerOpen}
       onClose={onDrawerClose}
       onNewClick={onNew}

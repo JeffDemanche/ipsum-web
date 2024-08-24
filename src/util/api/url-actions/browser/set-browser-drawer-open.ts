@@ -6,7 +6,7 @@ export const setBrowserDrawerOpen: URLFunction<boolean, "journal"> = (
 ) => {
   state.browser = {
     ...state.browser,
-    open: open,
+    open: `${open}`,
   };
   return state;
 };

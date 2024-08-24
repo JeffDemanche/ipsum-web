@@ -1,1 +1,0 @@
-export { IpsumEditor } from "./IpsumEditor";

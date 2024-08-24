@@ -45,6 +45,25 @@ export const CommentBlurbExample: StoryCommentBlurb = {
         objectText: "1/2/2024",
         arcNames: ["arc1", "arc2", "arc3"],
       },
+      commentEntry: {
+        highlights: [],
+        htmlString: constructExcerpt({
+          excerptPieces: [
+            {
+              blockType: "paragraph",
+              innerHtml: siddhartha.journalEntry1_TheSonOfTheBrahman
+                .sections[1] as string,
+              highlight: { id: "highlight-id", hue: 90 },
+            },
+            {
+              blockType: "paragraph",
+              innerHtml: siddhartha.journalEntry1_TheSonOfTheBrahman
+                .sections[2] as string,
+              highlight: { id: "highlight-id", hue: 90 },
+            },
+          ],
+        }),
+      },
     },
   },
 };

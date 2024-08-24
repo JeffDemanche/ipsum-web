@@ -1,1 +1,0 @@
-export { HighlightDetail } from "./HighlightDetail";

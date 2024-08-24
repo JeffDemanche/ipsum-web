@@ -2,21 +2,18 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ApolloSerializationProvider } from "util/apollo";
 
-import { ViewHome } from "./ViewHome";
-import { ViewIndex } from "./ViewIndex";
-import { ViewJournal } from "./ViewJournal";
+import { HomeView } from "./views/HomeView/HomeView";
+import { JournalView } from "./views/JournalView";
 
 export const IpsumRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <ApolloSerializationProvider>
         <Routes>
-          <Route path="/" element={<ViewIndex />}>
-            <Route index element={<ViewHome />} />
+          <Route path="/">
+            <Route index element={<HomeView />} />
             {/** See urls.ts */}
-            <Route path="journal" element={<ViewJournal />}>
-              <Route path=":date" element={<ViewJournal />}></Route>
-            </Route>
+            <Route path="journal" element={<JournalView />}></Route>
           </Route>
         </Routes>
       </ApolloSerializationProvider>

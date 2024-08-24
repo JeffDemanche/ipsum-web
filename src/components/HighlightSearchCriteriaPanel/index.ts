@@ -1,1 +1,0 @@
-export { HighlightSearchCriteriaPanel } from "./HighlightSearchCriteriaPanel";

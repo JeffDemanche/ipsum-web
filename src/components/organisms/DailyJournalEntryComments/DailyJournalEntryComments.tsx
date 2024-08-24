@@ -18,6 +18,9 @@ interface DailyJournalEntryCommentsProps {
       highlightNumber: number;
       arcNames: string[];
     };
+    commentEntry: React.ComponentProps<
+      typeof CommentBlurb
+    >["comment"]["commentEntry"];
   }[];
 }
 
@@ -37,6 +40,7 @@ export const DailyJournalEntryComments: React.FunctionComponent<
             id: comment.id,
             day: comment.day,
             highlight: comment.highlight,
+            commentEntry: comment.commentEntry,
           }}
         ></CommentBlurb>
       ))}

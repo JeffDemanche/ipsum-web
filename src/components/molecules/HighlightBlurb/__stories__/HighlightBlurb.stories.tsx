@@ -1,9 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { constructExcerpt } from "mocks/excerpts";
-import { siddhartha } from "mocks/siddhartha";
 import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import React from "react";
-import { IpsumTimeMachine } from "util/diff";
 
 import { HighlightBlurb } from "../HighlightBlurb";
 
@@ -59,7 +57,6 @@ export const HighlightBlurbExample: Story = {
     },
     relations: [
       {
-        id: "1",
         predicate: "is",
         arc: {
           id: "1",
@@ -68,7 +65,6 @@ export const HighlightBlurbExample: Story = {
         },
       },
       {
-        id: "2",
         predicate: "relates",
         arc: {
           id: "2",
@@ -77,7 +73,6 @@ export const HighlightBlurbExample: Story = {
         },
       },
       {
-        id: "3",
         predicate: "relates",
         arc: {
           id: "3",

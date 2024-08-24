@@ -1,8 +1,6 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { NodeEventPlugin } from "@lexical/react/LexicalNodeEventPlugin";
 import { mergeRegister } from "@lexical/utils";
-import { DiptychContext } from "components/DiptychContext";
-import { HoveredHighlightsContext } from "components/HoveredHighlightsContext";
 import {
   $isElementNode,
   $nodesOfType,
@@ -11,7 +9,7 @@ import {
   LexicalCommand,
   LexicalEditor,
 } from "lexical";
-import React, { useCallback, useContext, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { deleteHighlight } from "util/apollo";
 import { usePrevious } from "util/hooks";
 
@@ -179,19 +177,19 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
     });
   }, [editor]);
 
-  const { hoveredHighlightIds, setHoveredHighlightIds } = useContext(
-    HoveredHighlightsContext
-  );
+  // const { hoveredHighlightIds, setHoveredHighlightIds } = useContext(
+  //   HoveredHighlightsContext
+  // );
 
-  const { selectedHighlightId } = useContext(DiptychContext);
+  // const { selectedHighlightId } = useContext(DiptychContext);
 
-  const hoveredOrSelectedHighlightIds = useMemo(() => {
-    const ids = new Set(hoveredHighlightIds ?? []);
-    if (selectedHighlightId) {
-      ids.add(selectedHighlightId);
-    }
-    return Array.from(ids);
-  }, [hoveredHighlightIds, selectedHighlightId]);
+  // const hoveredOrSelectedHighlightIds = useMemo(() => {
+  //   const ids = new Set(hoveredHighlightIds ?? []);
+  //   if (selectedHighlightId) {
+  //     ids.add(selectedHighlightId);
+  //   }
+  //   return Array.from(ids);
+  // }, [hoveredHighlightIds, selectedHighlightId]);
 
   // Listen to changes in hovered highlight IDs and update the correct nodes to
   // display as hovered.
@@ -229,27 +227,27 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
     );
   });
 
-  useEffect(() => {
-    return editor.update(() => {
-      editor.dispatchCommand(DARKEN_HIGHLIGHT_COMMAND, {
-        highlightIds: hoveredOrSelectedHighlightIds,
-      });
-    });
-  }, [editor, hoveredOrSelectedHighlightIds]);
+  // useEffect(() => {
+  //   return editor.update(() => {
+  //     editor.dispatchCommand(DARKEN_HIGHLIGHT_COMMAND, {
+  //       highlightIds: hoveredOrSelectedHighlightIds,
+  //     });
+  //   });
+  // }, [editor, hoveredOrSelectedHighlightIds]);
 
   const onHighlightMouseEnter = useCallback(
     (event: Event, editor: LexicalEditor, nodeKey: string) => {
-      const highlightId = editor
-        .getElementByKey(nodeKey)
-        .getAttribute("data-highlight-id");
-      setHoveredHighlightIds([highlightId]);
+      // const highlightId = editor
+      //   .getElementByKey(nodeKey)
+      //   .getAttribute("data-highlight-id");
+      // setHoveredHighlightIds([highlightId]);
     },
-    [setHoveredHighlightIds]
+    []
   );
 
   const onHighlightMouseLeave = useCallback(() => {
-    setHoveredHighlightIds(undefined);
-  }, [setHoveredHighlightIds]);
+    // setHoveredHighlightIds(undefined);
+  }, []);
 
   return (
     <>

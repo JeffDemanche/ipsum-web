@@ -1,1 +1,0 @@
-export { HighlightsList } from "./HighlightsList";
