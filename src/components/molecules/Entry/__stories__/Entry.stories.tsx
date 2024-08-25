@@ -23,6 +23,6 @@ export const EntryExample: Story = {
       },
     ],
     editable: true,
-    htmlString: "<p>Entry content</p>",
+    htmlString: "",
   },
 };

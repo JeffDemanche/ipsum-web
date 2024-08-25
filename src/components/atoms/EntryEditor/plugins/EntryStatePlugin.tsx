@@ -5,7 +5,7 @@ import { $getRoot, EditorState, LexicalEditor } from "lexical";
 import React, { useEffect, useRef } from "react";
 import { useDebouncedCallback } from "util/hooks";
 
-interface LoadSavePluginProps {
+interface EntryStatePluginProps {
   timeout?: number;
   entryKey: string | undefined;
   initialHtmlString?: string;
@@ -22,7 +22,9 @@ interface LoadSavePluginProps {
   deleteEntry?: (entryKey: string) => void;
 }
 
-export const LoadSavePlugin: React.FunctionComponent<LoadSavePluginProps> = ({
+export const EntryStatePlugin: React.FunctionComponent<
+  EntryStatePluginProps
+> = ({
   timeout = 500,
   entryKey,
   initialHtmlString,

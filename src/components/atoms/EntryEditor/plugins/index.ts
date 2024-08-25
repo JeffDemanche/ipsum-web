@@ -1,1 +1,1 @@
-export { LoadSavePlugin } from "./LoadSavePlugin";
+export { EntryStatePlugin } from "./EntryStatePlugin";

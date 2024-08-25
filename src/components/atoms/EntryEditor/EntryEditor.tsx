@@ -16,10 +16,10 @@ import { IpsumDateTime } from "util/dates";
 import { placeholderForDate } from "util/placeholders";
 
 import styles from "./EntryEditor.less";
+import { EntryStatePlugin } from "./plugins/EntryStatePlugin";
 import { FormattingPlugin } from "./plugins/FormattingPlugin";
 import { HighlightAssignmentNode } from "./plugins/HighlightAssignmentNode";
 import { HighlightAssignmentPlugin } from "./plugins/HighlightAssignmentPlugin";
-import { LoadSavePlugin } from "./plugins/LoadSavePlugin";
 
 interface EntryEditorProps {
   defaultEntryKey?: string;
@@ -70,6 +70,11 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
     ? { WebkitLineClamp: maxLines, lineClamp: maxLines }
     : {};
 
+  const normalizedInitialHtmlString =
+    !initialHtmlString || initialHtmlString === ""
+      ? "<p></p>"
+      : initialHtmlString;
+
   return (
     <LexicalComposer
       initialConfig={{
@@ -117,9 +122,9 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
               </div>
             }
           />
-          <LoadSavePlugin
+          <EntryStatePlugin
             entryKey={entryKey}
-            initialHtmlString={initialHtmlString}
+            initialHtmlString={normalizedInitialHtmlString}
             setEntryKey={setEntryKey}
             createEntry={createEntry}
             updateEntry={updateEntry}
