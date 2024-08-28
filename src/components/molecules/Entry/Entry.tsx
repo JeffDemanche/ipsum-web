@@ -53,6 +53,17 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
     />
   ));
 
+  const highlightsMap = highlights.reduce(
+    (prev, cur) => {
+      prev[cur.highlightId] = {
+        id: cur.highlightId,
+        hue: cur.hue,
+      };
+      return prev;
+    },
+    {} as React.ComponentProps<typeof EntryEditor>["highlightsMap"]
+  );
+
   return (
     <div className={styles["entry"]}>
       {entryDay && (
@@ -68,6 +79,7 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
         editable={editable}
         initialHtmlString={htmlString}
         maxLines={maxLines}
+        highlightsMap={highlightsMap}
         createEntry={createEntry}
         updateEntry={updateEntry}
         deleteEntry={deleteEntry}

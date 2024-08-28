@@ -23,6 +23,7 @@ const DailyJournalEntryQuery = gql(`
         highlights {
           id
           hue
+          number
           arcs {
             id
             name
@@ -84,7 +85,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
         : data.journalEntry.entry.highlights.map(
             (highlight, index: number) => ({
               highlightId: highlight.id,
-              highlightNumber: 0, // TODO
+              highlightNumber: highlight.number, // TODO
               hue: highlight.hue,
               arcNames: highlight.arcs.map((arc) => arc.name),
             })
