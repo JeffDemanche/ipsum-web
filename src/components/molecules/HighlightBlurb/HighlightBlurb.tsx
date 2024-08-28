@@ -27,6 +27,9 @@ interface HighlightBlurbProps {
   defaultExpanded?: boolean;
   onExpand?: () => void;
   onCollapse?: () => void;
+
+  onHighlightClick?: () => void;
+  onHighlightObjectClick?: () => void;
 }
 
 export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
@@ -39,6 +42,8 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
   defaultExpanded,
   onExpand,
   onCollapse,
+  onHighlightClick,
+  onHighlightObjectClick,
 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
 
@@ -70,6 +75,8 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
           arcNames={highlightProps.arcNames}
           highlightNumber={highlightProps.highlightNumber}
           objectText={highlightProps.objectText}
+          onObjectTextClick={onHighlightObjectClick}
+          onHighlightClick={onHighlightClick}
         />
         <BlurbExcerpt
           highlightId={highlightProps.highlightId}

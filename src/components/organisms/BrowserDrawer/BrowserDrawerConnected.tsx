@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import React, { useMemo } from "react";
 import {
+  urlInsertLayer,
   urlSetBrowserDrawerHighlightsOptions,
   urlSetBrowserDrawerOpen,
   urlSetHighlightsOptionsDrawerOpen,
@@ -54,6 +55,20 @@ const BrowserDrawerHighlightsSearchQuery = gql(`
       history {
         dateCreated
       }
+      object {
+        ... on Arc {
+          id
+        }
+        ... on Day {
+          day
+        }
+        ... on Comment {
+          id
+          highlight {
+            id
+          }
+        }
+      }
     }
   }
 `);
@@ -70,6 +85,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
   const setBrowserDrawerHighlightsOptions = useUrlAction(
     urlSetBrowserDrawerHighlightsOptions
   );
+  const insertLayer = useUrlAction(urlInsertLayer);
 
   const filterArcIds = useMemo(() => {
     if (!browserUrlParams?.tab?.filters?.and) return [];
@@ -111,6 +127,28 @@ export const BrowserDrawerConnected: React.FunctionComponent<
       (relation) => relation.object.__typename === "Arc"
     );
 
+    let highlightObject: React.ComponentProps<
+      typeof BrowserHighlightsTab
+    >["highlights"][number]["highlightObject"];
+
+    if (searchHighlight.object.__typename === "Day") {
+      highlightObject = {
+        type: "daily_journal",
+        entryKey: searchHighlight.object.day,
+      };
+    } else if (searchHighlight.object.__typename === "Arc") {
+      highlightObject = {
+        type: "arc",
+        arcId: searchHighlight.object.id,
+      };
+    } else {
+      highlightObject = {
+        type: "comment",
+        commentId: searchHighlight.object.id,
+        highlightId: searchHighlight.object.highlight.id,
+      };
+    }
+
     return {
       day: IpsumDay.fromString(searchHighlight.history.dateCreated, "iso"),
       excerptProps: {
@@ -132,6 +170,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
           name: relation.object.name,
         },
       })),
+      highlightObject,
     };
   });
 
@@ -246,6 +285,26 @@ export const BrowserDrawerConnected: React.FunctionComponent<
           sortType,
           onSortTypeChange: () => {},
           onSortDayChange,
+        },
+        onHighlightClick: (highlightId) => {
+          insertLayer({
+            layer: { type: "highlight_detail", highlightId, expanded: "true" },
+          });
+        },
+        onHighlightArcClick: (arcId) => {
+          insertLayer({
+            layer: { type: "arc_detail", arcId, expanded: "true" },
+          });
+        },
+        onHighlightDailyJournalClick: (entryKey) => {
+          insertLayer({
+            layer: { type: "daily_journal", day: entryKey, expanded: "true" },
+          });
+        },
+        onHighlightCommentClick: (commentId, highlightId) => {
+          insertLayer({
+            layer: { type: "highlight_detail", highlightId, expanded: "true" },
+          });
         },
       }}
     />

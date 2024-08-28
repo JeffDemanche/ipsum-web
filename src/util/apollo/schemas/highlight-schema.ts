@@ -11,6 +11,8 @@ export const highlightTypeDef = gql`
     ): [Highlight]
   }
 
+  union HighlightObject = Arc | Day | Comment
+
   type Highlight {
     id: ID!
     history: History!
@@ -23,6 +25,8 @@ export const highlightTypeDef = gql`
     comments: [Comment!]!
     number: Int!
     objectText: String!
+
+    object: HighlightObject
 
     importanceRatings: [ImportanceRating!]!
     currentImportance: Float!

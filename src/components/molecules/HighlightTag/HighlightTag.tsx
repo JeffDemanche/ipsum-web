@@ -19,6 +19,9 @@ interface HighlightTagProps {
   objectText?: string;
   arcNames?: string[];
   highlightNumber?: number;
+
+  onObjectTextClick?: () => void;
+  onHighlightClick?: () => void;
 }
 
 export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
@@ -27,6 +30,8 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   objectText,
   arcNames,
   highlightNumber,
+  onObjectTextClick,
+  onHighlightClick,
 }) => {
   const fontSizePx = {
     "x-small": font_size_x_small,
@@ -75,6 +80,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
             }}
             variant="link"
             disableRipple={false}
+            onClick={onObjectTextClick}
           >
             <span>
               {objectText}
@@ -103,6 +109,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
           }}
           variant="link"
           disableRipple={false}
+          onClick={onHighlightClick}
         >
           {!objectText && highlightNumber !== undefined && (
             <span

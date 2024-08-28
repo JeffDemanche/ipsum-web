@@ -34,6 +34,8 @@ interface DailyJournalEntryProps {
   }) => boolean;
   createHighlight: () => string;
   onDaySelect: (day: IpsumDay) => void;
+
+  onHighlightClick?: (highlightId: string) => void;
 }
 
 export const DailyJournalEntry: React.FunctionComponent<
@@ -52,6 +54,7 @@ export const DailyJournalEntry: React.FunctionComponent<
   updateEntry,
   createHighlight,
   onDaySelect,
+  onHighlightClick,
 }) => {
   const commentsMarkup = useMemo(() => {
     if (!comments?.length) return null;
@@ -97,6 +100,7 @@ export const DailyJournalEntry: React.FunctionComponent<
             deleteEntry={deleteEntry}
             updateEntry={updateEntry}
             createHighlight={createHighlight}
+            onHighlightClick={onHighlightClick}
           />
           {commentsMarkup}
         </div>

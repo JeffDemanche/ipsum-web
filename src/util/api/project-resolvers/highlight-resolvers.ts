@@ -164,6 +164,25 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
             return "Comment";
         }
       },
+      object(_, { readField }) {
+        const entry = readField<InMemoryEntry>("entry");
+        switch (entry.entryType) {
+          case "JOURNAL":
+            return PROJECT_STATE.collection("days").get(
+              IpsumDay.fromString(entry.history.dateCreated, "iso").toString(
+                "entry-printed-date"
+              )
+            );
+          case "ARC":
+            return PROJECT_STATE.collection("arcs").get(
+              entry.entryKey.split(":")[2]
+            );
+          case "COMMENT":
+            return PROJECT_STATE.collection("comments").get(
+              entry.entryKey.split(":")[1]
+            );
+        }
+      },
     },
   },
   ImportanceRating: {

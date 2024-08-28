@@ -3,9 +3,13 @@ import { URLLayer } from "util/state";
 import { URLFunction } from "../types";
 
 export const insertLayer: URLFunction<
-  { layer: Required<URLLayer>; index: number },
+  { layer: Required<URLLayer>; index?: number },
   "journal"
 > = (props, state) => {
-  state.layers.splice(props.index, 0, props.layer);
+  if (props.index === undefined) {
+    state.layers.push(props.layer);
+  } else {
+    state.layers.splice(props.index, 0, props.layer);
+  }
   return state;
 };

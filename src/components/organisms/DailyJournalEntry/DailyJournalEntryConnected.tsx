@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import React, { ComponentProps, useMemo } from "react";
-import { urlSetLayerExpanded, useUrlAction } from "util/api";
+import { urlInsertLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay, useToday } from "util/dates";
 import { useIpsumSearchParams } from "util/state";
@@ -129,6 +129,8 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
 
+  const insertLayer = useUrlAction(urlInsertLayer);
+
   const onSetExpanded = (expanded: boolean) => {
     setLayerExpanded({ index: layerIndex, expanded });
   };
@@ -163,6 +165,16 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   const editable = today.equals(entryDay);
 
+  const openHighlightLayer = (highlightId: string) => {
+    insertLayer({
+      layer: {
+        type: "highlight_detail",
+        highlightId,
+        expanded: "true",
+      },
+    });
+  };
+
   return (
     <DailyJournalEntry
       headerProps={{
@@ -187,6 +199,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
       updateEntry={updateEntry}
       createHighlight={createHighlight}
       onDaySelect={onDayChange}
+      onHighlightClick={openHighlightLayer}
     />
   );
 };

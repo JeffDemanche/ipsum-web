@@ -83,6 +83,10 @@ export const BrowserHighlightsTabExample: Story = {
             arc: { id: "arc1", hue: 0, name: "opinion" },
           },
         ],
+        highlightObject: {
+          type: "daily_journal",
+          entryKey: "1/1/2024",
+        },
       },
     ],
   },
