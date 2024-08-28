@@ -59,8 +59,12 @@ export const JournalViewPagesSectionConnected: React.FunctionComponent<
 
   return (
     <div className={cx(styles["journal-view-pages-section"], className)}>
-      <FormattingControls />
-      <div className={styles["pages"]}>{pages}</div>
+      <div className={styles["formatting-controls-wrapper"]}>
+        <FormattingControls />
+      </div>
+      <div className={styles["pages-wrapper"]}>
+        <div className={styles["pages"]}>{pages}</div>
+      </div>
     </div>
   );
 };

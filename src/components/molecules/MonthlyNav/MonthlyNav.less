@@ -1,27 +1,33 @@
 @import "../../styles/vars.less";
 
+.nav-button-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+
+  .nav-button-top-span {
+    font-size: @font_size_x_small;
+  }
+
+  .nav-button-bottom-span {
+    font-size: @font_size_x_x_small;
+  }
+}
+
+.month-button {
+  font-weight: @font_weight_regular !important;
+  text-decoration: none !important;
+}
+
 .monthly-nav {
   color: @grey700;
   display: flex;
   justify-content: space-between;
 
-  .nav-button-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1;
-
-    .nav-button-top-span {
-      font-size: @font_size_x_small;
-    }
-
-    .nav-button-bottom-span {
-      font-size: @font_size_x_x_small;
-    }
-  }
-
   .day-button {
     &.selected {
       font-weight: @font_weight_regular !important;
+      text-decoration: underline;
     } 
   }
 }

@@ -1,9 +1,20 @@
 @import '../../styles/vars.less';
 
 .journal-view-pages-section {
+  display: flex;
+  flex-direction: column;
   max-width: 700px;
 
-  .pages {
-    margin-top: @grid_x_1;
+  .formatting-controls-wrapper {
+    margin: @grid_x_1;
+  }
+
+  .pages-wrapper {
+    overflow-y: auto;
+
+    .pages {
+      margin-left: @grid_x_1;
+      margin-right: @grid_x_1;
+    }
   }
 }

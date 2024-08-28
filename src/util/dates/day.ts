@@ -128,6 +128,8 @@ export class IpsumDay {
   }
 
   isBefore(day: IpsumDay): boolean {
+    if (!day) return true;
+
     return (
       this.toLuxonDateTime().startOf("day").toMillis() <
       day.toLuxonDateTime().startOf("day").toMillis()
@@ -135,6 +137,8 @@ export class IpsumDay {
   }
 
   isAfter(day: IpsumDay): boolean {
+    if (!day) return true;
+
     return (
       this.toLuxonDateTime().startOf("day").toMillis() >
       day.toLuxonDateTime().startOf("day").toMillis()

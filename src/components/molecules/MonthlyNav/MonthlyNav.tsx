@@ -27,41 +27,32 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
   onDaySelect,
   onMonthChange,
 }) => {
-  const earliestEntry = useMemo(
-    () =>
-      entryDays.reduce(
-        (prev, curr) => (prev.isBefore(curr) ? prev : curr),
-        entryDays[0]
-      ),
-    [entryDays]
-  );
-
-  const latestEntry = useMemo(
-    () =>
-      entryDays.reduce(
-        (prev, curr) => (prev.isAfter(curr) ? prev : curr),
-        entryDays[0]
-      ),
-    [entryDays]
-  );
-
   const [month, setMonth] = useState<IpsumDay>(
     defaultMonth?.firstDayOfMonth() ??
       selectedDay?.firstDayOfMonth() ??
       today.firstDayOfMonth()
   );
 
-  const nextMonth = month.add(0, 1);
-  const prevMonth = month.add(0, -1);
+  const monthsWithEntries = useMemo(() => {
+    const months = [today.firstDayOfMonth().toString("url-format")];
+    entryDays.forEach((day, i) => {
+      if (!months.includes(day.firstDayOfMonth().toString("url-format"))) {
+        months.push(day.firstDayOfMonth().toString("url-format"));
+      }
+    }, []);
+    return months.map((month) => IpsumDay.fromString(month, "url-format"));
+  }, [entryDays, today]);
 
-  const nextMonthExists =
-    nextMonth.isBefore(today.lastDayOfMonth()) &&
-    latestEntry &&
-    (nextMonth.isBefore(latestEntry) || nextMonth.equals(latestEntry));
-  const prevMonthExists =
-    earliestEntry &&
-    (prevMonth.isAfter(earliestEntry.firstDayOfMonth()) ||
-      prevMonth.equals(earliestEntry.firstDayOfMonth()));
+  const nextMonth = monthsWithEntries
+    .filter((monthWithEntries) => monthWithEntries.isAfter(month))
+    .reduce((prev, cur) => (cur?.isBefore(prev) ? cur : prev), undefined);
+  const prevMonth = monthsWithEntries
+    .filter((monthWithEntries) => monthWithEntries.isBefore(month))
+    .reduce((prev, cur) => (cur?.isAfter(prev) ? cur : prev), undefined);
+
+  const nextMonthExists = !!nextMonth;
+
+  const prevMonthExists = !!prevMonth;
 
   const goToNextMonth = () => {
     if (nextMonthExists) {
@@ -89,7 +80,7 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
         styles["day-button"],
         day.equals(selectedDay) && styles["selected"]
       )}
-      variant="link"
+      variant="text"
       onClick={() => {
         onDaySelect?.(day);
       }}
@@ -107,19 +98,38 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
       >
         <div className={styles["nav-button-text"]}>
           <span className={styles["nav-button-top-span"]}>
-            {prevMonth.toString("month-word")}
+            {prevMonth?.toString("month-word") ?? ""}
           </span>
           <span className={styles["nav-button-bottom-span"]}>
-            {prevMonth.toString("year")}
+            {prevMonth?.toString("year") ?? ""}
           </span>
         </div>
       </Button>
       <div>
-        <Button variant="link" startIcon={<Today />}>
+        <Button variant="link" className={styles["month-button"]}>
+          <div className={cx(styles["nav-button-text"])}>
+            <span className={styles["nav-button-top-span"]}>
+              {month?.toString("month-word") ?? ""}
+            </span>
+            <span className={styles["nav-button-bottom-span"]}>
+              {month?.toString("year") ?? ""}
+            </span>
+          </div>
+        </Button>
+        {entryButtons}
+        <Button
+          variant="text"
+          startIcon={<Today />}
+          className={cx(
+            styles["day-button"],
+            today.equals(selectedDay) && styles["selected"]
+          )}
+          onClick={() => {
+            onDaySelect?.(today);
+          }}
+        >
           Today
         </Button>
-        <Button variant="link">{month.toString("month-word")}</Button>
-        {entryButtons}
       </div>
       <Button
         onClick={goToNextMonth}
@@ -128,10 +138,10 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
       >
         <div className={styles["nav-button-text"]}>
           <span className={styles["nav-button-top-span"]}>
-            {nextMonth.toString("month-word")}
+            {nextMonth?.toString("month-word") ?? ""}
           </span>
           <span className={styles["nav-button-bottom-span"]}>
-            {nextMonth.toString("year")}
+            {nextMonth?.toString("year") ?? ""}
           </span>
         </div>
       </Button>
