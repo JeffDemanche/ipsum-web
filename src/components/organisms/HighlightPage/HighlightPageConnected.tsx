@@ -147,7 +147,7 @@ export const HighlightPageConnected: React.FunctionComponent<
         })),
       }}
       today={IpsumDay.today()}
-      expanded={layers?.[0]?.expanded === "true"}
+      expanded={layers?.[layerIndex]?.expanded === "true"}
       onExpand={() => {
         setLayerExpanded({ index: layerIndex, expanded: true });
       }}
