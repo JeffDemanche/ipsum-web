@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
-import { urlSetLayerExpanded, useUrlAction } from "util/api";
+import { urlRemoveLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
 import { useIpsumSearchParams } from "util/state";
 
@@ -93,6 +93,8 @@ export const ArcPageConnected: React.FunctionComponent<
 
   const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
 
+  const removeLayer = useUrlAction(urlRemoveLayer);
+
   return (
     <ArcPage
       arc={{ hue: arc.color, name: arc.name, relations: arcOutgoingRelations }}
@@ -102,6 +104,9 @@ export const ArcPageConnected: React.FunctionComponent<
       }}
       onCollapse={() => {
         setLayerExpanded({ index: layerIndex, expanded: false });
+      }}
+      onClose={() => {
+        removeLayer({ index: layerIndex });
       }}
       arcEntry={{
         highlights: arcEntryHighlights,

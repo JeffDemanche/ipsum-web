@@ -1,6 +1,11 @@
 import { useQuery } from "@apollo/client";
 import React, { ComponentProps, useMemo } from "react";
-import { urlInsertLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
+import {
+  urlInsertLayer,
+  urlRemoveLayer,
+  urlSetLayerExpanded,
+  useUrlAction,
+} from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay, useToday } from "util/dates";
 import { useIpsumSearchParams } from "util/state";
@@ -131,6 +136,8 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   const insertLayer = useUrlAction(urlInsertLayer);
 
+  const removeLayer = useUrlAction(urlRemoveLayer);
+
   const onSetExpanded = (expanded: boolean) => {
     setLayerExpanded({ index: layerIndex, expanded });
   };
@@ -185,6 +192,9 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
         },
         onCollapse: () => {
           onSetExpanded(false);
+        },
+        onClose: () => {
+          removeLayer({ index: layerIndex });
         },
       }}
       today={today}

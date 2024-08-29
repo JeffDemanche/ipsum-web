@@ -15,11 +15,12 @@ interface PageHeaderHighlightProps {
   expanded: boolean;
   onExpand?: () => void;
   onCollapse?: () => void;
+  onClose?: () => void;
 }
 
 export const PageHeaderHighlight: FunctionComponent<
   PageHeaderHighlightProps
-> = ({ highlight, expanded, onCollapse, onExpand }) => {
+> = ({ highlight, expanded, onCollapse, onExpand, onClose }) => {
   return (
     <div
       className={styles["page-header"]}
@@ -37,6 +38,7 @@ export const PageHeaderHighlight: FunctionComponent<
         showCollapse={expanded}
         showExpand={!expanded}
         showClose
+        onClose={onClose}
         onCollapse={onCollapse}
         onExpand={onExpand}
         hue={highlight.hue}

@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
-import { urlSetLayerExpanded, useUrlAction } from "util/api";
+import { urlRemoveLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { useIpsumSearchParams } from "util/state";
@@ -101,6 +101,8 @@ export const HighlightPageConnected: React.FunctionComponent<
 
   const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
 
+  const removeLayer = useUrlAction(urlRemoveLayer);
+
   return (
     <HighlightPage
       highlight={{
@@ -153,6 +155,9 @@ export const HighlightPageConnected: React.FunctionComponent<
       }}
       onCollapse={() => {
         setLayerExpanded({ index: layerIndex, expanded: false });
+      }}
+      onClose={() => {
+        removeLayer({ index: layerIndex });
       }}
     />
   );

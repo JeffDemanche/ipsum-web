@@ -17,6 +17,7 @@ interface HighlightPageProps {
   expanded: boolean;
   onExpand: () => void;
   onCollapse: () => void;
+  onClose?: () => void;
 
   highlight: {
     id: string;
@@ -43,6 +44,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
   expanded,
   onExpand,
   onCollapse,
+  onClose,
   today,
 }) => {
   return (
@@ -57,6 +59,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
         expanded={expanded}
         onExpand={onExpand}
         onCollapse={onCollapse}
+        onClose={onClose}
       />
       <Collapse in={expanded} orientation="vertical">
         <div

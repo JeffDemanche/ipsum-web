@@ -14,6 +14,7 @@ interface PageHeaderArcProps {
   expanded: boolean;
   onExpand?: () => void;
   onCollapse?: () => void;
+  onClose?: () => void;
 }
 
 export const PageHeaderArc: React.FunctionComponent<PageHeaderArcProps> = ({
@@ -21,6 +22,7 @@ export const PageHeaderArc: React.FunctionComponent<PageHeaderArcProps> = ({
   expanded,
   onExpand,
   onCollapse,
+  onClose,
 }) => {
   return (
     <div
@@ -32,6 +34,7 @@ export const PageHeaderArc: React.FunctionComponent<PageHeaderArcProps> = ({
         showCollapse={expanded}
         showExpand={!expanded}
         showClose
+        onClose={onClose}
         onCollapse={onCollapse}
         onExpand={onExpand}
         hue={arc.hue}

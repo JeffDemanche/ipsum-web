@@ -15,6 +15,7 @@ interface ArcPageProps {
   expanded: boolean;
   onExpand: () => void;
   onCollapse: () => void;
+  onClose?: () => void;
 
   arc: {
     name: string;
@@ -35,6 +36,7 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
   expanded,
   onExpand,
   onCollapse,
+  onClose,
   arc,
   arcEntry,
 }) => {
@@ -45,6 +47,7 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
         expanded={expanded}
         onExpand={onExpand}
         onCollapse={onCollapse}
+        onClose={onClose}
       />
       <Collapse in={expanded} orientation="vertical">
         <div
