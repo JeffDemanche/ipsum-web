@@ -298,7 +298,13 @@ export const BrowserDrawerConnected: React.FunctionComponent<
         },
         onHighlightDailyJournalClick: (entryKey) => {
           insertLayer({
-            layer: { type: "daily_journal", day: entryKey, expanded: "true" },
+            layer: {
+              type: "daily_journal",
+              day: IpsumDay.fromString(entryKey, "entry-printed-date").toString(
+                "url-format"
+              ),
+              expanded: "true",
+            },
           });
         },
         onHighlightCommentClick: (commentId, highlightId) => {
