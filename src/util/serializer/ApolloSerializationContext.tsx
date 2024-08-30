@@ -1,11 +1,15 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { readFromFile, writeToFile } from "util/file";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 import { useIpsumIDBWrapper } from "util/indexed-db";
-import { useModifySearchParams } from "util/state/url";
+import {
+  loadApolloState,
+  readFromFile,
+  writeApolloState,
+  writeToFile,
+} from "util/serializer";
+import { useModifySearchParams } from "util/state";
 
+import { initializeState, vars } from "../apollo/client";
 import { autosave } from "./autosave";
-import { initializeState, vars } from "./client";
-import { loadApolloState, writeApolloState } from "./serializer";
 
 interface ApolloSerialization {
   saveToFile: () => Promise<void>;
@@ -15,14 +19,13 @@ interface ApolloSerialization {
   loadErrors: string[] | undefined;
 }
 
-export const ApolloSerializationContext =
-  React.createContext<ApolloSerialization>({
-    saveToFile: async () => {},
-    loadFromFile: async () => {},
-    resetToInitial: () => {},
-    hasLoadedAutosave: false,
-    loadErrors: undefined,
-  });
+export const ApolloSerializationContext = createContext<ApolloSerialization>({
+  saveToFile: async () => {},
+  loadFromFile: async () => {},
+  resetToInitial: () => {},
+  hasLoadedAutosave: false,
+  loadErrors: undefined,
+});
 
 /**
  * A wrapper that 1. reads from IDB autosave data and 2. handles loading and

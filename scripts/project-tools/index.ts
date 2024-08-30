@@ -12,7 +12,7 @@ import repl from "repl";
 import { prettyPrint } from "./pretty-print";
 import { renameField } from "./rename";
 import { write } from "./write";
-import { SerializedSchema } from "../../src/util/apollo/serializer-schema";
+import { SerializedSchema } from "../../src/util/serializer/serializer-schema";
 import { PathReporter } from "io-ts/lib/PathReporter";
 
 const inputFileArg = process.env.npm_config_input_file;

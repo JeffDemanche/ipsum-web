@@ -1,4 +1,5 @@
-import { autosave } from "../autosave";
+import { autosave } from "util/serializer";
+
 import { vars } from "../client";
 
 export const updateJournalTitle = (title: string) => {

@@ -1,6 +1,6 @@
 import { IpsumDay } from "util/dates";
+import { autosave } from "util/serializer";
 
-import { autosave } from "../autosave";
 import { vars } from "../client";
 
 export const upsertDay = ({

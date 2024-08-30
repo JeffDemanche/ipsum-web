@@ -1,8 +1,8 @@
 import { IpsumDateTime, IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
+import { autosave } from "util/serializer";
 
 import { EntryType } from "../__generated__/graphql";
-import { autosave } from "../autosave";
 import { UnhydratedType, vars } from "../client";
 import { deleteDayIfEmpty, upsertDay, upsertDayForToday } from "./day";
 

@@ -10,9 +10,5 @@ export * from "./api/journalTitle";
 export * from "./api/relations";
 export * from "./api/comments";
 export * from "./api/commentEntries";
-export {
-  ApolloSerializationProvider,
-  ApolloSerializationContext,
-} from "./ApolloSerializationContext";
 export { UnhydratedType } from "./client";
 export { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";

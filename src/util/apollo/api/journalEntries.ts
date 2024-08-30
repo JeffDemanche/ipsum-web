@@ -1,7 +1,7 @@
 import { IpsumDay } from "util/dates";
+import { autosave } from "util/serializer";
 
 import { EntryType } from "../__generated__/graphql";
-import { autosave } from "../autosave";
 import { UnhydratedType, vars } from "../client";
 import { createEntry } from "./entries";
 

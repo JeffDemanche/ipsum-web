@@ -151,6 +151,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
   );
 
   const createEntry = (htmlString: string) => {
+    // TODO
     return "entry_key";
   };
 
