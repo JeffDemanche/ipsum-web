@@ -2,8 +2,8 @@ import { FormattingControlsProvider } from "components/molecules/FormattingContr
 import { BrowserDrawerConnected } from "components/organisms/BrowserDrawer";
 import { JournalSettingsDrawerConnected } from "components/organisms/JournalSettingsDrawer";
 import { JournalViewPagesSectionConnected } from "components/organisms/JournalViewPagesSection";
-import React, { useContext, useState } from "react";
-import { SerializationProvider } from "util/serializer";
+import React, { useContext, useEffect, useState } from "react";
+import { SerializationContext, SerializationProvider } from "util/serializer";
 import {
   IpsumStateContext,
   IpsumStateProvider,
@@ -12,6 +12,22 @@ import {
 } from "util/state";
 
 import styles from "./JournalView.less";
+
+interface JournalViewProps {
+  overrideProjectState?: ProjectState;
+}
+
+export const JournalView: React.FunctionComponent<JournalViewProps> = ({
+  overrideProjectState,
+}) => {
+  useNormalizeUrl("journal");
+
+  return (
+    <IpsumStateProvider projectState={overrideProjectState}>
+      <WithIpsumStateProvider overrideProjectState={overrideProjectState} />
+    </IpsumStateProvider>
+  );
+};
 
 const WithIpsumStateProvider = ({
   overrideProjectState,
@@ -28,33 +44,48 @@ const WithIpsumStateProvider = ({
       setProjectState={setProjectState}
       setProjectStateErrors={setProjectStateErrors}
     >
-      <FormattingControlsProvider>
-        <div className={styles["journal-view"]}>
-          <JournalSettingsDrawerConnected />
-          <div className={styles["pages-section-container"]}>
-            <JournalViewPagesSectionConnected
-              className={styles["pages-section"]}
-            />
-          </div>
-          <BrowserDrawerConnected />
-        </div>
-      </FormattingControlsProvider>
+      <WithSerializationProvider projectStateErrors={projectStateErrors} />
     </SerializationProvider>
   );
 };
 
-interface JournalViewProps {
-  overrideProjectState?: ProjectState;
-}
-
-export const JournalView: React.FunctionComponent<JournalViewProps> = ({
-  overrideProjectState,
+const WithSerializationProvider = ({
+  projectStateErrors,
+}: {
+  projectStateErrors: string[];
 }) => {
-  useNormalizeUrl("journal");
+  const { resetToInitial } = useContext(SerializationContext);
+
+  useEffect(() => {
+    if (projectStateErrors.length > 0) {
+      projectStateErrors.forEach((error) => {
+        console.error(error);
+      });
+    }
+  }, [projectStateErrors]);
+
+  if (projectStateErrors.length > 0) {
+    return (
+      <>
+        <h1>There was an error deserializing the file</h1>
+        <samp>{projectStateErrors}</samp>
+        <br></br>
+        <button onClick={() => resetToInitial()}>Reset autosave state</button>
+      </>
+    );
+  }
 
   return (
-    <IpsumStateProvider projectState={overrideProjectState}>
-      <WithIpsumStateProvider overrideProjectState={overrideProjectState} />
-    </IpsumStateProvider>
+    <FormattingControlsProvider>
+      <div className={styles["journal-view"]}>
+        <JournalSettingsDrawerConnected />
+        <div className={styles["pages-section-container"]}>
+          <JournalViewPagesSectionConnected
+            className={styles["pages-section"]}
+          />
+        </div>
+        <BrowserDrawerConnected />
+      </div>
+    </FormattingControlsProvider>
   );
 };

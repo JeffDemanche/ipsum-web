@@ -66,7 +66,7 @@ export const SerializationProvider: React.FunctionComponent<
       return;
     } else {
       setProjectStateErrors([]);
-      setProjectState(projectState);
+      setProjectState(undefined);
     }
     modifySearchParams(() => ({}));
     autosave();
@@ -117,9 +117,9 @@ export const SerializationProvider: React.FunctionComponent<
   return (
     <SerializationContext.Provider
       value={{
-        saveToFile: disabled ? saveToFile : async () => {},
-        loadFromFile: disabled ? loadFromFile : async () => {},
-        resetToInitial: disabled ? resetToInitial : () => {},
+        saveToFile: disabled ? async () => {} : saveToFile,
+        loadFromFile: disabled ? async () => {} : loadFromFile,
+        resetToInitial: disabled ? () => {} : resetToInitial,
         hasLoadedAutosave,
       }}
     >
