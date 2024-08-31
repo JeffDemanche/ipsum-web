@@ -12,3 +12,4 @@ export * from "./api/comments";
 export * from "./api/commentEntries";
 export { UnhydratedType } from "./client";
 export { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
+export { initializeState, vars } from "./client";

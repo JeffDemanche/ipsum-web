@@ -108,13 +108,12 @@ export class ProjectState {
     });
   }
 
-  static fromSerialized(serializedState: string): ProjectState {
+  static fromSerialized(serializedState: string): ProjectState | string[] {
     const raw = JSON.parse(serializedState);
     const parsed = SerializedSchema.decode(raw);
 
     if (parsed._tag === "Left") {
-      PathReporter.report(parsed).forEach((error) => console.error(error));
-      throw new Error("Project validation error, see console for details");
+      return PathReporter.report(parsed);
     } else {
       const staticState = {
         journalId: parsed.right.journalId,
@@ -155,24 +154,5 @@ const makeStateReactive = (
       comments: new ProjectCollection(state.comments),
       days: new ProjectCollection(state.days),
     },
-  };
-};
-
-const makeStateStatic = (
-  state: ReactiveInMemoryProjectState
-): StaticInMemoryProjectState => {
-  return {
-    journalId: state.singletons.journalId(),
-    journalMetadata: state.singletons.journalMetadata(),
-    journalTitle: state.singletons.journalTitle(),
-    entries: state.collections.entries.toObject(),
-    journalEntries: state.collections.journalEntries.toObject(),
-    arcEntries: state.collections.arcEntries.toObject(),
-    commentEntries: state.collections.commentEntries.toObject(),
-    arcs: state.collections.arcs.toObject(),
-    highlights: state.collections.highlights.toObject(),
-    relations: state.collections.relations.toObject(),
-    comments: state.collections.comments.toObject(),
-    days: state.collections.days.toObject(),
   };
 };

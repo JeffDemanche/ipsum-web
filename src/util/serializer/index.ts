@@ -1,11 +1,6 @@
+export { writeToFile, readFromFile } from "./serializer";
 export {
-  writeToFile,
-  readFromFile,
-  loadApolloState,
-  writeApolloState,
-} from "./serializer";
-export {
-  ApolloSerializationProvider,
-  ApolloSerializationContext,
-} from "./ApolloSerializationContext";
+  SerializationProvider,
+  SerializationContext,
+} from "./SerializationContext";
 export { autosave } from "./autosave";

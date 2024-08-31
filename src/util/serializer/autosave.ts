@@ -1,7 +1,6 @@
 import { idbWrapper } from "util/indexed-db";
-
-import { writeApolloState } from "./serializer";
+import { PROJECT_STATE } from "util/state";
 
 export const autosave = () => {
-  idbWrapper?.putAutosaveValue(writeApolloState());
+  idbWrapper?.putAutosaveValue(PROJECT_STATE.toSerialized());
 };

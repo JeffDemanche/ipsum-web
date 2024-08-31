@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import React from "react";
+import React, { useContext } from "react";
 import {
   apiUpdateJournalTitle,
   urlSetJournalSettingsDrawerOpen,
@@ -7,6 +7,7 @@ import {
   useUrlAction,
 } from "util/api";
 import { gql } from "util/apollo";
+import { SerializationContext } from "util/serializer";
 import { useIpsumSearchParams } from "util/state";
 
 import { JournalSettingsDrawer } from "./JournalSettingsDrawer";
@@ -44,16 +45,19 @@ export const JournalSettingsDrawerConnected: React.FC<
     updateJournalTitle({ title: value });
   };
 
+  const { resetToInitial, saveToFile, loadFromFile } =
+    useContext(SerializationContext);
+
   const onNew = () => {
-    // TODO
+    resetToInitial();
   };
 
   const onSave = () => {
-    // TODO
+    saveToFile();
   };
 
   const onLoad = () => {
-    // TODO
+    loadFromFile();
   };
 
   return (

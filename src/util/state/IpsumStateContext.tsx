@@ -1,10 +1,10 @@
 import { ApolloProvider } from "@apollo/client";
-import React, { createContext, useEffect } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { client } from "util/apollo";
 import { ProjectState } from "util/state";
 
 interface IpsumStateContextType {
-  projectState: ProjectState;
+  setProjectState: (projectState: ProjectState) => void;
 }
 
 export const IpsumStateContext = createContext<
@@ -30,9 +30,15 @@ export const IpsumStateProvider: React.FC<IpsumStateProviderProps> = ({
     PROJECT_STATE = projectState ?? new ProjectState();
   }, [projectState]);
 
+  const [, triggerRender] = useState(false);
+  const setProjectState = (newProjectState: ProjectState) => {
+    PROJECT_STATE = newProjectState;
+    triggerRender((prev) => !prev);
+  };
+
   return (
     <ApolloProvider client={client}>
-      <IpsumStateContext.Provider value={{ projectState }}>
+      <IpsumStateContext.Provider value={{ setProjectState }}>
         {children}
       </IpsumStateContext.Provider>
     </ApolloProvider>

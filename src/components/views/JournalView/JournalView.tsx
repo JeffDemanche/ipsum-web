@@ -2,17 +2,32 @@ import { FormattingControlsProvider } from "components/molecules/FormattingContr
 import { BrowserDrawerConnected } from "components/organisms/BrowserDrawer";
 import { JournalSettingsDrawerConnected } from "components/organisms/JournalSettingsDrawer";
 import { JournalViewPagesSectionConnected } from "components/organisms/JournalViewPagesSection";
-import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
-import React from "react";
-import { IpsumStateProvider, useNormalizeUrl } from "util/state";
+import React, { useContext, useState } from "react";
+import { SerializationProvider } from "util/serializer";
+import {
+  IpsumStateContext,
+  IpsumStateProvider,
+  ProjectState,
+  useNormalizeUrl,
+} from "util/state";
 
 import styles from "./JournalView.less";
 
-export const JournalView: React.FunctionComponent = () => {
-  useNormalizeUrl("journal");
+const WithIpsumStateProvider = ({
+  overrideProjectState,
+}: {
+  overrideProjectState?: ProjectState;
+}) => {
+  const { setProjectState } = useContext(IpsumStateContext);
+
+  const [projectStateErrors, setProjectStateErrors] = useState<string[]>([]);
 
   return (
-    <IpsumStateProvider projectState={mockSiddhartha().projectState}>
+    <SerializationProvider
+      disabled={!!overrideProjectState}
+      setProjectState={setProjectState}
+      setProjectStateErrors={setProjectStateErrors}
+    >
       <FormattingControlsProvider>
         <div className={styles["journal-view"]}>
           <JournalSettingsDrawerConnected />
@@ -24,6 +39,22 @@ export const JournalView: React.FunctionComponent = () => {
           <BrowserDrawerConnected />
         </div>
       </FormattingControlsProvider>
+    </SerializationProvider>
+  );
+};
+
+interface JournalViewProps {
+  overrideProjectState?: ProjectState;
+}
+
+export const JournalView: React.FunctionComponent<JournalViewProps> = ({
+  overrideProjectState,
+}) => {
+  useNormalizeUrl("journal");
+
+  return (
+    <IpsumStateProvider projectState={overrideProjectState}>
+      <WithIpsumStateProvider overrideProjectState={overrideProjectState} />
     </IpsumStateProvider>
   );
 };

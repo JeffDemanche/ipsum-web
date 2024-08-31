@@ -1,11 +1,10 @@
-import { useContext } from "react";
 import { autosave } from "util/serializer";
-import { IpsumStateContext } from "util/state";
+import { PROJECT_STATE } from "util/state";
 
 import { APIFunction } from "./types";
 
 export const useApiAction = <T, U>(f: APIFunction<T, U>) => {
-  const { projectState } = useContext(IpsumStateContext);
+  const projectState = PROJECT_STATE;
 
   return [
     (args: T, options?: { autosave?: boolean }) => {
