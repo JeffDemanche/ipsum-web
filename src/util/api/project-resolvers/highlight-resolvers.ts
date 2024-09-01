@@ -103,17 +103,20 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
         );
       },
       hue(_, { readField }) {
-        const arcs = readField<
-          {
-            __typename: "Arc";
-            id: string;
-            color: number;
-          }[]
-        >("arcs");
-        const averageHue =
-          arcs.reduce((acc, cur) => acc + cur.color, 0) / arcs.length;
+        const entryDay = IpsumDay.fromString(
+          readField<{ history: { dateCreated: string } }>("entry").history
+            .dateCreated,
+          "iso"
+        );
+        const dayOfYear = entryDay.toLuxonDateTime().ordinal;
 
-        return isNaN(averageHue) ? null : Math.floor(averageHue);
+        const number = (readField("number") as number) + dayOfYear;
+
+        const goldenRatioConjugate = 0.618033988749895;
+
+        const hue = ((number * goldenRatioConjugate) % 1.0) * 360;
+
+        return hue;
       },
       excerpt(_, { readField }) {
         const entry = readField<{
