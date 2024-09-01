@@ -14,26 +14,25 @@ export const useNormalizeUrl = (view: View) => {
 
   const overwriteJournalUrl = useUrlAction(urlOverwriteJournalUrl);
 
-  const complete = useRef(false);
-
   useEffect(() => {
-    if (complete.current) {
-      return;
-    }
-
     switch (view) {
-      case "journal":
-        overwriteJournalUrl(normalizeJournalUrl(params));
+      case "journal": {
+        const normalizedParams = normalizeJournalUrl(params);
+        if (JSON.stringify(normalizedParams) !== JSON.stringify(params)) {
+          overwriteJournalUrl(normalizedParams);
+        }
+      }
     }
-    complete.current = true;
   }, [params, view, overwriteJournalUrl]);
 };
 
 const normalizeJournalUrl = (
-  params: IpsumURLSearch<"journal">
+  params: Readonly<IpsumURLSearch<"journal">>
 ): IpsumURLSearch<"journal"> => {
-  if (!params?.layers) {
-    params.layers = [
+  const newParams = { ...params };
+
+  if (!newParams?.layers || newParams.layers.length === 0) {
+    newParams.layers = [
       {
         type: "daily_journal",
         day: IpsumDay.today().toString("url-format"),
@@ -42,5 +41,5 @@ const normalizeJournalUrl = (
     ];
   }
 
-  return params;
+  return newParams;
 };
