@@ -69,7 +69,14 @@ const WithSerializationProvider = ({
     return (
       <>
         <h1>There was an error deserializing the file</h1>
-        <samp>{projectStateErrors}</samp>
+        <samp>
+          {projectStateErrors.map((error) => (
+            <>
+              {error}
+              <br></br>
+            </>
+          ))}
+        </samp>
         <br></br>
         <button onClick={() => resetToInitial()}>Reset autosave state</button>
       </>

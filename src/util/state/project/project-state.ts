@@ -1,6 +1,6 @@
 import { makeVar } from "@apollo/client";
 import { PathReporter } from "io-ts/lib/PathReporter";
-import { SerializedSchema } from "util/serializer";
+import { SerializedSchema, validate } from "util/serializer";
 import { v4 as uuidv4 } from "uuid";
 
 import { ProjectCollection } from "./project-collection";
@@ -129,6 +129,12 @@ export class ProjectState {
         comments: parsed.right.comments,
         days: parsed.right.days,
       };
+
+      const validationResult = validate(staticState);
+      if (validationResult.result === "fail") {
+        return validationResult.messages;
+      }
+
       return new ProjectState(staticState);
     }
   }
