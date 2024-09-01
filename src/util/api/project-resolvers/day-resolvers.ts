@@ -16,6 +16,9 @@ export const DayResolvers: StrictTypedTypePolicies = {
   Day: {
     keyFields: ["day"],
     fields: {
+      day(day) {
+        return day;
+      },
       hasJournalEntry(day) {
         if (!day.journalEntry) {
           return true;

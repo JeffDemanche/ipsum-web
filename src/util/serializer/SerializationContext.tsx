@@ -66,7 +66,7 @@ export const SerializationProvider: React.FunctionComponent<
       return;
     } else {
       setProjectStateErrors([]);
-      setProjectState(undefined);
+      setProjectState(projectState);
     }
     modifySearchParams(() => ({}));
     autosave();

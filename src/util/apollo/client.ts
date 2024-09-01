@@ -1,4 +1,10 @@
-import { ApolloClient, gql, InMemoryCache, makeVar } from "@apollo/client";
+import {
+  ApolloClient,
+  from,
+  gql,
+  InMemoryCache,
+  makeVar,
+} from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import {
   ArcEntryResolvers,
@@ -244,5 +250,5 @@ export const client = new ApolloClient({
     commentTypeDef,
     commentEntryTypeDef,
   ],
-  link: errorLink,
+  link: from([errorLink]),
 });

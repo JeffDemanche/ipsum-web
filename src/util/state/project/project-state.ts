@@ -1,9 +1,9 @@
 import { makeVar } from "@apollo/client";
 import { PathReporter } from "io-ts/lib/PathReporter";
+import { SerializedSchema } from "util/serializer";
 import { v4 as uuidv4 } from "uuid";
 
 import { ProjectCollection } from "./project-collection";
-import { SerializedSchema } from "./serializer-schema";
 import {
   InMemoryArc,
   InMemoryArcEntry,
@@ -45,9 +45,9 @@ export class ProjectState {
   constructor(state?: StaticInMemoryProjectState) {
     if (state) {
       this.reactiveState = makeStateReactive(state);
+    } else {
+      this.reactiveState = this.initializeState();
     }
-
-    this.reactiveState = this.initializeState();
   }
 
   private initializeState(): ReactiveInMemoryProjectState {

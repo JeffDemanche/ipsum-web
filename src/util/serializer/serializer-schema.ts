@@ -11,6 +11,7 @@ export const SerializedSchema = t.type(
     journalTitle: t.string,
     journalMetadata: t.type(
       {
+        __typename: t.literal("JournalMetadata"),
         lastArcHue: t.number,
       },
       "journalMetadata"

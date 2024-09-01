@@ -121,6 +121,10 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
           trackedHTMLString: string;
         }>("entry");
 
+        if (!entry) {
+          return null;
+        }
+
         const currentHtmlString = IpsumTimeMachine.fromString(
           entry.trackedHTMLString
         ).currentValue;
@@ -143,6 +147,11 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
       },
       number(_, { readField }) {
         const entry = readField<{ trackedHTMLString: string }>("entry");
+
+        if (!entry) {
+          throw new Error("Entry not found for highlight");
+        }
+
         const domString = IpsumTimeMachine.fromString(
           entry.trackedHTMLString
         ).currentValue;
@@ -152,6 +161,11 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
       },
       objectText(_, { readField }) {
         const entry = readField<InMemoryEntry>("entry");
+
+        if (!entry) {
+          throw new Error("Entry not found for highlight");
+        }
+
         switch (entry.entryType) {
           case "JOURNAL":
             return IpsumDay.fromString(
@@ -166,6 +180,11 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
       },
       object(_, { readField }) {
         const entry = readField<InMemoryEntry>("entry");
+
+        if (!entry) {
+          throw new Error("Entry not found for highlight");
+        }
+
         switch (entry.entryType) {
           case "JOURNAL":
             return PROJECT_STATE.collection("days").get(

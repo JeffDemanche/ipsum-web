@@ -34,7 +34,7 @@ const BrowserDrawerQuery = gql(`
 `);
 
 const BrowserDrawerHighlightsSearchQuery = gql(`
-  query BrowserDrawerHighlightsSearch($criteria: SearchCriteria!) {
+  query BrowserDrawerHighlightsSearch($criteria: SearchCriteria!) @client {
     searchHighlights(criteria: $criteria) {
       id
       excerpt
@@ -56,6 +56,7 @@ const BrowserDrawerHighlightsSearchQuery = gql(`
         dateCreated
       }
       object {
+        __typename
         ... on Arc {
           id
         }
@@ -124,7 +125,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
     typeof BrowserHighlightsTab
   >["highlights"] = highlightsData.searchHighlights.map((searchHighlight) => {
     const arcRelations = searchHighlight.outgoingRelations.filter(
-      (relation) => relation.object.__typename === "Arc"
+      (relation) => relation.object && relation.object.__typename === "Arc"
     );
 
     let highlightObject: React.ComponentProps<

@@ -80,6 +80,11 @@ export const SearchResolvers: StrictTypedTypePolicies = {
           PROJECT_STATE.collection("highlights").getAll()
         );
         const filteredHighlights = allHighlights.filter((highlight) => {
+          // Filter out "stranded" highlights
+          if (!PROJECT_STATE.collection("entries").has(highlight.entry)) {
+            return false;
+          }
+
           let allAndsMatch = true;
           typedArgs.criteria.and?.forEach((ors) => {
             let someClauseMatches = false;
