@@ -77,6 +77,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
               paddingRight: "4px",
               textDecoration: "none",
               height: elementHeight,
+              flexShrink: 0,
             }}
             variant="link"
             disableRipple={false}
@@ -106,6 +107,9 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
             paddingLeft: "4px",
             fontFamily: font_family_serif,
             height: elementHeight,
+            display: "inline-block",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}
           variant="link"
           disableRipple={false}

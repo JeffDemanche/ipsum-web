@@ -63,38 +63,42 @@ export const BrowserHighlightsTab: React.FunctionComponent<
               <Type variant="serif" size="small">
                 {day.toString("entry-printed-date-nice-with-year")}
               </Type>
-              {highlights.map((highlight) => {
-                return (
-                  <HighlightBlurb
-                    key={highlight.highlightProps.highlightId}
-                    highlightProps={highlight.highlightProps}
-                    excerptProps={highlight.excerptProps}
-                    relations={highlight.relationsProps}
-                    onHighlightClick={() => {
-                      onHighlightClick?.(highlight.highlightProps.highlightId);
-                    }}
-                    onHighlightObjectClick={() => {
-                      switch (highlight.highlightObject.type) {
-                        case "daily_journal":
-                          onHighlightDailyJournalClick?.(
-                            highlight.highlightObject.entryKey
-                          );
-                          break;
-                        case "arc":
-                          onHighlightArcClick?.(
-                            highlight.highlightObject.arcId
-                          );
-                          break;
-                        case "comment":
-                          onHighlightCommentClick?.(
-                            highlight.highlightObject.commentId,
-                            highlight.highlightObject.highlightId
-                          );
-                      }
-                    }}
-                  />
-                );
-              })}
+              <div className={styles["day-group-blurbs"]}>
+                {highlights.map((highlight) => {
+                  return (
+                    <HighlightBlurb
+                      key={highlight.highlightProps.highlightId}
+                      highlightProps={highlight.highlightProps}
+                      excerptProps={highlight.excerptProps}
+                      relations={highlight.relationsProps}
+                      onHighlightClick={() => {
+                        onHighlightClick?.(
+                          highlight.highlightProps.highlightId
+                        );
+                      }}
+                      onHighlightObjectClick={() => {
+                        switch (highlight.highlightObject.type) {
+                          case "daily_journal":
+                            onHighlightDailyJournalClick?.(
+                              highlight.highlightObject.entryKey
+                            );
+                            break;
+                          case "arc":
+                            onHighlightArcClick?.(
+                              highlight.highlightObject.arcId
+                            );
+                            break;
+                          case "comment":
+                            onHighlightCommentClick?.(
+                              highlight.highlightObject.commentId,
+                              highlight.highlightObject.highlightId
+                            );
+                        }
+                      }}
+                    />
+                  );
+                })}
+              </div>
             </div>
           );
         })}
