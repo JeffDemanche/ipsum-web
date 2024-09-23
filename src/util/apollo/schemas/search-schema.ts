@@ -23,7 +23,18 @@ export const searchTypeDef = gql`
     or: [SearchCriterion!]!
   }
 
+  enum SearchSortType {
+    IMPORTANCE
+    DATE
+  }
+
+  input SearchSort {
+    type: SearchSortType!
+    sortDay: String!
+  }
+
   input SearchCriteria {
+    sort: SearchSort
     and: [SearchCriteriaAnd!]!
   }
 `;

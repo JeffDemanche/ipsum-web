@@ -8,8 +8,9 @@ import {
   urlSetHighlightsOptionsDrawerOpen,
   useUrlAction,
 } from "util/api";
-import { gql } from "util/apollo";
+import { gql, SearchSortType } from "util/apollo";
 import { IpsumDay } from "util/dates";
+import { highlightImportanceOnDay } from "util/importance";
 import { SortType } from "util/sort";
 import { useIpsumSearchParams } from "util/state";
 
@@ -49,6 +50,12 @@ const BrowserDrawerHighlightsSearchQuery = gql(`
             color
           }
         }
+      }
+      importanceRatings {
+        day {
+          day
+        }
+        value
       }
       number
       objectText
@@ -115,7 +122,14 @@ export const BrowserDrawerConnected: React.FunctionComponent<
     {
       variables: {
         criteria: {
-          and: browserUrlParams?.tab?.filters?.and ?? [],
+          sort: {
+            sortDay:
+              browserUrlParams?.tab?.sort?.day ??
+              IpsumDay.today().toString("url-format"),
+            type: SearchSortType.Date,
+          },
+          // TODO
+          and: [],
         },
       },
     }
@@ -131,6 +145,14 @@ export const BrowserDrawerConnected: React.FunctionComponent<
     let highlightObject: React.ComponentProps<
       typeof BrowserHighlightsTab
     >["highlights"][number]["highlightObject"];
+
+    const importance = highlightImportanceOnDay({
+      ratings: searchHighlight.importanceRatings.map((rating) => ({
+        day: rating.day.day,
+        value: rating.value,
+      })),
+      day: IpsumDay.fromString(browserUrlParams?.tab?.sort?.day, "url-format"),
+    });
 
     if (searchHighlight.object.__typename === "Day") {
       highlightObject = {
@@ -162,6 +184,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
         arcNames: arcRelations.map((relation) => relation.object.name),
         hue: searchHighlight.hue,
         objectText: searchHighlight.objectText,
+        importanceRating: importance,
       },
       relationsProps: arcRelations.map((relation) => ({
         predicate: relation.predicate,

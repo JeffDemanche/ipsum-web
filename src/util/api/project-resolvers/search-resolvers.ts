@@ -1,8 +1,10 @@
 import {
   QuerySearchHighlightsArgs,
+  SearchSortType,
   StrictTypedTypePolicies,
 } from "util/apollo";
 import { IpsumDay } from "util/dates";
+import { highlightImportanceOnDay } from "util/importance";
 import { InMemoryHighlight, PROJECT_STATE } from "util/state";
 
 const highlightMatchesDays = (highlight: InMemoryHighlight, days: string[]) => {
@@ -79,6 +81,7 @@ export const SearchResolvers: StrictTypedTypePolicies = {
         const allHighlights = Object.values(
           PROJECT_STATE.collection("highlights").getAll()
         );
+
         const filteredHighlights = allHighlights.filter((highlight) => {
           // Filter out "stranded" highlights
           if (!PROJECT_STATE.collection("entries").has(highlight.entry)) {
@@ -105,7 +108,33 @@ export const SearchResolvers: StrictTypedTypePolicies = {
           });
           return allAndsMatch;
         });
-        return filteredHighlights;
+
+        const sortedHighlights = filteredHighlights.sort((a, b) => {
+          if (typedArgs.criteria.sort?.type === SearchSortType.Importance) {
+            const aImportance = highlightImportanceOnDay({
+              ratings: a.importanceRatings,
+              day: IpsumDay.fromString(
+                typedArgs.criteria.sort?.sortDay,
+                "url-format"
+              ),
+            });
+            const bImportance = highlightImportanceOnDay({
+              ratings: b.importanceRatings,
+              day: IpsumDay.fromString(
+                typedArgs.criteria.sort?.sortDay,
+                "url-format"
+              ),
+            });
+            return bImportance - aImportance;
+          } else {
+            const aDay = IpsumDay.fromString(a.history.dateCreated, "iso");
+            const bDay = IpsumDay.fromString(b.history.dateCreated, "iso");
+
+            return bDay.toJsDate().getTime() - aDay.toJsDate().getTime();
+          }
+        });
+
+        return sortedHighlights;
       },
     },
   },

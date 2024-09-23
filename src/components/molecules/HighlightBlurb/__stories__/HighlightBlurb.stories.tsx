@@ -35,6 +35,7 @@ export const HighlightBlurbExample: Story = {
       objectText: "1/2/2024",
       hue: 90,
       arcNames: ["arc1", "arc2", "arc3"],
+      importanceRating: 0,
     },
     excerptProps: {
       htmlString: constructExcerpt({

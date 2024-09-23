@@ -1,4 +1,5 @@
 import cx from "classnames";
+import { Button } from "components/atoms/Button";
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
 import { BlurbWrapper } from "components/molecules/BlurbWrapper";
 import { HighlightTag } from "components/molecules/HighlightTag";
@@ -17,6 +18,7 @@ interface HighlightBlurbProps {
     hue: number;
     highlightNumber: number;
     arcNames: string[];
+    importanceRating: number;
   };
   excerptProps: { htmlString: string; maxLines?: number };
   relations: React.ComponentProps<typeof RelationsTable>["relations"];
