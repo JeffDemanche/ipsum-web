@@ -3,6 +3,7 @@ import cx from "classnames";
 import { Button } from "components/atoms/Button";
 import React, { useMemo, useState } from "react";
 import { IpsumDay } from "util/dates";
+import { TestIds } from "util/test-ids";
 
 import styles from "./MonthlyNav.less";
 
@@ -76,6 +77,9 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
   const entryButtons = entriesThisMonth.map((day) => (
     <Button
       key={day.toString("day")}
+      data-testid={TestIds.DailyJournal.MonthlyNavEntryButton(
+        day.toString("day")
+      )}
       className={cx(
         styles["day-button"],
         day.equals(selectedDay) && styles["selected"]
@@ -90,7 +94,10 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
   ));
 
   return (
-    <div className={cx(styles["monthly-nav"], className)}>
+    <div
+      data-testid={TestIds.DailyJournal.MonthlyNav}
+      className={cx(styles["monthly-nav"], className)}
+    >
       <Button
         onClick={goToPrevMonth}
         disabled={!prevMonthExists}
