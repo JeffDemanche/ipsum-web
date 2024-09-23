@@ -70,7 +70,7 @@ export const EntryStatePlugin: React.FunctionComponent<
         const htmlString = $generateHtmlFromNodes(editor, null);
 
         const root = $getRoot();
-        const isEmpty = root.isEmpty() || root.getChildrenSize() === 1;
+        const isEmpty = root.isEmpty() || root.getTextContent().trim() === "";
 
         if (isEmpty) {
           deleteEntry?.(entryKey);

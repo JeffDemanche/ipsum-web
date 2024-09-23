@@ -10,6 +10,7 @@ import { IpsumDay } from "util/dates";
 import styles from "./DailyJournalEntry.less";
 
 interface DailyJournalEntryProps {
+  entryKey: string;
   headerProps: ComponentProps<typeof PageHeaderDailyJournal>;
   today: IpsumDay;
   selectedDay: IpsumDay;
@@ -92,6 +93,7 @@ export const DailyJournalEntry: React.FunctionComponent<
             onDaySelect={onDaySelect}
           />
           <Entry
+            entryKey={selectedDay.toString("stored-day")}
             entryDay={selectedDay}
             highlights={highlights}
             editable={editable}

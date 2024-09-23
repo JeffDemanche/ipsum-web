@@ -2,6 +2,7 @@ import { EntryType } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { InMemoryJournalEntry } from "util/state";
 
+import { updateDay } from "../day/update-day";
 import { APIFunction } from "../types";
 import { createEntry } from "./create-entry";
 
@@ -32,6 +33,11 @@ export const createJournalEntry: APIFunction<
       entry: entry.entryKey,
       entryKey: entry.entryKey,
     });
+
+  updateDay(
+    { day: args.dayCreated, journalEntryKey: journalEntry.entryKey },
+    context
+  );
 
   return journalEntry;
 };

@@ -3,6 +3,7 @@ import { InMemoryComment } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { apiCreateCommentEntry } from "..";
+import { updateDay } from "../day/update-day";
 import { APIFunction } from "../types";
 
 export const createComment: APIFunction<
@@ -59,6 +60,9 @@ export const createComment: APIFunction<
       dateCreated: dayCreated,
     },
   });
+
+  const day = projectState.collection("days").get(dayCreated);
+  updateDay({ day: args.dayCreated, comments: [...day.comments, id] }, context);
 
   return comment;
 };

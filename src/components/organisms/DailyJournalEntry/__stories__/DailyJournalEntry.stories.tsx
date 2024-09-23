@@ -13,6 +13,7 @@ type StoryDailyJournalEntry = StoryObj<typeof DailyJournalEntry>;
 
 export const DailyJournalEntryExample: StoryDailyJournalEntry = {
   args: {
+    entryKey: "1/7/2024"
     selectedDay: IpsumDay.fromString("1/7/2024"),
     today: IpsumDay.fromString("1/7/2024"),
     highlights: [],

@@ -7,6 +7,7 @@ import { IpsumDay } from "util/dates";
 import styles from "./Entry.less";
 
 interface EntryProps {
+  entryKey?: string;
   entryDay?: IpsumDay;
   highlights: {
     highlightId: string;
@@ -34,6 +35,7 @@ interface EntryProps {
 }
 
 export const Entry: React.FunctionComponent<EntryProps> = ({
+  entryKey,
   entryDay,
   highlights,
   editable = false,
@@ -79,6 +81,7 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
         <div className={styles["highlights-list"]}>{highlightsMarkup}</div>
       )}
       <EntryEditor
+        defaultEntryKey={entryKey}
         className={styles["entry-ipsum-editor"]}
         editable={editable}
         initialHtmlString={htmlString}

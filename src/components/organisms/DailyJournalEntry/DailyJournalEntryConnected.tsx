@@ -1,9 +1,13 @@
 import { useQuery } from "@apollo/client";
 import React, { ComponentProps, useMemo } from "react";
 import {
+  apiCreateJournalEntry,
+  apiDeleteJournalEntry,
+  apiUpdateJournalEntry,
   urlInsertLayer,
   urlRemoveLayer,
   urlSetLayerExpanded,
+  useApiAction,
   useUrlAction,
 } from "util/api";
 import { gql } from "util/apollo";
@@ -132,6 +136,12 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   const layerExpanded = layers?.[layerIndex]?.expanded === "true";
 
+  const [createJournalEntry] = useApiAction(apiCreateJournalEntry);
+
+  const [updateJournalEntry] = useApiAction(apiUpdateJournalEntry);
+
+  const [deleteJournalEntry] = useApiAction(apiDeleteJournalEntry);
+
   const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
 
   const insertLayer = useUrlAction(urlInsertLayer);
@@ -151,11 +161,16 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
   );
 
   const createEntry = (htmlString: string) => {
-    // TODO
-    return "entry_key";
+    return createJournalEntry({
+      entryKey: day.toString("stored-day"),
+      htmlString,
+      dayCreated: today,
+    }).entryKey;
   };
 
-  const deleteEntry = (entryKey: string) => {};
+  const deleteEntry = (entryKey: string) => {
+    deleteJournalEntry({ entryKey });
+  };
 
   const updateEntry = ({
     entryKey,
@@ -164,7 +179,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     entryKey: string;
     htmlString: string;
   }) => {
-    return true;
+    return updateJournalEntry({ entryKey, htmlString });
   };
 
   const createHighlight = () => {
@@ -185,6 +200,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   return (
     <DailyJournalEntry
+      entryKey={day.toString("stored-day")}
       headerProps={{
         day: entryDay,
         expanded: layerExpanded,

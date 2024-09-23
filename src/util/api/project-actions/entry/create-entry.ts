@@ -22,7 +22,10 @@ export const createEntry: APIFunction<
   const entry = projectState.collection("entries").create(args.entryKey, {
     __typename: "Entry",
     entryKey: args.entryKey,
-    trackedHTMLString: IpsumTimeMachine.create(args.htmlString).toString(),
+    trackedHTMLString: IpsumTimeMachine.create(
+      args.htmlString,
+      args.dayCreated.toIpsumDateTime()
+    ).toString(),
     history: {
       __typename: "History",
       dateCreated: dayCreated.toString("iso"),

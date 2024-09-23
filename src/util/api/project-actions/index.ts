@@ -10,7 +10,8 @@ export const useApiAction = <T, U>(f: APIFunction<T, U>) => {
     (args: T, options?: { autosave?: boolean }) => {
       const result = f(args, { projectState });
 
-      if (options?.autosave) {
+      // Autosave by default
+      if (options?.autosave || options?.autosave === undefined) {
         autosave();
       }
 
@@ -22,11 +23,14 @@ export const useApiAction = <T, U>(f: APIFunction<T, U>) => {
 export { createEntry as apiCreateEntry } from "./entry/create-entry";
 
 export { createJournalEntry as apiCreateJournalEntry } from "./entry/create-journal-entry";
+export { updateJournalEntry as apiUpdateJournalEntry } from "./entry/update-journal-entry";
+export { deleteJournalEntry as apiDeleteJournalEntry } from "./entry/delete-journal-entry";
+export { createArcEntry as apiCreateArcEntry } from "./entry/create-arc-entry";
+export { updateArcEntry as apiUpdateArcEntry } from "./entry/update-arc-entry";
+export { createCommentEntry as apiCreateCommentEntry } from "./entry/create-comment-entry";
 
 export { createHighlight as apiCreateHighlight } from "./highlight/create-highlight";
 export { createRelationFromHighlight as apiCreateRelationFromHighlight } from "./highlight/create-relation-from-highlight";
-
-export { createCommentEntry as apiCreateCommentEntry } from "./comment/create-comment-entry";
 
 export { createComment as apiCreateComment } from "./comment/create-comment";
 

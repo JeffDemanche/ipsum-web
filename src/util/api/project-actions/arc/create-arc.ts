@@ -3,7 +3,7 @@ import { InMemoryArc } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { APIFunction } from "../types";
-import { createArcEntry } from "./create-arc-entry";
+import { createArcEntry } from "../entry/create-arc-entry";
 
 export const createArc: APIFunction<
   {

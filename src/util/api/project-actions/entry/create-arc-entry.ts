@@ -2,8 +2,8 @@ import { EntryType } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { InMemoryArcEntry } from "util/state";
 
-import { createEntry } from "../entry/create-entry";
 import { APIFunction } from "../types";
+import { createEntry } from "./create-entry";
 
 export const createArcEntry: APIFunction<
   {
