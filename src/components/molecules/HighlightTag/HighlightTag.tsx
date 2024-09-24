@@ -8,6 +8,7 @@ import {
   font_weight_citation,
 } from "components/styles";
 import React, { useMemo } from "react";
+import { TestIds } from "util/test-ids";
 
 import styles from "./HighlightTag.less";
 

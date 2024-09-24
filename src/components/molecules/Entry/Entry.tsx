@@ -3,6 +3,7 @@ import { Type } from "components/atoms/Type";
 import { HighlightTag } from "components/molecules/HighlightTag";
 import React from "react";
 import { IpsumDay } from "util/dates";
+import { TestIds } from "util/test-ids";
 
 import styles from "./Entry.less";
 
@@ -78,7 +79,12 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
         </Type>
       )}
       {showHighlights && !!highlights.length && (
-        <div className={styles["highlights-list"]}>{highlightsMarkup}</div>
+        <div
+          data-testid={TestIds.Entry.HighlightsList}
+          className={styles["highlights-list"]}
+        >
+          {highlightsMarkup}
+        </div>
       )}
       <EntryEditor
         defaultEntryKey={entryKey}

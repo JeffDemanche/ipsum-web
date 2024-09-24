@@ -1,4 +1,4 @@
-import { expect,test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { getCurrentLocalDateTime, IpsumDateTime } from "util/dates";
 import { TestIds } from "util/test-ids";
 
@@ -31,7 +31,7 @@ test.describe("Text Highlights", () => {
         getCurrentLocalDateTime()
       ).toString("entry-printed-date");
 
-      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
 
       await contentEditable.fill("This is a test");
 
@@ -42,23 +42,16 @@ test.describe("Text Highlights", () => {
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.up("Shift");
 
-      const applyHighlightButton = await page.getByTestId(
-        TestIds.Editor.ApplyHighlightButton
+      const applyHighlightButton = page.getByTestId(
+        TestIds.FormattingControls.HighlightButton
       );
       await applyHighlightButton.click();
 
-      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-        removeWildcards(
-          unIndentAndNewLine(`
-          <p dir="ltr">
-            <span data-lexical-text="true">This is a tes</span>
-              <span data-highlight-id="7d71efbf-fed3-497a-a006-42eeee59feae" class="HighlightAssignmentPlugin__highlight___XN157" dir="ltr" style="--lightness: 0%;">
-              <span data-lexical-text="true">t</span>
-            </span>
-          </p>
-        `)
-        )
-      );
+      const highlightSpan = contentEditable.locator("[data-highlight-id]");
+
+      await expect(highlightSpan).toHaveText("t");
+      await expect(highlightSpan).toHaveAttribute("data-hue");
+      await expect(highlightSpan).toHaveClass("ipsum-highlight");
     });
 
     test("applies two highlights to the same word", async ({ page }) => {
@@ -66,7 +59,7 @@ test.describe("Text Highlights", () => {
         getCurrentLocalDateTime()
       ).toString("entry-printed-date");
 
-      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
 
       await contentEditable.fill("123");
 
@@ -77,11 +70,8 @@ test.describe("Text Highlights", () => {
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.up("Shift");
 
-      const dailyJournal = await page.getByTestId(
-        TestIds.DailyJournal.DailyJournal
-      );
-      const applyHighlightButton = await dailyJournal.getByTestId(
-        TestIds.Editor.ApplyHighlightButton
+      const applyHighlightButton = page.getByTestId(
+        TestIds.FormattingControls.HighlightButton
       );
       await applyHighlightButton.click();
 
@@ -94,21 +84,13 @@ test.describe("Text Highlights", () => {
 
       await applyHighlightButton.click();
 
-      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-        removeWildcards(
-          unIndentAndNewLine(`
-          <p>
-            <span data-lexical-text="true">1</span>
-            <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="HighlightAssignmentPlugin__highlight___XN157" style="--lightness: 0%;">
-              <span data-lexical-text="true">2</span>
-            </span>
-            <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="HighlightAssignmentPlugin__highlight___XN157" style="--lightness: 0%;">
-              <span data-lexical-text="true">3</span>
-            </span>
-          </p>
-        `)
-        )
-      );
+      const highlightSpans = await contentEditable
+        .locator("[data-highlight-id]")
+        .all();
+
+      await expect(highlightSpans).toHaveLength(2);
+      await expect(highlightSpans[0]).toHaveText("2");
+      await expect(highlightSpans[1]).toHaveText("3");
     });
 
     test("applies two highlights to the same text", async ({ page }) => {
@@ -116,7 +98,7 @@ test.describe("Text Highlights", () => {
         getCurrentLocalDateTime()
       ).toString("entry-printed-date");
 
-      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
 
       await contentEditable.fill("12345");
 
@@ -130,11 +112,8 @@ test.describe("Text Highlights", () => {
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.up("Shift");
 
-      const dailyJournal = await page.getByTestId(
-        TestIds.DailyJournal.DailyJournal
-      );
-      const applyHighlightButton = await dailyJournal.getByTestId(
-        TestIds.Editor.ApplyHighlightButton
+      const applyHighlightButton = page.getByTestId(
+        TestIds.FormattingControls.HighlightButton
       );
 
       await applyHighlightButton.click();
@@ -143,21 +122,20 @@ test.describe("Text Highlights", () => {
 
       await applyHighlightButton.click();
 
-      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-        removeWildcards(
-          unIndentAndNewLine(`
-          <p>
-            <span data-lexical-text="true">1</span>
-            <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="HighlightAssignmentPlugin__highlight___XN157" style="--lightness: 0%;">
-              <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="HighlightAssignmentPlugin__highlight___XN157" style="--lightness: 0%;">
-                <span data-lexical-text="true">234</span>
-              </span>
-            </span>
-            <span data-lexical-text="true">5</span>
-          </p>
-        `)
-        )
-      );
+      const highlightSpans = await contentEditable
+        .locator("[data-highlight-id]")
+        .all();
+
+      expect(highlightSpans).toHaveLength(2);
+      await expect(highlightSpans[0]).toHaveText("234");
+      await expect(highlightSpans[1]).toHaveText("234");
+
+      const highlight1Id =
+        await highlightSpans[0].getAttribute("data-highlight-id");
+      const highlight2Id =
+        await highlightSpans[1].getAttribute("data-highlight-id");
+
+      expect(highlight1Id).not.toEqual(highlight2Id);
     });
 
     test("applies highlight across multiple paragraphs", async ({ page }) => {
@@ -165,7 +143,7 @@ test.describe("Text Highlights", () => {
         getCurrentLocalDateTime()
       ).toString("entry-printed-date");
 
-      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
 
       await contentEditable.pressSequentially("line 1");
 
@@ -180,27 +158,25 @@ test.describe("Text Highlights", () => {
       await page.keyboard.press("A");
       await page.keyboard.up("Meta");
 
-      const applyHighlightButton = await page.getByTestId(
-        TestIds.Editor.ApplyHighlightButton
+      const applyHighlightButton = page.getByTestId(
+        TestIds.FormattingControls.HighlightButton
       );
       await applyHighlightButton.click();
 
-      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-        removeWildcards(
-          unIndentAndNewLine(`
-          <p dir="ltr">
-            <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="HighlightAssignmentPlugin__highlight___XN157" dir="ltr" style="--lightness: 0%;">
-              <span data-lexical-text="true">line 1</span>
-            </span>
-          </p>
-          <p dir="ltr">
-            <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="HighlightAssignmentPlugin__highlight___XN157" dir="ltr" style="--lightness: 0%;">
-              <span data-lexical-text="true">line 2</span>
-            </span>
-          </p>
-        `)
-        )
-      );
+      const highlightSpans = await contentEditable
+        .locator("[data-highlight-id]")
+        .all();
+
+      expect(highlightSpans).toHaveLength(2);
+      await expect(highlightSpans[0]).toHaveText("line 1");
+      await expect(highlightSpans[1]).toHaveText("line 2");
+
+      const highlight1Id =
+        await highlightSpans[0].getAttribute("data-highlight-id");
+      const highlight2Id =
+        await highlightSpans[1].getAttribute("data-highlight-id");
+
+      expect(highlight1Id).toEqual(highlight2Id);
     });
 
     test("applies partially overlapping highlight", async ({ page }) => {
@@ -208,7 +184,7 @@ test.describe("Text Highlights", () => {
         getCurrentLocalDateTime()
       ).toString("entry-printed-date");
 
-      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
 
       await contentEditable.fill("123");
 
@@ -221,11 +197,8 @@ test.describe("Text Highlights", () => {
       await page.keyboard.press("ArrowLeft");
       await page.keyboard.up("Shift");
 
-      const dailyJournal = await page.getByTestId(
-        TestIds.DailyJournal.DailyJournal
-      );
-      const applyHighlightButton = await dailyJournal.getByTestId(
-        TestIds.Editor.ApplyHighlightButton
+      const applyHighlightButton = page.getByTestId(
+        TestIds.FormattingControls.HighlightButton
       );
 
       await applyHighlightButton.click();
@@ -240,23 +213,24 @@ test.describe("Text Highlights", () => {
 
       await applyHighlightButton.click();
 
-      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-        removeWildcards(
-          unIndentAndNewLine(`
-          <p>
-            <span data-highlight-id="00000000-0000-0000-0000-000000000002" class="HighlightAssignmentPlugin__highlight___XN157" style="--lightness: 0%;">
-              <span data-lexical-text="true">1</span>
-            </span>
-            <span data-highlight-id="00000000-0000-0000-0000-000000000001" class="HighlightAssignmentPlugin__highlight___XN157" style="--lightness: 0%;">
-              <span data-highlight-id="00000000-0000-0000-0000-000000000002" class="HighlightAssignmentPlugin__highlight___XN157" style="--lightness: 0%;">
-                <span data-lexical-text="true">2</span>
-              </span>
-              <span data-lexical-text="true">3</span>
-            </span>
-          </p>
-        `)
-        )
-      );
+      const highlightSpans = await contentEditable
+        .locator("[data-highlight-id]")
+        .all();
+
+      expect(highlightSpans).toHaveLength(3);
+      await expect(highlightSpans[0]).toHaveText("1");
+      await expect(highlightSpans[1]).toHaveText("23");
+      await expect(highlightSpans[2]).toHaveText("2");
+
+      const highlight1Id =
+        await highlightSpans[0].getAttribute("data-highlight-id");
+      const highlight2Id =
+        await highlightSpans[1].getAttribute("data-highlight-id");
+      const highlight3Id =
+        await highlightSpans[2].getAttribute("data-highlight-id");
+
+      expect(highlight1Id).toEqual(highlight3Id);
+      expect(highlight1Id).not.toEqual(highlight2Id);
     });
 
     test("applies highlight to a word with formatting", async ({ page }) => {
@@ -264,7 +238,7 @@ test.describe("Text Highlights", () => {
         getCurrentLocalDateTime()
       ).toString("entry-printed-date");
 
-      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
 
       await contentEditable.press("Meta+b");
       await contentEditable.pressSequentially("12");
@@ -278,28 +252,22 @@ test.describe("Text Highlights", () => {
 
       await contentEditable.press("Meta+a");
 
-      const dailyJournal = await page.getByTestId(
-        TestIds.DailyJournal.DailyJournal
-      );
-      const applyHighlightButton = await dailyJournal.getByTestId(
-        TestIds.Editor.ApplyHighlightButton
+      const applyHighlightButton = page.getByTestId(
+        TestIds.FormattingControls.HighlightButton
       );
 
       await applyHighlightButton.click();
 
-      await expect(removeWildcards(await contentEditable.innerHTML())).toEqual(
-        removeWildcards(
-          unIndentAndNewLine(`
-          <p>
-            <span data-highlight-id="00000000-0000-0000-0000-000000000000" class="." style="--lightness: 0%;">
-              <strong class="EditorStyles__editor-text-bold___R8XIF" data-lexical-text="true">12</strong>
-              <span data-lexical-text="true">3</span>
-              <em class="EditorStyles__editor-text-italic___Nxky7" data-lexical-text="true">45</em>
-            </span>
-          </p>
-        `)
-        )
-      );
+      const highlightSpan = contentEditable.locator("[data-highlight-id]");
+
+      await expect(highlightSpan).toHaveText("12345");
+      const boldText = highlightSpan.locator("strong");
+
+      await expect(boldText).toHaveText("12");
+
+      const italicText = highlightSpan.locator("em");
+
+      await expect(italicText).toHaveText("45");
     });
   });
 });

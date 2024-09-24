@@ -71,6 +71,7 @@ export const BrowserHighlightsTabExample: Story = {
           htmlString: "<p>The quick brown fox jumps over the lazy dog.</p>",
         },
         highlightProps: {
+          importanceRating: 0,
           highlightId: "highlight-1",
           arcNames: ["arc1", "arc2", "arc3"],
           highlightNumber: 1,

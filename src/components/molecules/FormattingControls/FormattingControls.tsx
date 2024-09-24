@@ -10,6 +10,7 @@ import { MenuItem } from "components/atoms/MenuItem";
 import { Select } from "components/atoms/Select";
 import { ToggleButton } from "components/atoms/ToggleButton";
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { TestIds } from "util/test-ids";
 
 import styles from "./FormattingControls.less";
 import { FormattingControlsContext } from "./FormattingControlsContext";
@@ -59,6 +60,7 @@ export const FormattingControls: React.FunctionComponent<
   return (
     <div className={styles["formatting-controls"]} ref={controlsRef}>
       <Button
+        data-testid={TestIds.FormattingControls.HighlightButton}
         aria-label="highlight"
         variant="contained"
         disabled={disableAll}

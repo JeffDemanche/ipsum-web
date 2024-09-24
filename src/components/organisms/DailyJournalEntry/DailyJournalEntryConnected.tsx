@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import React, { ComponentProps, useMemo } from "react";
 import {
+  apiCreateHighlight,
   apiCreateJournalEntry,
   apiDeleteJournalEntry,
   apiUpdateJournalEntry,
@@ -142,6 +143,8 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   const [deleteJournalEntry] = useApiAction(apiDeleteJournalEntry);
 
+  const [createHighlight] = useApiAction(apiCreateHighlight);
+
   const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
 
   const insertLayer = useUrlAction(urlInsertLayer);
@@ -182,8 +185,12 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     return updateJournalEntry({ entryKey, htmlString });
   };
 
-  const createHighlight = () => {
-    return "highlight_id";
+  const onCreateHighlight = () => {
+    const { id } = createHighlight({
+      entryKey: day.toString("stored-day"),
+      dayCreated: today,
+    });
+    return id;
   };
 
   const editable = today.equals(entryDay);
@@ -224,7 +231,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
       createEntry={createEntry}
       deleteEntry={deleteEntry}
       updateEntry={updateEntry}
-      createHighlight={createHighlight}
+      createHighlight={onCreateHighlight}
       onDaySelect={onDayChange}
       onHighlightClick={openHighlightLayer}
     />
