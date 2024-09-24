@@ -3,4 +3,3 @@ export * from "./__generated__";
 export * from "./__generated__/graphql";
 export { UnhydratedType } from "./client";
 export { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
-export { initializeState, vars } from "./client";

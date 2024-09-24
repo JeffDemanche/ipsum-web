@@ -19,7 +19,6 @@ import {
   SearchResolvers,
 } from "util/api";
 import { PROJECT_STATE } from "util/state";
-import { v4 as uuidv4 } from "uuid";
 
 import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import { arcEntryTypeDef } from "./schemas/arc-entry-schema";
@@ -132,65 +131,6 @@ export type UnhydratedType = {
   };
 };
 
-// TODO remove
-export const vars = {
-  journalId: makeVar(uuidv4()),
-  journalTitle: makeVar("new journal"),
-  journalMetadata: makeVar({ lastArcHue: 0 }),
-  entries: makeVar<{ [entryKey in string]: UnhydratedType["Entry"] }>({}),
-  journalEntries: makeVar<{
-    [entryKey in string]: UnhydratedType["JournalEntry"];
-  }>({}),
-  arcEntries: makeVar<{ [entryKey in string]: UnhydratedType["ArcEntry"] }>({}),
-  commentEntries: makeVar<{
-    [entryKey in string]: UnhydratedType["CommentEntry"];
-  }>({}),
-  arcs: makeVar<{ [id in string]: UnhydratedType["Arc"] }>({}),
-  highlights: makeVar<{ [id in string]: UnhydratedType["Highlight"] }>({}),
-  relations: makeVar<{ [id in string]: UnhydratedType["Relation"] }>({}),
-  days: makeVar<{ [day in string]: UnhydratedType["Day"] }>({}),
-  comments: makeVar<{ [id in string]: UnhydratedType["Comment"] }>({}),
-};
-
-// @ts-expect-error Expose vars for debugging
-global.apollo_vars = vars;
-
-// TODO remove
-export const serializeVars: (keyof typeof vars)[] = [
-  "journalId",
-  "journalTitle",
-  "journalMetadata",
-  "entries",
-  "arcs",
-  "journalEntries",
-  "arcEntries",
-  "commentEntries",
-  "highlights",
-  "relations",
-  "comments",
-  "days",
-];
-
-export const initializeState = async () => {
-  // Cancels "watches" on queries. Because all queries will update on each
-  // reactive var call, resetting one might trigger a query update that could
-  // cause errors.
-  await client.clearStore();
-  vars.journalId(uuidv4());
-  vars.journalTitle("new journal");
-  vars.journalMetadata({ lastArcHue: 0 });
-  vars.entries({});
-  vars.arcs({});
-  vars.journalEntries({});
-  vars.arcEntries({});
-  vars.commentEntries({});
-  vars.highlights({});
-  vars.relations({});
-  vars.days({});
-  vars.comments({});
-};
-
-// TODO remove
 const typePolicies: StrictTypedTypePolicies = {
   Query: {
     fields: {

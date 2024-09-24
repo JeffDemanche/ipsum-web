@@ -1,5 +1,4 @@
 import React, { createContext, useCallback, useEffect, useState } from "react";
-import { vars } from "util/apollo";
 import { useIpsumIDBWrapper } from "util/indexed-db";
 import { readFromFile, writeToFile } from "util/serializer";
 import { PROJECT_STATE, ProjectState, useModifySearchParams } from "util/state";
@@ -37,7 +36,7 @@ export const SerializationProvider: React.FunctionComponent<
   const saveToFile = async () => {
     await writeToFile(PROJECT_STATE.toSerialized(), {
       excludeAcceptAllOption: true,
-      suggestedName: `${vars.journalTitle()}.ipsum`,
+      suggestedName: `${PROJECT_STATE.get("journalTitle")}.ipsum`,
       types: [
         { description: "Ipsum Files", accept: { "text/plain": [".ipsum"] } },
       ],
