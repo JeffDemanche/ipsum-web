@@ -21,7 +21,7 @@ describe("molecules/MonthlyNav", () => {
         new IpsumDay(4, 1, 2024),
         new IpsumDay(18, 1, 2024),
       ],
-      selectedDay: undefined,
+      selectedDay: new IpsumDay(10, 0, 2024),
       today: new IpsumDay(1, 0, 2024),
       onDaySelect: mockOnDaySelect,
       onMonthChange: mockOnMonthChange,

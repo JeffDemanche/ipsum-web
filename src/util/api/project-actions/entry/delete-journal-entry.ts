@@ -15,7 +15,7 @@ export const deleteJournalEntry: APIFunction<
 
   const day = IpsumDay.fromString(args.entryKey, "stored-day");
 
-  updateDay({ day, journalEntryKey: null }, context);
+  updateDay({ day, journalEntryKey: () => null }, context);
 
   return projectState.collection("journalEntries").delete(args.entryKey);
 };

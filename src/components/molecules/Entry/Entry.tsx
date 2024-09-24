@@ -31,6 +31,7 @@ interface EntryProps {
   }) => boolean;
   deleteEntry?: (entryKey: string) => void;
   createHighlight?: () => string;
+  deleteHighlight?: (highlightId: string) => void;
 
   onHighlightClick?: (highlightId: string) => void;
 }
@@ -47,6 +48,7 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
   updateEntry,
   deleteEntry,
   createHighlight,
+  deleteHighlight,
   onHighlightClick,
 }) => {
   const highlightsMarkup = highlights.map((highlight) => (
@@ -97,6 +99,7 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
         updateEntry={updateEntry}
         deleteEntry={deleteEntry}
         createHighlight={createHighlight}
+        deleteHighlight={deleteHighlight}
       />
     </div>
   );

@@ -1,13 +1,15 @@
 import { gql } from "@apollo/client";
+import { updateDay } from "util/api/project-actions/day/update-day";
 import { client } from "util/apollo";
-import { upsertDay } from "util/apollo/api/day";
-import { initializeState } from "util/apollo/client";
-
-jest.mock("../../autosave");
+import { IpsumDay } from "util/dates";
+import {
+  dangerous_initializeProjectState,
+  PROJECT_STATE,
+} from "util/state/IpsumStateContext";
 
 describe("Day resolvers", () => {
   beforeEach(() => {
-    initializeState();
+    dangerous_initializeProjectState();
   });
 
   afterEach(async () => {
@@ -15,7 +17,10 @@ describe("Day resolvers", () => {
   });
 
   it("should get a day", () => {
-    upsertDay({ day: "1/1/2021" });
+    updateDay(
+      { day: IpsumDay.fromString("1/1/2021", "stored-day") },
+      { projectState: PROJECT_STATE }
+    );
 
     const result = client.readQuery({
       query: gql(`

@@ -24,7 +24,7 @@ export const createEntry: APIFunction<
     entryKey: args.entryKey,
     trackedHTMLString: IpsumTimeMachine.create(
       args.htmlString,
-      args.dayCreated.toIpsumDateTime()
+      dayCreated.toIpsumDateTime()
     ).toString(),
     history: {
       __typename: "History",

@@ -1,12 +1,12 @@
 import { gql } from "@apollo/client";
-import { createArc } from "util/apollo/api/arcs";
-import { client, initializeState } from "util/apollo/client";
-
-jest.mock("../../autosave");
+import { createArc } from "util/api/project-actions/arc/create-arc";
+import { client } from "util/apollo/client";
+import { PROJECT_STATE } from "util/state";
+import { dangerous_initializeProjectState } from "util/state/IpsumStateContext";
 
 describe("Arc resolvers", () => {
   beforeEach(() => {
-    initializeState();
+    dangerous_initializeProjectState();
   });
 
   afterEach(async () => {
@@ -15,9 +15,9 @@ describe("Arc resolvers", () => {
 
   describe("root queries", () => {
     beforeEach(() => {
-      createArc({ name: "arc 2" });
-      createArc({ name: "arc 1" });
-      createArc({ name: "arc 3" });
+      createArc({ name: "arc 2" }, { projectState: PROJECT_STATE });
+      createArc({ name: "arc 1" }, { projectState: PROJECT_STATE });
+      createArc({ name: "arc 3" }, { projectState: PROJECT_STATE });
     });
 
     it("should sort arc results alphabetically descending", () => {

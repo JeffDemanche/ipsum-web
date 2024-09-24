@@ -18,6 +18,10 @@ interface IpsumStateProviderProps {
 
 export let PROJECT_STATE: ProjectState;
 
+export const dangerous_initializeProjectState = () => {
+  PROJECT_STATE = new ProjectState();
+};
+
 export const IpsumStateProvider: React.FC<IpsumStateProviderProps> = ({
   projectState,
   children,

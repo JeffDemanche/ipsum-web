@@ -44,6 +44,7 @@ interface EntryEditorProps {
   }) => boolean;
   deleteEntry?: (entryKey: string) => void;
   createHighlight?: () => string;
+  deleteHighlight?: (highlightId: string) => void;
   className?: string;
 }
 
@@ -58,6 +59,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
   updateEntry,
   deleteEntry,
   createHighlight,
+  deleteHighlight,
   className,
 }) => {
   const onError = useCallback((error: Error, editor: LexicalEditor) => {
@@ -106,6 +108,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
           <HighlightAssignmentPlugin
             editable={editable}
             highlightsMap={highlightsMap}
+            onHighlightDelete={deleteHighlight}
           />
           <RichTextPlugin
             contentEditable={

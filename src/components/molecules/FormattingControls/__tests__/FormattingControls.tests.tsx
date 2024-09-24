@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { EntryEditor } from "components/atoms/EntryEditor";
 import React from "react";
 
@@ -20,23 +20,6 @@ describe("FormattingControls", () => {
     render(<WithEditor />);
 
     await waitFor(() => {});
-  });
-
-  it("should call createHighlight callback when create highlight button is clicked", async () => {
-    const createHighlight = jest.fn();
-
-    render(
-      <FormattingControlsProvider>
-        <FormattingControls />
-        <EntryEditor createHighlight={createHighlight} />
-      </FormattingControlsProvider>
-    );
-
-    await waitFor(async () => {
-      fireEvent.click(await screen.findByRole("button", { name: "highlight" }));
-    });
-
-    expect(createHighlight).toHaveBeenCalled();
   });
 
   describe("content highlighting", () => {

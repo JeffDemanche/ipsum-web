@@ -7,10 +7,10 @@ import { createDay } from "./create-day";
 export const updateDay: APIFunction<
   {
     day: IpsumDay;
-    journalEntryKey?: string;
-    ratedHighlights?: string[];
-    changedArcEntries?: string[];
-    comments?: string[];
+    journalEntryKey?: (previous: string) => string;
+    ratedHighlights?: (previous: string[]) => string[];
+    changedArcEntries?: (previous: string[]) => string[];
+    comments?: (previous: string[]) => string[];
   },
   InMemoryDay
 > = (args, context) => {
@@ -28,10 +28,16 @@ export const updateDay: APIFunction<
     .collection("days")
     .mutate(args.day.toString("stored-day"), (day) => ({
       ...day,
-      journalEntry: args.journalEntryKey ?? day.journalEntry,
-      ratedHighlights: args.ratedHighlights ?? day.ratedHighlights,
-      changedArcEntries: args.changedArcEntries ?? day.changedArcEntries,
-      comments: args.comments ?? day.comments,
+      journalEntry: args.journalEntryKey
+        ? args.journalEntryKey(day.journalEntry)
+        : day.journalEntry,
+      ratedHighlights: args.ratedHighlights
+        ? args.ratedHighlights(day.ratedHighlights)
+        : day.ratedHighlights,
+      changedArcEntries: args.changedArcEntries
+        ? args.changedArcEntries(day.changedArcEntries)
+        : day.changedArcEntries,
+      comments: args.comments ? args.comments(day.comments) : day.comments,
     }));
 
   return projectState.collection("days").get(args.day.toString("stored-day"));

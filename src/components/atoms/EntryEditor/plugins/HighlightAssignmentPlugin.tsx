@@ -10,7 +10,6 @@ import {
   LexicalEditor,
 } from "lexical";
 import React, { useCallback, useEffect, useMemo } from "react";
-import { deleteHighlight } from "util/apollo";
 import { usePrevious } from "util/hooks";
 
 import {
@@ -26,6 +25,12 @@ import {
 interface HighlightAssignmentPluginProps {
   editable?: boolean;
   onHighlightClick?: (highlightId: string) => void;
+
+  /**
+   * Fired when a highlight has been completely removed from the content
+   * editable and should be removed.
+   */
+  onHighlightDelete?: (highlightId: string) => void;
   highlightsMap?: Record<string, { id: string; hue: number }>;
 }
 
@@ -45,7 +50,7 @@ export const DARKEN_HIGHLIGHT_COMMAND: LexicalCommand<{
 
 export const HighlightAssignmentPlugin: React.FunctionComponent<
   HighlightAssignmentPluginProps
-> = ({ editable, onHighlightClick, highlightsMap }) => {
+> = ({ editable, onHighlightClick, onHighlightDelete, highlightsMap }) => {
   const [editor] = useLexicalComposerContext();
 
   const highlightIds = Object.keys(highlightsMap ?? {});
@@ -152,7 +157,7 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
                 );
 
                 if (otherNodesWithHighlight.length === 0) {
-                  deleteHighlight(highlightId);
+                  onHighlightDelete(highlightId);
                 }
               }
             }
@@ -160,7 +165,7 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
         }
       }
     );
-  }, [editor]);
+  }, [editor, onHighlightDelete]);
 
   useEffect(() => {
     return editor.registerNodeTransform(HighlightAssignmentNode, (node) => {

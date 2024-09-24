@@ -31,7 +31,7 @@ export const createComment: APIFunction<
 
   const id = args.id ?? uuidv4();
   const dayCreated =
-    args.dayCreated.toString("iso") ?? IpsumDay.today().toString("iso");
+    args.dayCreated?.toString("iso") ?? IpsumDay.today().toString("iso");
 
   const commentEntryKey = `comment-entry:${id}`;
 
@@ -40,6 +40,7 @@ export const createComment: APIFunction<
       comment: id,
       entryKey: commentEntryKey,
       htmlString: args.htmlString,
+      dayCreated: IpsumDay.fromString(dayCreated, "iso"),
     },
     context
   );
@@ -61,8 +62,13 @@ export const createComment: APIFunction<
     },
   });
 
-  const day = projectState.collection("days").get(dayCreated);
-  updateDay({ day: args.dayCreated, comments: [...day.comments, id] }, context);
+  updateDay(
+    {
+      day: IpsumDay.fromString(dayCreated, "iso"),
+      comments: (previous) => [...previous, id],
+    },
+    context
+  );
 
   return comment;
 };

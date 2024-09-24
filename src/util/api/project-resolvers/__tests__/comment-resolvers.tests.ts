@@ -1,15 +1,18 @@
 import { gql } from "@apollo/client";
+import { createComment } from "util/api/project-actions/comment/create-comment";
+import { createEntry } from "util/api/project-actions/entry/create-entry";
+import { createHighlight } from "util/api/project-actions/highlight/create-highlight";
 import { EntryType } from "util/apollo/__generated__/graphql";
-import { createComment } from "util/apollo/api/comments";
-import { createEntry } from "util/apollo/api/entries";
-import { createHighlight } from "util/apollo/api/highlights";
-import { client, initializeState } from "util/apollo/client";
-
-jest.mock("../../autosave");
+import { client } from "util/apollo/client";
+import { IpsumDay } from "util/dates";
+import {
+  dangerous_initializeProjectState,
+  PROJECT_STATE,
+} from "util/state/IpsumStateContext";
 
 describe("Comment resolvers", () => {
   beforeEach(() => {
-    initializeState();
+    dangerous_initializeProjectState();
   });
 
   afterEach(async () => {
@@ -18,17 +21,28 @@ describe("Comment resolvers", () => {
 
   describe("root queries", () => {
     it("should query a single comment", () => {
-      createEntry({
-        entryKey: "1/1/2020",
-        entryType: EntryType.Journal,
-        htmlString: "test",
-      });
-      const highlight = createHighlight({
-        entry: "1/1/2020",
-      });
-      const comment = createComment({
-        highlight: highlight.id,
-      });
+      createEntry(
+        {
+          entryKey: "1/1/2020",
+          entryType: EntryType.Journal,
+          htmlString: "test",
+        },
+        { projectState: PROJECT_STATE }
+      );
+      const highlight = createHighlight(
+        {
+          entryKey: "1/1/2020",
+          dayCreated: IpsumDay.fromString("1/1/2020", "stored-day"),
+        },
+        { projectState: PROJECT_STATE }
+      );
+      const comment = createComment(
+        {
+          highlight: highlight.id,
+          htmlString: "",
+        },
+        { projectState: PROJECT_STATE }
+      );
 
       const result = client.readQuery({
         query: gql(`
@@ -58,20 +72,35 @@ describe("Comment resolvers", () => {
     });
 
     it("should query multiple comments", () => {
-      createEntry({
-        entryKey: "1/1/2020",
-        entryType: EntryType.Journal,
-        htmlString: "test",
-      });
-      const highlight = createHighlight({
-        entry: "1/1/2020",
-      });
-      const comment1 = createComment({
-        highlight: highlight.id,
-      });
-      const comment2 = createComment({
-        highlight: highlight.id,
-      });
+      createEntry(
+        {
+          entryKey: "1/1/2020",
+          entryType: EntryType.Journal,
+          htmlString: "test",
+        },
+        { projectState: PROJECT_STATE }
+      );
+      const highlight = createHighlight(
+        {
+          entryKey: "1/1/2020",
+          dayCreated: IpsumDay.fromString("1/1/2020", "stored-day"),
+        },
+        { projectState: PROJECT_STATE }
+      );
+      const comment1 = createComment(
+        {
+          highlight: highlight.id,
+          htmlString: "",
+        },
+        { projectState: PROJECT_STATE }
+      );
+      const comment2 = createComment(
+        {
+          highlight: highlight.id,
+          htmlString: "",
+        },
+        { projectState: PROJECT_STATE }
+      );
 
       const result = client.readQuery({
         query: gql(`

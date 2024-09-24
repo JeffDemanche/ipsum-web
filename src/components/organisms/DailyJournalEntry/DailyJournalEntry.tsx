@@ -34,6 +34,7 @@ interface DailyJournalEntryProps {
     htmlString: string;
   }) => boolean;
   createHighlight: () => string;
+  deleteHighlight: (highlightId: string) => void;
   onDaySelect: (day: IpsumDay) => void;
 
   onHighlightClick?: (highlightId: string) => void;
@@ -54,6 +55,7 @@ export const DailyJournalEntry: React.FunctionComponent<
   deleteEntry,
   updateEntry,
   createHighlight,
+  deleteHighlight,
   onDaySelect,
   onHighlightClick,
 }) => {
@@ -102,6 +104,7 @@ export const DailyJournalEntry: React.FunctionComponent<
             deleteEntry={deleteEntry}
             updateEntry={updateEntry}
             createHighlight={createHighlight}
+            deleteHighlight={deleteHighlight}
             onHighlightClick={onHighlightClick}
           />
           {commentsMarkup}

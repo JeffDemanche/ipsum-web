@@ -193,6 +193,10 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     return id;
   };
 
+  const onDeleteHighlight = () => {
+    // TODO
+  };
+
   const editable = today.equals(entryDay);
 
   const openHighlightLayer = (highlightId: string) => {
@@ -232,6 +236,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
       deleteEntry={deleteEntry}
       updateEntry={updateEntry}
       createHighlight={onCreateHighlight}
+      deleteHighlight={onDeleteHighlight}
       onDaySelect={onDayChange}
       onHighlightClick={openHighlightLayer}
     />

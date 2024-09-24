@@ -35,7 +35,7 @@ export const createJournalEntry: APIFunction<
     });
 
   updateDay(
-    { day: args.dayCreated, journalEntryKey: journalEntry.entryKey },
+    { day: args.dayCreated, journalEntryKey: () => journalEntry.entryKey },
     context
   );
 
