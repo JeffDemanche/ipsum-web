@@ -3,6 +3,7 @@ import React, { ComponentProps, useMemo } from "react";
 import {
   apiCreateHighlight,
   apiCreateJournalEntry,
+  apiDeleteHighlight,
   apiDeleteJournalEntry,
   apiUpdateJournalEntry,
   urlInsertLayer,
@@ -145,6 +146,8 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   const [createHighlight] = useApiAction(apiCreateHighlight);
 
+  const [deleteHighlight] = useApiAction(apiDeleteHighlight);
+
   const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
 
   const insertLayer = useUrlAction(urlInsertLayer);
@@ -193,8 +196,8 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     return id;
   };
 
-  const onDeleteHighlight = () => {
-    // TODO
+  const onDeleteHighlight = (highlightId: string) => {
+    deleteHighlight({ id: highlightId });
   };
 
   const editable = today.equals(entryDay);

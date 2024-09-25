@@ -8,6 +8,9 @@ export const TestIds = {
     MonthlyNavEntryButton: (label: string) =>
       `daily-journal.monthly-nav-entry-button.${label}`,
   },
+  HighlightTag: {
+    HighlightTag: "highlight-tag.highlight-tag",
+  },
   FormattingControls: {
     HighlightButton: "formatting-controls.highlight-button",
   },

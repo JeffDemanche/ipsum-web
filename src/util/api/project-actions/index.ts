@@ -31,6 +31,7 @@ export { createCommentEntry as apiCreateCommentEntry } from "./entry/create-comm
 
 export { createHighlight as apiCreateHighlight } from "./highlight/create-highlight";
 export { createRelationFromHighlight as apiCreateRelationFromHighlight } from "./highlight/create-relation-from-highlight";
+export { deleteHighlight as apiDeleteHighlight } from "./highlight/delete-highlight";
 
 export { createComment as apiCreateComment } from "./comment/create-comment";
 

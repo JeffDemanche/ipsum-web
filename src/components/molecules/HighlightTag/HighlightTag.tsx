@@ -63,7 +63,10 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   };
 
   return (
-    <div className={styles["highlight-tag-wrapper"]}>
+    <div
+      data-testid={TestIds.HighlightTag.HighlightTag}
+      className={styles["highlight-tag-wrapper"]}
+    >
       <div
         className={styles["highlight-tag"]}
         style={{
