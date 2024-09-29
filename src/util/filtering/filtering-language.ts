@@ -1,12 +1,12 @@
 import { Grammars, IToken } from "ebnf";
 
-import { bnf as v1Bnf } from "./versions/v-1-definition";
+import { ebnf as v1Ebnf } from "./versions/v-1-definition";
 
-export class IpsumFiltertingLanguage {
+export class IpsumFilteringLanguage {
   private __bnfString: string;
   private __bnfParser: Grammars.W3C.Parser;
 
-  constructor(bnfString: string, debugParser?: boolean) {
+  constructor(bnfString: string) {
     this.__bnfString = bnfString;
     this.__bnfParser = new Grammars.W3C.Parser(bnfString, {
       keepUpperRules: true,
@@ -47,6 +47,6 @@ type IFLVersion = "v1";
 export const getVersion = (version: IFLVersion) => {
   switch (version) {
     case "v1":
-      return new IpsumFiltertingLanguage(v1Bnf);
+      return new IpsumFilteringLanguage(v1Ebnf);
   }
 };

@@ -1,4 +1,4 @@
-export const bnf = `
+export const ebnf = `
 ifl ::= filter
 
 filter ::= "highlights" (WS+ highlights_expression)? (WS+ highlights_sort)? | "arcs"
