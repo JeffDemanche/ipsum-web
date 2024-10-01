@@ -14,8 +14,11 @@
     .page-layout-section {
       display: flex;
       flex: 1;
-      background-color: white;
-      box-shadow: @box_shadow_primary;
+
+      &.elevated {
+        background-color: white;
+        box-shadow: @box_shadow_primary;
+      }
     }
   }
 }

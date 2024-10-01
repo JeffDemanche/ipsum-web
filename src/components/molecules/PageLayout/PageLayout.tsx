@@ -7,6 +7,7 @@ interface PageLayoutProps {
   className?: string;
   rows: {
     sections: {
+      elevated?: boolean;
       component: React.ReactNode;
     }[];
   }[];
@@ -21,7 +22,13 @@ export const PageLayout: FunctionComponent<PageLayoutProps> = ({
       {rows.map((row, rowIndex) => (
         <div key={rowIndex} className={styles["page-layout-row"]}>
           {row.sections.map((column, columnIndex) => (
-            <div key={columnIndex} className={styles["page-layout-section"]}>
+            <div
+              key={columnIndex}
+              className={cx(
+                column.elevated && styles["elevated"],
+                styles["page-layout-section"]
+              )}
+            >
               {column.component}
             </div>
           ))}

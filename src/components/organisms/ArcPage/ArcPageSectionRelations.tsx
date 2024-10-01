@@ -12,7 +12,7 @@ export const ArcPageSectionRelations: FunctionComponent<
 > = ({ relations }) => {
   return (
     <div className={styles["page-section"]}>
-      <RelationsTable expanded relations={relations} />
+      <RelationsTable editable expanded relations={relations} />
     </div>
   );
 };

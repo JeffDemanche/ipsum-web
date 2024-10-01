@@ -73,6 +73,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
               {
                 sections: [
                   {
+                    elevated: true,
                     component: (
                       <HighlightPageSectionExcerpt
                         highlightId={highlight.id}
@@ -81,7 +82,12 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
                       />
                     ),
                   },
+                ],
+              },
+              {
+                sections: [
                   {
+                    elevated: false,
                     component: (
                       <HighlightPageSectionAttributes
                         relations={highlight.relations}
@@ -93,6 +99,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
               {
                 sections: [
                   {
+                    elevated: true,
                     component: (
                       <HighlightPageSectionComments
                         today={today}

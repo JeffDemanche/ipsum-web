@@ -41,7 +41,6 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   const linkStyle: CSSProperties = {
     fontWeight: font_weight_light,
     fontFamily: font_family_sans,
-    fontSize: font_size_small,
     textDecoration: "underline",
     backgroundColor: "transparent",
   };
@@ -49,7 +48,6 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   const nonLinkStyle: CSSProperties = {
     fontWeight: font_weight_light,
     fontFamily: font_family_sans,
-    fontSize: font_size_small,
   };
 
   const button = (

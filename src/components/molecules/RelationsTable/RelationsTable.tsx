@@ -1,10 +1,11 @@
-import { Add } from "@mui/icons-material";
 import cx from "classnames";
+import { Button } from "components/atoms/Button";
 import { MiniButton } from "components/atoms/MiniButton";
+import { Popover } from "components/atoms/Popover";
 import { Type } from "components/atoms/Type";
 import { ArcTag } from "components/molecules/ArcTag";
 import { grey700, grey800 } from "components/styles";
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 import styles from "./RelationsTable.less";
 
@@ -88,6 +89,9 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
     });
   }, [clauses]);
 
+  const [createRelationAnchorEl, setCreateRelationAnchorEl] =
+    useState<HTMLElement>(null);
+
   const predicateRows = useMemo(() => {
     if (relations) {
       return Object.keys(relationsByPredicate).map((predicate) => {
@@ -104,16 +108,21 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                   hue={relation.arc.hue}
                   text={relation.arc.name}
                   onDelete={() => onDeleteRelation?.(relation)}
-                  showAlias={showAlias ?? expanded}
-                  showEdit={showEdit ?? expanded}
                   showDelete={editable}
                 />
               );
             })}
             {editable && (
-              <MiniButton fontSize="small" foregroundColor={grey700}>
-                <Add />
-              </MiniButton>
+              <Button
+                className={styles["link-button"]}
+                disableRipple={false}
+                variant="link"
+                onClick={(e) => {
+                  setCreateRelationAnchorEl(e.currentTarget);
+                }}
+              >
+                + add
+              </Button>
             )}
           </div>
         );
@@ -145,16 +154,21 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                     hue={relation.arc.hue}
                     text={relation.arc.name}
                     onDelete={() => onDeleteRelation?.(relation)}
-                    showAlias={showAlias ?? expanded}
-                    showEdit={showEdit ?? expanded}
                     showDelete={editable}
                   />
                 );
               })}
               {editable && (
-                <MiniButton fontSize="small" foregroundColor={grey700}>
-                  <Add />
-                </MiniButton>
+                <Button
+                  className={styles["link-button"]}
+                  disableRipple={false}
+                  variant="link"
+                  onClick={(e) => {
+                    setCreateRelationAnchorEl(e.currentTarget);
+                  }}
+                >
+                  + add
+                </Button>
               )}
             </div>
           );
@@ -163,13 +177,10 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
     }
   }, [
     editable,
-    expanded,
     onDeleteRelation,
     relations,
     relationsByPredicate,
     relationsByPredicateAndClause,
-    showAlias,
-    showEdit,
   ]);
 
   return (
@@ -179,7 +190,30 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
         !expanded && styles["collapsed"]
       )}
     >
+      <Popover
+        onClose={() => {
+          setCreateRelationAnchorEl(null);
+        }}
+        anchorEl={createRelationAnchorEl}
+        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+      >
+        relation chooser
+      </Popover>
       {predicateRows}
+      {editable && (
+        <div className={styles["predicate-row"]}>
+          <Button
+            className={styles["link-button"]}
+            disableRipple={false}
+            variant="link"
+            onClick={(e) => {
+              setCreateRelationAnchorEl(e.currentTarget);
+            }}
+          >
+            + add
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

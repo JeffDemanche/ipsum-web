@@ -59,8 +59,12 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
               {
                 sections: [
                   {
+                    elevated: true,
                     component: (
-                      <ArcPageSectionRelations relations={arc.relations} />
+                      <ArcPageSectionAbout
+                        highlights={arcEntry.highlights}
+                        htmlString={arcEntry.htmlString}
+                      />
                     ),
                   },
                 ],
@@ -68,11 +72,9 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
               {
                 sections: [
                   {
+                    elevated: true,
                     component: (
-                      <ArcPageSectionAbout
-                        highlights={arcEntry.highlights}
-                        htmlString={arcEntry.htmlString}
-                      />
+                      <ArcPageSectionRelations relations={arc.relations} />
                     ),
                   },
                 ],
