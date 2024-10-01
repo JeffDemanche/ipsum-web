@@ -177,4 +177,8 @@ export class IpsumDay {
   static today(): IpsumDay {
     return IpsumDay.fromIpsumDateTime(IpsumDateTime.today());
   }
+
+  static beginning(): IpsumDay {
+    return new IpsumDay(1, 0, 1970);
+  }
 }

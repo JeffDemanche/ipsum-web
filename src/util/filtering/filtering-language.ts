@@ -1,6 +1,6 @@
 import { Grammars, IToken } from "ebnf";
 
-import { ebnf as v1Ebnf } from "./versions/v-1-definition";
+import { ebnf as v1Ebnf } from "./versions/v1-definition";
 
 export class IpsumFilteringLanguage {
   private __bnfString: string;
