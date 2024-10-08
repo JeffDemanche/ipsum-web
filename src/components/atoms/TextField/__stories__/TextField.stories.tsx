@@ -13,5 +13,6 @@ type Story = StoryObj<typeof TextField>;
 export const TextFieldExample: Story = {
   args: {
     defaultValue: "Hello, World!",
+    variant: "outlined",
   },
 };

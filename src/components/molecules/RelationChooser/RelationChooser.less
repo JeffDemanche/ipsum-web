@@ -1,0 +1,36 @@
+@import "../../styles/vars.less";
+
+.relation-chooser {
+  display: flex;
+
+  .predicate {
+    height: 100%;
+    color: @grey500;
+
+    &.selected {
+      color: @grey900;
+    }
+  }
+
+  .row {
+    height: @grid_x_3;
+  }
+
+  .column-left {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 1;
+    padding-right: 10px;
+  }
+
+  .column-right {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 1;
+    padding-left: 10px;
+    
+    .arc-search-field {
+      height: 24px
+    }
+  }
+}

@@ -187,6 +187,9 @@ export const theme = createTheme(
           root: {
             borderRadius: "0px",
           },
+          input: {
+            border: "none",
+          },
         },
       },
       MuiTextField: {},
