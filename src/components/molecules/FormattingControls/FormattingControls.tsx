@@ -49,7 +49,7 @@ export const FormattingControls: React.FunctionComponent<
     }
   }, [activeEditor, blurTimeoout]);
 
-  const disableAll = !focusedEditor;
+  const disableFormatting = !focusedEditor;
 
   const restoreFocusWithTimeout = () => {
     setTimeout(() => {
@@ -63,7 +63,6 @@ export const FormattingControls: React.FunctionComponent<
         data-testid={TestIds.FormattingControls.HighlightButton}
         aria-label="highlight"
         variant="contained"
-        disabled={disableAll}
         tooltip="Create highlight"
         style={{ width: "42px" }}
         onClick={() => {
@@ -76,7 +75,7 @@ export const FormattingControls: React.FunctionComponent<
         aria-label="bold"
         value="check"
         selected={activeEditor?.bold ?? false}
-        disabled={disableAll}
+        disabled={disableFormatting}
         onClick={() => {
           activeEditor?.setBold((bold) => !bold);
         }}
@@ -88,7 +87,7 @@ export const FormattingControls: React.FunctionComponent<
         aria-label="italic"
         value="check"
         selected={activeEditor?.italic ?? false}
-        disabled={disableAll}
+        disabled={disableFormatting}
         onClick={() => {
           activeEditor?.setItalic((italic) => !italic);
         }}
@@ -100,7 +99,7 @@ export const FormattingControls: React.FunctionComponent<
         aria-label="underline"
         value="check"
         selected={activeEditor?.underline ?? false}
-        disabled={disableAll}
+        disabled={disableFormatting}
         onClick={() => {
           activeEditor?.setUnderline((underline) => !underline);
         }}
@@ -112,7 +111,7 @@ export const FormattingControls: React.FunctionComponent<
         aria-label="strikethrough"
         value="check"
         selected={activeEditor?.strikethrough ?? false}
-        disabled={disableAll}
+        disabled={disableFormatting}
         onClick={() => {
           activeEditor?.setStrikethrough((strikethrough) => !strikethrough);
         }}
@@ -123,7 +122,7 @@ export const FormattingControls: React.FunctionComponent<
 
       <Select
         value={activeEditor?.blockType ?? "paragraph"}
-        disabled={disableAll}
+        disabled={disableFormatting}
         aria-label="Formatting Options"
         data-testid="editor-toolbar-block-format-select"
         menuRef={blockMenuRef}
