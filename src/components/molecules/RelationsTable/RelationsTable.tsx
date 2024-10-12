@@ -11,6 +11,7 @@ import { Relation as RelationChooserRelation } from "../RelationChooser/types";
 import styles from "./RelationsTable.less";
 
 interface RelationsTableRelation {
+  id: string;
   predicate: string;
   arc: {
     id: string;
@@ -24,7 +25,7 @@ interface RelationsTableProps {
   expanded: boolean;
 
   onCreateRelation?: (relation: RelationChooserRelation) => void;
-  onDeleteRelation?: (relation: RelationChooserRelation) => void;
+  onDeleteRelation?: (id: string) => void;
 
   arcResults?: React.ComponentProps<typeof RelationChooser>["arcResults"];
   onArcSearch?: React.ComponentProps<typeof RelationChooser>["onArcSearch"];
@@ -113,9 +114,7 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                   key={relation.arc.id}
                   hue={relation.arc.hue}
                   text={relation.arc.name}
-                  onDelete={() =>
-                    onDeleteRelation?.({ arcId: relation.arc.id, predicate })
-                  }
+                  onDelete={() => onDeleteRelation?.(relation.id)}
                   showDelete={editable}
                 />
               );
@@ -161,9 +160,7 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                     key={relation.arc.id}
                     hue={relation.arc.hue}
                     text={relation.arc.name}
-                    onDelete={() =>
-                      onDeleteRelation?.({ arcId: relation.arc.id, predicate })
-                    }
+                    onDelete={() => onDeleteRelation?.(relation.id)}
                     showDelete={editable}
                   />
                 );
@@ -221,6 +218,20 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
         />
       </Popover>
       {predicateRows}
+      {editable && !predicateRows.length && (
+        <div className={styles["predicate-row"]}>
+          <Button
+            className={styles["link-button"]}
+            disableRipple={false}
+            variant="link"
+            onClick={(e) => {
+              setCreateRelationAnchorEl(e.currentTarget);
+            }}
+          >
+            + add
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

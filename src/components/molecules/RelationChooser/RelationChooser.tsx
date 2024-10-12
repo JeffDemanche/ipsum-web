@@ -26,6 +26,7 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
   arcResults,
   defaultSearch,
   onArcSearch,
+  onRelationChoose,
 }) => {
   const [search, setSearch] = useState(defaultSearch);
 
@@ -36,6 +37,13 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
       ? defaultSelectedPredicate
       : predicateOptions[0]
   );
+
+  const onArcTagClick = (arcResult: ArcResult) => {
+    onRelationChoose({
+      arcId: arcResult.id,
+      predicate: selectedPredicate,
+    });
+  };
 
   return (
     <div className={styles["relation-chooser"]}>
@@ -90,6 +98,7 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
                 key={arcResult.id}
                 text={arcResult.name}
                 hue={arcResult.hue}
+                onClick={() => onArcTagClick(arcResult)}
               />
             </div>
           ))}

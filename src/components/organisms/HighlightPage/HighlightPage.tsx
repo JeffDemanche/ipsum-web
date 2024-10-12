@@ -19,6 +19,19 @@ interface HighlightPageProps {
   onCollapse: () => void;
   onClose?: () => void;
 
+  onAttributesSectionCreateRelation: React.ComponentProps<
+    typeof HighlightPageSectionAttributes
+  >["onCreateRelation"];
+  onAttributesSectionDeleteRelation: React.ComponentProps<
+    typeof HighlightPageSectionAttributes
+  >["onDeleteRelation"];
+  onAttributesSectionArcSearch: React.ComponentProps<
+    typeof HighlightPageSectionAttributes
+  >["onArcSearch"];
+  attributesSectionArcResults: React.ComponentProps<
+    typeof HighlightPageSectionAttributes
+  >["arcResults"];
+
   highlight: {
     id: string;
     htmlString: string;
@@ -45,6 +58,10 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
   onExpand,
   onCollapse,
   onClose,
+  onAttributesSectionCreateRelation,
+  onAttributesSectionDeleteRelation,
+  onAttributesSectionArcSearch,
+  attributesSectionArcResults,
   today,
 }) => {
   return (
@@ -91,6 +108,10 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
                     component: (
                       <HighlightPageSectionAttributes
                         relations={highlight.relations}
+                        onCreateRelation={onAttributesSectionCreateRelation}
+                        onDeleteRelation={onAttributesSectionDeleteRelation}
+                        arcResults={attributesSectionArcResults}
+                        onArcSearch={onAttributesSectionArcSearch}
                       />
                     ),
                   },

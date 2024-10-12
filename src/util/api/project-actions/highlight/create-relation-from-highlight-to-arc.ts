@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { APIFunction } from "../types";
 
-export const createRelationFromHighlight: APIFunction<
+export const createRelationFromHighlightToArc: APIFunction<
   {
     id?: string;
     predicate: string;
@@ -40,6 +40,12 @@ export const createRelationFromHighlight: APIFunction<
     .collection("highlights")
     .mutate(args.highlightId, ({ outgoingRelations }) => ({
       outgoingRelations: [...outgoingRelations, relation.id],
+    }));
+
+  projectState
+    .collection("arcs")
+    .mutate(args.arcId, ({ incomingRelations }) => ({
+      incomingRelations: [...incomingRelations, relation.id],
     }));
 
   return relation;

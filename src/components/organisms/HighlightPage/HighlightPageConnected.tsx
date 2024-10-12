@@ -1,6 +1,13 @@
 import { useQuery } from "@apollo/client";
-import React from "react";
-import { urlRemoveLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
+import React, { useState } from "react";
+import {
+  apiCreateRelationFromHighlightToArc,
+  apiDeleteRelationFromHighlightToArc,
+  urlRemoveLayer,
+  urlSetLayerExpanded,
+  useApiAction,
+  useUrlAction,
+} from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { useIpsumSearchParams } from "util/state";
@@ -86,22 +93,58 @@ const HighlightPageQuery = gql(`
   }  
 `);
 
+const HighlightPageArcSearchQuery = gql(`
+  query HighlightPageArcSearch($search: String!) {
+    searchArcsByName(search: $search) {
+      id
+      name
+      color
+    }
+  }
+`);
+
 export const HighlightPageConnected: React.FunctionComponent<
   HighlightPageConnectedProps
 > = ({ layerIndex, highlightId }) => {
+  const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
+
+  const removeLayer = useUrlAction(urlRemoveLayer);
+
+  const { layers } = useIpsumSearchParams<"journal">();
+
   const { data } = useQuery(HighlightPageQuery, {
     variables: {
       highlightId,
     },
   });
 
+  const [arcSearch, setArcSearch] = useState<string | undefined>(undefined);
+  const { data: arcSearchData } = useQuery(HighlightPageArcSearchQuery, {
+    variables: {
+      search: arcSearch,
+    },
+    skip: !arcSearch,
+  });
+
+  const arcSearchResults: React.ComponentProps<
+    typeof HighlightPage
+  >["attributesSectionArcResults"] = arcSearchData?.searchArcsByName.map(
+    (arc) => ({
+      id: arc.id,
+      hue: arc.color,
+      name: arc.name,
+    })
+  );
+
   const highlight = data.highlight;
 
-  const { layers } = useIpsumSearchParams<"journal">();
+  const [createRelationFromHighlightToArc] = useApiAction(
+    apiCreateRelationFromHighlightToArc
+  );
 
-  const setLayerExpanded = useUrlAction(urlSetLayerExpanded);
-
-  const removeLayer = useUrlAction(urlRemoveLayer);
+  const [deleteRelationFromHighlightToArc] = useApiAction(
+    apiDeleteRelationFromHighlightToArc
+  );
 
   return (
     <HighlightPage
@@ -113,6 +156,7 @@ export const HighlightPageConnected: React.FunctionComponent<
         hue: highlight.hue,
         objectText: highlight.objectText,
         relations: highlight.outgoingRelations.map((relation) => ({
+          id: relation.id,
           predicate: relation.predicate,
           arc: {
             id: relation.object.id,
@@ -147,6 +191,20 @@ export const HighlightPageConnected: React.FunctionComponent<
             htmlString: comment.commentEntry.entry.htmlString,
           },
         })),
+      }}
+      onAttributesSectionCreateRelation={({ arcId, predicate }) => {
+        createRelationFromHighlightToArc({
+          highlightId: highlightId,
+          arcId,
+          predicate,
+        });
+      }}
+      onAttributesSectionDeleteRelation={(id) => {
+        deleteRelationFromHighlightToArc({ id });
+      }}
+      attributesSectionArcResults={arcSearchResults}
+      onAttributesSectionArcSearch={(search) => {
+        setArcSearch(search);
       }}
       today={IpsumDay.today()}
       expanded={layers?.[layerIndex]?.expanded === "true"}

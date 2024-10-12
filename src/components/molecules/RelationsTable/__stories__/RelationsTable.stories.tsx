@@ -18,6 +18,7 @@ export const RelationsTableExample: Story = {
     showEdit: false,
     relations: [
       {
+        id: "1",
         predicate: "is",
         arc: {
           id: "1",
@@ -26,6 +27,7 @@ export const RelationsTableExample: Story = {
         },
       },
       {
+        id: "2",
         predicate: "relates to",
         arc: {
           id: "2",
@@ -34,6 +36,7 @@ export const RelationsTableExample: Story = {
         },
       },
       {
+        id: "3",
         predicate: "relates to",
         arc: {
           id: "3",
@@ -61,6 +64,7 @@ export const RelationsTableExampleWithClauses: Story = {
         {
           orRelations: [
             {
+              id: "1",
               predicate: "is",
               arc: {
                 id: "1",
@@ -69,6 +73,7 @@ export const RelationsTableExampleWithClauses: Story = {
               },
             },
             {
+              id: "2",
               predicate: "relates to",
               arc: {
                 id: "2",
@@ -81,6 +86,7 @@ export const RelationsTableExampleWithClauses: Story = {
         {
           orRelations: [
             {
+              id: "3",
               predicate: "relates to",
               arc: {
                 id: "3",
@@ -89,6 +95,7 @@ export const RelationsTableExampleWithClauses: Story = {
               },
             },
             {
+              id: "4",
               predicate: "relates to",
               arc: {
                 id: "4",

@@ -136,6 +136,15 @@ export const SearchResolvers: StrictTypedTypePolicies = {
 
         return sortedHighlights;
       },
+      searchArcsByName(_, { args }) {
+        const allArcs = Object.values(
+          PROJECT_STATE.collection("arcs").getAll()
+        );
+
+        return allArcs.filter((arc) =>
+          arc.name.toLowerCase().includes(args.search.toLowerCase())
+        );
+      },
     },
   },
 };

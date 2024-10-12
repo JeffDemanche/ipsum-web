@@ -3,7 +3,7 @@ import {
   apiCreateComment,
   apiCreateHighlight,
   apiCreateJournalEntry,
-  apiCreateRelationFromHighlight,
+  apiCreateRelationFromHighlightToArc,
 } from "util/api/project-actions";
 import { IpsumDay } from "util/dates";
 import { ProjectState } from "util/state/project";
@@ -43,7 +43,7 @@ export const generateMock = (props: GenerateMockProps): GeneratedMock => {
       );
 
       highlight.outgoingRelations?.forEach((relation) => {
-        apiCreateRelationFromHighlight(
+        apiCreateRelationFromHighlightToArc(
           {
             id: relation.id,
             arcId: relation.arcId,

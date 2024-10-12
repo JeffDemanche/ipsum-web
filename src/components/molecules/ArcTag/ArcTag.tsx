@@ -17,6 +17,8 @@ interface ArcTagProps {
   hue: number;
   fontSize?: "x-small" | "small" | "medium";
 
+  onClick?: () => void;
+
   showAlias?: boolean;
   showEdit?: boolean;
   showDelete?: boolean;
@@ -28,6 +30,7 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
   text,
   hue,
   fontSize = "medium",
+  onClick,
   showAlias,
   showEdit,
   showDelete,
@@ -56,6 +59,7 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
     >
       <Button
         className={styles["link-button"]}
+        onClick={onClick}
         style={{
           gap: "4px",
           fontFamily: font_family_sans,

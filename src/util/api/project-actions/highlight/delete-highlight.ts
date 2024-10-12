@@ -7,4 +7,6 @@ export const deleteHighlight: APIFunction<{ id: string }, boolean> = (
   const { projectState } = context;
 
   return projectState.collection("highlights").delete(args.id);
+
+  // TODO Remove highlight formatting from entries.
 };
