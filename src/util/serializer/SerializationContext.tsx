@@ -83,6 +83,11 @@ export const SerializationProvider: React.FunctionComponent<
   const [hasLoadedAutosave, setHasLoadedAutosave] = useState(false);
 
   useEffect(() => {
+    if (disabled) {
+      setHasLoadedAutosave(true);
+      return;
+    }
+
     if (!hasLoadedAutosave && idbWrapper !== undefined) {
       idbWrapper.getAutosaveValue().then((state) => {
         if (!state) {
@@ -103,7 +108,13 @@ export const SerializationProvider: React.FunctionComponent<
         }
       });
     }
-  }, [hasLoadedAutosave, idbWrapper, setProjectState, setProjectStateErrors]);
+  }, [
+    disabled,
+    hasLoadedAutosave,
+    idbWrapper,
+    setProjectState,
+    setProjectStateErrors,
+  ]);
 
   const dom = (() => {
     if (hasLoadedAutosave) {

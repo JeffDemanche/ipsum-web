@@ -1,15 +1,16 @@
 import cx from "classnames";
 import { Button } from "components/atoms/Button";
-import { MiniButton } from "components/atoms/MiniButton";
 import { Popover } from "components/atoms/Popover";
 import { Type } from "components/atoms/Type";
 import { ArcTag } from "components/molecules/ArcTag";
 import { grey700, grey800 } from "components/styles";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 
+import { RelationChooser } from "../RelationChooser/RelationChooser";
+import { Relation as RelationChooserRelation } from "../RelationChooser/types";
 import styles from "./RelationsTable.less";
 
-interface Relation {
+interface RelationsTableRelation {
   predicate: string;
   arc: {
     id: string;
@@ -22,16 +23,19 @@ interface RelationsTableProps {
   editable?: boolean;
   expanded: boolean;
 
-  onCreateRelation?: () => void;
-  onDeleteRelation?: (relation: Relation) => void;
+  onCreateRelation?: (relation: RelationChooserRelation) => void;
+  onDeleteRelation?: (relation: RelationChooserRelation) => void;
+
+  arcResults?: React.ComponentProps<typeof RelationChooser>["arcResults"];
+  onArcSearch?: React.ComponentProps<typeof RelationChooser>["onArcSearch"];
 
   showAlias?: boolean;
   showEdit?: boolean;
 
-  relations?: Relation[];
+  relations?: RelationsTableRelation[];
   clauses?: {
     and: {
-      orRelations: Relation[];
+      orRelations: RelationsTableRelation[];
     }[];
   };
 }
@@ -41,6 +45,8 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
   expanded,
   onCreateRelation,
   onDeleteRelation,
+  arcResults,
+  onArcSearch,
   showAlias,
   showEdit,
   relations,
@@ -107,7 +113,9 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                   key={relation.arc.id}
                   hue={relation.arc.hue}
                   text={relation.arc.name}
-                  onDelete={() => onDeleteRelation?.(relation)}
+                  onDelete={() =>
+                    onDeleteRelation?.({ arcId: relation.arc.id, predicate })
+                  }
                   showDelete={editable}
                 />
               );
@@ -153,7 +161,9 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                     key={relation.arc.id}
                     hue={relation.arc.hue}
                     text={relation.arc.name}
-                    onDelete={() => onDeleteRelation?.(relation)}
+                    onDelete={() =>
+                      onDeleteRelation?.({ arcId: relation.arc.id, predicate })
+                    }
                     showDelete={editable}
                   />
                 );
@@ -197,23 +207,20 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
         anchorEl={createRelationAnchorEl}
         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
       >
-        relation chooser
+        <RelationChooser
+          maxArcResults={8}
+          onRelationChoose={(relation) => {
+            onCreateRelation?.({
+              arcId: relation.arcId,
+              predicate: relation.predicate,
+            });
+          }}
+          arcResults={arcResults ?? []}
+          onArcSearch={onArcSearch}
+          defaultSearch=""
+        />
       </Popover>
       {predicateRows}
-      {editable && (
-        <div className={styles["predicate-row"]}>
-          <Button
-            className={styles["link-button"]}
-            disableRipple={false}
-            variant="link"
-            onClick={(e) => {
-              setCreateRelationAnchorEl(e.currentTarget);
-            }}
-          >
-            + add
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

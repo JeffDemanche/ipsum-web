@@ -26,18 +26,16 @@ export const JournalViewExample: StoryJournalView = {
     layout: "fullscreen",
     query: {},
   },
-  args: {},
+  args: { overrideProjectState: mockSiddhartha().projectState },
   decorators: [
     (Story) => {
       return (
         <MemoryRouter>
-          <IpsumStateProvider projectState={mockSiddhartha().projectState}>
-            <WithNormalizeUrl>
-              <div style={{ height: "100vh" }}>
-                <Story></Story>
-              </div>
-            </WithNormalizeUrl>
-          </IpsumStateProvider>
+          <WithNormalizeUrl>
+            <div style={{ height: "100vh" }}>
+              <Story></Story>
+            </div>
+          </WithNormalizeUrl>
         </MemoryRouter>
       );
     },

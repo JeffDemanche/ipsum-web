@@ -87,7 +87,7 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
           maxLines={expanded ? 0 : excerptProps.maxLines ?? 3}
         />
         {expanded && (
-          <RelationsTable expanded={expanded} relations={relations} />
+          <RelationsTable expanded={expanded} relations={relations} editable />
         )}
       </div>
     </BlurbWrapper>

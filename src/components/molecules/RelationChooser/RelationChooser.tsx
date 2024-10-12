@@ -14,7 +14,7 @@ interface RelationChooserProps {
 
   arcResults: ArcResult[];
 
-  search: string;
+  defaultSearch: string;
   onArcSearch: (search: string) => void;
 
   onRelationChoose: (relation: Relation) => void;
@@ -24,9 +24,11 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
   maxArcResults,
   defaultSelectedPredicate,
   arcResults,
-  search,
+  defaultSearch,
   onArcSearch,
 }) => {
+  const [search, setSearch] = useState(defaultSearch);
+
   const predicateOptions = ["is", "relates to"];
 
   const [selectedPredicate, setSelectedPredicate] = useState(
@@ -71,24 +73,27 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
             placeholder="Search"
             value={search}
             onChange={(e) => {
+              setSearch(e.target.value);
               onArcSearch?.(e.target.value);
             }}
             className={styles["arc-search-field"]}
           />
         </div>
-        {arcResults.slice(0, maxArcResults).map((arcResult) => (
-          <div
-            key={arcResult.id}
-            className={cx(styles["row"], styles["arc-result"])}
-          >
-            <ArcTag
-              fontSize="x-small"
+        <div className={styles["arc-results"]}>
+          {arcResults.slice(0, maxArcResults).map((arcResult) => (
+            <div
               key={arcResult.id}
-              text={arcResult.name}
-              hue={arcResult.hue}
-            />
-          </div>
-        ))}
+              className={cx(styles["row"], styles["arc-result"])}
+            >
+              <ArcTag
+                fontSize="small"
+                key={arcResult.id}
+                text={arcResult.name}
+                hue={arcResult.hue}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
