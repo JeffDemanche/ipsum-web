@@ -31,6 +31,7 @@ export const BrowserHighlightsTabExample: Story = {
             {
               orRelations: [
                 {
+                  id: "1",
                   predicate: "is",
                   arc: {
                     id: "1",
@@ -39,6 +40,7 @@ export const BrowserHighlightsTabExample: Story = {
                   },
                 },
                 {
+                  id: "2",
                   predicate: "relates to",
                   arc: {
                     id: "2",
@@ -51,6 +53,7 @@ export const BrowserHighlightsTabExample: Story = {
             {
               orRelations: [
                 {
+                  id: "3",
                   predicate: "relates to",
                   arc: {
                     id: "3",
@@ -80,6 +83,7 @@ export const BrowserHighlightsTabExample: Story = {
         },
         relationsProps: [
           {
+            id: "1",
             predicate: "is",
             arc: { id: "arc1", hue: 0, name: "opinion" },
           },

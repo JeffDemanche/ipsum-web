@@ -2,6 +2,7 @@ import { Collapse } from "@mui/material";
 import cx from "classnames";
 import { PageHeaderHighlight } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
+import { RelationsTable } from "components/molecules/RelationsTable";
 import { hueSwatch } from "components/styles";
 import React, { FunctionComponent } from "react";
 import { IpsumDay } from "util/dates";
@@ -19,18 +20,10 @@ interface HighlightPageProps {
   onCollapse: () => void;
   onClose?: () => void;
 
-  onAttributesSectionCreateRelation: React.ComponentProps<
-    typeof HighlightPageSectionAttributes
-  >["onCreateRelation"];
-  onAttributesSectionDeleteRelation: React.ComponentProps<
-    typeof HighlightPageSectionAttributes
-  >["onDeleteRelation"];
-  onAttributesSectionArcSearch: React.ComponentProps<
-    typeof HighlightPageSectionAttributes
-  >["onArcSearch"];
-  attributesSectionArcResults: React.ComponentProps<
-    typeof HighlightPageSectionAttributes
-  >["arcResults"];
+  relationTableProps: Pick<
+    React.ComponentProps<typeof RelationsTable>,
+    "onCreateRelation" | "onDeleteRelation" | "arcResults" | "onArcSearch"
+  >;
 
   highlight: {
     id: string;
@@ -58,10 +51,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
   onExpand,
   onCollapse,
   onClose,
-  onAttributesSectionCreateRelation,
-  onAttributesSectionDeleteRelation,
-  onAttributesSectionArcSearch,
-  attributesSectionArcResults,
+  relationTableProps,
   today,
 }) => {
   return (
@@ -107,11 +97,9 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
                     elevated: false,
                     component: (
                       <HighlightPageSectionAttributes
+                        highlightId={highlight.id}
                         relations={highlight.relations}
-                        onCreateRelation={onAttributesSectionCreateRelation}
-                        onDeleteRelation={onAttributesSectionDeleteRelation}
-                        arcResults={attributesSectionArcResults}
-                        onArcSearch={onAttributesSectionArcSearch}
+                        relationTableProps={relationTableProps}
                       />
                     ),
                   },

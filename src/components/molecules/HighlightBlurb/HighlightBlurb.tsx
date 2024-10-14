@@ -1,5 +1,4 @@
 import cx from "classnames";
-import { Button } from "components/atoms/Button";
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
 import { BlurbWrapper } from "components/molecules/BlurbWrapper";
 import { HighlightTag } from "components/molecules/HighlightTag";
@@ -32,6 +31,11 @@ interface HighlightBlurbProps {
 
   onHighlightClick?: () => void;
   onHighlightObjectClick?: () => void;
+
+  relationsTableProps: Pick<
+    React.ComponentProps<typeof RelationsTable>,
+    "onCreateRelation" | "onDeleteRelation" | "arcResults" | "onArcSearch"
+  >;
 }
 
 export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
@@ -46,6 +50,7 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
   onCollapse,
   onHighlightClick,
   onHighlightObjectClick,
+  relationsTableProps,
 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
 
@@ -87,7 +92,16 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
           maxLines={expanded ? 0 : excerptProps.maxLines ?? 3}
         />
         {expanded && (
-          <RelationsTable expanded={expanded} relations={relations} editable />
+          <RelationsTable
+            expanded={expanded}
+            relations={relations}
+            editable
+            {...{
+              ...relationsTableProps,
+              subjectType: "Highlight",
+              subjectId: highlightProps.highlightId,
+            }}
+          />
         )}
       </div>
     </BlurbWrapper>

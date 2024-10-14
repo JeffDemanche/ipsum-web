@@ -27,6 +27,11 @@ interface BrowserHighlightsTabProps {
   onHighlightDailyJournalClick?: (entryKey: string) => void;
   onHighlightArcClick?: (arcId: string) => void;
   onHighlightCommentClick?: (commentId: string, highlightId: string) => void;
+
+  relationsTableProps: Pick<
+    React.ComponentProps<typeof RelationsTable>,
+    "onCreateRelation" | "onDeleteRelation" | "arcResults" | "onArcSearch"
+  >;
 }
 
 export const BrowserHighlightsTab: React.FunctionComponent<
@@ -38,6 +43,7 @@ export const BrowserHighlightsTab: React.FunctionComponent<
   onHighlightDailyJournalClick,
   onHighlightArcClick,
   onHighlightCommentClick,
+  relationsTableProps,
 }) => {
   const groupedHighlights = highlights.reduce(
     (acc, highlight) => {
@@ -95,6 +101,7 @@ export const BrowserHighlightsTab: React.FunctionComponent<
                             );
                         }
                       }}
+                      relationsTableProps={relationsTableProps}
                     />
                   );
                 })}

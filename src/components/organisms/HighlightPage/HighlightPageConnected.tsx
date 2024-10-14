@@ -1,13 +1,7 @@
 import { useQuery } from "@apollo/client";
-import React, { useState } from "react";
-import {
-  apiCreateRelationFromHighlightToArc,
-  apiDeleteRelationFromHighlightToArc,
-  urlRemoveLayer,
-  urlSetLayerExpanded,
-  useApiAction,
-  useUrlAction,
-} from "util/api";
+import { useHighlightRelationsTableConnected } from "components/hooks/use-highlight-relations-table-connected";
+import React from "react";
+import { urlRemoveLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { useIpsumSearchParams } from "util/state";
@@ -93,16 +87,6 @@ const HighlightPageQuery = gql(`
   }  
 `);
 
-const HighlightPageArcSearchQuery = gql(`
-  query HighlightPageArcSearch($search: String!) {
-    searchArcsByName(search: $search) {
-      id
-      name
-      color
-    }
-  }
-`);
-
 export const HighlightPageConnected: React.FunctionComponent<
   HighlightPageConnectedProps
 > = ({ layerIndex, highlightId }) => {
@@ -118,33 +102,9 @@ export const HighlightPageConnected: React.FunctionComponent<
     },
   });
 
-  const [arcSearch, setArcSearch] = useState<string | undefined>(undefined);
-  const { data: arcSearchData } = useQuery(HighlightPageArcSearchQuery, {
-    variables: {
-      search: arcSearch,
-    },
-    skip: !arcSearch,
-  });
-
-  const arcSearchResults: React.ComponentProps<
-    typeof HighlightPage
-  >["attributesSectionArcResults"] = arcSearchData?.searchArcsByName.map(
-    (arc) => ({
-      id: arc.id,
-      hue: arc.color,
-      name: arc.name,
-    })
-  );
+  const relationsTableProps = useHighlightRelationsTableConnected();
 
   const highlight = data.highlight;
-
-  const [createRelationFromHighlightToArc] = useApiAction(
-    apiCreateRelationFromHighlightToArc
-  );
-
-  const [deleteRelationFromHighlightToArc] = useApiAction(
-    apiDeleteRelationFromHighlightToArc
-  );
 
   return (
     <HighlightPage
@@ -192,20 +152,7 @@ export const HighlightPageConnected: React.FunctionComponent<
           },
         })),
       }}
-      onAttributesSectionCreateRelation={({ arcId, predicate }) => {
-        createRelationFromHighlightToArc({
-          highlightId: highlightId,
-          arcId,
-          predicate,
-        });
-      }}
-      onAttributesSectionDeleteRelation={(id) => {
-        deleteRelationFromHighlightToArc({ id });
-      }}
-      attributesSectionArcResults={arcSearchResults}
-      onAttributesSectionArcSearch={(search) => {
-        setArcSearch(search);
-      }}
+      relationTableProps={relationsTableProps}
       today={IpsumDay.today()}
       expanded={layers?.[layerIndex]?.expanded === "true"}
       onExpand={() => {

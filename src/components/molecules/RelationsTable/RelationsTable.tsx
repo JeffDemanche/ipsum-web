@@ -5,6 +5,7 @@ import { Type } from "components/atoms/Type";
 import { ArcTag } from "components/molecules/ArcTag";
 import { grey700, grey800 } from "components/styles";
 import React, { useMemo, useState } from "react";
+import { RelationSubject } from "util/apollo";
 
 import { RelationChooser } from "../RelationChooser/RelationChooser";
 import { Relation as RelationChooserRelation } from "../RelationChooser/types";
@@ -23,6 +24,9 @@ interface RelationsTableRelation {
 interface RelationsTableProps {
   editable?: boolean;
   expanded: boolean;
+
+  subjectType: RelationSubject["__typename"];
+  subjectId: string;
 
   onCreateRelation?: (relation: RelationChooserRelation) => void;
   onDeleteRelation?: (id: string) => void;
@@ -44,6 +48,8 @@ interface RelationsTableProps {
 export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
   editable,
   expanded,
+  subjectType,
+  subjectId,
   onCreateRelation,
   onDeleteRelation,
   arcResults,
@@ -206,10 +212,15 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
       >
         <RelationChooser
           maxArcResults={8}
+          subjectType={subjectType}
+          subjectId={subjectId}
           onRelationChoose={(relation) => {
             onCreateRelation?.({
-              arcId: relation.arcId,
+              subjectType: relation.subjectType,
+              subjectId: relation.subjectId,
               predicate: relation.predicate,
+              objectType: relation.objectType,
+              objectId: relation.objectId,
             });
           }}
           arcResults={arcResults ?? []}

@@ -58,6 +58,7 @@ export const HighlightBlurbExample: Story = {
     },
     relations: [
       {
+        id: "1",
         predicate: "is",
         arc: {
           id: "1",
@@ -66,6 +67,7 @@ export const HighlightBlurbExample: Story = {
         },
       },
       {
+        id: "2",
         predicate: "relates",
         arc: {
           id: "2",
@@ -74,6 +76,7 @@ export const HighlightBlurbExample: Story = {
         },
       },
       {
+        id: "3",
         predicate: "relates",
         arc: {
           id: "3",

@@ -18,6 +18,7 @@ export const HighlightFilterOptionsExample: Story = {
         {
           orRelations: [
             {
+              id: "1",
               predicate: "is",
               arc: {
                 id: "1",
@@ -26,6 +27,7 @@ export const HighlightFilterOptionsExample: Story = {
               },
             },
             {
+              id: "2",
               predicate: "relates to",
               arc: {
                 id: "2",
@@ -38,6 +40,7 @@ export const HighlightFilterOptionsExample: Story = {
         {
           orRelations: [
             {
+              id: "3",
               predicate: "relates to",
               arc: {
                 id: "3",

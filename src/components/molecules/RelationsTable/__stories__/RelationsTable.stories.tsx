@@ -16,6 +16,8 @@ export const RelationsTableExample: Story = {
     expanded: true,
     showAlias: false,
     showEdit: false,
+    subjectType: "Highlight",
+    subjectId: "1",
     relations: [
       {
         id: "1",

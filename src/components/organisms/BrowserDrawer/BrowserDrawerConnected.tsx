@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client";
+import { useHighlightRelationsTableConnected } from "components/hooks/use-highlight-relations-table-connected";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import React, { useMemo } from "react";
 import {
@@ -187,6 +188,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
         importanceRating: importance,
       },
       relationsProps: arcRelations.map((relation) => ({
+        id: relation.id,
         predicate: relation.predicate,
         arc: {
           id: relation.object.id,
@@ -214,6 +216,8 @@ export const BrowserDrawerConnected: React.FunctionComponent<
             );
 
             return {
+              // TODO temporary until filters get changed.
+              id: "",
               predicate: relation.relatesToArc.predicate,
               arc: { id: arc.id, hue: arc.color, name: arc.name },
             };
@@ -282,6 +286,8 @@ export const BrowserDrawerConnected: React.FunctionComponent<
     });
   };
 
+  const relationsTableProps = useHighlightRelationsTableConnected();
+
   return (
     <BrowserDrawer
       drawerStyle={style}
@@ -310,6 +316,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
           onSortTypeChange: () => {},
           onSortDayChange,
         },
+        relationsTableProps,
         onHighlightClick: (highlightId) => {
           insertLayer({
             layer: { type: "highlight_detail", highlightId, expanded: "true" },

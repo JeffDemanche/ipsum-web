@@ -27,6 +27,7 @@ export const HighlightResultsOptionsDrawerExample: StoryHighlightResultsOptionsD
             {
               orRelations: [
                 {
+                  id: "1",
                   predicate: "is",
                   arc: {
                     id: "1",
@@ -39,6 +40,7 @@ export const HighlightResultsOptionsDrawerExample: StoryHighlightResultsOptionsD
             {
               orRelations: [
                 {
+                  id: "2",
                   predicate: "relates to",
                   arc: {
                     id: "2",

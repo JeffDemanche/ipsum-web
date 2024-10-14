@@ -124,6 +124,8 @@ export const HighlightFilterOptions: React.FunctionComponent<
         showAlias={false}
         showEdit={false}
         clauses={clauses}
+        subjectId=""
+        subjectType="Highlight"
       />
     </div>
   );

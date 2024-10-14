@@ -2,6 +2,7 @@ import cx from "classnames";
 import { Button } from "components/atoms/Button";
 import { TextField } from "components/atoms/TextField";
 import React, { FunctionComponent, useState } from "react";
+import { RelationSubject } from "util/apollo";
 
 import { ArcTag } from "../ArcTag";
 import styles from "./RelationChooser.less";
@@ -12,9 +13,11 @@ interface RelationChooserProps {
 
   defaultSelectedPredicate?: string;
 
-  arcResults: ArcResult[];
+  subjectType: RelationSubject["__typename"];
+  subjectId: string;
 
   defaultSearch: string;
+  arcResults: ArcResult[];
   onArcSearch: (search: string) => void;
 
   onRelationChoose: (relation: Relation) => void;
@@ -22,6 +25,8 @@ interface RelationChooserProps {
 
 export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
   maxArcResults,
+  subjectType,
+  subjectId,
   defaultSelectedPredicate,
   arcResults,
   defaultSearch,
@@ -40,7 +45,10 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
 
   const onArcTagClick = (arcResult: ArcResult) => {
     onRelationChoose({
-      arcId: arcResult.id,
+      subjectType,
+      subjectId,
+      objectType: "Arc",
+      objectId: arcResult.id,
       predicate: selectedPredicate,
     });
   };
