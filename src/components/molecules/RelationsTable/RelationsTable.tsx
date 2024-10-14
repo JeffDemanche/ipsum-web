@@ -34,6 +34,8 @@ interface RelationsTableProps {
   arcResults?: React.ComponentProps<typeof RelationChooser>["arcResults"];
   onArcSearch?: React.ComponentProps<typeof RelationChooser>["onArcSearch"];
 
+  onArcClick?: (arcId: string) => void;
+
   showAlias?: boolean;
   showEdit?: boolean;
 
@@ -54,6 +56,7 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
   onDeleteRelation,
   arcResults,
   onArcSearch,
+  onArcClick,
   showAlias,
   showEdit,
   relations,
@@ -122,6 +125,7 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                   text={relation.arc.name}
                   onDelete={() => onDeleteRelation?.(relation.id)}
                   showDelete={editable}
+                  onClick={() => onArcClick?.(relation.arc.id)}
                 />
               );
             })}
@@ -168,6 +172,7 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                     text={relation.arc.name}
                     onDelete={() => onDeleteRelation?.(relation.id)}
                     showDelete={editable}
+                    onClick={() => onArcClick?.(relation.arc.id)}
                   />
                 );
               })}
@@ -190,6 +195,7 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
     }
   }, [
     editable,
+    onArcClick,
     onDeleteRelation,
     relations,
     relationsByPredicate,

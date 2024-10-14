@@ -5,16 +5,16 @@ import {
 } from "components/molecules/RelationChooser";
 import { useState } from "react";
 import {
-  apiCreateRelationFromHighlightToArc,
-  apiDeleteRelationFromHighlightToArc,
+  apiCreateRelationFromArcToArc,
+  apiDeleteRelationFromArcToArc,
   urlInsertLayer,
   useApiAction,
   useUrlAction,
 } from "util/api";
 import { gql } from "util/apollo";
 
-const UseHighlightRelationsTableConnectedQuery = gql(`
-  query UseHighlightRelationsTableConnected($search: String!) {
+const UseArcRelationsTableConnectedQuery = gql(`
+  query UseArcRelationsTableConnected($search: String!) {
     searchArcsByName(search: $search) {
       id
       name
@@ -23,17 +23,14 @@ const UseHighlightRelationsTableConnectedQuery = gql(`
   }
 `);
 
-export const useHighlightRelationsTableConnected = () => {
+export const useArcRelationsTableConnected = () => {
   const [arcSearch, setArcSearch] = useState<string | undefined>(undefined);
-  const { data: arcSearchData } = useQuery(
-    UseHighlightRelationsTableConnectedQuery,
-    {
-      variables: {
-        search: arcSearch,
-      },
-      skip: !arcSearch,
-    }
-  );
+  const { data: arcSearchData } = useQuery(UseArcRelationsTableConnectedQuery, {
+    variables: {
+      search: arcSearch,
+    },
+    skip: !arcSearch,
+  });
 
   const arcSearchResults: React.ComponentProps<
     typeof RelationChooser
@@ -43,12 +40,12 @@ export const useHighlightRelationsTableConnected = () => {
     name: arc.name,
   }));
 
-  const [createRelationFromHighlightToArc] = useApiAction(
-    apiCreateRelationFromHighlightToArc
+  const [createRelationFromArcToArc] = useApiAction(
+    apiCreateRelationFromArcToArc
   );
 
-  const [deleteRelationFromHighlightToArc] = useApiAction(
-    apiDeleteRelationFromHighlightToArc
+  const [deleteRelationFromArcToArc] = useApiAction(
+    apiDeleteRelationFromArcToArc
   );
 
   const insertLayer = useUrlAction(urlInsertLayer);
@@ -59,14 +56,14 @@ export const useHighlightRelationsTableConnected = () => {
 
   return {
     onCreateRelation: (relation: RelationChooserRelation) => {
-      createRelationFromHighlightToArc({
-        highlightId: relation.subjectId,
-        arcId: relation.objectId,
+      createRelationFromArcToArc({
+        subjectArcId: relation.subjectId,
+        objectArcId: relation.objectId,
         predicate: relation.predicate,
       });
     },
     onDeleteRelation: (id: string) => {
-      deleteRelationFromHighlightToArc({ id });
+      deleteRelationFromArcToArc({ id });
     },
     arcResults: arcSearchResults,
     onArcSearch: setArcSearch,

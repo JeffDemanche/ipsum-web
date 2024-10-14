@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client";
+import { useArcRelationsTableConnected } from "components/hooks/use-arc-relations-table-connected";
 import React from "react";
 import { urlRemoveLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
@@ -68,6 +69,7 @@ export const ArcPageConnected: React.FunctionComponent<
   const arcOutgoingRelations: React.ComponentProps<
     typeof ArcPage
   >["arc"]["relations"] = arc.outgoingRelations.map((relation) => ({
+    id: relation.id,
     arc: {
       id: relation.object.id,
       hue: relation.object.color,
@@ -95,9 +97,16 @@ export const ArcPageConnected: React.FunctionComponent<
 
   const removeLayer = useUrlAction(urlRemoveLayer);
 
+  const relationTableProps = useArcRelationsTableConnected();
+
   return (
     <ArcPage
-      arc={{ hue: arc.color, name: arc.name, relations: arcOutgoingRelations }}
+      arc={{
+        id: arc.id,
+        hue: arc.color,
+        name: arc.name,
+        relations: arcOutgoingRelations,
+      }}
       expanded={layers?.[layerIndex]?.expanded === "true"}
       onExpand={() => {
         setLayerExpanded({ index: layerIndex, expanded: true });
@@ -112,6 +121,7 @@ export const ArcPageConnected: React.FunctionComponent<
         highlights: arcEntryHighlights,
         htmlString: arc.arcEntry.entry.htmlString,
       }}
+      relationsTableProps={relationTableProps}
     />
   );
 };

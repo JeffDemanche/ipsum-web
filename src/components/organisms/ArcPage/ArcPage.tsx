@@ -2,6 +2,7 @@ import { Collapse } from "@mui/material";
 import cx from "classnames";
 import { PageHeaderArc } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
+import { RelationsTable } from "components/molecules/RelationsTable";
 import { hueSwatch } from "components/styles";
 import React, { FunctionComponent } from "react";
 
@@ -18,6 +19,7 @@ interface ArcPageProps {
   onClose?: () => void;
 
   arc: {
+    id: string;
     name: string;
     hue: number;
     relations: React.ComponentProps<
@@ -29,6 +31,15 @@ interface ArcPageProps {
     highlights: React.ComponentProps<typeof ArcPageSectionAbout>["highlights"];
     htmlString: string;
   };
+
+  relationsTableProps: Pick<
+    React.ComponentProps<typeof RelationsTable>,
+    | "onCreateRelation"
+    | "onDeleteRelation"
+    | "arcResults"
+    | "onArcSearch"
+    | "onArcClick"
+  >;
 }
 
 export const ArcPage: FunctionComponent<ArcPageProps> = ({
@@ -38,6 +49,7 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
   onCollapse,
   onClose,
   arc,
+  relationsTableProps,
   arcEntry,
 }) => {
   return (
@@ -74,7 +86,11 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
                   {
                     elevated: true,
                     component: (
-                      <ArcPageSectionRelations relations={arc.relations} />
+                      <ArcPageSectionRelations
+                        arcId={arc.id}
+                        relations={arc.relations}
+                        relationsTableProps={relationsTableProps}
+                      />
                     ),
                   },
                 ],

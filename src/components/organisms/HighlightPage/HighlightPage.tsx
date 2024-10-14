@@ -22,7 +22,11 @@ interface HighlightPageProps {
 
   relationTableProps: Pick<
     React.ComponentProps<typeof RelationsTable>,
-    "onCreateRelation" | "onDeleteRelation" | "arcResults" | "onArcSearch"
+    | "onCreateRelation"
+    | "onDeleteRelation"
+    | "arcResults"
+    | "onArcSearch"
+    | "onArcClick"
   >;
 
   highlight: {

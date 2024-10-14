@@ -13,6 +13,7 @@ type StoryArcPage = StoryObj<typeof ArcPage>;
 export const ArcPageExample: StoryArcPage = {
   args: {
     arc: {
+      id: "1",
       hue: 120,
       name: "Arc 1",
       relations: [],
