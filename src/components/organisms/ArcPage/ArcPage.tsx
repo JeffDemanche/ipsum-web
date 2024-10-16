@@ -38,6 +38,7 @@ interface ArcPageProps {
     | "onDeleteRelation"
     | "arcResults"
     | "onArcSearch"
+    | "onArcCreate"
     | "onArcClick"
   >;
 }

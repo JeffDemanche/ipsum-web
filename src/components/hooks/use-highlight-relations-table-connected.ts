@@ -5,6 +5,7 @@ import {
 } from "components/molecules/RelationChooser";
 import { useState } from "react";
 import {
+  apiCreateArc,
   apiCreateRelationFromHighlightToArc,
   apiDeleteRelationFromHighlightToArc,
   urlInsertLayer,
@@ -43,6 +44,8 @@ export const useHighlightRelationsTableConnected = () => {
     name: arc.name,
   }));
 
+  const [createArc] = useApiAction(apiCreateArc);
+
   const [createRelationFromHighlightToArc] = useApiAction(
     apiCreateRelationFromHighlightToArc
   );
@@ -52,6 +55,10 @@ export const useHighlightRelationsTableConnected = () => {
   );
 
   const insertLayer = useUrlAction(urlInsertLayer);
+
+  const onArcCreate = (name: string) => {
+    createArc({ name });
+  };
 
   const onArcClick = (arcId: string) => {
     insertLayer({ layer: { type: "arc_detail", arcId, expanded: "true" } });
@@ -70,6 +77,7 @@ export const useHighlightRelationsTableConnected = () => {
     },
     arcResults: arcSearchResults,
     onArcSearch: setArcSearch,
+    onArcCreate,
     onArcClick,
   };
 };

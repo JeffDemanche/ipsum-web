@@ -5,6 +5,7 @@ import {
 } from "components/molecules/RelationChooser";
 import { useState } from "react";
 import {
+  apiCreateArc,
   apiCreateRelationFromArcToArc,
   apiDeleteRelationFromArcToArc,
   urlInsertLayer,
@@ -40,6 +41,8 @@ export const useArcRelationsTableConnected = () => {
     name: arc.name,
   }));
 
+  const [createArc] = useApiAction(apiCreateArc);
+
   const [createRelationFromArcToArc] = useApiAction(
     apiCreateRelationFromArcToArc
   );
@@ -49,6 +52,10 @@ export const useArcRelationsTableConnected = () => {
   );
 
   const insertLayer = useUrlAction(urlInsertLayer);
+
+  const onArcCreate = (name: string) => {
+    createArc({ name });
+  };
 
   const onArcClick = (arcId: string) => {
     insertLayer({ layer: { type: "arc_detail", arcId, expanded: "true" } });
@@ -67,6 +74,7 @@ export const useArcRelationsTableConnected = () => {
     },
     arcResults: arcSearchResults,
     onArcSearch: setArcSearch,
+    onArcCreate,
     onArcClick,
   };
 };

@@ -34,6 +34,9 @@ interface RelationsTableProps {
   arcResults?: React.ComponentProps<typeof RelationChooser>["arcResults"];
   onArcSearch?: React.ComponentProps<typeof RelationChooser>["onArcSearch"];
 
+  allowCreation?: React.ComponentProps<typeof RelationChooser>["allowCreation"];
+  onArcCreate?: React.ComponentProps<typeof RelationChooser>["onArcCreate"];
+
   onArcClick?: (arcId: string) => void;
 
   showAlias?: boolean;
@@ -56,6 +59,8 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
   onDeleteRelation,
   arcResults,
   onArcSearch,
+  allowCreation,
+  onArcCreate,
   onArcClick,
   showAlias,
   showEdit,
@@ -220,6 +225,8 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
           maxArcResults={8}
           subjectType={subjectType}
           subjectId={subjectId}
+          onArcCreate={onArcCreate}
+          allowCreation={allowCreation}
           onRelationChoose={(relation) => {
             onCreateRelation?.({
               subjectType: relation.subjectType,

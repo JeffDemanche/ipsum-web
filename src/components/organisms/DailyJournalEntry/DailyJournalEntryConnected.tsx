@@ -200,7 +200,9 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     deleteHighlight({ id: highlightId });
   };
 
-  const editable = today.equals(entryDay);
+  const yesterday = today.add(-1);
+
+  const editable = today.equals(entryDay) || yesterday.equals(entryDay);
 
   const openHighlightLayer = (highlightId: string) => {
     insertLayer({

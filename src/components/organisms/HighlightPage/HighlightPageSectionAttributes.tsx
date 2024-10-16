@@ -13,6 +13,7 @@ interface HighlightPageSectionAttributesProps {
     | "onDeleteRelation"
     | "arcResults"
     | "onArcSearch"
+    | "onArcCreate"
     | "onArcClick"
   >;
 }
@@ -28,6 +29,7 @@ export const HighlightPageSectionAttributes: FunctionComponent<
         editable
         subjectType="Highlight"
         subjectId={highlightId}
+        allowCreation
         {...relationTableProps}
       />
     </div>

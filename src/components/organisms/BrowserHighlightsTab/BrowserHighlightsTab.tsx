@@ -30,7 +30,11 @@ interface BrowserHighlightsTabProps {
 
   relationsTableProps: Pick<
     React.ComponentProps<typeof RelationsTable>,
-    "onCreateRelation" | "onDeleteRelation" | "arcResults" | "onArcSearch"
+    | "onCreateRelation"
+    | "onDeleteRelation"
+    | "arcResults"
+    | "onArcSearch"
+    | "onArcCreate"
   >;
 }
 

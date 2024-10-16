@@ -2,8 +2,8 @@ import { IpsumDay } from "util/dates";
 import { InMemoryArc } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
-import { APIFunction } from "../types";
 import { createArcEntry } from "../entry/create-arc-entry";
+import { APIFunction } from "../types";
 
 export const createArc: APIFunction<
   {
@@ -31,11 +31,19 @@ export const createArc: APIFunction<
     context
   );
 
+  const numberOfArcs = Object.keys(
+    projectState.collection("arcs").getAll()
+  ).length;
+
+  const goldenRatioConjugate = 0.618033988749895;
+
+  const hue = ((numberOfArcs * goldenRatioConjugate) % 1.0) * 360;
+
   const arc = projectState.collection("arcs").create(id, {
     __typename: "Arc",
     id,
     name: args.name,
-    color: args.hue ?? 0,
+    color: args.hue ?? hue,
     arcEntry: arcEntry.entry,
     history: {
       __typename: "History",

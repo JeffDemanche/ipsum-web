@@ -27,6 +27,7 @@ export const ArcPageSectionRelations: FunctionComponent<
         relations={relations}
         subjectId={arcId}
         subjectType="Arc"
+        allowCreation
         {...relationsTableProps}
       />
     </div>

@@ -20,6 +20,9 @@ interface RelationChooserProps {
   arcResults: ArcResult[];
   onArcSearch: (search: string) => void;
 
+  allowCreation: boolean;
+  onArcCreate: (name: string) => void;
+
   onRelationChoose: (relation: Relation) => void;
 }
 
@@ -31,11 +34,24 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
   arcResults,
   defaultSearch,
   onArcSearch,
+  allowCreation,
+  onArcCreate,
   onRelationChoose,
 }) => {
   const [search, setSearch] = useState(defaultSearch);
 
   const predicateOptions = ["is", "relates to"];
+
+  const arcResultsWithNewOption = allowCreation
+    ? [
+        {
+          id: "new",
+          hue: 0,
+          name: `${search} (new)`,
+        },
+        ...arcResults,
+      ]
+    : arcResults;
 
   const [selectedPredicate, setSelectedPredicate] = useState(
     predicateOptions.includes(defaultSelectedPredicate)
@@ -44,6 +60,9 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
   );
 
   const onArcTagClick = (arcResult: ArcResult) => {
+    if (arcResult.id === "new") {
+      onArcCreate(search);
+    }
     onRelationChoose({
       subjectType,
       subjectId,
@@ -96,7 +115,7 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
           />
         </div>
         <div className={styles["arc-results"]}>
-          {arcResults.slice(0, maxArcResults).map((arcResult) => (
+          {arcResultsWithNewOption.slice(0, maxArcResults).map((arcResult) => (
             <div
               key={arcResult.id}
               className={cx(styles["row"], styles["arc-result"])}
