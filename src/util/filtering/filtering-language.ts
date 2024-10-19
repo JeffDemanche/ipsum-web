@@ -1,7 +1,7 @@
 import { Grammars, IToken } from "ebnf";
 
-import { ebnf as v1Ebnf } from "./versions/v1-definition";
-import { IpsumFilteringProgramV1 } from "./versions/v1-filtering-program";
+import { ebnf as v1Ebnf } from "./v1/definition";
+import { IpsumFilteringProgramV1 } from "./v1/program";
 
 export abstract class IpsumFilteringLanguage {
   private __bnfString: string;

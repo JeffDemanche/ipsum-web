@@ -1,10 +1,7 @@
 import { IpsumDay } from "util/dates";
 
 import { getVersion } from "../filtering-language";
-import {
-  FilterableHighlight,
-  IpsumFilteringProgramV1,
-} from "../versions/v1-filtering-program";
+import { FilterableHighlight, IpsumFilteringProgramV1 } from "../v1/program";
 
 const mock_hl = (mock: Partial<FilterableHighlight>): FilterableHighlight => {
   return {

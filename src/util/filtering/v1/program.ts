@@ -2,8 +2,8 @@ import { IToken } from "ebnf";
 import { IpsumDay } from "util/dates";
 
 import { IpsumFilteringLanguage } from "../filtering-language";
-import { ebnf } from "./v1-definition";
-import { V1EndowedNode } from "./v1-types";
+import { ebnf } from "./definition";
+import { EndowedNode } from "./types";
 
 export interface FilterableHighlight {
   type: "highlight";
@@ -32,7 +32,7 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringLanguage {
     this.__ast = this.getAst(program, {});
   }
 
-  private generateEndowedASTPerNode(node: IToken): V1EndowedNode {
+  private generateEndowedASTPerNode(node: IToken): EndowedNode {
     switch (node.type) {
       case "ifl":
         return {
