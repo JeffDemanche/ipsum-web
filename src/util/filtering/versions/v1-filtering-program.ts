@@ -3,6 +3,7 @@ import { IpsumDay } from "util/dates";
 
 import { IpsumFilteringLanguage } from "../filtering-language";
 import { ebnf } from "./v1-definition";
+import { V1EndowedNode } from "./v1-types";
 
 export interface FilterableHighlight {
   type: "highlight";
@@ -21,16 +22,42 @@ interface EvaluationSet {
 
 export type EvaluationElement = FilterableHighlight | FilterableArc;
 
-export class IpsumFilteringProgramV1 {
-  private __language: IpsumFilteringLanguage;
-
+export class IpsumFilteringProgramV1 extends IpsumFilteringLanguage {
   private __program: string;
   private __ast: IToken;
 
   constructor(program: string) {
-    this.__language = new IpsumFilteringLanguage(ebnf);
+    super(ebnf);
     this.__program = program;
-    this.__ast = this.__language.getAst(program, {});
+    this.__ast = this.getAst(program, {});
+  }
+
+  private generateEndowedASTPerNode(node: IToken): V1EndowedNode {
+    switch (node.type) {
+      case "ifl":
+        return {
+          type: "ifl",
+          children: [this.generateEndowedASTPerNode(node.children[0])],
+        };
+
+      case "filter":
+        return {
+          type: "filter",
+          children: [this.generateEndowedASTPerNode(node.children[0])],
+        };
+
+      default:
+        return {
+          type: "undefined",
+          children: [],
+        };
+    }
+  }
+
+  generateEndowedAST() {
+    const filterExpression = this.__ast.children[0].children[0];
+
+    return this.generateEndowedASTPerNode(filterExpression);
   }
 
   private evalFiltersPerElement(

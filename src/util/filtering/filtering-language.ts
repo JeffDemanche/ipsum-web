@@ -1,8 +1,9 @@
 import { Grammars, IToken } from "ebnf";
 
 import { ebnf as v1Ebnf } from "./versions/v1-definition";
+import { IpsumFilteringProgramV1 } from "./versions/v1-filtering-program";
 
-export class IpsumFilteringLanguage {
+export abstract class IpsumFilteringLanguage {
   private __bnfString: string;
   private __bnfParser: Grammars.W3C.Parser;
 
@@ -28,6 +29,13 @@ export class IpsumFilteringLanguage {
 
     return result;
   }
+
+  /**
+   *
+   */
+  abstract generateEndowedAST(): unknown;
+
+  abstract evaluate(evaluationSet: unknown): unknown;
 }
 
 function printAST(token: IToken, level = 0) {
@@ -47,6 +55,6 @@ type IFLVersion = "v1";
 export const getVersion = (version: IFLVersion) => {
   switch (version) {
     case "v1":
-      return new IpsumFilteringLanguage(v1Ebnf);
+      return new IpsumFilteringProgramV1(v1Ebnf);
   }
 };
