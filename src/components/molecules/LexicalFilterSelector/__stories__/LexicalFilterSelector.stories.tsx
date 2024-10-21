@@ -12,6 +12,8 @@ type Story = StoryObj<typeof LexicalFilterSelector>;
 
 export const LexicalFilterSelectorExample: Story = {
   args: {
-    editMode: false,
+    editMode: true,
+    programText:
+      'highlights (from "1" to "2" and which relate to "3") sorted by recent as of "1"',
   },
 };

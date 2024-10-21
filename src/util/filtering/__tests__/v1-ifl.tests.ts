@@ -1,7 +1,7 @@
 import { IpsumDay } from "util/dates";
 
-import { getVersion } from "../filtering-language";
 import { FilterableHighlight, IpsumFilteringProgramV1 } from "../v1/program";
+import { createFilteringProgram } from "../versions";
 
 const mock_hl = (mock: Partial<FilterableHighlight>): FilterableHighlight => {
   return {
@@ -14,7 +14,7 @@ const mock_hl = (mock: Partial<FilterableHighlight>): FilterableHighlight => {
 describe("IpsumFilterLanguage V1", () => {
   describe("parsing", () => {
     it("should build AST from simple string", () => {
-      const ifl = getVersion("v1");
+      const ifl = createFilteringProgram("v1");
 
       const ast = ifl.getAst("highlights", {});
 
@@ -22,7 +22,7 @@ describe("IpsumFilterLanguage V1", () => {
     });
 
     it("should return error when parsing simple invalid string", () => {
-      const ifl = getVersion("v1");
+      const ifl = createFilteringProgram("v1");
 
       const ast = ifl.getAst("highlights bad", {});
 
@@ -31,7 +31,7 @@ describe("IpsumFilterLanguage V1", () => {
     });
 
     it("should validate simple highlight filter expression", () => {
-      const ifl = getVersion("v1");
+      const ifl = createFilteringProgram("v1");
 
       const ast = ifl.getAst('highlights from "1" to "2"', {});
 
@@ -39,7 +39,7 @@ describe("IpsumFilterLanguage V1", () => {
     });
 
     it("should validate conjuction", () => {
-      const ifl = getVersion("v1");
+      const ifl = createFilteringProgram("v1");
 
       const ast = ifl.getAst(
         'highlights (which are "1" and from "1" to "2")',
@@ -72,7 +72,7 @@ describe("IpsumFilterLanguage V1", () => {
         0,
       ],
     ])("should be valid: `%s`", (text, expectedErrors) => {
-      const ifl = getVersion("v1");
+      const ifl = createFilteringProgram("v1");
 
       const ast = ifl.getAst(text, {});
 
@@ -82,9 +82,8 @@ describe("IpsumFilterLanguage V1", () => {
 
   describe("execution", () => {
     it("should execute simple day filter on highlights", () => {
-      const program = new IpsumFilteringProgramV1(
-        'highlights from "1/1/2020" to "2/1/2020"'
-      );
+      const program = new IpsumFilteringProgramV1();
+      program.setProgram('highlights from "1/1/2020" to "2/1/2020"');
 
       const results = program.evaluate({
         highlights: [

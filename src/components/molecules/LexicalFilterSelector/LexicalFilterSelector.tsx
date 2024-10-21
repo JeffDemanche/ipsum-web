@@ -1,17 +1,67 @@
-import { Button } from "components/atoms/Button";
 import { ToggleButton } from "components/atoms/ToggleButton";
-import React, { useState } from "react";
+import React, {
+  createElement,
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import {
+  createFilteringProgram,
+  EndowedNode,
+  IpsumFilteringProgram,
+  NodeComponentProps,
+} from "util/filtering";
 
 import styles from "./LexicalFilterSelector.less";
 
 interface LexicalFilterSelectorProps {
   editMode: boolean;
+
+  programText: string;
+  onFilterProgramChange: (filterProgram: IpsumFilteringProgram) => void;
 }
 
 export const LexicalFilterSelector: React.FunctionComponent<
   LexicalFilterSelectorProps
-> = ({ editMode }) => {
+> = ({ editMode, programText, onFilterProgramChange }) => {
   const [rawMode, setRawMode] = useState(false);
+
+  const [currentProgram, setCurrentProgram] = useState(() => {
+    const program = createFilteringProgram("v1");
+    program.setProgram(programText);
+    return program;
+  });
+
+  useEffect(() => {
+    setCurrentProgram((program) => program.setProgram(programText));
+  }, [programText]);
+
+  const createNodeMarkupRecursive = useCallback(
+    (node: EndowedNode): JSX.Element => {
+      if (!node.component) return null;
+
+      return createElement<NodeComponentProps>(node.component as FC, {
+        editMode,
+        endowedNode: node,
+        onRemoveChild: (node) => {},
+        onAddChild: () => {},
+        onDeleteSelf: () => {},
+
+        childComponents: node.children
+          .map((child) => createNodeMarkupRecursive(child))
+          .filter(Boolean),
+      });
+    },
+    [editMode]
+  );
+
+  const markupTree = useMemo(() => {
+    const endowedAST = currentProgram.getEndowedAST();
+
+    return createNodeMarkupRecursive(endowedAST);
+  }, [createNodeMarkupRecursive, currentProgram]);
 
   return (
     <div className={styles["lexical-filter-selector"]}>
@@ -23,6 +73,7 @@ export const LexicalFilterSelector: React.FunctionComponent<
       >
         Raw
       </ToggleButton>
+      <div className={styles["non-raw-content"]}>{markupTree}</div>
     </div>
   );
 };
