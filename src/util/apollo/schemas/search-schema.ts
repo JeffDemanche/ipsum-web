@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const searchTypeDef = gql`
   type Query {
-    searchHighlights(criteria: SearchCriteria!): [Highlight!]!
+    searchHighlights(criteria: SearchCriteria!, max: Int): [Highlight!]!
     searchArcsByName(search: String!): [Arc!]!
   }
 

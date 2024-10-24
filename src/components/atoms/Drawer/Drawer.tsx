@@ -24,6 +24,7 @@ interface DrawerProps {
   openedContentClassName?: string;
 
   showInsideBorder?: boolean;
+  showWrappingBorder?: boolean;
 
   onOpen?: () => void;
   onClose?: () => void;
@@ -40,6 +41,7 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
   closedContent,
   closedContentClassName,
   showInsideBorder = true,
+  showWrappingBorder = false,
   onOpen,
   onClose,
 }) => {
@@ -91,11 +93,13 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
     setOpen(!open);
   };
 
+  const showInsideBorderIfOpen = open && showInsideBorder;
+
   const handle = (
     <div
       className={cx(
         styles["visible-content"],
-        showInsideBorder && styles["inside-border"]
+        showInsideBorderIfOpen && styles["inside-border"]
       )}
     >
       <Button
@@ -141,8 +145,11 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
   return (
     <MuiDrawer
       style={style}
-      className={className}
+      className={cx(className, showWrappingBorder && styles["wrapping-border"])}
       PaperProps={{
+        style: {
+          border: "none",
+        },
         className: cx(styles["drawer"], styles[direction]),
       }}
       sx={{

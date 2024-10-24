@@ -1,7 +1,12 @@
 @import "../../styles/vars.less";
 
+.wrapping-border {
+  border: @border_thin;
+}
+
 .drawer {
   display: flex;
+
 
   .visible-content {
     display: flex;
@@ -21,7 +26,7 @@
     
     .visible-content {
       flex-direction: column;
-
+      
       &.inside-border {
         border-right: @border_thin;
       }
@@ -44,6 +49,10 @@
     .visible-content {
       &.inside-border {
         border-bottom: @border_thin;
+        
+        &:not(.wrapping-border) {
+          border-bottom: @border_thin;
+        }
       }
     }
   }
@@ -55,6 +64,10 @@
     .visible-content {
       &.inside-border {
         border-top: @border_thin;
+        
+        &:not(.wrapping-border) {
+          border-bottom: @border_thin;
+        }
       }
     }
   }

@@ -36,8 +36,8 @@ const BrowserDrawerQuery = gql(`
 `);
 
 const BrowserDrawerHighlightsSearchQuery = gql(`
-  query BrowserDrawerHighlightsSearch($criteria: SearchCriteria!) @client {
-    searchHighlights(criteria: $criteria) {
+  query BrowserDrawerHighlightsSearch($criteria: SearchCriteria!, $max: Int) @client {
+    searchHighlights(criteria: $criteria, max: $max) {
       id
       excerpt
       hue
@@ -132,6 +132,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
           // TODO
           and: [],
         },
+        max: 50,
       },
     }
   );

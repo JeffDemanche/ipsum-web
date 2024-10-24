@@ -12,6 +12,8 @@ interface JournalSettingsDrawerProps {
   onOpen: () => void;
   onClose: () => void;
 
+  drawerClassname?: string;
+
   onNewClick: () => void;
   onSaveClick: () => void;
   onLoadClick: () => void;
@@ -25,6 +27,7 @@ export const JournalSettingsDrawer: FunctionComponent<
   defaultOpen,
   onOpen,
   onClose,
+  drawerClassname,
   onNewClick,
   onSaveClick,
   onLoadClick,
@@ -51,12 +54,14 @@ export const JournalSettingsDrawer: FunctionComponent<
 
   return (
     <Drawer
+      className={drawerClassname}
       openedContentClassName={styles["drawer-opened-content"]}
       direction="right"
       openedContent={openedContent}
       defaultOpen={defaultOpen}
       onOpen={onOpen}
       onClose={onClose}
+      showWrappingBorder
     />
   );
 };

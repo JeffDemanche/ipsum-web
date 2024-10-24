@@ -54,6 +54,7 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
       onClose={onClose}
       openedContent={openedContent}
       openedContentClassName={styles["opened-content"]}
+      showWrappingBorder
     />
   );
 };

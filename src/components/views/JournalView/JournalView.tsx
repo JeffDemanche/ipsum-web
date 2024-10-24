@@ -85,13 +85,17 @@ const WithSerializationProvider = ({
   return (
     <FormattingControlsProvider>
       <div className={styles["journal-view"]}>
-        <JournalSettingsDrawerConnected />
+        <div className={styles["settings-drawer-container"]}>
+          <JournalSettingsDrawerConnected className={styles["settings"]} />
+        </div>
         <div className={styles["pages-section-container"]}>
           <JournalViewPagesSectionConnected
             className={styles["pages-section"]}
           />
         </div>
-        <BrowserDrawerConnected />
+        <div className={styles["browser-drawer-container"]}>
+          <BrowserDrawerConnected className={styles["browser-drawer"]} />
+        </div>
       </div>
     </FormattingControlsProvider>
   );

@@ -134,7 +134,9 @@ export const SearchResolvers: StrictTypedTypePolicies = {
           }
         });
 
-        return sortedHighlights;
+        const max = typedArgs.max ?? 100;
+
+        return sortedHighlights.slice(0, max);
       },
       searchArcsByName(_, { args }) {
         const allArcs = Object.values(

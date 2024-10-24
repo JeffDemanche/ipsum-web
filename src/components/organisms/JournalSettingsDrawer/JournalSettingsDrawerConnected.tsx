@@ -12,7 +12,9 @@ import { useIpsumSearchParams } from "util/state";
 
 import { JournalSettingsDrawer } from "./JournalSettingsDrawer";
 
-interface JournalSettingsDrawerConnectedProps {}
+interface JournalSettingsDrawerConnectedProps {
+  className?: string;
+}
 
 const JournalSettingsDrawerQuery = gql(`
   query JournalSettingsDrawer {
@@ -22,7 +24,7 @@ const JournalSettingsDrawerQuery = gql(`
 
 export const JournalSettingsDrawerConnected: React.FC<
   JournalSettingsDrawerConnectedProps
-> = () => {
+> = ({ className }) => {
   const { data } = useQuery(JournalSettingsDrawerQuery);
 
   const { settings: settingsUrlParams } = useIpsumSearchParams<"journal">();
@@ -62,6 +64,7 @@ export const JournalSettingsDrawerConnected: React.FC<
 
   return (
     <JournalSettingsDrawer
+      drawerClassname={className}
       journalTitle={data?.journalTitle ?? "(No title)"}
       onJournalTitleChange={onJournalTitleChange}
       defaultOpen={(settingsUrlParams?.open ?? true) === "true"}
