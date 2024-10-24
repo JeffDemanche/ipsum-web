@@ -22,7 +22,7 @@ highlights_sort ::= "sorted by" WS+ highlights_sort_type highlights_sort_as_of?
 highlights_sort_as_of ::= WS+ "as of" WS+ day
 highlights_sort_type ::= "importance" | "recent"
 
-predicate ::= "are" | "relate to"
+predicate ::= "is" | "relates to"
 relation_object ::= STRING
 
 day ::= STRING

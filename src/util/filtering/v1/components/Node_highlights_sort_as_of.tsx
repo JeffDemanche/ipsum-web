@@ -1,13 +1,22 @@
+import { Type } from "components/atoms/Type";
 import React from "react";
 
-import { NodeComponent } from "../types";
+import { NodeComponent, NodeComponentProps } from "../types";
 
 export const Node_highlights_sort_as_of: NodeComponent = ({
   editMode,
+  endowedNode,
   childComponents,
   onAddChild,
   onDeleteSelf,
   onRemoveChild,
-}) => {
-  return <div>Node_highlights_sort_as_of</div>;
+}: NodeComponentProps) => {
+  return (
+    <>
+      <Type display="inline" size="small">
+        as of
+      </Type>
+      {childComponents}
+    </>
+  );
 };

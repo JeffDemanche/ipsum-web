@@ -250,9 +250,6 @@ export const theme = createTheme(
             color: grey700,
             borderColor: grey700,
           },
-          outlined: {
-            paddingLeft: grid_x_1,
-          },
         },
       },
       MuiInputBase: {

@@ -11,7 +11,10 @@ type TypeProps = {
   lineHeight?: TypeLineHeight;
   component?: React.ElementType;
   children: React.ReactNode;
-} & Pick<React.ComponentProps<typeof MuiTypography>, "color" | "style">;
+} & Pick<
+  React.ComponentProps<typeof MuiTypography>,
+  "color" | "style" | "display"
+>;
 
 const variantToMuiVariant = (variant: TypeVariant) => {
   switch (variant) {

@@ -9,5 +9,5 @@ export const Node_ifl: NodeComponent = ({
   onDeleteSelf,
   onRemoveChild,
 }: NodeComponentProps) => {
-  return <span>{childComponents}</span>;
+  return <>{childComponents}</>;
 };

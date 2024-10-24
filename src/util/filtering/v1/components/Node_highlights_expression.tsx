@@ -10,5 +10,5 @@ export const Node_highlights_expression: NodeComponent = ({
   onDeleteSelf,
   onRemoveChild,
 }: NodeComponentProps) => {
-  return <div>{endowedNode.rawNode.text}</div>;
+  return <>{childComponents}</>;
 };

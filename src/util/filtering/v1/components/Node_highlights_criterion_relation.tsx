@@ -1,13 +1,22 @@
+import { Type } from "components/atoms/Type";
 import React from "react";
 
-import { NodeComponent } from "../types";
+import { NodeComponent, NodeComponentProps } from "../types";
 
 export const Node_highlights_criterion_relation: NodeComponent = ({
   editMode,
+  endowedNode,
   childComponents,
   onAddChild,
   onDeleteSelf,
   onRemoveChild,
-}) => {
-  return <div>Node_highlights_criterion_relations</div>;
+}: NodeComponentProps) => {
+  return (
+    <>
+      <Type display="inline" size="small">
+        which&nbsp;
+      </Type>
+      {childComponents}
+    </>
+  );
 };

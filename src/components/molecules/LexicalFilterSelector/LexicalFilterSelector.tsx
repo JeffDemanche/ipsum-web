@@ -16,12 +16,20 @@ import {
 
 import styles from "./LexicalFilterSelector.less";
 
-interface LexicalFilterSelectorProps {
+export interface LexicalFilterSelectorConnectionProps {
+  arcByIdOrName: (idOrName: string) => {
+    id: string;
+    name: string;
+    color: number;
+  };
+}
+
+type LexicalFilterSelectorProps = {
   editMode: boolean;
 
   programText: string;
   onFilterProgramChange: (filterProgram: IpsumFilteringProgram) => void;
-}
+} & LexicalFilterSelectorConnectionProps;
 
 export const LexicalFilterSelector: React.FunctionComponent<
   LexicalFilterSelectorProps
@@ -62,6 +70,8 @@ export const LexicalFilterSelector: React.FunctionComponent<
 
     return createNodeMarkupRecursive(endowedAST);
   }, [createNodeMarkupRecursive, currentProgram]);
+
+  console.log(currentProgram.getEndowedAST());
 
   return (
     <div className={styles["lexical-filter-selector"]}>

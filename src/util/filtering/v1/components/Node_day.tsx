@@ -1,13 +1,15 @@
+import { Button } from "components/atoms/Button";
 import React from "react";
 
-import { NodeComponent } from "../types";
+import { NodeComponent, NodeComponentProps } from "../types";
 
 export const Node_day: NodeComponent = ({
   editMode,
+  endowedNode,
   childComponents,
   onAddChild,
   onDeleteSelf,
   onRemoveChild,
-}) => {
-  return <div>Node_day</div>;
+}: NodeComponentProps) => {
+  return <Button>{endowedNode.rawNode.text}</Button>;
 };

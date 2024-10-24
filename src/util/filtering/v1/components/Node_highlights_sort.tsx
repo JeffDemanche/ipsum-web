@@ -1,6 +1,7 @@
+import { Type } from "components/atoms/Type";
 import React from "react";
 
-import { NodeComponent } from "../types";
+import { NodeComponent, NodeComponentProps } from "../types";
 
 export const Node_highlights_sort: NodeComponent = ({
   editMode,
@@ -8,6 +9,24 @@ export const Node_highlights_sort: NodeComponent = ({
   onAddChild,
   onDeleteSelf,
   onRemoveChild,
-}) => {
-  return <div>Node_highlights_sort</div>;
+}: NodeComponentProps) => {
+  const editModeMarkup = (
+    <>
+      <Type display="inline" size="small">
+        sorted by
+      </Type>
+      {childComponents}
+    </>
+  );
+
+  const nonEditModeMarkup = (
+    <>
+      <Type display="inline" size="small">
+        sorted by
+      </Type>
+      {childComponents}
+    </>
+  );
+
+  return editMode ? editModeMarkup : nonEditModeMarkup;
 };

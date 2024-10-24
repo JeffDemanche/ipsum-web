@@ -1,6 +1,6 @@
 import React from "react";
 
-import { NodeComponent } from "../types";
+import { NodeComponent, NodeComponentProps } from "../types";
 
 export const Node_highlights_criterion: NodeComponent = ({
   editMode,
@@ -8,6 +8,6 @@ export const Node_highlights_criterion: NodeComponent = ({
   onAddChild,
   onDeleteSelf,
   onRemoveChild,
-}) => {
-  return <div>Node_highlights_criterion</div>;
+}: NodeComponentProps) => {
+  return <>{childComponents}</>;
 };

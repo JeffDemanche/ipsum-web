@@ -14,6 +14,6 @@ export const LexicalFilterSelectorExample: Story = {
   args: {
     editMode: true,
     programText:
-      'highlights (from "1" to "2" and which relate to "3") sorted by recent as of "1"',
+      'highlights (from "1" to "2" and which relates to "3") sorted by recent as of "1"',
   },
 };

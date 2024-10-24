@@ -9,5 +9,9 @@ export const Node_filter_expression_highlights: NodeComponent = ({
   onDeleteSelf,
   onRemoveChild,
 }: NodeComponentProps) => {
-  return <span>highlights {childComponents}</span>;
+  const editModeMarkup = <>{childComponents}</>;
+
+  const nonEditModeMarkup = <>{childComponents}</>;
+
+  return editMode ? editModeMarkup : nonEditModeMarkup;
 };
