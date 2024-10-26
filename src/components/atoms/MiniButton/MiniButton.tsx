@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import { border_radius_mini, box_shadow_primary } from "components/styles";
 import React, { CSSProperties } from "react";
 
@@ -8,6 +8,7 @@ interface MiniButtonProps {
   fontSize?: "x-small" | "small" | "medium";
   foregroundColor: CSSProperties["color"];
   backgroundColor?: CSSProperties["backgroundColor"];
+  tooltip?: string;
   children: React.ReactNode;
   onClick?: () => void;
   style?: React.CSSProperties;
@@ -17,6 +18,7 @@ export const MiniButton: React.FunctionComponent<MiniButtonProps> = ({
   fontSize = "small",
   foregroundColor,
   backgroundColor,
+  tooltip,
   children,
   onClick,
   style,
@@ -27,7 +29,7 @@ export const MiniButton: React.FunctionComponent<MiniButtonProps> = ({
     medium: "24px",
   }[fontSize];
 
-  return (
+  const button = (
     <Button
       onClick={onClick}
       className={styles["mini-button"]}
@@ -46,4 +48,6 @@ export const MiniButton: React.FunctionComponent<MiniButtonProps> = ({
       {children}
     </Button>
   );
+
+  return tooltip ? <Tooltip title={tooltip}>{button}</Tooltip> : button;
 };

@@ -21,6 +21,8 @@ interface BlurbExcerptProps {
    * Will default to displaying the entire HTML string.
    */
   showAll?: boolean;
+
+  showLeftBorder?: boolean;
 }
 
 export const BlurbExcerpt: React.FunctionComponent<BlurbExcerptProps> = ({
@@ -29,6 +31,7 @@ export const BlurbExcerpt: React.FunctionComponent<BlurbExcerptProps> = ({
   highlightId,
   showAll,
   highlightHue,
+  showLeftBorder,
 }) => {
   const excerptedHtmlString = useMemo(() => {
     if (showAll || !highlightId) {
@@ -43,7 +46,9 @@ export const BlurbExcerpt: React.FunctionComponent<BlurbExcerptProps> = ({
   }, [highlightHue, highlightId, htmlString, showAll]);
 
   return (
-    <div className={styles["excerpt"]}>
+    <div
+      className={cx(styles["excerpt"], showLeftBorder && styles["left-border"])}
+    >
       <div
         style={{
           WebkitLineClamp: maxLines,

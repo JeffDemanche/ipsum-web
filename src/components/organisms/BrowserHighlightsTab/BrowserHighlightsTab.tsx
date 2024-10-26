@@ -70,7 +70,7 @@ export const BrowserHighlightsTab: React.FunctionComponent<
 
           return (
             <div className={styles["day-group"]} key={dayString}>
-              <Type variant="serif" size="small">
+              <Type variant="sans" size="x-small" weight="light" underline>
                 {day.toString("entry-printed-date-nice-with-year")}
               </Type>
               <div className={styles["day-group-blurbs"]}>
