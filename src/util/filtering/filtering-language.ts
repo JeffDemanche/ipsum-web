@@ -28,6 +28,10 @@ export abstract class IpsumFilteringProgram {
     return result;
   }
 
+  abstract get programString(): string;
+
+  abstract setProgram(program: string): this;
+
   abstract generateEndowedAST(): unknown;
 
   abstract getEndowedAST(): unknown;

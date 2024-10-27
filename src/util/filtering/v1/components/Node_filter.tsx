@@ -35,7 +35,7 @@ export const Node_filter: NodeComponent = ({
             {type}
           </MenuItem>
         ))}
-      </Select>
+      </Select>{" "}
       {childComponents}
     </>
   );

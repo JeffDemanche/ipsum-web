@@ -13,12 +13,13 @@ export const Node_highlights_criterion_dates: NodeComponent = ({
 }: NodeComponentProps) => {
   return (
     <>
-      <Type display="inline" size="small">
-        from
+      <Type display="inline" weight="light" size="small">
+        from{" "}
       </Type>
       {childComponents[0]}
-      <Type display="inline" size="small">
-        to
+      <Type display="inline" weight="light" size="small">
+        {" "}
+        to{" "}
       </Type>
       {childComponents[1]}
     </>

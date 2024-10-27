@@ -17,7 +17,7 @@ export const Node_highlights_expression_conjunction: NodeComponent = ({
       }
       return [
         ...acc,
-        <Type display="inline" size="small" key={index}>
+        <Type display="inline" weight="light" size="small" key={index}>
           {" "}
           and{" "}
         </Type>,

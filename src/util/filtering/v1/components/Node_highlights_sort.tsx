@@ -12,8 +12,8 @@ export const Node_highlights_sort: NodeComponent = ({
 }: NodeComponentProps) => {
   const editModeMarkup = (
     <>
-      <Type display="inline" size="small">
-        sorted by
+      <Type display="inline" weight="light" size="small">
+        sorted by{" "}
       </Type>
       {childComponents}
     </>
@@ -21,8 +21,8 @@ export const Node_highlights_sort: NodeComponent = ({
 
   const nonEditModeMarkup = (
     <>
-      <Type display="inline" size="small">
-        sorted by
+      <Type display="inline" weight="light" size="small">
+        sorted by{" "}
       </Type>
       {childComponents}
     </>

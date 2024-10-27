@@ -27,7 +27,7 @@ export const Node_predicate: NodeComponent = ({
             {predicate}
           </MenuItem>
         ))}
-      </Select>
+      </Select>{" "}
       {childComponents}
     </>
   );

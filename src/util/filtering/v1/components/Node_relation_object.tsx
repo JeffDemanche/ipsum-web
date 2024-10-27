@@ -11,5 +11,9 @@ export const Node_relation_object: NodeComponent = ({
   onDeleteSelf,
   onRemoveChild,
 }: NodeComponentProps) => {
-  return <Button>{endowedNode.rawNode.text}</Button>;
+  return (
+    <>
+      <Button>{endowedNode.rawNode.text}</Button>{" "}
+    </>
+  );
 };

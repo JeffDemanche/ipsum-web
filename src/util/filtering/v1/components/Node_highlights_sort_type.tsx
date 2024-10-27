@@ -22,7 +22,7 @@ export const Node_highlights_sort_type: NodeComponent = ({
             {type}
           </MenuItem>
         ))}
-      </Select>
+      </Select>{" "}
       {childComponents}
     </>
   );

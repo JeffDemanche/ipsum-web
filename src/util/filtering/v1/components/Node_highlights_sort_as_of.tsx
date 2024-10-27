@@ -13,8 +13,9 @@ export const Node_highlights_sort_as_of: NodeComponent = ({
 }: NodeComponentProps) => {
   return (
     <>
-      <Type display="inline" size="small">
-        as of
+      <Type display="inline" weight="light" size="small">
+        {" "}
+        as of{" "}
       </Type>
       {childComponents}
     </>

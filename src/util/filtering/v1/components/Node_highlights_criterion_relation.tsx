@@ -13,8 +13,8 @@ export const Node_highlights_criterion_relation: NodeComponent = ({
 }: NodeComponentProps) => {
   return (
     <>
-      <Type display="inline" size="small">
-        which&nbsp;
+      <Type display="inline" weight="light" size="small">
+        which{" "}
       </Type>
       {childComponents}
     </>

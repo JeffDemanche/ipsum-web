@@ -55,6 +55,10 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
     return this;
   }
 
+  get programString() {
+    return this.__program;
+  }
+
   private generateEndowedASTPerNode(node: IToken): EndowedNode {
     const defaults = {
       rawNode: node,
