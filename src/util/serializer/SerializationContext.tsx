@@ -20,7 +20,7 @@ export const SerializationContext = createContext<ApolloSerialization>({
 });
 
 interface SerializationProviderProps {
-  disabled: boolean;
+  disableLoadFromAutosave: boolean;
   setProjectState: (projectState: ProjectState) => void;
   setProjectStateErrors: (errors: string[]) => void;
   children: React.ReactNode;
@@ -32,7 +32,12 @@ interface SerializationProviderProps {
  */
 export const SerializationProvider: React.FunctionComponent<
   SerializationProviderProps
-> = ({ disabled, setProjectState, setProjectStateErrors, children }) => {
+> = ({
+  disableLoadFromAutosave,
+  setProjectState,
+  setProjectStateErrors,
+  children,
+}) => {
   const saveToFile = async () => {
     await writeToFile(PROJECT_STATE.toSerialized(), {
       excludeAcceptAllOption: true,
@@ -83,7 +88,7 @@ export const SerializationProvider: React.FunctionComponent<
   const [hasLoadedAutosave, setHasLoadedAutosave] = useState(false);
 
   useEffect(() => {
-    if (disabled) {
+    if (disableLoadFromAutosave) {
       setHasLoadedAutosave(true);
       return;
     }
@@ -109,7 +114,7 @@ export const SerializationProvider: React.FunctionComponent<
       });
     }
   }, [
-    disabled,
+    disableLoadFromAutosave,
     hasLoadedAutosave,
     idbWrapper,
     setProjectState,
@@ -127,9 +132,9 @@ export const SerializationProvider: React.FunctionComponent<
   return (
     <SerializationContext.Provider
       value={{
-        saveToFile: disabled ? async () => {} : saveToFile,
-        loadFromFile: disabled ? async () => {} : loadFromFile,
-        resetToInitial: disabled ? () => {} : resetToInitial,
+        saveToFile: saveToFile,
+        loadFromFile: loadFromFile,
+        resetToInitial: resetToInitial,
         hasLoadedAutosave,
       }}
     >

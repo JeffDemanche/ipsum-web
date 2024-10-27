@@ -27,6 +27,7 @@ interface BrowserHighlightsTabProps {
   onHighlightDailyJournalClick?: (entryKey: string) => void;
   onHighlightArcClick?: (arcId: string) => void;
   onHighlightCommentClick?: (commentId: string, highlightId: string) => void;
+  onHighlightDelete?: (highlightId: string) => void;
 
   relationsTableProps: Pick<
     React.ComponentProps<typeof RelationsTable>,
@@ -47,6 +48,7 @@ export const BrowserHighlightsTab: React.FunctionComponent<
   onHighlightDailyJournalClick,
   onHighlightArcClick,
   onHighlightCommentClick,
+  onHighlightDelete,
   relationsTableProps,
 }) => {
   const groupedHighlights = highlights.reduce(
@@ -83,6 +85,11 @@ export const BrowserHighlightsTab: React.FunctionComponent<
                       relations={highlight.relationsProps}
                       onHighlightClick={() => {
                         onHighlightClick?.(
+                          highlight.highlightProps.highlightId
+                        );
+                      }}
+                      onDelete={() => {
+                        onHighlightDelete?.(
                           highlight.highlightProps.highlightId
                         );
                       }}

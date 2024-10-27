@@ -1,6 +1,7 @@
 import { Drawer } from "components/atoms/Drawer";
 import React, { FunctionComponent, useMemo } from "react";
 import { HighlightsBrowserTab } from "util/state";
+import { TestIds } from "util/test-ids";
 
 import { BrowserHighlightsTab } from "../BrowserHighlightsTab";
 import styles from "./BrowserDrawer.less";
@@ -35,7 +36,11 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
     switch (tab) {
       case "highlights":
         return (
-          <div style={closedContentStyle} className={closedContentClassName}>
+          <div
+            data-testid={TestIds.BrowserDrawer.BrowserDrawerOpened}
+            style={closedContentStyle}
+            className={closedContentClassName}
+          >
             <BrowserHighlightsTab {...highlightsTabProps} />
           </div>
         );

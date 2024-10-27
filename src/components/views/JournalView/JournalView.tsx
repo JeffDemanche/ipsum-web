@@ -2,11 +2,14 @@ import { FormattingControlsProvider } from "components/molecules/FormattingContr
 import { BrowserDrawerConnected } from "components/organisms/BrowserDrawer";
 import { JournalSettingsDrawerConnected } from "components/organisms/JournalSettingsDrawer";
 import { JournalViewPagesSectionConnected } from "components/organisms/JournalViewPagesSection";
+import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import React, { useContext, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { SerializationContext, SerializationProvider } from "util/serializer";
 import {
   IpsumStateContext,
   IpsumStateProvider,
+  PROJECT_STATE,
   ProjectState,
   useNormalizeUrl,
 } from "util/state";
@@ -20,6 +23,14 @@ interface JournalViewProps {
 export const JournalView: React.FunctionComponent<JournalViewProps> = ({
   overrideProjectState,
 }) => {
+  const [params] = useSearchParams();
+
+  const siddhartha = params.has("siddhartha");
+
+  if (siddhartha) {
+    overrideProjectState = mockSiddhartha().projectState;
+  }
+
   useNormalizeUrl("journal");
 
   return (
@@ -40,7 +51,7 @@ const WithIpsumStateProvider = ({
 
   return (
     <SerializationProvider
-      disabled={!!overrideProjectState}
+      disableLoadFromAutosave={!!overrideProjectState}
       setProjectState={setProjectState}
       setProjectStateErrors={setProjectStateErrors}
     >

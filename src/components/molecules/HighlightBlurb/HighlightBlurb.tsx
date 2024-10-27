@@ -12,12 +12,14 @@ import { HighlightTag } from "components/molecules/HighlightTag";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import { grey500, grey700, hueSwatch } from "components/styles";
 import React, { useState } from "react";
+import { TestIds } from "util/test-ids";
 
 import styles from "./HighlightBlurb.less";
 
 interface HighlightBlurbProps {
   className?: string;
   style?: React.CSSProperties;
+  "data-testid"?: string;
 
   highlightProps: {
     highlightId: string;
@@ -117,6 +119,7 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
 
   return (
     <div
+      data-testid={TestIds.HighlightBlurb.HighlightBlurb}
       role="button"
       aria-expanded={expanded}
       tabIndex={0}
@@ -147,6 +150,7 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
           )}
           <div className={styles["blurb-expanded-action-buttons"]}>
             <MiniButton
+              data-testid={TestIds.HighlightBlurb.DeleteButton}
               onClick={onDelete}
               tooltip="Delete highlight"
               foregroundColor={grey700}

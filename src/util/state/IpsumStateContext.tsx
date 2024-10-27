@@ -32,11 +32,13 @@ export const IpsumStateProvider: React.FC<IpsumStateProviderProps> = ({
 
   useEffect(() => {
     PROJECT_STATE = projectState ?? new ProjectState();
-  }, [projectState]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [, triggerRender] = useState(false);
   const setProjectState = (newProjectState: ProjectState) => {
     PROJECT_STATE = newProjectState;
+    client.cache.reset();
     triggerRender((prev) => !prev);
   };
 

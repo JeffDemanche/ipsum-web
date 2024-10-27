@@ -3,10 +3,12 @@ import { useHighlightRelationsTableConnected } from "components/hooks/use-highli
 import { RelationsTable } from "components/molecules/RelationsTable";
 import React, { useMemo } from "react";
 import {
+  apiDeleteHighlight,
   urlInsertLayer,
   urlSetBrowserDrawerHighlightsOptions,
   urlSetBrowserDrawerOpen,
   urlSetHighlightsOptionsDrawerOpen,
+  useApiAction,
   useUrlAction,
 } from "util/api";
 import { gql, SearchSortType } from "util/apollo";
@@ -86,6 +88,8 @@ export const BrowserDrawerConnected: React.FunctionComponent<
   BrowserDrawerConnectedProps
 > = ({ style, className }) => {
   const { browser: browserUrlParams } = useIpsumSearchParams<"journal">();
+
+  const [deleteHighlight] = useApiAction(apiDeleteHighlight);
 
   const setBrowserDrawerOpen = useUrlAction(urlSetBrowserDrawerOpen);
   const setHighlightsOptionsDrawerOpen = useUrlAction(
@@ -343,6 +347,9 @@ export const BrowserDrawerConnected: React.FunctionComponent<
           insertLayer({
             layer: { type: "highlight_detail", highlightId, expanded: "true" },
           });
+        },
+        onHighlightDelete: (highlightId) => {
+          deleteHighlight({ id: highlightId });
         },
       }}
     />

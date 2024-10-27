@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { urlOverwriteJournalUrl, useUrlAction } from "util/api";
 import { IpsumDay } from "util/dates";
 
@@ -10,6 +11,15 @@ import { IpsumURLSearch, View } from "./types";
  * in an invalid state.
  */
 export const useNormalizeUrl = (view: View) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.has("siddhartha")) {
+      searchParams.delete("siddhartha");
+      setSearchParams(searchParams);
+    }
+  }, [searchParams, setSearchParams]);
+
   const params = useIpsumSearchParams<typeof view>();
 
   const overwriteJournalUrl = useUrlAction(urlOverwriteJournalUrl);
