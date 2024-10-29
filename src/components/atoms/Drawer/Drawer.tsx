@@ -93,13 +93,14 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({
     setOpen(!open);
   };
 
-  const showInsideBorderIfOpen = open && showInsideBorder;
+  const showInsideBorderIfOpenOrNoClosedContent =
+    (open || closedContent) && showInsideBorder;
 
   const handle = (
     <div
       className={cx(
-        styles["visible-content"],
-        showInsideBorderIfOpen && styles["inside-border"]
+        styles[`visible-content-${direction}`],
+        showInsideBorderIfOpenOrNoClosedContent && styles["inside-border"]
       )}
     >
       <Button

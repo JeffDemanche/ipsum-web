@@ -82,6 +82,7 @@ export const HighlightResultsOptionsDrawer: React.FunctionComponent<
   return (
     <Drawer
       direction="down"
+      showInsideBorder
       defaultOpen={defaultExpanded}
       onOpen={onExpand}
       onClose={onCollapse}

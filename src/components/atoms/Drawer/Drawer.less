@@ -7,12 +7,6 @@
 .drawer {
   display: flex;
 
-
-  .visible-content {
-    display: flex;
-    align-items: flex-start;
-  }
-
   .closed-container {
     position: relative;
   }
@@ -24,7 +18,9 @@
   &.left {
     flex-direction: row;
     
-    .visible-content {
+    .visible-content-left {
+      display: flex;
+      align-items: flex-start;
       flex-direction: column;
       
       &.inside-border {
@@ -36,7 +32,10 @@
   &.right {
     flex-direction: row;
 
-    .visible-content{
+    .visible-content-right {
+      display: flex;
+      align-items: flex-start;
+
       &.inside-border {
         border-left: @border_thin;
       }
@@ -46,7 +45,10 @@
   &.up {
     flex-direction: column;
 
-    .visible-content {
+    .visible-content-up {
+      display: flex;
+      align-items: flex-start;
+
       &.inside-border {
         border-bottom: @border_thin;
         
@@ -61,7 +63,10 @@
     overflow: hidden;
     // flex-direction: column-reverse;
 
-    .visible-content {
+    .visible-content-down {
+      display: flex;
+      align-items: flex-start;
+      
       &.inside-border {
         border-top: @border_thin;
         
