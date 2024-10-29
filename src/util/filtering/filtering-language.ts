@@ -1,5 +1,4 @@
 import { Grammars, IToken } from "ebnf";
-import { ReactElement } from "react";
 
 export abstract class IpsumFilteringProgram {
   private __bnfString: string;
@@ -12,7 +11,7 @@ export abstract class IpsumFilteringProgram {
     });
   }
 
-  getAst(text: string, { debugAst = false }): IToken {
+  createAst(text: string, { debugAst = false }): IToken {
     let result: IToken;
 
     try {
@@ -27,6 +26,11 @@ export abstract class IpsumFilteringProgram {
 
     return result;
   }
+
+  abstract updateNodeText(
+    node: unknown,
+    newNodeText: string
+  ): IpsumFilteringProgram;
 
   abstract get programString(): string;
 

@@ -9,15 +9,10 @@ export const Node_predicate: NodeComponent = ({
   editMode,
   endowedNode,
   childComponents,
-  onAddChild,
-  onDeleteSelf,
-  onRemoveChild,
 }: NodeComponentProps) => {
   const predicateOptions = ["is", "relates to"];
 
   const value = endowedNode.rawNode.text;
-
-  console.log(value);
 
   const editModeMarkup = (
     <>

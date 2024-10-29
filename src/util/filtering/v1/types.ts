@@ -1,6 +1,8 @@
 import { IToken } from "ebnf";
 import { FunctionComponent } from "react";
 
+import { IpsumFilteringProgramV1 } from "./program";
+
 export type NodeComponent = FunctionComponent<NodeComponentProps>;
 
 export interface NodeComponentProps {
@@ -8,14 +10,16 @@ export interface NodeComponentProps {
 
   endowedNode: EndowedNode;
 
-  onRemoveChild: (childIndex: number) => void;
-  onAddChild: () => void;
-  onDeleteSelf: () => void;
+  transformProgram: (
+    transform: (program: IpsumFilteringProgramV1) => IpsumFilteringProgramV1
+  ) => boolean;
 
   childComponents: JSX.Element[];
 }
 
 export interface EndowedNode {
+  coordinates: number[];
+
   type: EndowedNodeType;
 
   /** All values from the un-endowed token that originates from the EBNF parser. */

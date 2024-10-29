@@ -53,16 +53,23 @@ export const LexicalFilterSelector: React.FunctionComponent<
       return createElement<NodeComponentProps>(node.component as FC, {
         editMode,
         endowedNode: node,
-        onRemoveChild: (node) => {},
-        onAddChild: () => {},
-        onDeleteSelf: () => {},
+
+        transformProgram: (transform) => {
+          const newProgram = transform(currentProgram);
+          newProgram.errors.forEach((error) => {
+            console.error(error);
+          });
+
+          setCurrentProgram(transform(currentProgram));
+          return true;
+        },
 
         childComponents: node.children
           .map((child) => createNodeMarkupRecursive(child))
           .filter(Boolean),
       });
     },
-    [editMode]
+    [currentProgram, editMode]
   );
 
   const markupTree = useMemo(() => {
@@ -70,8 +77,6 @@ export const LexicalFilterSelector: React.FunctionComponent<
 
     return createNodeMarkupRecursive(endowedAST);
   }, [createNodeMarkupRecursive, currentProgram]);
-
-  console.log(currentProgram.getEndowedAST());
 
   return (
     <div className={styles["lexical-filter-selector"]}>

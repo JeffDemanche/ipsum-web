@@ -1,4 +1,5 @@
 import { IToken } from "ebnf";
+import _ from "lodash";
 import { IpsumDay } from "util/dates";
 
 import { IpsumFilteringProgram } from "../filtering-language";
@@ -49,21 +50,59 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
 
   setProgram(program: string) {
     this.__program = program;
-    this.__ast = this.getAst(program, {});
+    console.log("program", program);
+    this.__ast = this.createAst(program, {});
     this.__endowedAst = this.generateEndowedAST();
 
     return this;
+  }
+
+  get errors() {
+    return this.__ast.errors;
+  }
+
+  updateNodeText(
+    nodeToReplace: EndowedNode,
+    newNodeText: string
+  ): IpsumFilteringProgramV1 {
+    const findAndReplaceNode = (node: EndowedNode): string => {
+      const beforeNodeProgram = this.__program.slice(0, node.rawNode.start);
+      const afterNodeProgram = this.__program.slice(node.rawNode.end);
+
+      if (_.isEqual(node.coordinates, nodeToReplace.coordinates)) {
+        return `${beforeNodeProgram}${newNodeText}${afterNodeProgram}`;
+      } else if (node.children.length) {
+        return node.children
+          .map((child) => findAndReplaceNode(child))
+          .find(Boolean);
+      }
+    };
+
+    const newProgramString = findAndReplaceNode(this.__endowedAst);
+
+    const newProgram = new IpsumFilteringProgramV1().setProgram(
+      newProgramString
+    );
+    return newProgram;
   }
 
   get programString() {
     return this.__program;
   }
 
-  private generateEndowedASTPerNode(node: IToken): EndowedNode {
+  private generateEndowedASTPerNode(
+    node: IToken,
+    currentCoords: number[]
+  ): EndowedNode {
+    if (node === null) {
+      return null;
+    }
+
     const defaults = {
+      coordinates: currentCoords,
       rawNode: node,
-      children: node.children.map((child) =>
-        this.generateEndowedASTPerNode(child)
+      children: node.children.map((child, i) =>
+        this.generateEndowedASTPerNode(child, [...currentCoords, i])
       ),
     };
 
@@ -203,7 +242,7 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
   generateEndowedAST() {
     const filterExpression = this.__ast;
 
-    return this.generateEndowedASTPerNode(filterExpression);
+    return this.generateEndowedASTPerNode(filterExpression, [0, 0]);
   }
 
   private evalFiltersPerElement(

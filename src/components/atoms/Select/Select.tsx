@@ -19,7 +19,7 @@ type SelectProps = {
   children: React.ReactNode;
 } & Pick<
   React.ComponentProps<typeof MuiSelect>,
-  "value" | "className" | "aria-label" | "disabled"
+  "value" | "className" | "aria-label" | "disabled" | "onChange"
 >;
 
 export const Select: React.FunctionComponent<SelectProps> = ({

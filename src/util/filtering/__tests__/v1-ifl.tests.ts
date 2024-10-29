@@ -1,6 +1,7 @@
 import { IpsumDay } from "util/dates";
 
 import { FilterableHighlight, IpsumFilteringProgramV1 } from "../v1/program";
+import { EndowedNode } from "../v1/types";
 import { createFilteringProgram } from "../versions";
 
 const mock_hl = (mock: Partial<FilterableHighlight>): FilterableHighlight => {
@@ -16,7 +17,7 @@ describe("IpsumFilterLanguage V1", () => {
     it("should build AST from simple string", () => {
       const ifl = createFilteringProgram("v1");
 
-      const ast = ifl.getAst("highlights", {});
+      const ast = ifl.createAst("highlights", {});
 
       expect(ast.errors).toHaveLength(0);
     });
@@ -24,7 +25,7 @@ describe("IpsumFilterLanguage V1", () => {
     it("should return error when parsing simple invalid string", () => {
       const ifl = createFilteringProgram("v1");
 
-      const ast = ifl.getAst("highlights bad", {});
+      const ast = ifl.createAst("highlights bad", {});
 
       expect(ast.errors).toHaveLength(1);
       expect(ast.errors[0].message).toBe("Unexpected end of input: \n bad");
@@ -33,7 +34,7 @@ describe("IpsumFilterLanguage V1", () => {
     it("should validate simple highlight filter expression", () => {
       const ifl = createFilteringProgram("v1");
 
-      const ast = ifl.getAst('highlights from "1" to "2"', {});
+      const ast = ifl.createAst('highlights from "1" to "2"', {});
 
       expect(ast.errors).toHaveLength(0);
     });
@@ -41,8 +42,8 @@ describe("IpsumFilterLanguage V1", () => {
     it("should validate conjuction", () => {
       const ifl = createFilteringProgram("v1");
 
-      const ast = ifl.getAst(
-        'highlights (which are "1" and from "1" to "2")',
+      const ast = ifl.createAst(
+        'highlights (which is "1" and from "1" to "2")',
         {}
       );
 
@@ -51,16 +52,16 @@ describe("IpsumFilterLanguage V1", () => {
 
     it.each([
       ['highlights from "1" to "2"', 0],
-      ['highlights which are "1"', 0],
-      ['highlights which relate to "1"', 0],
-      ['highlights (which relate to "1" and which relate to "2")', 0],
+      ['highlights which is "1"', 0],
+      ['highlights which relates to "1"', 0],
+      ['highlights (which relates to "1" and which relates to "2")', 0],
       [
-        'highlights (which relate to "1" and which relate to "2" and which relate to "3")',
+        'highlights (which relates to "1" and which relates to "2" and which relates to "3")',
         0,
       ],
-      ['highlights (which relate to "1" or which relate to "2")', 0],
+      ['highlights (which relates to "1" or which relates to "2")', 0],
       [
-        'highlights (from "1" to "2" and (which relate to "2" or which relate to "3"))',
+        'highlights (from "1" to "2" and (which relates to "2" or which relates to "3"))',
         0,
       ],
       ["highlights sorted by importance", 0],
@@ -68,19 +69,19 @@ describe("IpsumFilterLanguage V1", () => {
       ["highlights sorted by recent", 0],
       ['highlights sorted by recent as of "1"', 0],
       [
-        'highlights (from "1" to "2" and which relate to "3") sorted by recent as of "1"',
+        'highlights (from "1" to "2" and which relates to "3") sorted by recent as of "1"',
         0,
       ],
     ])("should be valid: `%s`", (text, expectedErrors) => {
       const ifl = createFilteringProgram("v1");
 
-      const ast = ifl.getAst(text, {});
+      const ast = ifl.createAst(text, {});
 
       expect(ast.errors).toHaveLength(expectedErrors);
     });
   });
 
-  describe("execution", () => {
+  describe("evaluation", () => {
     it("should execute simple day filter on highlights", () => {
       const program = new IpsumFilteringProgramV1();
       program.setProgram('highlights from "1/1/2020" to "2/1/2020"');
@@ -136,5 +137,84 @@ describe("IpsumFilterLanguage V1", () => {
       // expect(results.highlights).toHaveLength(1);
       // expect(results.highlights[0].relation).toBe("foo");
     });
+  });
+
+  describe("updating", () => {
+    const findNodeWithText = (
+      haystack: EndowedNode,
+      needle: string
+    ): EndowedNode => {
+      if (haystack.rawNode.text === needle) {
+        return haystack;
+      }
+
+      for (const child of haystack.children) {
+        const found = findNodeWithText(child, needle);
+        if (found) {
+          return found;
+        }
+      }
+
+      return null;
+    };
+
+    it.each<{
+      input: string;
+      expectedOutput: string;
+      findNode: (program: IpsumFilteringProgramV1) => EndowedNode;
+      newNodeText: string;
+    }>([
+      {
+        input: 'highlights from "1/1/2020" to "2/1/2020"',
+        expectedOutput: 'highlights from "2/4/2020" to "5/8/2020"',
+        findNode: (program: IpsumFilteringProgramV1) =>
+          findNodeWithText(
+            program.getEndowedAST(),
+            'from "1/1/2020" to "2/1/2020"'
+          ),
+        newNodeText: 'from "2/4/2020" to "5/8/2020"',
+      },
+      {
+        input: 'highlights (which relates to "foo" and which relates to "bar")',
+        expectedOutput:
+          'highlights (which relates to "ipsum" and which relates to "bar")',
+        findNode: (program: IpsumFilteringProgramV1) =>
+          findNodeWithText(program.getEndowedAST(), 'which relates to "foo"'),
+        newNodeText: 'which relates to "ipsum"',
+      },
+      {
+        input:
+          'highlights (which relates to "foo" and which relates to "bar") sorted by importance as of today',
+        expectedOutput:
+          'highlights (which relates to "foo" or which relates to "bar") sorted by importance as of today',
+        findNode: (program: IpsumFilteringProgramV1) =>
+          findNodeWithText(
+            program.getEndowedAST(),
+            '(which relates to "foo" and which relates to "bar")'
+          ),
+        newNodeText: '(which relates to "foo" or which relates to "bar")',
+      },
+      {
+        input:
+          'highlights which relates to "foo" sorted by importance as of today',
+        expectedOutput:
+          'highlights which relates to "foo" sorted by recent as of today',
+        findNode: (program: IpsumFilteringProgramV1) =>
+          findNodeWithText(program.getEndowedAST(), "importance"),
+        newNodeText: "recent",
+      },
+    ])(
+      "should update $input to $expectedOutput",
+      ({ input, expectedOutput, findNode, newNodeText }) => {
+        const program = new IpsumFilteringProgramV1();
+        program.setProgram(input);
+
+        const nodeToReplace = findNode(program);
+
+        const newProgram = program.updateNodeText(nodeToReplace, newNodeText);
+
+        expect(newProgram.programString).toBe(expectedOutput);
+      }
+    );
   });
 });
