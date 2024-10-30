@@ -1,14 +1,36 @@
+import { Button } from "components/atoms/Button";
+import { font_size_x_small, grey600 } from "components/styles";
 import React from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
+import { ChildrenContainer } from "./ChildrenContainer";
 
 export const Node_highlights_expression: NodeComponent = ({
   editMode,
   endowedNode,
   childComponents,
-  onAddChild,
-  onDeleteSelf,
-  onRemoveChild,
+  transformProgram,
 }: NodeComponentProps) => {
-  return <>{childComponents}</>;
+  const removeFilter = (
+    <Button
+      variant="link"
+      onClick={() => {
+        transformProgram((program) => program.updateNodeText(endowedNode, ""));
+      }}
+      style={{ fontSize: font_size_x_small, color: grey600 }}
+    >
+      - filter
+    </Button>
+  );
+
+  const editModeMarkup = (
+    <ChildrenContainer node={endowedNode} layout="inline">
+      {childComponents}
+      {removeFilter}
+    </ChildrenContainer>
+  );
+
+  const nonEditModeMarkup = <>{childComponents}</>;
+
+  return editMode ? editModeMarkup : nonEditModeMarkup;
 };

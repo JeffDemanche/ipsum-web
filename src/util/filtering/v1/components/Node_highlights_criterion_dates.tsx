@@ -7,9 +7,6 @@ export const Node_highlights_criterion_dates: NodeComponent = ({
   editMode,
   endowedNode,
   childComponents,
-  onAddChild,
-  onDeleteSelf,
-  onRemoveChild,
 }: NodeComponentProps) => {
   return (
     <>

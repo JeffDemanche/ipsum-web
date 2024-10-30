@@ -1,10 +1,10 @@
 export const ebnf = `
 ifl ::= filter
 
-filter ::= filter_expression_highlights sort_expression_highlights? | filter_expression_arcs
+filter ::= "highlights" filter_expression_highlights? | "arcs" filter_expression_arcs?
 
-filter_expression_highlights ::= "highlights" (WS+ highlights_expression)?
-filter_expression_arcs ::= "arcs"
+filter_expression_highlights ::= (WS+ highlights_expression)? sort_expression_highlights?
+filter_expression_arcs ::= "unused"
 
 sort_expression_highlights ::= (WS+ highlights_sort)
 

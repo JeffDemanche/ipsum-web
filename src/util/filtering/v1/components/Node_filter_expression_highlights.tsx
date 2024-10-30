@@ -5,6 +5,7 @@ import { font_size_x_small, grey600 } from "components/styles";
 import React, { useState } from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
+import { ChildrenContainer } from "./ChildrenContainer";
 
 export const Node_filter_expression_highlights: NodeComponent = ({
   editMode,
@@ -12,14 +13,6 @@ export const Node_filter_expression_highlights: NodeComponent = ({
   transformProgram,
   childComponents,
 }: NodeComponentProps) => {
-  const showAddFilter = !endowedNode.children.some(
-    (child) => child.type === "highlights_expression"
-  );
-
-  const showRemoveFilter = endowedNode.children.some(
-    (child) => child.type === "highlights_expression"
-  );
-
   const [addFilterPopoverTarget, setAddFilterPopoverTarget] =
     useState<HTMLButtonElement>(null);
 
@@ -39,6 +32,7 @@ export const Node_filter_expression_highlights: NodeComponent = ({
               `${endowedNode.rawNode.text} from "beginning" to "today"`
             )
           );
+          setAddFilterPopoverTarget(null);
         }}
       >
         by dates
@@ -51,11 +45,16 @@ export const Node_filter_expression_highlights: NodeComponent = ({
               `${endowedNode.rawNode.text} relates to "1"`
             )
           );
+          setAddFilterPopoverTarget(null);
         }}
       >
         by relation
       </MenuItem>
     </Popover>
+  );
+
+  const showAddFilter = !endowedNode.children.some(
+    (child) => child.type === "highlights_expression"
   );
 
   const addFilter = showAddFilter ? (
@@ -70,25 +69,34 @@ export const Node_filter_expression_highlights: NodeComponent = ({
     </Button>
   ) : null;
 
-  const removeFilter = showRemoveFilter ? (
+  const showAddSort = !endowedNode.children.some(
+    (child) => child.type === "sort_expression_highlights"
+  );
+
+  const addSort = showAddSort ? (
     <Button
       variant="link"
       onClick={() => {
-        transformProgram((program) => program.updateNodeText(endowedNode, ""));
+        transformProgram((program) =>
+          program.updateNodeText(
+            endowedNode,
+            `${endowedNode.rawNode.text} sorted by importance as of "today"`
+          )
+        );
       }}
       style={{ fontSize: font_size_x_small, color: grey600 }}
     >
-      - filter
+      + sort
     </Button>
   ) : null;
 
   const editModeMarkup = (
-    <>
+    <ChildrenContainer node={endowedNode} layout="block">
       {childComponents}
       {addFilter}
       {addFilterPopover}
-      {removeFilter}
-    </>
+      {addSort}
+    </ChildrenContainer>
   );
 
   const nonEditModeMarkup = <>{childComponents}</>;

@@ -19,6 +19,7 @@ import { Node_highlights_sort_type } from "./components/Node_highlights_sort_typ
 import { Node_ifl } from "./components/Node_ifl";
 import { Node_predicate } from "./components/Node_predicate";
 import { Node_relation_object } from "./components/Node_relation_object";
+import { Node_sort_expression_highlights } from "./components/Node_sort_expression_highlights";
 import { ebnf } from "./definition";
 import { EndowedNode } from "./types";
 
@@ -50,7 +51,6 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
 
   setProgram(program: string) {
     this.__program = program;
-    console.log("program", program);
     this.__ast = this.createAst(program, {});
     this.__endowedAst = this.generateEndowedAST();
 
@@ -139,7 +139,7 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
         return {
           ...defaults,
           type: "sort_expression_highlights",
-          component: Node_filter_expression_highlights,
+          component: Node_sort_expression_highlights,
         };
 
       case "highlights_expression":

@@ -2,13 +2,12 @@ import { Type } from "components/atoms/Type";
 import React from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
+import { ChildrenContainer } from "./ChildrenContainer";
 
 export const Node_highlights_expression_conjunction: NodeComponent = ({
   editMode,
   childComponents,
-  onAddChild,
-  onDeleteSelf,
-  onRemoveChild,
+  endowedNode,
 }: NodeComponentProps) => {
   const andSeparatedChildComponents = childComponents.reduce(
     (acc, child, index) => {
@@ -17,17 +16,28 @@ export const Node_highlights_expression_conjunction: NodeComponent = ({
       }
       return [
         ...acc,
-        <Type display="inline" weight="light" size="small" key={index}>
+        <ChildrenContainer
+          node={endowedNode}
+          layout="inline"
+          key={endowedNode.children[index].coordinates.join("")}
+        >
           {" "}
-          and{" "}
-        </Type>,
-        child,
+          <Type display="inline" weight="light" size="small" key={index}>
+            {" "}
+            and{" "}
+          </Type>
+          {child}
+        </ChildrenContainer>,
       ];
     },
     []
   );
 
-  const editModeMarkup = <>{andSeparatedChildComponents}</>;
+  const editModeMarkup = (
+    <ChildrenContainer node={endowedNode} layout="block">
+      {andSeparatedChildComponents}
+    </ChildrenContainer>
+  );
 
   const nonEditModeMarkup = <>{andSeparatedChildComponents}</>;
 

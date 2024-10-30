@@ -1,11 +1,10 @@
-import { Button } from "components/atoms/Button";
 import { MenuItem } from "components/atoms/MenuItem";
 import { Select } from "components/atoms/Select";
 import { Type } from "components/atoms/Type";
-import { font_size_x_small, grey600 } from "components/styles";
 import React from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
+import { ChildrenContainer } from "./ChildrenContainer";
 
 export const Node_filter: NodeComponent = ({
   editMode,
@@ -24,56 +23,8 @@ export const Node_filter: NodeComponent = ({
     transformProgram((program) => program.updateNodeText(endowedNode, newType));
   };
 
-  const showAddSort =
-    filterType === "filter_expression_highlights" &&
-    !endowedNode.children.some(
-      (child) => child.type === "sort_expression_highlights"
-    );
-
-  const showRemoveSort =
-    filterType === "filter_expression_highlights" &&
-    endowedNode.children.some(
-      (child) => child.type === "sort_expression_highlights"
-    );
-
-  const addSort = showAddSort ? (
-    <Button
-      variant="link"
-      onClick={() => {
-        transformProgram((program) =>
-          program.updateNodeText(
-            endowedNode,
-            `${endowedNode.rawNode.text} sorted by importance as of "today"`
-          )
-        );
-      }}
-      style={{ fontSize: font_size_x_small, color: grey600 }}
-    >
-      + sort
-    </Button>
-  ) : null;
-
-  const removeSort = showRemoveSort ? (
-    <Button
-      variant="link"
-      onClick={() => {
-        transformProgram((program) =>
-          program.updateNodeText(
-            endowedNode.children.find(
-              (child) => child.type === "sort_expression_highlights"
-            ),
-            ""
-          )
-        );
-      }}
-      style={{ fontSize: font_size_x_small, color: grey600 }}
-    >
-      - sort
-    </Button>
-  ) : null;
-
   const editModeMarkup = (
-    <>
+    <ChildrenContainer node={endowedNode} layout="inline">
       <Select value={value} variant="text">
         {filterTypeOptions.map((type) => (
           <MenuItem
@@ -88,9 +39,7 @@ export const Node_filter: NodeComponent = ({
         ))}
       </Select>{" "}
       {childComponents}
-      {addSort}
-      {removeSort}
-    </>
+    </ChildrenContainer>
   );
 
   if (

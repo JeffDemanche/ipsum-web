@@ -8,9 +8,6 @@ export const Node_highlights_sort_type: NodeComponent = ({
   editMode,
   endowedNode,
   childComponents,
-  onAddChild,
-  onDeleteSelf,
-  onRemoveChild,
 }: NodeComponentProps) => {
   const sortTypeOptions = ["recent", "importance"];
 

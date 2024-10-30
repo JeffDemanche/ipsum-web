@@ -19,7 +19,7 @@ type SelectProps = {
   children: React.ReactNode;
 } & Pick<
   React.ComponentProps<typeof MuiSelect>,
-  "value" | "className" | "aria-label" | "disabled" | "onChange"
+  "value" | "className" | "aria-label" | "disabled" | "onChange" | "style"
 >;
 
 export const Select: React.FunctionComponent<SelectProps> = ({
@@ -45,7 +45,9 @@ export const Select: React.FunctionComponent<SelectProps> = ({
     <MuiSelect
       {...muiProps}
       SelectDisplayProps={
-        variant === "text" ? { style: { padding: "0" } } : null
+        variant === "text"
+          ? { style: { display: "inline", padding: "0" } }
+          : null
       }
       variant="outlined"
       MenuProps={{ ref: menuRef }}

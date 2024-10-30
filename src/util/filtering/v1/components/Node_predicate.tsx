@@ -4,6 +4,7 @@ import { Select } from "components/atoms/Select";
 import React from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
+import { ChildrenContainer } from "./ChildrenContainer";
 
 export const Node_predicate: NodeComponent = ({
   editMode,
@@ -15,8 +16,8 @@ export const Node_predicate: NodeComponent = ({
   const value = endowedNode.rawNode.text;
 
   const editModeMarkup = (
-    <>
-      <Select value={value} variant="text">
+    <ChildrenContainer node={endowedNode} layout="inline">
+      <Select style={{ display: "inline" }} value={value} variant="text">
         {predicateOptions.map((predicate) => (
           <MenuItem key={predicate} value={predicate} onClick={() => {}}>
             {predicate}
@@ -24,7 +25,7 @@ export const Node_predicate: NodeComponent = ({
         ))}
       </Select>{" "}
       {childComponents}
-    </>
+    </ChildrenContainer>
   );
 
   const nonEditModeMarkup = <span>{childComponents}</span>;

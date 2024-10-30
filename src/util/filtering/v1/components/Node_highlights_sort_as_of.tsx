@@ -7,9 +7,6 @@ export const Node_highlights_sort_as_of: NodeComponent = ({
   editMode,
   endowedNode,
   childComponents,
-  onAddChild,
-  onDeleteSelf,
-  onRemoveChild,
 }: NodeComponentProps) => {
   return (
     <>
