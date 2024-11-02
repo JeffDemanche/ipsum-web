@@ -1,6 +1,7 @@
 import { MenuItem } from "components/atoms/MenuItem";
+import { Popover } from "components/atoms/Popover";
 import { Select } from "components/atoms/Select";
-import React from "react";
+import React, { useState } from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
@@ -8,6 +9,7 @@ import { ChildrenContainer } from "./ChildrenContainer";
 export const Node_predicate: NodeComponent = ({
   editMode,
   endowedNode,
+  transformProgram,
   childComponents,
 }: NodeComponentProps) => {
   const predicateOptions = ["is", "relates to"];
@@ -18,7 +20,15 @@ export const Node_predicate: NodeComponent = ({
     <ChildrenContainer node={endowedNode} layout="inline">
       <Select style={{ display: "inline" }} value={value} variant="text">
         {predicateOptions.map((predicate) => (
-          <MenuItem key={predicate} value={predicate} onClick={() => {}}>
+          <MenuItem
+            key={predicate}
+            value={predicate}
+            onClick={() => {
+              transformProgram((program) =>
+                program.updateNodeText(endowedNode, predicate)
+              );
+            }}
+          >
             {predicate}
           </MenuItem>
         ))}
