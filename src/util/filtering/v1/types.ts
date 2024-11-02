@@ -1,3 +1,4 @@
+import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
 import { IToken } from "ebnf";
 import { FunctionComponent } from "react";
 
@@ -9,6 +10,8 @@ export interface NodeComponentProps {
   editMode: boolean;
 
   endowedNode: EndowedNode;
+
+  relationChooserProps: RelationChooserConnectedProps;
 
   transformProgram: (
     transform: (program: IpsumFilteringProgramV1) => IpsumFilteringProgramV1

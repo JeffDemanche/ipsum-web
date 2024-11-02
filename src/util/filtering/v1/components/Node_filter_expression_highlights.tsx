@@ -1,6 +1,7 @@
 import { Button } from "components/atoms/Button";
 import { MenuItem } from "components/atoms/MenuItem";
 import { Popover } from "components/atoms/Popover";
+import { RelationChooser } from "components/molecules/RelationChooser";
 import { font_size_x_small, grey600 } from "components/styles";
 import React, { useState } from "react";
 
@@ -12,44 +13,73 @@ export const Node_filter_expression_highlights: NodeComponent = ({
   endowedNode,
   transformProgram,
   childComponents,
+  relationChooserProps,
 }: NodeComponentProps) => {
   const [addFilterPopoverTarget, setAddFilterPopoverTarget] =
     useState<HTMLButtonElement>(null);
+
+  const [choosingRelation, setChoosingRelation] = useState(false);
 
   const addFilterPopover = (
     <Popover
       anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       onClose={() => {
         setAddFilterPopoverTarget(null);
+        setChoosingRelation(false);
       }}
       anchorEl={addFilterPopoverTarget}
     >
-      <MenuItem
-        onClick={() => {
-          transformProgram((program) =>
-            program.updateNodeText(
-              endowedNode,
-              `${endowedNode.rawNode.text} from "beginning" to "today"`
-            )
-          );
-          setAddFilterPopoverTarget(null);
-        }}
-      >
-        by dates
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          transformProgram((program) =>
-            program.updateNodeText(
-              endowedNode,
-              `${endowedNode.rawNode.text} relates to "1"`
-            )
-          );
-          setAddFilterPopoverTarget(null);
-        }}
-      >
-        by relation
-      </MenuItem>
+      {choosingRelation ? (
+        <RelationChooser
+          {...relationChooserProps}
+          onRelationChoose={(relation) => {
+            transformProgram((program) =>
+              program.updateNodeText(
+                endowedNode,
+                `${endowedNode.rawNode.text} which ${relation.predicate} "${relation.objectId}"`
+              )
+            );
+            setAddFilterPopoverTarget(null);
+            setChoosingRelation(false);
+          }}
+          maxArcResults={5}
+        />
+      ) : (
+        <>
+          <MenuItem
+            onClick={() => {
+              const sortChild = endowedNode.children.find(
+                (child) => child.type === "sort_expression_highlights"
+              );
+              if (!sortChild) {
+                transformProgram((program) =>
+                  program.updateNodeText(
+                    endowedNode,
+                    `${endowedNode.rawNode.text} from "beginning" to "today"`
+                  )
+                );
+              } else {
+                transformProgram((program) =>
+                  program.updateNodeText(
+                    endowedNode,
+                    `highlights from "beginning" to "today" ${sortChild.rawNode.text}`
+                  )
+                );
+              }
+              setAddFilterPopoverTarget(null);
+            }}
+          >
+            by dates
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setChoosingRelation(true);
+            }}
+          >
+            by relation
+          </MenuItem>
+        </>
+      )}
     </Popover>
   );
 

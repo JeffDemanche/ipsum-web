@@ -7,8 +7,8 @@ export interface ArcResult {
 }
 
 export interface Relation {
-  subjectType: RelationSubject["__typename"];
-  subjectId: string;
+  subjectType?: RelationSubject["__typename"];
+  subjectId?: string;
 
   predicate: string;
 

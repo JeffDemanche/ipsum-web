@@ -1,4 +1,5 @@
 import { ToggleButton } from "components/atoms/ToggleButton";
+import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
 import React, {
   createElement,
   FC,
@@ -32,11 +33,18 @@ type LexicalFilterSelectorProps = {
     programText: string,
     filterProgram: IpsumFilteringProgram
   ) => void;
+
+  relationChooserProps: RelationChooserConnectedProps;
 } & LexicalFilterSelectorConnectionProps;
 
 export const LexicalFilterSelector: React.FunctionComponent<
   LexicalFilterSelectorProps
-> = ({ editMode, programText, onFilterProgramChange }) => {
+> = ({
+  editMode,
+  programText,
+  onFilterProgramChange,
+  relationChooserProps,
+}) => {
   const [rawMode, setRawMode] = useState(false);
 
   const [currentProgram, setCurrentProgram] = useState(() => {
@@ -59,6 +67,7 @@ export const LexicalFilterSelector: React.FunctionComponent<
         editMode,
         endowedNode: node,
         key: node.coordinates.join("-"),
+        relationChooserProps,
         transformProgram: (transform) => {
           const newProgram = transform(currentProgram);
           newProgram.errors.forEach((error) => {
@@ -75,7 +84,7 @@ export const LexicalFilterSelector: React.FunctionComponent<
           .filter(Boolean),
       });
     },
-    [currentProgram, editMode, onFilterProgramChange]
+    [currentProgram, editMode, onFilterProgramChange, relationChooserProps]
   );
 
   const markupTree = useMemo(() => {

@@ -15,8 +15,13 @@ type Story = StoryObj<typeof LexicalFilterSelector>;
 export const LexicalFilterSelectorExample: Story = {
   args: {
     editMode: true,
-    programText:
-      "highlights",
+    programText: "highlights",
+    relationChooserProps: {
+      arcResults: [{ id: "1", hue: 0, name: "arc1" }],
+      onArcCreate: () => {},
+      onArcSearch: () => {},
+      onRelationChoose: () => {},
+    },
   },
 };
 
@@ -34,7 +39,10 @@ export const LexicalFilterSelectorStatefulExample: Story = {
           <Story
             args={{
               programText: filterProgram.programString,
-              onFilterProgramChange: (program) => setFilterProgram(program),
+              onFilterProgramChange: (program) =>
+                setFilterProgram((oldProgram) =>
+                  oldProgram.setProgram(program)
+                ),
             }}
           />
         </div>

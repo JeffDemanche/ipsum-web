@@ -2,6 +2,7 @@ import cx from "classnames";
 import { Button } from "components/atoms/Button";
 import { Popover } from "components/atoms/Popover";
 import { Type } from "components/atoms/Type";
+import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
 import { ArcTag } from "components/molecules/ArcTag";
 import { grey700, grey800 } from "components/styles";
 import React, { useMemo, useState } from "react";
@@ -28,14 +29,12 @@ interface RelationsTableProps {
   subjectType: RelationSubject["__typename"];
   subjectId: string;
 
+  relationChooserProps: RelationChooserConnectedProps;
+
   onCreateRelation?: (relation: RelationChooserRelation) => void;
   onDeleteRelation?: (id: string) => void;
 
-  arcResults?: React.ComponentProps<typeof RelationChooser>["arcResults"];
-  onArcSearch?: React.ComponentProps<typeof RelationChooser>["onArcSearch"];
-
   allowCreation?: React.ComponentProps<typeof RelationChooser>["allowCreation"];
-  onArcCreate?: React.ComponentProps<typeof RelationChooser>["onArcCreate"];
 
   onArcClick?: (arcId: string) => void;
 
@@ -55,12 +54,9 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
   expanded,
   subjectType,
   subjectId,
-  onCreateRelation,
+  relationChooserProps,
   onDeleteRelation,
-  arcResults,
-  onArcSearch,
   allowCreation,
-  onArcCreate,
   onArcClick,
   showAlias,
   showEdit,
@@ -222,22 +218,11 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
       >
         <RelationChooser
+          {...relationChooserProps}
           maxArcResults={8}
           subjectType={subjectType}
           subjectId={subjectId}
-          onArcCreate={onArcCreate}
           allowCreation={allowCreation}
-          onRelationChoose={(relation) => {
-            onCreateRelation?.({
-              subjectType: relation.subjectType,
-              subjectId: relation.subjectId,
-              predicate: relation.predicate,
-              objectType: relation.objectType,
-              objectId: relation.objectId,
-            });
-          }}
-          arcResults={arcResults ?? []}
-          onArcSearch={onArcSearch}
           defaultSearch=""
         />
       </Popover>
