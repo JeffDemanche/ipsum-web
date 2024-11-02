@@ -1,13 +1,10 @@
 import React from "react";
 
-import { NodeComponent } from "../types";
+import { NodeComponent, NodeComponentProps } from "../types";
 
 export const Node_highlights_expression_disjunction: NodeComponent = ({
   editMode,
   childComponents,
-  onAddChild,
-  onDeleteSelf,
-  onRemoveChild,
-}) => {
+}: NodeComponentProps) => {
   return <div>Node_highlights_expression_disjunction</div>;
 };

@@ -52,7 +52,7 @@ export const Select: React.FunctionComponent<SelectProps> = ({
       variant="outlined"
       MenuProps={{ ref: menuRef }}
       style={variant === "outlined" ? outlinedStyle : textStyle}
-      IconComponent={variant === "text" ? null : ExpandMore}
+      IconComponent={variant === "text" ? () => null : ExpandMore}
       className={cx(
         muiProps.className,
         styles["select"],

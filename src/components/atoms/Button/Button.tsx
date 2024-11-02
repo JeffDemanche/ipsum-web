@@ -1,10 +1,6 @@
 import { Button as MuiButton, Tooltip } from "@mui/material";
 import cx from "classnames";
-import {
-  font_family_sans,
-  font_size_small,
-  font_weight_light,
-} from "components/styles";
+import { font_family_sans, font_weight_light } from "components/styles";
 import React, { CSSProperties } from "react";
 
 import styles from "./Button.less";
@@ -25,6 +21,8 @@ type ButtonProps = {
   | "ref"
   | "aria-hidden"
   | "aria-label"
+  | "onMouseEnter"
+  | "onMouseLeave"
 >;
 
 export const Button: React.FunctionComponent<ButtonProps> = ({

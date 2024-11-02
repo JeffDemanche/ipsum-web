@@ -9,8 +9,8 @@ import { IpsumStateProvider } from "util/state";
 
 import { BrowserDrawerConnected } from "../BrowserDrawerConnected";
 
-jest.mock("util/api", () => ({
-  ...jest.requireActual("util/api"),
+jest.mock("util/api/url-actions", () => ({
+  ...jest.requireActual("util/api/url-actions"),
   urlSetBrowserDrawerHighlightsOptions: jest.fn(),
 }));
 
@@ -35,15 +35,11 @@ describe("BrowserDrawerConnected (Siddhartha)", () => {
       "Highlight filter date from"
     )[0];
 
-    await act(async () => {
-      await userEvent.click(fromPicker);
-    });
+    await userEvent.click(fromPicker);
 
     const firstDay = screen.getAllByRole("gridcell", { name: "1" })[0];
 
-    await act(async () => {
-      await userEvent.click(firstDay);
-    });
+    await userEvent.click(firstDay);
 
     expect(urlSetBrowserDrawerHighlightsOptions).toHaveBeenCalledWith(
       {

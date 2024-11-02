@@ -1,10 +1,10 @@
 export const ebnf = `
 ifl ::= filter
 
-filter ::= "highlights" filter_expression_highlights? | "arcs" filter_expression_arcs?
+filter ::= filter_expression_highlights | filter_expression_arcs
 
-filter_expression_highlights ::= (WS+ highlights_expression)? sort_expression_highlights?
-filter_expression_arcs ::= "unused"
+filter_expression_highlights ::= "highlights" (WS+ highlights_expression)? sort_expression_highlights?
+filter_expression_arcs ::= "arcs"
 
 sort_expression_highlights ::= (WS+ highlights_sort)
 
@@ -36,3 +36,13 @@ ESCAPABLE       ::= #x22 | #x5C | #x2F | #x62 | #x66 | #x6E | #x72 | #x74 | #x75
 CHAR            ::= UNESCAPED | ESCAPE ESCAPABLE
 UNESCAPED       ::= [#x20-#x21] | [#x23-#x5B] | [#x5D-#xFFFF]
 `;
+
+// WIP Generate EBNF from the code
+const endowedEbnf = {
+  ifl: {
+    rule: "filter",
+  },
+  filter: {
+    rule: '"highlights" filter_expression_highlights? | "arcs" filter_expression_arcs?',
+  },
+};

@@ -28,7 +28,10 @@ type LexicalFilterSelectorProps = {
   editMode: boolean;
 
   programText: string;
-  onFilterProgramChange: (filterProgram: IpsumFilteringProgram) => void;
+  onFilterProgramChange: (
+    programText: string,
+    filterProgram: IpsumFilteringProgram
+  ) => void;
 } & LexicalFilterSelectorConnectionProps;
 
 export const LexicalFilterSelector: React.FunctionComponent<
@@ -43,7 +46,9 @@ export const LexicalFilterSelector: React.FunctionComponent<
   });
 
   useEffect(() => {
-    setCurrentProgram((program) => program.setProgram(programText));
+    setCurrentProgram((program) => {
+      return program.setProgram(programText);
+    });
   }, [programText]);
 
   const createNodeMarkupRecursive = useCallback(
@@ -53,14 +58,15 @@ export const LexicalFilterSelector: React.FunctionComponent<
       return createElement<NodeComponentProps>(node.component as FC, {
         editMode,
         endowedNode: node,
-
+        key: node.coordinates.join("-"),
         transformProgram: (transform) => {
           const newProgram = transform(currentProgram);
           newProgram.errors.forEach((error) => {
             console.error(error);
           });
 
-          setCurrentProgram(transform(currentProgram));
+          onFilterProgramChange?.(newProgram.programString, newProgram);
+          setCurrentProgram(newProgram);
           return true;
         },
 
@@ -69,7 +75,7 @@ export const LexicalFilterSelector: React.FunctionComponent<
           .filter(Boolean),
       });
     },
-    [currentProgram, editMode]
+    [currentProgram, editMode, onFilterProgramChange]
   );
 
   const markupTree = useMemo(() => {

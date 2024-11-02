@@ -12,7 +12,9 @@ export const Node_filter: NodeComponent = ({
   childComponents,
   transformProgram,
 }: NodeComponentProps) => {
-  const filterType = endowedNode.children[0].type;
+  const filterType = endowedNode.rawNode.text.startsWith("highlights")
+    ? "filter_expression_highlights"
+    : "filter_expression_arcs";
 
   const filterTypeOptions = ["highlights", "arcs"];
 
