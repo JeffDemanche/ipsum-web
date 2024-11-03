@@ -1,5 +1,5 @@
 export const ebnf = `
-ifl ::= filter
+ifl ::= filter (WS+)?
 
 filter ::= filter_expression_highlights | filter_expression_arcs
 
