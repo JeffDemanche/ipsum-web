@@ -118,15 +118,6 @@ export const HighlightFilterOptions: React.FunctionComponent<
           />
         </Popover>
       </div>
-      <RelationsTable
-        editable={expanded}
-        expanded={expanded}
-        showAlias={false}
-        showEdit={false}
-        clauses={clauses}
-        subjectId=""
-        subjectType="Highlight"
-      />
     </div>
   );
 };

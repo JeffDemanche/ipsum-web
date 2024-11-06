@@ -1,8 +1,8 @@
 import { Collapse } from "@mui/material";
 import cx from "classnames";
+import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { PageHeaderHighlight } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
-import { RelationsTable } from "components/molecules/RelationsTable";
 import { hueSwatch } from "components/styles";
 import React, { FunctionComponent } from "react";
 import { IpsumDay } from "util/dates";
@@ -20,14 +20,7 @@ interface HighlightPageProps {
   onCollapse: () => void;
   onClose?: () => void;
 
-  relationTableProps: Pick<
-    React.ComponentProps<typeof RelationsTable>,
-    | "onCreateRelation"
-    | "onDeleteRelation"
-    | "arcResults"
-    | "onArcSearch"
-    | "onArcClick"
-  >;
+  relationTableProps: RelationsTableConnectedProps;
 
   highlight: {
     id: string;

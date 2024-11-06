@@ -7,6 +7,7 @@ import {
 } from "@mui/icons-material";
 import cx from "classnames";
 import { MiniButton } from "components/atoms/MiniButton";
+import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
 import { HighlightTag } from "components/molecules/HighlightTag";
 import { RelationsTable } from "components/molecules/RelationsTable";
@@ -47,10 +48,7 @@ interface HighlightBlurbProps {
   onHighlightClick?: () => void;
   onHighlightObjectClick?: () => void;
 
-  relationsTableProps: Pick<
-    React.ComponentProps<typeof RelationsTable>,
-    "onCreateRelation" | "onDeleteRelation" | "arcResults" | "onArcSearch"
-  >;
+  relationsTableProps: RelationsTableConnectedProps;
 }
 
 export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
@@ -191,11 +189,9 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
               expanded={expanded}
               relations={relations}
               editable
-              {...{
-                ...relationsTableProps,
-                subjectType: "Highlight",
-                subjectId: highlightProps.highlightId,
-              }}
+              subjectType="Highlight"
+              subjectId={highlightProps.highlightId}
+              {...relationsTableProps}
             />
           )}
         </div>

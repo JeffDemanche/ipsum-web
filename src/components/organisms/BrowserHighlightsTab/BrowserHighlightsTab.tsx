@@ -1,4 +1,5 @@
 import { Type } from "components/atoms/Type";
+import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { HighlightBlurb } from "components/molecules/HighlightBlurb";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import React from "react";
@@ -29,14 +30,7 @@ interface BrowserHighlightsTabProps {
   onHighlightCommentClick?: (commentId: string, highlightId: string) => void;
   onHighlightDelete?: (highlightId: string) => void;
 
-  relationsTableProps: Pick<
-    React.ComponentProps<typeof RelationsTable>,
-    | "onCreateRelation"
-    | "onDeleteRelation"
-    | "arcResults"
-    | "onArcSearch"
-    | "onArcCreate"
-  >;
+  relationsTableProps: RelationsTableConnectedProps;
 }
 
 export const BrowserHighlightsTab: React.FunctionComponent<

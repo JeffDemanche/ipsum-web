@@ -47,11 +47,6 @@ export const RelationsTableExample: Story = {
         },
       },
     ],
-    arcResults: [
-      { id: "1", hue: 124, name: "arc1" },
-      { id: "2", hue: 236, name: "arc2" },
-      { id: "3", hue: 85, name: "arc3" },
-    ],
   },
 };
 

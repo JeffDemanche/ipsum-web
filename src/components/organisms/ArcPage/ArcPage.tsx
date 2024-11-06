@@ -1,5 +1,6 @@
 import { Collapse } from "@mui/material";
 import cx from "classnames";
+import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { PageHeaderArc } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
 import { RelationsTable } from "components/molecules/RelationsTable";
@@ -32,15 +33,7 @@ interface ArcPageProps {
     htmlString: string;
   };
 
-  relationsTableProps: Pick<
-    React.ComponentProps<typeof RelationsTable>,
-    | "onCreateRelation"
-    | "onDeleteRelation"
-    | "arcResults"
-    | "onArcSearch"
-    | "onArcCreate"
-    | "onArcClick"
-  >;
+  relationsTableProps: RelationsTableConnectedProps;
 }
 
 export const ArcPage: FunctionComponent<ArcPageProps> = ({

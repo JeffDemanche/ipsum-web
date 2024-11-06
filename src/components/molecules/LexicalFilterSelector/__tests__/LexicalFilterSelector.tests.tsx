@@ -15,6 +15,7 @@ describe("LexicalFilterSelector", () => {
         programText={programText}
         onFilterProgramChange={onFilterProgramChangeSpy}
         arcByIdOrName={arcByIdOrNameSpy}
+        relationChooserProps={{ arcResults: [] }}
       />
     );
   };

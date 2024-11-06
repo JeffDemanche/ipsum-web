@@ -28,7 +28,7 @@ describe("IpsumFilterLanguage V1", () => {
       const ast = ifl.createAst("highlights bad", {});
 
       expect(ast.errors).toHaveLength(1);
-      expect(ast.errors[0].message).toBe("Unexpected end of input: \n bad");
+      expect(ast.errors[0].message).toBe("Unexpected end of input: \nbad");
     });
 
     it("should validate simple highlight filter expression", () => {
