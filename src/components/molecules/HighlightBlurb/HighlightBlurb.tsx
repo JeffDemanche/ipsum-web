@@ -131,43 +131,7 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
         borderColor: hueSwatch(highlightProps.hue, "light_background"),
       }}
     >
-      <div
-        className={cx(styles["blurb-header"], expanded && styles["expanded"])}
-      >
-        <div className={styles["blurb-action-buttons"]}>
-          {remind && (
-            <MiniButton
-              foregroundColor={hueSwatch(
-                highlightProps.hue,
-                "on_light_background"
-              )}
-              style={{ height: "16px", width: "16px" }}
-            >
-              <PriorityHighSharp />
-            </MiniButton>
-          )}
-          <div className={styles["blurb-expanded-action-buttons"]}>
-            <MiniButton
-              data-testid={TestIds.HighlightBlurb.DeleteButton}
-              onClick={onDelete}
-              tooltip="Delete highlight"
-              foregroundColor={grey700}
-            >
-              <DeleteSharp />
-            </MiniButton>
-          </div>
-        </div>
-        <HighlightTag
-          fontSize="small"
-          hue={highlightProps.hue}
-          arcNames={highlightProps.arcNames}
-          highlightNumber={highlightProps.highlightNumber}
-          objectText={highlightProps.objectText}
-          onObjectTextClick={onHighlightObjectClick}
-          onHighlightClick={onHighlightClick}
-        />
-      </div>
-      <div className={styles["blurb-content"]}>
+      <div className={styles["blurb-left-column"]}>
         <div
           className={cx(
             styles["blurb-left-column"],
@@ -176,25 +140,61 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
         >
           {blurbRatingControls}
         </div>
-        <div className={styles["blurb-right-column"]}>
-          <BlurbExcerpt
-            highlightId={highlightProps.highlightId}
-            highlightHue={highlightProps.hue}
-            htmlString={excerptProps.htmlString}
-            maxLines={expanded ? 0 : excerptProps.maxLines ?? 3}
-            showLeftBorder={expanded}
+      </div>
+      <div className={styles["blurb-right-column"]}>
+        <div
+          className={cx(styles["blurb-header"], expanded && styles["expanded"])}
+        >
+          <div className={styles["blurb-action-buttons"]}>
+            {remind && (
+              <MiniButton
+                foregroundColor={hueSwatch(
+                  highlightProps.hue,
+                  "on_light_background"
+                )}
+                style={{ height: "16px", width: "16px" }}
+              >
+                <PriorityHighSharp />
+              </MiniButton>
+            )}
+            <div className={styles["blurb-expanded-action-buttons"]}>
+              <MiniButton
+                data-testid={TestIds.HighlightBlurb.DeleteButton}
+                onClick={onDelete}
+                tooltip="Delete highlight"
+                foregroundColor={grey700}
+              >
+                <DeleteSharp />
+              </MiniButton>
+            </div>
+          </div>
+          <HighlightTag
+            fontSize="small"
+            hue={highlightProps.hue}
+            arcNames={highlightProps.arcNames}
+            highlightNumber={highlightProps.highlightNumber}
+            objectText={highlightProps.objectText}
+            onObjectTextClick={onHighlightObjectClick}
+            onHighlightClick={onHighlightClick}
           />
-          {expanded && (
-            <RelationsTable
-              expanded={expanded}
-              relations={relations}
-              editable
-              subjectType="Highlight"
-              subjectId={highlightProps.highlightId}
-              {...relationsTableProps}
-            />
-          )}
         </div>
+        <BlurbExcerpt
+          highlightId={highlightProps.highlightId}
+          highlightHue={highlightProps.hue}
+          htmlString={excerptProps.htmlString}
+          maxLines={expanded ? 0 : excerptProps.maxLines ?? 3}
+          showLeftBorder={expanded}
+        />
+        {expanded && (
+          <RelationsTable
+            expanded={expanded}
+            relations={relations}
+            editable
+            subjectType="Highlight"
+            subjectId={highlightProps.highlightId}
+            {...relationsTableProps}
+          />
+        )}
       </div>
     </div>
   );

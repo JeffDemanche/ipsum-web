@@ -2,7 +2,7 @@
 
 .highlight-blurb-wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   box-shadow: @box_shadow_primary;
   border: @grid_x_1 solid @grey500;
   padding: @grid_x_1;
@@ -18,6 +18,40 @@
 
     &:hover {
       opacity: unset;
+    }
+    
+    .blurb-left-column {
+      display: none;
+    }
+  }
+
+  .blurb-left-column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .blurb-right-column {
+    display: flex;
+    flex-direction: column;
+    gap: @grid_x_1;
+    width: 100%;
+  }
+
+  .blurb-content {
+    display: flex;
+    flex-direction: row;
+    gap: @grid_x_1;
+  
+    .blurb-left-column {
+      display: none;
+      flex-direction: column;
+      gap: @grid_x_1;
+      padding: @grid_x_0_5;
+  
+      &.expanded {
+        display: flex;
+      }
     }
   }
 
@@ -43,29 +77,6 @@
     .blurb-action-buttons {
       display: flex;
       flex-direction: row;
-      gap: @grid_x_1;
-    }
-  }
-
-  .blurb-content {
-    display: flex;
-    flex-direction: row;
-    gap: @grid_x_1;
-  
-    .blurb-left-column {
-      display: none;
-      flex-direction: column;
-      gap: @grid_x_1;
-      padding: @grid_x_0_5;
-  
-      &.expanded {
-        display: flex;
-      }
-    }
-  
-    .blurb-right-column {
-      display: flex;
-      flex-direction: column;
       gap: @grid_x_1;
     }
   }
