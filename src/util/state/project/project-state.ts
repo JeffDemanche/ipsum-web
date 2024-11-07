@@ -14,6 +14,7 @@ import {
   InMemoryHighlight,
   InMemoryJournalEntry,
   InMemoryRelation,
+  InMemorySRSCard,
   ReactiveInMemoryProjectCollections,
   ReactiveInMemoryProjectSingletons,
   ReactiveInMemoryProjectState,
@@ -23,6 +24,7 @@ import {
 
 export class ProjectState {
   static serializedSingletons: (keyof ReactiveInMemoryProjectSingletons)[] = [
+    "projectVersion",
     "journalId",
     "journalMetadata",
     "journalTitle",
@@ -38,6 +40,7 @@ export class ProjectState {
     "relations",
     "comments",
     "days",
+    "srsCards",
   ];
 
   private readonly reactiveState: ReactiveInMemoryProjectState;
@@ -53,6 +56,7 @@ export class ProjectState {
   private initializeState(): ReactiveInMemoryProjectState {
     return {
       singletons: {
+        projectVersion: makeVar("0.1"),
         journalId: makeVar(uuidv4()),
         journalMetadata: makeVar({
           __typename: "JournalMetadata",
@@ -70,6 +74,7 @@ export class ProjectState {
         relations: new ProjectCollection<InMemoryRelation>(),
         comments: new ProjectCollection<InMemoryComment>(),
         days: new ProjectCollection<InMemoryDay>(),
+        srsCards: new ProjectCollection<InMemorySRSCard>(),
       },
     };
   }
@@ -116,6 +121,7 @@ export class ProjectState {
       return PathReporter.report(parsed);
     } else {
       const staticState = {
+        projectVersion: parsed.right.projectVersion,
         journalId: parsed.right.journalId,
         journalMetadata: parsed.right.journalMetadata,
         journalTitle: parsed.right.journalTitle,
@@ -128,6 +134,7 @@ export class ProjectState {
         relations: parsed.right.relations,
         comments: parsed.right.comments,
         days: parsed.right.days,
+        srsCards: parsed.right.srsCards,
       };
 
       const validationResult = validate(staticState);
@@ -145,6 +152,7 @@ const makeStateReactive = (
 ): ReactiveInMemoryProjectState => {
   return {
     singletons: {
+      projectVersion: makeVar(state.projectVersion),
       journalId: makeVar(state.journalId),
       journalMetadata: makeVar(state.journalMetadata),
       journalTitle: makeVar(state.journalTitle),
@@ -159,6 +167,7 @@ const makeStateReactive = (
       relations: new ProjectCollection(state.relations),
       comments: new ProjectCollection(state.comments),
       days: new ProjectCollection(state.days),
+      srsCards: new ProjectCollection(state.srsCards),
     },
   };
 };

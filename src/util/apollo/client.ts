@@ -31,6 +31,7 @@ import { highlightTypeDef } from "./schemas/highlight-schema";
 import { journalEntryTypeDef } from "./schemas/journal-entry-schema";
 import { relationTypeDef } from "./schemas/relation-schema";
 import { searchTypeDef } from "./schemas/search-schema";
+import { srsTypeDef } from "./schemas/srs-schema";
 
 const typeDefs = gql`
   type Query {
@@ -189,6 +190,7 @@ export const client = new ApolloClient({
     journalEntryTypeDef,
     commentTypeDef,
     commentEntryTypeDef,
+    srsTypeDef,
   ],
   link: from([errorLink]),
 });

@@ -19,6 +19,7 @@ export const createDay: APIFunction<{ day: IpsumDay }, InMemoryDay> = (
       ratedHighlights: [],
       changedArcEntries: [],
       comments: [],
+      srsCardsReviewed: [],
     });
 
   return newDay;

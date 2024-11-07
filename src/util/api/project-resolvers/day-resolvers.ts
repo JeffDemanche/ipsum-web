@@ -46,6 +46,11 @@ export const DayResolvers: StrictTypedTypePolicies = {
           PROJECT_STATE.collection("comments").get(commentId)
         );
       },
+      srsCardsReviewed(day) {
+        return day.srsCardsReviewed.map((srsCardId: string) =>
+          PROJECT_STATE.collection("srsCards").get(srsCardId)
+        );
+      },
     },
   },
 };

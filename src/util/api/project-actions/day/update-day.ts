@@ -11,6 +11,7 @@ export const updateDay: APIFunction<
     ratedHighlights?: (previous: string[]) => string[];
     changedArcEntries?: (previous: string[]) => string[];
     comments?: (previous: string[]) => string[];
+    srsCardsReviewed?: (previous: string[]) => string[];
   },
   InMemoryDay
 > = (args, context) => {
@@ -38,6 +39,9 @@ export const updateDay: APIFunction<
         ? args.changedArcEntries(day.changedArcEntries)
         : day.changedArcEntries,
       comments: args.comments ? args.comments(day.comments) : day.comments,
+      srsCardsReviewed: args.srsCardsReviewed
+        ? args.srsCardsReviewed(day.srsCardsReviewed)
+        : day.srsCardsReviewed,
     }));
 
   return projectState.collection("days").get(args.day.toString("stored-day"));

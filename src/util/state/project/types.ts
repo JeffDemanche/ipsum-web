@@ -63,6 +63,7 @@ export interface InMemoryHighlight {
   outgoingRelations: string[];
   importanceRatings: InMemoryImportanceRating[];
   comments: string[];
+  srsCard?: string;
 }
 
 export interface InMemoryRelation {
@@ -82,6 +83,7 @@ export interface InMemoryDay {
   ratedHighlights: string[];
   changedArcEntries: string[];
   comments: string[];
+  srsCardsReviewed: string[];
 }
 
 export interface InMemoryComment {
@@ -93,7 +95,23 @@ export interface InMemoryComment {
   history: InMemoryHistory;
 }
 
+export interface InMemorySRSCardReview {
+  __typename: "SRSCardReview";
+  day: string;
+  rating: number;
+}
+
+export interface InMemorySRSCard {
+  __typename: "SRSCard";
+  id: string;
+  history: InMemoryHistory;
+  subjectType: "Highlight";
+  subject: string;
+  reviews: InMemorySRSCardReview[];
+}
+
 export interface ReactiveInMemoryProjectSingletons {
+  projectVersion: ReactiveVar<string>;
   journalId: ReactiveVar<string>;
   journalTitle: ReactiveVar<string>;
   journalMetadata: ReactiveVar<InMemoryJournalMetadata>;
@@ -109,6 +127,7 @@ export interface ReactiveInMemoryProjectCollections {
   relations: ProjectCollection<InMemoryRelation>;
   comments: ProjectCollection<InMemoryComment>;
   days: ProjectCollection<InMemoryDay>;
+  srsCards: ProjectCollection<InMemorySRSCard>;
 }
 
 export interface ReactiveInMemoryProjectState {
@@ -121,6 +140,7 @@ type CollectionOf<T> = Record<string, T>;
 export type SingletonKey = "journalId" | "journalTitle" | "journalMetadata";
 
 export interface StaticInMemoryProjectState {
+  projectVersion: string;
   journalId: string;
   journalTitle: string;
   journalMetadata: InMemoryJournalMetadata;
@@ -133,4 +153,5 @@ export interface StaticInMemoryProjectState {
   relations: CollectionOf<InMemoryRelation>;
   comments: CollectionOf<InMemoryComment>;
   days: CollectionOf<InMemoryDay>;
+  srsCards: CollectionOf<InMemorySRSCard>;
 }

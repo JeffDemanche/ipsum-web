@@ -60,6 +60,7 @@ export type Day = {
   hasJournalEntry: Scalars['Boolean'];
   journalEntry?: Maybe<JournalEntry>;
   ratedHighlights?: Maybe<Array<Highlight>>;
+  srsCardsReviewed: Array<SrsCard>;
 };
 
 export type Entry = {
@@ -95,6 +96,7 @@ export type Highlight = {
   object: HighlightObject;
   objectText: Scalars['String'];
   outgoingRelations: Array<Relation>;
+  srsCard?: Maybe<SrsCard>;
 };
 
 export type HighlightObject = Arc | Comment | Day;
@@ -156,6 +158,8 @@ export type Query = {
   relations?: Maybe<Array<Maybe<Relation>>>;
   searchArcsByName: Array<Arc>;
   searchHighlights: Array<Highlight>;
+  srsCard?: Maybe<SrsCard>;
+  srsCards?: Maybe<Array<Maybe<SrsCard>>>;
 };
 
 
@@ -285,6 +289,16 @@ export type QuerySearchHighlightsArgs = {
   max?: InputMaybe<Scalars['Int']>;
 };
 
+
+export type QuerySrsCardArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QuerySrsCardsArgs = {
+  ids?: InputMaybe<Array<Scalars['ID']>>;
+};
+
 export type Relation = {
   __typename?: 'Relation';
   id: Scalars['ID'];
@@ -294,6 +308,20 @@ export type Relation = {
 };
 
 export type RelationSubject = Arc | Highlight;
+
+export type SrsCard = {
+  __typename?: 'SRSCard';
+  history: History;
+  id: Scalars['ID'];
+  reviews: Array<SrsCardReview>;
+  subject: Highlight;
+};
+
+export type SrsCardReview = {
+  __typename?: 'SRSCardReview';
+  day: Day;
+  rating: Scalars['Int'];
+};
 
 export type SearchCriteria = {
   and: Array<SearchCriteriaAnd>;
@@ -327,13 +355,6 @@ export enum SearchSortType {
   Date = 'DATE',
   Importance = 'IMPORTANCE'
 }
-
-export type UseArcRelationsTableConnectedQueryVariables = Exact<{
-  search: Scalars['String'];
-}>;
-
-
-export type UseArcRelationsTableConnectedQuery = { __typename?: 'Query', searchArcsByName: Array<{ __typename?: 'Arc', id: string, name: string, color: number }> };
 
 export type UseRelationChooserConnectedQueryVariables = Exact<{
   search: Scalars['String'];
@@ -385,7 +406,6 @@ export type JournalSettingsDrawerQueryVariables = Exact<{ [key: string]: never; 
 export type JournalSettingsDrawerQuery = { __typename?: 'Query', journalTitle: string };
 
 
-export const UseArcRelationsTableConnectedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"UseArcRelationsTableConnected"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchArcsByName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}}]}}]} as unknown as DocumentNode<UseArcRelationsTableConnectedQuery, UseArcRelationsTableConnectedQueryVariables>;
 export const UseRelationChooserConnectedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"UseRelationChooserConnected"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"searchArcsByName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}}]}}]} as unknown as DocumentNode<UseRelationChooserConnectedQuery, UseRelationChooserConnectedQueryVariables>;
 export const ArcPageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ArcPage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"arcId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"arc"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"arcId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"outgoingRelations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"predicate"}},{"kind":"Field","name":{"kind":"Name","value":"object"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Arc"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"arcEntry"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entry"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entryKey"}},{"kind":"Field","name":{"kind":"Name","value":"htmlString"}},{"kind":"Field","name":{"kind":"Name","value":"highlights"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"hue"}},{"kind":"Field","name":{"kind":"Name","value":"outgoingRelations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"predicate"}},{"kind":"Field","name":{"kind":"Name","value":"object"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Arc"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}}]}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<ArcPageQuery, ArcPageQueryVariables>;
 export const BrowserDrawerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BrowserDrawer"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filterArcIds"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"journalEntryDates"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"includeEmpty"},"value":{"kind":"BooleanValue","value":false}}]},{"kind":"Field","name":{"kind":"Name","value":"arcs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filterArcIds"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}}]}}]} as unknown as DocumentNode<BrowserDrawerQuery, BrowserDrawerQueryVariables>;

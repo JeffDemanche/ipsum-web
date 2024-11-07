@@ -5,8 +5,15 @@ const HistorySchema = t.type({
   dateCreated: t.union([t.string, t.undefined]),
 });
 
+const SRSCardReviewSchema = t.type({
+  __typename: t.literal("SRSCardReview"),
+  day: t.string,
+  rating: t.number,
+});
+
 export const SerializedSchema = t.type(
   {
+    projectVersion: t.string,
     journalId: t.string,
     journalTitle: t.string,
     journalMetadata: t.type(
@@ -104,6 +111,7 @@ export const SerializedSchema = t.type(
             })
           ),
           comments: t.array(t.string),
+          srsCard: t.union([t.string, t.undefined, t.null]),
         },
         "highlight"
       ),
@@ -150,10 +158,26 @@ export const SerializedSchema = t.type(
           ratedHighlights: t.array(t.string),
           changedArcEntries: t.array(t.string),
           comments: t.array(t.string),
+          srsCardsReviewed: t.array(t.string),
         },
         "day"
       ),
       "days"
+    ),
+    srsCards: t.record(
+      t.string,
+      t.type(
+        {
+          __typename: t.literal("SRSCard"),
+          id: t.string,
+          history: HistorySchema,
+          subjectType: t.literal("Highlight"),
+          subject: t.string,
+          reviews: t.array(SRSCardReviewSchema),
+        },
+        "srsCard"
+      ),
+      "srsCards"
     ),
   },
   "root"

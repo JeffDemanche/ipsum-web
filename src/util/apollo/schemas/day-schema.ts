@@ -12,5 +12,6 @@ export const dayTypeDef = gql`
     ratedHighlights: [Highlight!]
     comments: [Comment!]
     hasJournalEntry: Boolean!
+    srsCardsReviewed: [SRSCard!]!
   }
 `;

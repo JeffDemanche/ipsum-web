@@ -205,6 +205,12 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
             );
         }
       },
+      srsCard(srsCardId) {
+        if (!srsCardId) {
+          return null;
+        }
+        return PROJECT_STATE.collection("srsCards").get(srsCardId);
+      },
     },
   },
   ImportanceRating: {

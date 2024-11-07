@@ -13,7 +13,6 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query UseArcRelationsTableConnected($search: String!) {\n    searchArcsByName(search: $search) {\n      id\n      name\n      color\n    }\n  }\n": types.UseArcRelationsTableConnectedDocument,
     "\n  query UseRelationChooserConnected($search: String!) {\n    searchArcsByName(search: $search) {\n      id\n      name\n      color\n    }\n  }\n": types.UseRelationChooserConnectedDocument,
     "\n  query ArcPage($arcId: ID!) {\n    arc(id: $arcId) {\n      id\n      name\n      color\n      outgoingRelations {\n        id\n        predicate\n        object {\n          ... on Arc {\n            id\n            name\n            color\n          }\n        }\n      }\n      arcEntry {\n        entry {\n          entryKey\n          htmlString\n          highlights {\n            id\n            number\n            hue\n            outgoingRelations {\n              id\n              predicate\n              object {\n                ... on Arc {\n                  id\n                  name\n                  color\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n": types.ArcPageDocument,
     "\n  query BrowserDrawer($filterArcIds: [ID!]!) {\n    journalEntryDates(includeEmpty: false)\n    arcs(ids: $filterArcIds) {\n      id\n      name\n      color\n    }\n  }\n": types.BrowserDrawerDocument,
@@ -37,10 +36,6 @@ const documents = {
  */
 export function gql(source: string): unknown;
 
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query UseArcRelationsTableConnected($search: String!) {\n    searchArcsByName(search: $search) {\n      id\n      name\n      color\n    }\n  }\n"): (typeof documents)["\n  query UseArcRelationsTableConnected($search: String!) {\n    searchArcsByName(search: $search) {\n      id\n      name\n      color\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -25,11 +25,10 @@ export const highlightTypeDef = gql`
     comments: [Comment!]!
     number: Int!
     objectText: String!
-
     object: HighlightObject!
-
     importanceRatings: [ImportanceRating!]!
     currentImportance: Float!
+    srsCard: SRSCard
   }
 
   type ImportanceRating {
