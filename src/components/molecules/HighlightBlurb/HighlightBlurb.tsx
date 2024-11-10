@@ -10,6 +10,7 @@ import {
 import cx from "classnames";
 import { MiniButton } from "components/atoms/MiniButton";
 import { ToggleButton } from "components/atoms/ToggleButton";
+import { Tooltip } from "components/atoms/Tooltip";
 import { Type } from "components/atoms/Type";
 import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
@@ -212,15 +213,13 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
         <div className={styles["blurb-header"]}>
           {upForReview && (
             <div className={styles["blurb-notification"]}>
-              <MiniButton
-                foregroundColor={hueSwatch(
-                  highlightProps.hue,
-                  "on_light_background"
-                )}
-                style={{ height: "16px", width: "16px" }}
-              >
-                <PriorityHighSharp />
-              </MiniButton>
+              <Tooltip title="Up for review">
+                <PriorityHighSharp
+                  style={{
+                    color: hueSwatch(highlightProps.hue, "on_light_background"),
+                  }}
+                />
+              </Tooltip>
             </div>
           )}
           <HighlightTag
