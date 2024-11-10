@@ -1,5 +1,6 @@
 import { Drawer } from "components/atoms/Drawer";
 import React, { FunctionComponent, useMemo } from "react";
+import { IpsumDay } from "util/dates";
 import { HighlightsBrowserTab } from "util/state";
 import { TestIds } from "util/test-ids";
 
@@ -18,7 +19,11 @@ interface BrowserDrawerProps {
   onClose: () => void;
 
   tab: HighlightsBrowserTab["type"];
-  highlightsTabProps?: React.ComponentProps<typeof BrowserHighlightsTab>;
+  highlightsWithDay: { id: string; day: IpsumDay }[];
+  renderHighlight: (highlightId: string) => React.ReactNode;
+  optionsDrawerProps: React.ComponentProps<
+    typeof BrowserHighlightsTab
+  >["optionsDrawerProps"];
 }
 
 export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
@@ -30,7 +35,9 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
   onOpen,
   onClose,
   tab,
-  highlightsTabProps,
+  highlightsWithDay,
+  renderHighlight,
+  optionsDrawerProps,
 }) => {
   const openedContent = useMemo(() => {
     switch (tab) {
@@ -41,13 +48,24 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
             style={closedContentStyle}
             className={closedContentClassName}
           >
-            <BrowserHighlightsTab {...highlightsTabProps} />
+            <BrowserHighlightsTab
+              highlightsWithDay={highlightsWithDay}
+              renderHighlight={renderHighlight}
+              optionsDrawerProps={optionsDrawerProps}
+            />
           </div>
         );
       default:
         return null;
     }
-  }, [closedContentClassName, closedContentStyle, highlightsTabProps, tab]);
+  }, [
+    closedContentClassName,
+    closedContentStyle,
+    highlightsWithDay,
+    optionsDrawerProps,
+    renderHighlight,
+    tab,
+  ]);
 
   return (
     <Drawer

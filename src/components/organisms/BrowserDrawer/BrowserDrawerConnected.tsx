@@ -1,23 +1,19 @@
 import { useQuery } from "@apollo/client";
-import { useHighlightRelationsTableConnected } from "components/hooks/use-highlight-relations-table-connected";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import React, { useMemo } from "react";
 import {
-  apiDeleteHighlight,
   urlInsertLayer,
   urlSetBrowserDrawerHighlightsOptions,
   urlSetBrowserDrawerOpen,
   urlSetHighlightsOptionsDrawerOpen,
-  useApiAction,
   useUrlAction,
 } from "util/api";
 import { gql, SearchSortType } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { highlightImportanceOnDay } from "util/importance";
 import { SortType } from "util/sort";
 import { useIpsumSearchParams } from "util/state";
 
-import { BrowserHighlightsTab } from "../BrowserHighlightsTab";
+import { BrowserHighlightBlurbConnected } from "../BrowserHighlightBlurb/BrowserHighlightBlurbConnected";
 import { BrowserDrawer } from "./BrowserDrawer";
 import styles from "./BrowserDrawer.less";
 
@@ -41,44 +37,8 @@ const BrowserDrawerHighlightsSearchQuery = gql(`
   query BrowserDrawerHighlightsSearch($criteria: SearchCriteria!, $max: Int) @client {
     searchHighlights(criteria: $criteria, max: $max) {
       id
-      excerpt
-      hue
-      outgoingRelations {
-        id
-        predicate
-        object {
-          ... on Arc {
-            id
-            name
-            color
-          }
-        }
-      }
-      importanceRatings {
-        day {
-          day
-        }
-        value
-      }
-      number
-      objectText
       history {
         dateCreated
-      }
-      object {
-        __typename
-        ... on Arc {
-          id
-        }
-        ... on Day {
-          day
-        }
-        ... on Comment {
-          id
-          highlight {
-            id
-          }
-        }
       }
     }
   }
@@ -89,16 +49,14 @@ export const BrowserDrawerConnected: React.FunctionComponent<
 > = ({ style, className }) => {
   const { browser: browserUrlParams } = useIpsumSearchParams<"journal">();
 
-  const [deleteHighlight] = useApiAction(apiDeleteHighlight);
-
   const setBrowserDrawerOpen = useUrlAction(urlSetBrowserDrawerOpen);
+
   const setHighlightsOptionsDrawerOpen = useUrlAction(
     urlSetHighlightsOptionsDrawerOpen
   );
   const setBrowserDrawerHighlightsOptions = useUrlAction(
     urlSetBrowserDrawerHighlightsOptions
   );
-  const insertLayer = useUrlAction(urlInsertLayer);
 
   const filterArcIds = useMemo(() => {
     if (!browserUrlParams?.tab?.filters?.and) return [];
@@ -140,70 +98,6 @@ export const BrowserDrawerConnected: React.FunctionComponent<
       },
     }
   );
-
-  const highlights: React.ComponentProps<
-    typeof BrowserHighlightsTab
-  >["highlights"] = highlightsData.searchHighlights.map((searchHighlight) => {
-    const arcRelations = searchHighlight.outgoingRelations.filter(
-      (relation) => relation.object && relation.object.__typename === "Arc"
-    );
-
-    let highlightObject: React.ComponentProps<
-      typeof BrowserHighlightsTab
-    >["highlights"][number]["highlightObject"];
-
-    const importance = highlightImportanceOnDay({
-      ratings: searchHighlight.importanceRatings.map((rating) => ({
-        day: rating.day.day,
-        value: rating.value,
-      })),
-      day: IpsumDay.fromString(browserUrlParams?.tab?.sort?.day, "url-format"),
-    });
-
-    if (searchHighlight.object.__typename === "Day") {
-      highlightObject = {
-        type: "daily_journal",
-        entryKey: searchHighlight.object.day,
-      };
-    } else if (searchHighlight.object.__typename === "Arc") {
-      highlightObject = {
-        type: "arc",
-        arcId: searchHighlight.object.id,
-      };
-    } else {
-      highlightObject = {
-        type: "comment",
-        commentId: searchHighlight.object.id,
-        highlightId: searchHighlight.object.highlight.id,
-      };
-    }
-
-    return {
-      day: IpsumDay.fromString(searchHighlight.history.dateCreated, "iso"),
-      excerptProps: {
-        htmlString: searchHighlight.excerpt,
-        maxLines: 3,
-      },
-      highlightProps: {
-        highlightId: searchHighlight.id,
-        highlightNumber: searchHighlight.number,
-        arcNames: arcRelations.map((relation) => relation.object.name),
-        hue: searchHighlight.hue,
-        objectText: searchHighlight.objectText,
-        importanceRating: importance,
-      },
-      relationsProps: arcRelations.map((relation) => ({
-        id: relation.id,
-        predicate: relation.predicate,
-        arc: {
-          id: relation.object.id,
-          hue: relation.object.color,
-          name: relation.object.name,
-        },
-      })),
-      highlightObject,
-    };
-  });
 
   const clauses: React.ComponentProps<typeof RelationsTable>["clauses"] =
     useMemo(() => {
@@ -291,7 +185,23 @@ export const BrowserDrawerConnected: React.FunctionComponent<
     });
   };
 
-  const relationsTableProps = useHighlightRelationsTableConnected();
+  const optionsDrawerProps = {
+    defaultExpanded: browserUrlParams?.tab?.optionsOpen ?? false,
+    onExpand: onHighlightsOptionsDrawerOpen,
+    onCollapse: onHighlightsOptionsDrawerClose,
+    filterOptionsProps: {
+      clauses,
+      dateFilterFrom,
+      dateFilterTo,
+      onChangeDateFilterFrom,
+      onChangeDateFilterTo,
+      onCreateClause: () => {},
+    },
+    sortDay,
+    sortType,
+    onSortTypeChange: () => {},
+    onSortDayChange,
+  };
 
   return (
     <BrowserDrawer
@@ -302,56 +212,19 @@ export const BrowserDrawerConnected: React.FunctionComponent<
       onOpen={onOpen}
       onClose={onClose}
       tab={browserUrlParams?.tab?.type ?? "highlights"}
-      highlightsTabProps={{
-        highlights,
-        optionsDrawerProps: {
-          defaultExpanded: browserUrlParams?.tab?.optionsOpen ?? false,
-          onExpand: onHighlightsOptionsDrawerOpen,
-          onCollapse: onHighlightsOptionsDrawerClose,
-          filterOptionsProps: {
-            clauses,
-            dateFilterFrom,
-            dateFilterTo,
-            onChangeDateFilterFrom,
-            onChangeDateFilterTo,
-            onCreateClause: () => {},
-          },
-          sortDay,
-          sortType,
-          onSortTypeChange: () => {},
-          onSortDayChange,
-        },
-        relationsTableProps,
-        onHighlightClick: (highlightId) => {
-          insertLayer({
-            layer: { type: "highlight_detail", highlightId, expanded: "true" },
-          });
-        },
-        onHighlightArcClick: (arcId) => {
-          insertLayer({
-            layer: { type: "arc_detail", arcId, expanded: "true" },
-          });
-        },
-        onHighlightDailyJournalClick: (entryKey) => {
-          insertLayer({
-            layer: {
-              type: "daily_journal",
-              day: IpsumDay.fromString(entryKey, "entry-printed-date").toString(
-                "url-format"
-              ),
-              expanded: "true",
-            },
-          });
-        },
-        onHighlightCommentClick: (commentId, highlightId) => {
-          insertLayer({
-            layer: { type: "highlight_detail", highlightId, expanded: "true" },
-          });
-        },
-        onHighlightDelete: (highlightId) => {
-          deleteHighlight({ id: highlightId });
-        },
+      highlightsWithDay={highlightsData.searchHighlights.map((highlight) => ({
+        id: highlight.id,
+        day: IpsumDay.fromString(highlight.history.dateCreated, "iso"),
+      }))}
+      renderHighlight={(highlightId) => {
+        return (
+          <BrowserHighlightBlurbConnected
+            key={highlightId}
+            highlightId={highlightId}
+          />
+        );
       }}
+      optionsDrawerProps={optionsDrawerProps}
     />
   );
 };

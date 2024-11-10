@@ -3,6 +3,7 @@
 .highlight-blurb-wrapper {
   display: flex;
   flex-direction: row;
+  align-items: stretch;
   box-shadow: @box_shadow_primary;
   border: @grid_x_1 solid @grey500;
   padding: @grid_x_1;
@@ -28,7 +29,8 @@
   .blurb-left-column {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    gap: @grid_x_1;
+    padding: @grid_x_0_5;
   }
 
   .blurb-right-column {

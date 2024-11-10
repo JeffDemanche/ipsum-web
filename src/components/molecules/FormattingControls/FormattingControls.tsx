@@ -64,7 +64,7 @@ export const FormattingControls: React.FunctionComponent<
         aria-label="highlight"
         variant="contained"
         tooltip="Create highlight"
-        style={{ width: "42px" }}
+        style={{ width: "40px" }}
         onClick={() => {
           activeEditor?.createHighlight();
         }}
@@ -80,6 +80,7 @@ export const FormattingControls: React.FunctionComponent<
           activeEditor?.setBold((bold) => !bold);
         }}
         disableShadow
+        fontSize="x-large"
       >
         <FormatBold fontSize="small" />
       </ToggleButton>
@@ -92,6 +93,7 @@ export const FormattingControls: React.FunctionComponent<
           activeEditor?.setItalic((italic) => !italic);
         }}
         disableShadow
+        fontSize="x-large"
       >
         <FormatItalic fontSize="small" />
       </ToggleButton>
@@ -104,6 +106,7 @@ export const FormattingControls: React.FunctionComponent<
           activeEditor?.setUnderline((underline) => !underline);
         }}
         disableShadow
+        fontSize="x-large"
       >
         <FormatUnderlined fontSize="small" />
       </ToggleButton>
@@ -116,6 +119,7 @@ export const FormattingControls: React.FunctionComponent<
           activeEditor?.setStrikethrough((strikethrough) => !strikethrough);
         }}
         disableShadow
+        fontSize="x-large"
       >
         <FormatStrikethrough fontSize="small" />
       </ToggleButton>

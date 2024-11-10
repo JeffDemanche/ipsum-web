@@ -1,17 +1,20 @@
 import {
-  ArrowDropDownSharp,
-  ArrowDropUpSharp,
+  ArrowDownward,
+  ArrowForward,
+  ArrowUpward,
   DeleteSharp,
+  DoubleArrowSharp,
   KeyboardArrowUpSharp,
   PriorityHighSharp,
 } from "@mui/icons-material";
 import cx from "classnames";
 import { MiniButton } from "components/atoms/MiniButton";
+import { ToggleButton } from "components/atoms/ToggleButton";
 import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
 import { HighlightTag } from "components/molecules/HighlightTag";
 import { RelationsTable } from "components/molecules/RelationsTable";
-import { grey500, grey700, hueSwatch } from "components/styles";
+import { grey700, hueSwatch } from "components/styles";
 import React, { useState } from "react";
 import { TestIds } from "util/test-ids";
 
@@ -42,7 +45,12 @@ interface HighlightBlurbProps {
 
   onDelete?: () => void;
 
+  reviewState?: "none" | "up_for_review" | number;
+
+  onStartSRS?: () => void;
+
   onRateUp?: () => void;
+  onRateNeutral?: () => void;
   onRateDown?: () => void;
 
   onHighlightClick?: () => void;
@@ -62,7 +70,10 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
   onExpand,
   onCollapse,
   onDelete,
+  reviewState,
+  onStartSRS,
   onRateUp,
+  onRateNeutral,
   onRateDown,
   onHighlightClick,
   onHighlightObjectClick,
@@ -86,24 +97,57 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
     }
   };
 
-  const remind = true;
+  const upForReview = reviewState === "up_for_review";
+  const showRatingControls = upForReview || typeof reviewState === "number";
+
+  const allowCardCreation = reviewState === "none";
+
+  const ratedUp = typeof reviewState === "number" && reviewState === 5;
+  const ratedNeutral = typeof reviewState === "number" && reviewState === 4;
+  const ratedDown = typeof reviewState === "number" && reviewState < 4;
 
   const blurbRatingControls = (
     <>
-      <MiniButton
-        tooltip="Important"
-        onClick={onRateUp}
-        foregroundColor={grey500}
-      >
-        <ArrowDropUpSharp />
-      </MiniButton>
-      <MiniButton
-        tooltip="Not important"
-        onClick={onRateDown}
-        foregroundColor={grey500}
-      >
-        <ArrowDropDownSharp />
-      </MiniButton>
+      {showRatingControls && (
+        <>
+          <ToggleButton
+            tooltip="Important"
+            onClick={onRateUp}
+            value="check"
+            selected={ratedUp}
+            disableShadow
+          >
+            <ArrowUpward />
+          </ToggleButton>
+          <ToggleButton
+            tooltip="Important"
+            onClick={onRateNeutral}
+            value="check"
+            selected={ratedNeutral}
+            disableShadow
+          >
+            <ArrowForward />
+          </ToggleButton>
+          <ToggleButton
+            tooltip="Not important"
+            onClick={onRateDown}
+            value="check"
+            selected={ratedDown}
+            disableShadow
+          >
+            <ArrowDownward />
+          </ToggleButton>
+        </>
+      )}
+      {allowCardCreation && (
+        <MiniButton
+          tooltip="Start spaced repetition"
+          onClick={onStartSRS}
+          foregroundColor={grey700}
+        >
+          <DoubleArrowSharp />
+        </MiniButton>
+      )}
       <div style={{ flexGrow: "1" }}></div>
       <MiniButton
         tooltip="Collapse highlight"
@@ -131,22 +175,20 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
         borderColor: hueSwatch(highlightProps.hue, "light_background"),
       }}
     >
-      <div className={styles["blurb-left-column"]}>
-        <div
-          className={cx(
-            styles["blurb-left-column"],
-            expanded && styles["expanded"]
-          )}
-        >
-          {blurbRatingControls}
-        </div>
+      <div
+        className={cx(
+          styles["blurb-left-column"],
+          expanded && styles["expanded"]
+        )}
+      >
+        {blurbRatingControls}
       </div>
       <div className={styles["blurb-right-column"]}>
         <div
           className={cx(styles["blurb-header"], expanded && styles["expanded"])}
         >
           <div className={styles["blurb-action-buttons"]}>
-            {remind && (
+            {upForReview && (
               <MiniButton
                 foregroundColor={hueSwatch(
                   highlightProps.hue,

@@ -1,7 +1,4 @@
 import { Type } from "components/atoms/Type";
-import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
-import { HighlightBlurb } from "components/molecules/HighlightBlurb";
-import { RelationsTable } from "components/molecules/RelationsTable";
 import React from "react";
 import { IpsumDay } from "util/dates";
 
@@ -12,40 +9,14 @@ interface BrowserHighlightsTabProps {
   optionsDrawerProps: React.ComponentProps<
     typeof HighlightResultsOptionsDrawer
   >;
-  highlights: {
-    day: IpsumDay;
-    highlightProps: React.ComponentProps<
-      typeof HighlightBlurb
-    >["highlightProps"];
-    excerptProps: React.ComponentProps<typeof HighlightBlurb>["excerptProps"];
-    relationsProps: React.ComponentProps<typeof RelationsTable>["relations"];
-    highlightObject:
-      | { type: "daily_journal"; entryKey: string }
-      | { type: "arc"; arcId: string }
-      | { type: "comment"; commentId: string; highlightId: string };
-  }[];
-  onHighlightClick?: (highlightId: string) => void;
-  onHighlightDailyJournalClick?: (entryKey: string) => void;
-  onHighlightArcClick?: (arcId: string) => void;
-  onHighlightCommentClick?: (commentId: string, highlightId: string) => void;
-  onHighlightDelete?: (highlightId: string) => void;
-
-  relationsTableProps: RelationsTableConnectedProps;
+  highlightsWithDay: { id: string; day: IpsumDay }[];
+  renderHighlight: (highlightId: string) => React.ReactNode;
 }
 
 export const BrowserHighlightsTab: React.FunctionComponent<
   BrowserHighlightsTabProps
-> = ({
-  optionsDrawerProps,
-  highlights,
-  onHighlightClick,
-  onHighlightDailyJournalClick,
-  onHighlightArcClick,
-  onHighlightCommentClick,
-  onHighlightDelete,
-  relationsTableProps,
-}) => {
-  const groupedHighlights = highlights.reduce(
+> = ({ optionsDrawerProps, highlightsWithDay, renderHighlight }) => {
+  const groupedHighlights = highlightsWithDay.reduce(
     (acc, highlight) => {
       const day = highlight.day.toString("url-format");
       if (!acc[day]) {
@@ -54,7 +25,7 @@ export const BrowserHighlightsTab: React.FunctionComponent<
       acc[day].push(highlight);
       return acc;
     },
-    {} as Record<string, (typeof highlights)[number][]>
+    {} as Record<string, (typeof highlightsWithDay)[number][]>
   );
 
   return (
@@ -71,44 +42,7 @@ export const BrowserHighlightsTab: React.FunctionComponent<
               </Type>
               <div className={styles["day-group-blurbs"]}>
                 {highlights.map((highlight) => {
-                  return (
-                    <HighlightBlurb
-                      key={highlight.highlightProps.highlightId}
-                      highlightProps={highlight.highlightProps}
-                      excerptProps={highlight.excerptProps}
-                      relations={highlight.relationsProps}
-                      onHighlightClick={() => {
-                        onHighlightClick?.(
-                          highlight.highlightProps.highlightId
-                        );
-                      }}
-                      onDelete={() => {
-                        onHighlightDelete?.(
-                          highlight.highlightProps.highlightId
-                        );
-                      }}
-                      onHighlightObjectClick={() => {
-                        switch (highlight.highlightObject.type) {
-                          case "daily_journal":
-                            onHighlightDailyJournalClick?.(
-                              highlight.highlightObject.entryKey
-                            );
-                            break;
-                          case "arc":
-                            onHighlightArcClick?.(
-                              highlight.highlightObject.arcId
-                            );
-                            break;
-                          case "comment":
-                            onHighlightCommentClick?.(
-                              highlight.highlightObject.commentId,
-                              highlight.highlightObject.highlightId
-                            );
-                        }
-                      }}
-                      relationsTableProps={relationsTableProps}
-                    />
-                  );
+                  return renderHighlight(highlight.id);
                 })}
               </div>
             </div>

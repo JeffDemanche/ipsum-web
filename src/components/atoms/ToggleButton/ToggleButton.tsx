@@ -1,4 +1,4 @@
-import { ToggleButton as MuiToggleButton } from "@mui/material";
+import { ToggleButton as MuiToggleButton, Tooltip } from "@mui/material";
 import {
   box_shadow_primary,
   font_family_sans,
@@ -7,11 +7,14 @@ import {
   grey500,
   grey700,
 } from "components/styles";
-import React from "react";
+import React, { CSSProperties } from "react";
 
 type ToggleButtonProps = {
   variant?: "text" | "outlined";
+  fontSize?: "x-small" | "small" | "medium" | "large" | "x-large";
   disableShadow?: boolean;
+  tooltip?: string;
+  foregroundColor?: CSSProperties["color"];
   children: React.ReactNode;
 } & Pick<
   React.ComponentProps<typeof MuiToggleButton>,
@@ -21,6 +24,9 @@ type ToggleButtonProps = {
 export const ToggleButton: React.FunctionComponent<ToggleButtonProps> = ({
   children,
   disableShadow,
+  fontSize = "small",
+  tooltip,
+  foregroundColor = grey700,
   variant = "text",
   ...props
 }) => {
@@ -29,10 +35,22 @@ export const ToggleButton: React.FunctionComponent<ToggleButtonProps> = ({
       ? "none"
       : box_shadow_primary;
 
-  return (
+  const size = {
+    "x-small": "16px",
+    small: "20px",
+    medium: "24px",
+    large: "32px",
+    "x-large": "40px",
+  }[fontSize];
+
+  const button = (
     <MuiToggleButton
       style={{
-        color: grey700,
+        color: foregroundColor,
+        width: size,
+        minWidth: size,
+        height: size,
+        minHeight: size,
         fontWeight: font_weight_light,
         fontFamily: font_family_sans,
         fontSize: font_size_small,
@@ -44,4 +62,6 @@ export const ToggleButton: React.FunctionComponent<ToggleButtonProps> = ({
       {children}
     </MuiToggleButton>
   );
+
+  return tooltip ? <Tooltip title={tooltip}>{button}</Tooltip> : button;
 };
