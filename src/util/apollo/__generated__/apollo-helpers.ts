@@ -124,16 +124,21 @@ export type RelationFieldPolicy = {
 	predicate?: FieldPolicy<any> | FieldReadFunction<any>,
 	subject?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type SRSCardKeySpecifier = ('history' | 'id' | 'reviews' | 'subject' | SRSCardKeySpecifier)[];
+export type SRSCardKeySpecifier = ('history' | 'id' | 'reviews' | 'subject' | 'upForReview' | SRSCardKeySpecifier)[];
 export type SRSCardFieldPolicy = {
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	reviews?: FieldPolicy<any> | FieldReadFunction<any>,
-	subject?: FieldPolicy<any> | FieldReadFunction<any>
+	subject?: FieldPolicy<any> | FieldReadFunction<any>,
+	upForReview?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type SRSCardReviewKeySpecifier = ('day' | 'rating' | SRSCardReviewKeySpecifier)[];
+export type SRSCardReviewKeySpecifier = ('day' | 'easeAfter' | 'easeBefore' | 'intervalAfter' | 'intervalBefore' | 'rating' | SRSCardReviewKeySpecifier)[];
 export type SRSCardReviewFieldPolicy = {
 	day?: FieldPolicy<any> | FieldReadFunction<any>,
+	easeAfter?: FieldPolicy<any> | FieldReadFunction<any>,
+	easeBefore?: FieldPolicy<any> | FieldReadFunction<any>,
+	intervalAfter?: FieldPolicy<any> | FieldReadFunction<any>,
+	intervalBefore?: FieldPolicy<any> | FieldReadFunction<any>,
 	rating?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type StrictTypedTypePolicies = {

@@ -99,6 +99,10 @@ export interface InMemorySRSCardReview {
   __typename: "SRSCardReview";
   day: string;
   rating: number;
+  easeBefore: number;
+  easeAfter: number;
+  intervalBefore: number;
+  intervalAfter: number;
 }
 
 export interface InMemorySRSCard {

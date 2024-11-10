@@ -25,6 +25,12 @@ export const createSRSCard: APIFunction<
     );
   }
 
+  if (projectState.collection("highlights").get(args.subject).srsCard) {
+    throw new Error(
+      `Highlight with id ${args.subject} already has an associated srsCard`
+    );
+  }
+
   const srsCard = projectState.collection("srsCards").create(id, {
     __typename: "SRSCard",
     id,

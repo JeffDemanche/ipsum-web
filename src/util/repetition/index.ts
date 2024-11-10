@@ -1,1 +1,1 @@
-export { SRSCard } from "./srs-card";
+export { IpsumSRSCard } from "./srs-card";

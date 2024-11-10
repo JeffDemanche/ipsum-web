@@ -9,6 +9,10 @@ export const srsTypeDef = gql`
   type SRSCardReview {
     day: Day!
     rating: Int!
+    easeBefore: Float!
+    easeAfter: Float!
+    intervalBefore: Float!
+    intervalAfter: Float!
   }
 
   type SRSCard {
@@ -16,5 +20,6 @@ export const srsTypeDef = gql`
     history: History!
     subject: Highlight!
     reviews: [SRSCardReview!]!
+    upForReview: Boolean!
   }
 `;

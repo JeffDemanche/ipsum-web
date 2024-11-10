@@ -29,7 +29,7 @@ export const HighlightBlurbExample: Story = {
     width: "400px",
   },
   args: {
-    reviewState: 5,
+    reviewState: { type: "reviewed", rating: 5 },
     highlightProps: {
       highlightId: "highlight-id",
       highlightNumber: 1,

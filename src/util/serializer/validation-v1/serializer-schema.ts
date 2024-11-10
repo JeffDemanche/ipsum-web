@@ -9,6 +9,10 @@ const SRSCardReviewSchema = t.type({
   __typename: t.literal("SRSCardReview"),
   day: t.string,
   rating: t.number,
+  easeBefore: t.number,
+  easeAfter: t.number,
+  intervalBefore: t.number,
+  intervalAfter: t.number,
 });
 
 export const SerializedSchema = t.type(

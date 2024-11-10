@@ -26,16 +26,24 @@
     }
   }
 
+  
   .blurb-left-column {
     display: flex;
     flex-direction: column;
     gap: @grid_x_1;
     padding: @grid_x_0_5;
+    
+    .days-until-review-text {
+      cursor: pointer;
+      text-align: center;
+    }
   }
 
   .blurb-right-column {
     display: flex;
     flex-direction: column;
+    flex-shrink: 1;
+    min-width: 50px;
     gap: @grid_x_1;
     width: 100%;
   }
@@ -66,17 +74,18 @@
       display: none;
       flex-direction: row;
       gap: @grid_x_1;
-    }
+      align-items: center;
 
-    &.expanded {
-      flex-direction: column;
-
-      .blurb-expanded-action-buttons {
+      &.expanded {
         display: flex;
       }
     }
 
-    .blurb-action-buttons {
+    &.expanded {
+      flex-direction: column;
+    }
+
+    .blurb-notification {
       display: flex;
       flex-direction: row;
       gap: @grid_x_1;

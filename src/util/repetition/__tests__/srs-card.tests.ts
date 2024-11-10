@@ -1,10 +1,10 @@
 import { IpsumDay } from "util/dates";
 
-import { SRSCard } from "../srs-card";
+import { IpsumSRSCard } from "../srs-card";
 
 describe("SRS Card", () => {
   it("should have base case EF and interval", () => {
-    const card = new SRSCard({
+    const card = new IpsumSRSCard({
       creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
       ratings: [],
     });
@@ -13,7 +13,7 @@ describe("SRS Card", () => {
   });
 
   it("should become up for review the day after creation, but not on creation day", () => {
-    const card = new SRSCard({
+    const card = new IpsumSRSCard({
       creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
       ratings: [],
     });
@@ -26,7 +26,7 @@ describe("SRS Card", () => {
   });
 
   it("should have variable EF and constant interval after single 5 rating", () => {
-    const card = new SRSCard({
+    const card = new IpsumSRSCard({
       creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
       ratings: [],
     });
@@ -39,7 +39,7 @@ describe("SRS Card", () => {
   });
 
   it("should have variable EF and constant interval after single 4 rating", () => {
-    const card = new SRSCard({
+    const card = new IpsumSRSCard({
       creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
       ratings: [],
     });
@@ -103,7 +103,7 @@ describe("SRS Card", () => {
   ])(
     "for prior ease $priorEase and interval $priorInterval, should have ease $expectedEase and interval $expectedInterval after rating $q",
     ({ q, priorEase, priorInterval, expectedEase, expectedInterval }) => {
-      const card = new SRSCard({
+      const card = new IpsumSRSCard({
         creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
         ratings: [
           {

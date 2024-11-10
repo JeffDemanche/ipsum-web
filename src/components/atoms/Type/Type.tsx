@@ -1,4 +1,4 @@
-import { Typography as MuiTypography } from "@mui/material";
+import { Tooltip, Typography as MuiTypography } from "@mui/material";
 import React, { CSSProperties } from "react";
 
 import { TypeLineHeight, TypeSize, TypeVariant, TypeWeight } from "./types";
@@ -10,10 +10,11 @@ type TypeProps = {
   underline?: boolean;
   lineHeight?: TypeLineHeight;
   component?: React.ElementType;
+  tooltip?: string;
   children: React.ReactNode;
 } & Pick<
   React.ComponentProps<typeof MuiTypography>,
-  "color" | "style" | "display"
+  "color" | "style" | "display" | "className"
 >;
 
 const variantToMuiVariant = (variant: TypeVariant) => {
@@ -69,9 +70,10 @@ export const Type: React.FunctionComponent<TypeProps> = ({
   component,
   children,
   color,
+  tooltip,
   ...muiTypographyProps
 }) => {
-  return (
+  const type = (
     <MuiTypography
       variant={variantToMuiVariant(variant)}
       fontWeight={weight}
@@ -85,4 +87,6 @@ export const Type: React.FunctionComponent<TypeProps> = ({
       {children}
     </MuiTypography>
   );
+
+  return tooltip ? <Tooltip title={tooltip}>{type}</Tooltip> : type;
 };

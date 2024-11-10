@@ -1,13 +1,17 @@
 import { useQuery } from "@apollo/client";
 import { HighlightBlurb } from "components/molecules/HighlightBlurb";
+import { useMemo } from "react";
 import {
+  apiCreateSRSCard,
   apiDeleteHighlight,
+  apiReviewSRSCard,
   urlInsertLayer,
   useApiAction,
   useUrlAction,
 } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
+import { IpsumSRSCard } from "util/repetition";
 
 import { useHighlightRelationsTableConnected } from "./use-highlight-relations-table-connected";
 
@@ -25,6 +29,7 @@ export type HighlightBlurbConnectedProps = Pick<
   | "relationsTableProps"
   | "onStartSRS"
   | "reviewState"
+  | "today"
 >;
 
 const UseHighlightBlurbConnectedQuery = gql(`
@@ -69,6 +74,23 @@ const UseHighlightBlurbConnectedQuery = gql(`
       history {
         dateCreated
       }
+      srsCard  {
+        id
+        upForReview
+        history {
+          dateCreated
+        }
+        reviews {
+          day {
+            day
+          }
+          rating
+          easeBefore
+          easeAfter
+          intervalBefore
+          intervalAfter
+        }
+      }
     }
   }  
 `);
@@ -85,6 +107,10 @@ export const useHighlightBlurbConnected = ({
   const insertLayer = useUrlAction(urlInsertLayer);
 
   const [deleteHighlight] = useApiAction(apiDeleteHighlight);
+
+  const [createSRSCard] = useApiAction(apiCreateSRSCard);
+
+  const [reviewSRSCard] = useApiAction(apiReviewSRSCard);
 
   const highlight = data?.highlight;
 
@@ -162,6 +188,68 @@ export const useHighlightBlurbConnected = ({
     deleteHighlight({ id: highlightId });
   };
 
+  const onStartSRS = () => {
+    createSRSCard({ subject: highlightId, subjectType: "Highlight" });
+  };
+
+  const srsCard = highlight.srsCard;
+
+  const onRateUp = () => {
+    srsCard &&
+      reviewSRSCard({
+        id: srsCard.id,
+        rating: 5,
+      });
+  };
+
+  const onRateNeutral = () => {
+    srsCard &&
+      reviewSRSCard({
+        id: srsCard.id,
+        rating: 4,
+      });
+  };
+
+  const onRateDown = () => {
+    srsCard &&
+      reviewSRSCard({
+        id: srsCard.id,
+        rating: 1,
+      });
+  };
+
+  const card = useMemo(
+    () =>
+      srsCard
+        ? new IpsumSRSCard({
+            creationDay: IpsumDay.fromString(
+              srsCard.history.dateCreated,
+              "iso"
+            ),
+            ratings: srsCard.reviews.map((review) => ({
+              ...review,
+              day: IpsumDay.fromString(review.day.day, "stored-day"),
+              q: review.rating,
+            })),
+          })
+        : null,
+    [srsCard]
+  );
+
+  const ratedToday = card?.ratedOnDay(IpsumDay.today());
+
+  const reviewState: HighlightBlurbConnectedProps["reviewState"] = (() => {
+    if (!card) {
+      return { type: "none" };
+    } else if (ratedToday) {
+      return { type: "reviewed", rating: card?.lastRating.q };
+    } else if (card?.upForReview()) {
+      return { type: "up_for_review" };
+    } else {
+      return { type: "not_up_for_review", nextReviewDay: card.nextReviewDay() };
+    }
+  })();
+
   return {
     highlightProps,
     relationsTableProps,
@@ -170,10 +258,11 @@ export const useHighlightBlurbConnected = ({
     onHighlightClick,
     onHighlightObjectClick,
     onDelete,
-    onRateDown: () => {},
-    onRateNeutral: () => {},
-    onRateUp: () => {},
-    onStartSRS: () => {},
-    reviewState: "none",
+    onRateUp,
+    onRateNeutral,
+    onRateDown,
+    onStartSRS,
+    reviewState,
+    today: IpsumDay.today(),
   };
 };

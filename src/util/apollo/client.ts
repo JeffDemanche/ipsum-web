@@ -1,10 +1,4 @@
-import {
-  ApolloClient,
-  from,
-  gql,
-  InMemoryCache,
-  makeVar,
-} from "@apollo/client";
+import { ApolloClient, from, gql, InMemoryCache } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import {
   ArcEntryResolvers,
@@ -17,6 +11,7 @@ import {
   JournalEntryResolvers,
   RelationResolvers,
   SearchResolvers,
+  SRSResolvers,
 } from "util/api";
 import { PROJECT_STATE } from "util/state";
 
@@ -154,6 +149,7 @@ const typePolicies: StrictTypedTypePolicies = {
       ...JournalEntryResolvers.Query.fields,
       ...CommentResolvers.Query.fields,
       ...CommentEntryResolvers.Query.fields,
+      ...SRSResolvers.Query.fields,
     },
   },
   Entry: EntryResolvers.Entry,
@@ -166,6 +162,8 @@ const typePolicies: StrictTypedTypePolicies = {
   JournalEntry: JournalEntryResolvers.JournalEntry,
   Comment: CommentResolvers.Comment,
   CommentEntry: CommentEntryResolvers.CommentEntry,
+  SRSCard: SRSResolvers.SRSCard,
+  SRSCardReview: SRSResolvers.SRSCardReview,
 };
 
 const cache = new InMemoryCache({ typePolicies, addTypename: true });

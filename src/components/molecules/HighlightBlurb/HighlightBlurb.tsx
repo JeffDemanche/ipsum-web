@@ -10,12 +10,14 @@ import {
 import cx from "classnames";
 import { MiniButton } from "components/atoms/MiniButton";
 import { ToggleButton } from "components/atoms/ToggleButton";
+import { Type } from "components/atoms/Type";
 import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
 import { HighlightTag } from "components/molecules/HighlightTag";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import { grey700, hueSwatch } from "components/styles";
 import React, { useState } from "react";
+import { IpsumDay } from "util/dates";
 import { TestIds } from "util/test-ids";
 
 import styles from "./HighlightBlurb.less";
@@ -45,7 +47,12 @@ interface HighlightBlurbProps {
 
   onDelete?: () => void;
 
-  reviewState?: "none" | "up_for_review" | number;
+  today: IpsumDay;
+  reviewState?:
+    | { type: "none" }
+    | { type: "not_up_for_review"; nextReviewDay: IpsumDay }
+    | { type: "up_for_review" }
+    | { type: "reviewed"; rating: number };
 
   onStartSRS?: () => void;
 
@@ -78,6 +85,7 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
   onHighlightClick,
   onHighlightObjectClick,
   relationsTableProps,
+  today,
 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
 
@@ -97,18 +105,25 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
     }
   };
 
-  const upForReview = reviewState === "up_for_review";
+  const upForReview = reviewState.type === "up_for_review";
+  const notUpForReview = reviewState.type === "not_up_for_review";
+  const daysUntilReview =
+    reviewState.type === "not_up_for_review"
+      ? today.numDaysUntil(reviewState.nextReviewDay)
+      : 0;
+
   const showRatingControls = upForReview || typeof reviewState === "number";
 
-  const allowCardCreation = reviewState === "none";
+  const allowCardCreation = reviewState.type === "none";
 
-  const ratedUp = typeof reviewState === "number" && reviewState === 5;
-  const ratedNeutral = typeof reviewState === "number" && reviewState === 4;
-  const ratedDown = typeof reviewState === "number" && reviewState < 4;
+  const ratedUp = reviewState.type === "reviewed" && reviewState.rating === 5;
+  const ratedNeutral =
+    reviewState.type === "reviewed" && reviewState.rating === 4;
+  const ratedDown = reviewState.type === "reviewed" && reviewState.rating < 4;
 
   const blurbRatingControls = (
     <>
-      {showRatingControls && (
+      {showRatingControls && upForReview && (
         <>
           <ToggleButton
             tooltip="Important"
@@ -138,6 +153,16 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
             <ArrowDownward />
           </ToggleButton>
         </>
+      )}
+      {notUpForReview && (
+        <Type
+          size="small"
+          className={styles["days-until-review-text"]}
+          color={grey700}
+          tooltip={`Next review: ${reviewState.nextReviewDay.toString("entry-printed-date")}`}
+        >
+          {daysUntilReview}d
+        </Type>
       )}
       {allowCardCreation && (
         <MiniButton
@@ -184,11 +209,9 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
         {blurbRatingControls}
       </div>
       <div className={styles["blurb-right-column"]}>
-        <div
-          className={cx(styles["blurb-header"], expanded && styles["expanded"])}
-        >
-          <div className={styles["blurb-action-buttons"]}>
-            {upForReview && (
+        <div className={styles["blurb-header"]}>
+          {upForReview && (
+            <div className={styles["blurb-notification"]}>
               <MiniButton
                 foregroundColor={hueSwatch(
                   highlightProps.hue,
@@ -198,18 +221,8 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
               >
                 <PriorityHighSharp />
               </MiniButton>
-            )}
-            <div className={styles["blurb-expanded-action-buttons"]}>
-              <MiniButton
-                data-testid={TestIds.HighlightBlurb.DeleteButton}
-                onClick={onDelete}
-                tooltip="Delete highlight"
-                foregroundColor={grey700}
-              >
-                <DeleteSharp />
-              </MiniButton>
             </div>
-          </div>
+          )}
           <HighlightTag
             fontSize="small"
             hue={highlightProps.hue}
@@ -219,6 +232,21 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
             onObjectTextClick={onHighlightObjectClick}
             onHighlightClick={onHighlightClick}
           />
+          <div
+            className={cx(
+              styles["blurb-expanded-action-buttons"],
+              expanded && styles["expanded"]
+            )}
+          >
+            <MiniButton
+              data-testid={TestIds.HighlightBlurb.DeleteButton}
+              onClick={onDelete}
+              tooltip="Delete highlight"
+              foregroundColor={grey700}
+            >
+              <DeleteSharp />
+            </MiniButton>
+          </div>
         </div>
         <BlurbExcerpt
           highlightId={highlightProps.highlightId}

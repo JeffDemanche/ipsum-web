@@ -8,3 +8,4 @@ export { RelationResolvers } from "./relation-resolvers";
 export { SearchResolvers } from "./search-resolvers";
 export { ArcEntryResolvers } from "./arc-entry-resolvers";
 export { EntryResolvers } from "./entry-resolvers";
+export { SRSResolvers } from "./srs-resolvers";

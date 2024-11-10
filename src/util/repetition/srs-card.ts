@@ -1,11 +1,13 @@
+import { SrsCard } from "util/apollo";
 import { IpsumDay } from "util/dates";
+import { InMemorySRSCard } from "util/state";
 
 import { SRSCardHistory, SRSCardRating } from "./types";
 
 // https://www.supermemo.com/en/blog/application-of-a-computer-to-improve-the-results-obtained-in-working-with-the-supermemo-method
 const INITIAL_REP_INTERVAL = 6;
 
-export class SRSCard {
+export class IpsumSRSCard {
   private __cardHistory: Readonly<SRSCardHistory>;
   private __lastRating?: Readonly<SRSCardRating>;
 
@@ -27,6 +29,10 @@ export class SRSCard {
       this.__ease = this.__lastRating.easeAfter;
       this.__interval = this.__lastRating.intervalAfter;
     }
+  }
+
+  ratedOnDay(day: IpsumDay): boolean {
+    return this.__cardHistory.ratings.some((rating) => rating.day.equals(day));
   }
 
   get ease(): number {
@@ -75,6 +81,16 @@ export class SRSCard {
     return firstReviewDay.isBefore(today) || firstReviewDay.equals(today);
   }
 
+  nextReviewDay(): IpsumDay {
+    return this.__lastRating
+      ? this.__lastRating.day.add(Math.ceil(this.__interval))
+      : this.__cardHistory.creationDay.add(this.__interval);
+  }
+
+  get lastRating() {
+    return this.__lastRating;
+  }
+
   /**
    * Does not mutate the card instance.
    */
@@ -95,5 +111,16 @@ export class SRSCard {
     };
 
     return rating;
+  }
+
+  static fromProjectStateCard(card: InMemorySRSCard) {
+    return new IpsumSRSCard({
+      creationDay: IpsumDay.fromString(card.history.dateCreated, "iso"),
+      ratings: card.reviews.map((review) => ({
+        ...review,
+        q: review.rating,
+        day: IpsumDay.fromString(review.day, "stored-day"),
+      })),
+    });
   }
 }
