@@ -1,3 +1,5 @@
+import { KeyboardArrowUpSharp } from "@mui/icons-material";
+import { Button } from "components/atoms/Button";
 import { ToggleButton } from "components/atoms/ToggleButton";
 import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
 import React, {
@@ -17,16 +19,12 @@ import {
 
 import styles from "./LexicalFilterSelector.less";
 
-export interface LexicalFilterSelectorConnectionProps {
-  arcByIdOrName: (idOrName: string) => {
-    id: string;
-    name: string;
-    color: number;
-  };
-}
+export interface LexicalFilterSelectorConnectionProps {}
 
 type LexicalFilterSelectorProps = {
   editMode: boolean;
+  onEnterEditMode: () => void;
+  onLeaveEditMode: () => void;
 
   programText: string;
   onFilterProgramChange: (
@@ -35,12 +33,20 @@ type LexicalFilterSelectorProps = {
   ) => void;
 
   relationChooserProps: RelationChooserConnectedProps;
-} & LexicalFilterSelectorConnectionProps;
+
+  arcByIdOrName: (idOrName: string) => {
+    id: string;
+    name: string;
+    color: number;
+  };
+};
 
 export const LexicalFilterSelector: React.FunctionComponent<
   LexicalFilterSelectorProps
 > = ({
   editMode,
+  onEnterEditMode,
+  onLeaveEditMode,
   programText,
   onFilterProgramChange,
   relationChooserProps,
@@ -93,17 +99,37 @@ export const LexicalFilterSelector: React.FunctionComponent<
     return createNodeMarkupRecursive(endowedAST);
   }, [createNodeMarkupRecursive, currentProgram]);
 
+  const onClickContainer = () => {
+    if (!editMode) {
+      onEnterEditMode();
+    }
+  };
+
   return (
-    <div className={styles["lexical-filter-selector"]}>
-      <ToggleButton
-        value="check"
-        onClick={(e) => {
-          setRawMode(!rawMode);
-        }}
-      >
-        Raw
-      </ToggleButton>
+    <div
+      role="button"
+      aria-expanded={editMode}
+      onClick={onClickContainer}
+      className={styles["lexical-filter-selector"]}
+    >
+      {editMode && (
+        <ToggleButton
+          value="check"
+          fontSize="small"
+          selected={rawMode}
+          onClick={(e) => {
+            setRawMode(!rawMode);
+          }}
+        >
+          Raw
+        </ToggleButton>
+      )}
       <div className={styles["non-raw-content"]}>{markupTree}</div>
+      {editMode && (
+        <Button variant="text" onClick={onLeaveEditMode}>
+          <KeyboardArrowUpSharp />
+        </Button>
+      )}
     </div>
   );
 };

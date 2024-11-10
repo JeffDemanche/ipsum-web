@@ -1,4 +1,7 @@
+import cx from "classnames";
 import { Drawer } from "components/atoms/Drawer";
+import { LexicalFilterSelectorConnectedProps } from "components/hooks/use-lexical-filter-selector-connected";
+import { LexicalFilterSelector } from "components/molecules/LexicalFilterSelector";
 import React, { FunctionComponent, useMemo } from "react";
 import { IpsumDay } from "util/dates";
 import { HighlightsBrowserTab } from "util/state";
@@ -21,9 +24,8 @@ interface BrowserDrawerProps {
   tab: HighlightsBrowserTab["type"];
   highlightsWithDay: { id: string; day: IpsumDay }[];
   renderHighlight: (highlightId: string) => React.ReactNode;
-  optionsDrawerProps: React.ComponentProps<
-    typeof BrowserHighlightsTab
-  >["optionsDrawerProps"];
+
+  lexicalFilterSelectorProps: LexicalFilterSelectorConnectedProps;
 }
 
 export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
@@ -37,7 +39,7 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
   tab,
   highlightsWithDay,
   renderHighlight,
-  optionsDrawerProps,
+  lexicalFilterSelectorProps,
 }) => {
   const openedContent = useMemo(() => {
     switch (tab) {
@@ -48,10 +50,17 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
             style={closedContentStyle}
             className={closedContentClassName}
           >
+            <div
+              className={cx(
+                styles["filter-selector-container"],
+                lexicalFilterSelectorProps.editMode && styles["edit-mode"]
+              )}
+            >
+              <LexicalFilterSelector {...lexicalFilterSelectorProps} />
+            </div>
             <BrowserHighlightsTab
               highlightsWithDay={highlightsWithDay}
               renderHighlight={renderHighlight}
-              optionsDrawerProps={optionsDrawerProps}
             />
           </div>
         );
@@ -62,7 +71,7 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
     closedContentClassName,
     closedContentStyle,
     highlightsWithDay,
-    optionsDrawerProps,
+    lexicalFilterSelectorProps,
     renderHighlight,
     tab,
   ]);

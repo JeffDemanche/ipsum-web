@@ -7,15 +7,26 @@ import { NodeComponent, NodeComponentProps } from "../types";
 export const Node_highlights_sort_type: NodeComponent = ({
   editMode,
   endowedNode,
+  transformProgram,
   childComponents,
 }: NodeComponentProps) => {
   const sortTypeOptions = ["recent", "importance"];
+
+  const onSortTypeChange = (newType: string) => {
+    transformProgram((program) => program.updateNodeText(endowedNode, newType));
+  };
 
   const editModeMarkup = (
     <>
       <Select variant="text" value={endowedNode.rawNode.text}>
         {sortTypeOptions.map((type) => (
-          <MenuItem key={type} value={type} onClick={() => {}}>
+          <MenuItem
+            key={type}
+            value={type}
+            onClick={() => {
+              onSortTypeChange(type);
+            }}
+          >
             {type}
           </MenuItem>
         ))}

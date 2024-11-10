@@ -47,7 +47,6 @@ export const ToggleButton: React.FunctionComponent<ToggleButtonProps> = ({
     <MuiToggleButton
       style={{
         color: foregroundColor,
-        width: size,
         minWidth: size,
         height: size,
         minHeight: size,

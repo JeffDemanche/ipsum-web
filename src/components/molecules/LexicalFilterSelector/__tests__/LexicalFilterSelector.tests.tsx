@@ -16,6 +16,8 @@ describe("LexicalFilterSelector", () => {
         onFilterProgramChange={onFilterProgramChangeSpy}
         arcByIdOrName={arcByIdOrNameSpy}
         relationChooserProps={{ arcResults: [] }}
+        onEnterEditMode={() => {}}
+        onLeaveEditMode={() => {}}
       />
     );
   };

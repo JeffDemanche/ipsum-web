@@ -8,5 +8,9 @@ export const Node_day: NodeComponent = ({
   endowedNode,
   childComponents,
 }: NodeComponentProps) => {
-  return <Button>{endowedNode.rawNode.text}</Button>;
+  return editMode ? (
+    <Button>{endowedNode.rawNode.text}</Button>
+  ) : (
+    <>{endowedNode.rawNode.text}</>
+  );
 };

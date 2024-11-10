@@ -53,6 +53,7 @@ export const Node_filter: NodeComponent = ({
 
   const nonEditModeMarkup = (
     <Type weight="light" size="small">
+      {filterType === "filter_expression_highlights" ? "highlights" : "arcs"}{" "}
       {childComponents}
     </Type>
   );
