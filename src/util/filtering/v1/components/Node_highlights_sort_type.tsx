@@ -10,7 +10,7 @@ export const Node_highlights_sort_type: NodeComponent = ({
   transformProgram,
   childComponents,
 }: NodeComponentProps) => {
-  const sortTypeOptions = ["recent", "importance"];
+  const sortTypeOptions = ["review status", "recent", "importance"];
 
   const onSortTypeChange = (newType: string) => {
     transformProgram((program) => program.updateNodeText(endowedNode, newType));
@@ -35,7 +35,12 @@ export const Node_highlights_sort_type: NodeComponent = ({
     </>
   );
 
-  const nonEditModeMarkup = <>{childComponents}</>;
+  const nonEditModeMarkup = (
+    <>
+      {endowedNode.rawNode.text}
+      {childComponents}
+    </>
+  );
 
   return <>{editMode ? editModeMarkup : nonEditModeMarkup}</>;
 };

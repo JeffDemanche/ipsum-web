@@ -19,7 +19,7 @@ export const useLexicalFilterSelectorConnected =
     const [editMode, setEditMode] = useState(false);
 
     const [programText, setProgramText] = useState(
-      'highlights sorted by importance as of "today"'
+      'highlights sorted by review status as of "today"'
     );
 
     const relationChooserProps = useRelationChooserConnected();

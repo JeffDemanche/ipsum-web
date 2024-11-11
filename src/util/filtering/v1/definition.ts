@@ -20,7 +20,7 @@ highlights_criterion_relation ::= "which" WS+ predicate WS+ relation_object
 
 highlights_sort ::= "sorted by" WS+ highlights_sort_type highlights_sort_as_of?
 highlights_sort_as_of ::= WS+ "as of" WS+ day
-highlights_sort_type ::= "importance" | "recent"
+highlights_sort_type ::= "review status" | "importance" | "recent"
 
 predicate ::= "is" | "relates to"
 relation_object ::= STRING
