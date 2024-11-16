@@ -1,4 +1,3 @@
-import { SrsCard } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { InMemorySRSCard } from "util/state";
 
@@ -96,7 +95,7 @@ export class IpsumSRSCard {
    */
   review(q: number, today?: IpsumDay): SRSCardRating {
     if (!this.upForReview(today)) {
-      throw new Error("Card is not up for review");
+      return undefined;
     }
 
     today = today ?? IpsumDay.today();

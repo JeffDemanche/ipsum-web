@@ -62,7 +62,7 @@ describe("API srs actions", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
       const dayReviewed1 = IpsumDay.fromString("1/8/2020", "stored-day");
-      const dayReviewed2 = IpsumDay.fromString("1/13/2020", "stored-day");
+      const dayReviewed2 = IpsumDay.fromString("1/15/2020", "stored-day");
 
       apiCreateEntry(
         {
@@ -119,11 +119,19 @@ describe("API srs actions", () => {
           __typename: "SRSCardReview",
           day: dayReviewed1.toString("stored-day"),
           rating: 5,
+          easeBefore: 2.5,
+          easeAfter: 2.6,
+          intervalBefore: 1,
+          intervalAfter: 6,
         },
         {
           __typename: "SRSCardReview",
           day: dayReviewed2.toString("stored-day"),
           rating: 3,
+          easeBefore: 2.6,
+          easeAfter: 2.46,
+          intervalBefore: 6,
+          intervalAfter: 14.76,
         },
       ]);
       expect(day1.srsCardsReviewed).toEqual([srsCard.id]);
