@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { useLexicalFilterSelectorConnected } from "components/hooks/use-lexical-filter-selector-connected";
 import React from "react";
 import { urlSetBrowserDrawerOpen, useUrlAction } from "util/api";
-import { gql, SearchSortType } from "util/apollo";
+import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { useIpsumSearchParams } from "util/state";
 
@@ -16,8 +16,8 @@ interface BrowserDrawerConnectedProps {
 }
 
 const BrowserDrawerHighlightsSearchQuery = gql(`
-  query BrowserDrawerHighlightsSearch($criteria: SearchCriteria!, $max: Int) @client {
-    searchHighlights(criteria: $criteria, max: $max) {
+  query BrowserDrawerHighlightsSearch($program: String!) {
+    searchHighlights(program: $program) {
       id
       history {
         dateCreated
@@ -39,17 +39,7 @@ export const BrowserDrawerConnected: React.FunctionComponent<
     BrowserDrawerHighlightsSearchQuery,
     {
       variables: {
-        criteria: {
-          sort: {
-            sortDay:
-              browserUrlParams?.tab?.sort?.day ??
-              IpsumDay.today().toString("url-format"),
-            type: SearchSortType.Date,
-          },
-          // TODO
-          and: [],
-        },
-        max: 50,
+        program: lexicalFilterSelectorProps.programText,
       },
     }
   );

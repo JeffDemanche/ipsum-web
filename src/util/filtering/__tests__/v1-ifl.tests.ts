@@ -1,13 +1,16 @@
 import { IpsumDay } from "util/dates";
 
-import { FilterableHighlight, IpsumFilteringProgramV1 } from "../v1/program";
-import { EndowedNode } from "../v1/types";
+import { IpsumFilteringProgramV1 } from "../v1/program";
+import { EndowedNode, FilterableHighlight } from "../v1/types";
 import { createFilteringProgram } from "../versions";
 
-const mock_hl = (mock: Partial<FilterableHighlight>): FilterableHighlight => {
+const mock_hl = (
+  mock: Partial<FilterableHighlight> & { id: string }
+): FilterableHighlight => {
   return {
     type: "highlight",
     day: IpsumDay.fromString("1/1/2020", "stored-day"),
+    outgoingRelations: [],
     ...mock,
   };
 };
@@ -90,18 +93,22 @@ describe("IpsumFilterLanguage V1", () => {
         highlights: [
           mock_hl({
             type: "highlight",
+            id: "1",
             day: IpsumDay.fromString("12/26/2019", "stored-day"),
           }),
           mock_hl({
             type: "highlight",
+            id: "2",
             day: IpsumDay.fromString("1/3/2020", "stored-day"),
           }),
           mock_hl({
             type: "highlight",
+            id: "3",
             day: IpsumDay.fromString("1/23/2020", "stored-day"),
           }),
           mock_hl({
             type: "highlight",
+            id: "4",
             day: IpsumDay.fromString("2/4/2020", "stored-day"),
           }),
         ],
@@ -115,27 +122,154 @@ describe("IpsumFilterLanguage V1", () => {
     });
 
     it("should execute simple relation filter on highlights", () => {
-      // const program = new IpsumFilteringProgramV1(
-      //   'highlights which relate to "foo"'
-      // );
-      // const results = program.evaluate({
-      //   highlights: [
-      //     mock_hl({
-      //       type: "highlight",
-      //       relation: "bar",
-      //     }),
-      //     mock_hl({
-      //       type: "highlight",
-      //       relation: "foo",
-      //     }),
-      //     mock_hl({
-      //       type: "highlight",
-      //       relation: "baz",
-      //     }),
-      //   ],
-      // });
-      // expect(results.highlights).toHaveLength(1);
-      // expect(results.highlights[0].relation).toBe("foo");
+      const program = new IpsumFilteringProgramV1();
+      program.setProgram('highlights which relates to "foo"');
+
+      const results = program.evaluate({
+        highlights: [
+          mock_hl({
+            type: "highlight",
+            id: "1",
+            outgoingRelations: [
+              {
+                predicate: "relates to",
+                objectType: "Arc",
+                objectId: "arc_foo",
+                objectName: "foo",
+              },
+              {
+                predicate: "is",
+                objectType: "Arc",
+                objectId: "arc_bar",
+                objectName: "bar",
+              },
+            ],
+          }),
+          mock_hl({
+            type: "highlight",
+            id: "2",
+            outgoingRelations: [
+              {
+                predicate: "relates to",
+                objectType: "Arc",
+                objectId: "arc_bar",
+                objectName: "bar",
+              },
+            ],
+          }),
+          mock_hl({
+            type: "highlight",
+            id: "3",
+            outgoingRelations: [
+              {
+                predicate: "is",
+                objectType: "Arc",
+                objectId: "arc_foo",
+                objectName: "foo",
+              },
+            ],
+          }),
+        ],
+      });
+      expect(results.highlights).toHaveLength(1);
+      expect(results.highlights[0].id).toBe("1");
+    });
+
+    it("should execute simple conjunction filter on highlights", () => {
+      const program = new IpsumFilteringProgramV1();
+      program.setProgram(
+        'highlights (which relates to "foo" and which is "bar")'
+      );
+
+      const results = program.evaluate({
+        highlights: [
+          mock_hl({
+            type: "highlight",
+            id: "1",
+            outgoingRelations: [
+              {
+                predicate: "relates to",
+                objectType: "Arc",
+                objectId: "arc_foo",
+                objectName: "foo",
+              },
+              {
+                predicate: "is",
+                objectType: "Arc",
+                objectId: "arc_bar",
+                objectName: "bar",
+              },
+            ],
+          }),
+          mock_hl({
+            type: "highlight",
+            id: "2",
+            outgoingRelations: [
+              {
+                predicate: "relates to",
+                objectType: "Arc",
+                objectId: "arc_foo",
+                objectName: "foo",
+              },
+            ],
+          }),
+          mock_hl({
+            type: "highlight",
+            id: "3",
+            outgoingRelations: [
+              {
+                predicate: "is",
+                objectType: "Arc",
+                objectId: "arc_foo",
+                objectName: "foo",
+              },
+            ],
+          }),
+        ],
+      });
+      expect(results.highlights).toHaveLength(1);
+      expect(results.highlights[0].id).toBe("1");
+    });
+
+    it("should execute simple disjunction filter on highlights", () => {
+      const program = new IpsumFilteringProgramV1();
+      program.setProgram(
+        'highlights (which relates to "foo" or from "1/1/2020" to "2/1/2020")'
+      );
+
+      const results = program.evaluate({
+        highlights: [
+          mock_hl({
+            type: "highlight",
+            id: "1",
+            day: IpsumDay.fromString("12/26/2019", "stored-day"),
+            outgoingRelations: [
+              {
+                predicate: "relates to",
+                objectType: "Arc",
+                objectId: "arc_foo",
+                objectName: "foo",
+              },
+            ],
+          }),
+          mock_hl({
+            type: "highlight",
+            id: "2",
+            day: IpsumDay.fromString("1/3/2020", "stored-day"),
+            outgoingRelations: [
+              {
+                predicate: "relates to",
+                objectType: "Arc",
+                objectId: "arc_bar",
+                objectName: "bar",
+              },
+            ],
+          }),
+        ],
+      });
+      expect(results.highlights).toHaveLength(2);
+      expect(results.highlights[0].id).toBe("1");
+      expect(results.highlights[1].id).toBe("2");
     });
   });
 

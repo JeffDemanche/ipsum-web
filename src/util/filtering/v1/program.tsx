@@ -21,24 +21,7 @@ import { Node_predicate } from "./components/Node_predicate";
 import { Node_relation_object } from "./components/Node_relation_object";
 import { Node_sort_expression_highlights } from "./components/Node_sort_expression_highlights";
 import { ebnf } from "./definition";
-import { EndowedNode } from "./types";
-
-export interface FilterableHighlight {
-  type: "highlight";
-  day: IpsumDay;
-}
-
-export interface FilterableArc {
-  type: "arc";
-  day: IpsumDay;
-}
-
-interface EvaluationSet {
-  highlights?: FilterableHighlight[];
-  arcs?: FilterableArc[];
-}
-
-export type EvaluationElement = FilterableHighlight | FilterableArc;
+import { EndowedNode, EvaluationElement, EvaluationSet } from "./types";
 
 export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
   private __program: string;
@@ -249,6 +232,10 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
     node: EndowedNode,
     element: EvaluationElement
   ): boolean {
+    if (!node) {
+      return true;
+    }
+
     switch (node.type) {
       case "ifl": {
         return this.evalFiltersPerElement(node.children[0], element);
@@ -336,13 +323,29 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
       }
 
       case "highlights_criterion_relation": {
-        return true;
+        if (element.type !== "highlight") return false;
+
+        const filterPredicate = node.children.find(
+          (child) => child.type === "predicate"
+        ).rawNode.text;
+        const filterRelationObject = node.children
+          .find((child) => child.type === "relation_object")
+          .rawNode.text.slice(1, -1);
+
+        return element.outgoingRelations.some((relation) => {
+          return (
+            relation.predicate === filterPredicate &&
+            relation.objectName === filterRelationObject
+          );
+        });
       }
 
       default:
         return true;
     }
   }
+
+  private executeSort() {}
 
   evaluate({ highlights, arcs }: EvaluationSet): EvaluationSet {
     // "highlights from "1/1/2020" to "2/1/2020" which relate to ..."

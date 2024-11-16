@@ -1,8 +1,37 @@
 import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
 import { IToken } from "ebnf";
 import { FunctionComponent } from "react";
+import { IpsumDay } from "util/dates";
 
 import { IpsumFilteringProgramV1 } from "./program";
+
+export interface FilterableOutgoingRelation {
+  predicate: string;
+  objectType: "Arc";
+  objectId: string;
+  objectName: string;
+}
+
+export interface FilterableHighlight {
+  type: "highlight";
+  id: string;
+  day: IpsumDay;
+  outgoingRelations: FilterableOutgoingRelation[];
+}
+
+export interface FilterableArc {
+  type: "arc";
+  id: string;
+  day: IpsumDay;
+  outgoingRelations: FilterableOutgoingRelation[];
+}
+
+export interface EvaluationSet {
+  highlights?: FilterableHighlight[];
+  arcs?: FilterableArc[];
+}
+
+export type EvaluationElement = FilterableHighlight | FilterableArc;
 
 export type NodeComponent = FunctionComponent<NodeComponentProps>;
 

@@ -40,7 +40,7 @@ UNESCAPED       ::= [#x20-#x21] | [#x23-#x5B] | [#x5D-#xFFFF]
 // WIP Generate EBNF from the code
 const endowedEbnf = {
   ifl: {
-    rule: "filter",
+    rule: "filter (WS+)?",
   },
   filter: {
     rule: '"highlights" filter_expression_highlights? | "arcs" filter_expression_arcs?',
