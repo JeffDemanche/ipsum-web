@@ -103,11 +103,13 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
         );
       },
       hue(_, { readField }) {
-        const entryDay = IpsumDay.fromString(
-          readField<{ history: { dateCreated: string } }>("entry").history
-            .dateCreated,
-          "iso"
-        );
+        const entry = readField<{ history: { dateCreated: string } }>("entry");
+
+        if (!entry) {
+          return null;
+        }
+
+        const entryDay = IpsumDay.fromString(entry.history.dateCreated, "iso");
         const dayOfYear = entryDay.toLuxonDateTime().ordinal;
 
         const number = (readField("number") as number) + dayOfYear;

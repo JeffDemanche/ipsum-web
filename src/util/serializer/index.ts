@@ -1,6 +1,9 @@
 export { writeToFile, readFromFile } from "./serializer";
 export { SerializedSchema } from "./validation-v1/serializer-schema";
-export { validate } from "./validation-v1/serializer-validator";
+export {
+  validate,
+  ValidatorResult,
+} from "./validation-v1/serializer-validator";
 export {
   SerializationProvider,
   SerializationContext,

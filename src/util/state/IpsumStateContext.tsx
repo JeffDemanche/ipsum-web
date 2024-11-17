@@ -28,16 +28,22 @@ export const IpsumStateProvider: React.FC<IpsumStateProviderProps> = ({
 }) => {
   if (!PROJECT_STATE) {
     PROJECT_STATE = projectState ?? new ProjectState();
+    // @ts-expect-error Expose global variable for testing
+    global.PROJECT_STATE = PROJECT_STATE;
   }
 
   useEffect(() => {
     PROJECT_STATE = projectState ?? new ProjectState();
+    // @ts-expect-error Expose global variable for testing
+    global.PROJECT_STATE = PROJECT_STATE;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [, triggerRender] = useState(false);
   const setProjectState = (newProjectState: ProjectState) => {
     PROJECT_STATE = newProjectState;
+    // @ts-expect-error Expose global variable for testing
+    global.PROJECT_STATE = PROJECT_STATE;
     client.cache.reset();
     triggerRender((prev) => !prev);
   };

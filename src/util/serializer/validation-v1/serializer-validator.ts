@@ -7,6 +7,7 @@ type ValidatorStepResult =
 interface ValidatorStep {
   description: string;
   fn: (value: StaticInMemoryProjectState) => ValidatorStepResult;
+  fix?: (value: StaticInMemoryProjectState) => StaticInMemoryProjectState;
 }
 
 const steps: ValidatorStep[] = [
@@ -31,11 +32,43 @@ const steps: ValidatorStep[] = [
       };
     },
   },
+  {
+    description: "Ensure every highlight belongs to an entry that exists",
+    fn: (value) => {
+      const highlightsWithNoEntries = Object.values(value.highlights).filter(
+        (highlight) => !Object.keys(value.entries).includes(highlight.entry)
+      );
+
+      if (highlightsWithNoEntries.length === 0) {
+        return { result: "pass" };
+      }
+
+      return {
+        result: "fail",
+        message: `The following highlights have no corresponding entry: ${highlightsWithNoEntries
+          .map((highlight) => highlight.id)
+          .join(", ")}`,
+      };
+    },
+    fix: (value) => {
+      const fixedValue = { ...value };
+
+      for (const highlight of Object.values(value.highlights)) {
+        if (!Object.keys(value.entries).includes(highlight.entry)) {
+          console.log("[FIX] Removing highlight:", highlight.id);
+          delete fixedValue.highlights[highlight.id];
+        }
+      }
+
+      return fixedValue;
+    },
+  },
 ];
 
-interface ValidatorResult {
+export interface ValidatorResult {
   result: "pass" | "fail";
   messages?: string[];
+  fix?: () => StaticInMemoryProjectState;
 }
 
 export const validate = (
@@ -51,6 +84,19 @@ export const validate = (
       messages: failed.map(
         (result) => result.result === "fail" && result.message
       ),
+      fix: () => {
+        let fixedValue = { ...value };
+
+        for (const step of steps) {
+          const result = step.fn(fixedValue);
+
+          if (result.result === "fail") {
+            fixedValue = step.fix?.(fixedValue) ?? fixedValue;
+          }
+        }
+
+        return fixedValue;
+      },
     };
   }
 

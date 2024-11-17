@@ -1,6 +1,8 @@
 import { ReactiveVar } from "@apollo/client";
+import { ValidatorResult } from "util/serializer";
 
 import { ProjectCollection } from "./project-collection";
+import { ProjectState } from "./project-state";
 
 export interface InMemoryHistory {
   __typename: "History";
@@ -159,3 +161,11 @@ export interface StaticInMemoryProjectState {
   days: CollectionOf<InMemoryDay>;
   srsCards: CollectionOf<InMemorySRSCard>;
 }
+
+export type DeserializationResult =
+  | { result: "success"; state: ProjectState }
+  | { result: "parse_error"; messages: string[] }
+  | {
+      result: "validator_error";
+      validator: ValidatorResult;
+    };

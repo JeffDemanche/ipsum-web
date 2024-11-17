@@ -7,9 +7,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { SerializationContext, SerializationProvider } from "util/serializer";
 import {
+  DeserializationResult,
   IpsumStateContext,
   IpsumStateProvider,
-  PROJECT_STATE,
   ProjectState,
   useNormalizeUrl,
 } from "util/state";
@@ -47,48 +47,73 @@ const WithIpsumStateProvider = ({
 }) => {
   const { setProjectState } = useContext(IpsumStateContext);
 
-  const [projectStateErrors, setProjectStateErrors] = useState<string[]>([]);
+  const [deserializationResult, setDeserializationResult] =
+    useState<DeserializationResult>();
 
   return (
     <SerializationProvider
       disableLoadFromAutosave={!!overrideProjectState}
       setProjectState={setProjectState}
-      setProjectStateErrors={setProjectStateErrors}
+      deserializationResult={deserializationResult}
+      setDeserializationResult={setDeserializationResult}
     >
-      <WithSerializationProvider projectStateErrors={projectStateErrors} />
+      <WithSerializationProvider
+        deserializationResult={deserializationResult}
+      />
     </SerializationProvider>
   );
 };
 
 const WithSerializationProvider = ({
-  projectStateErrors,
+  deserializationResult,
 }: {
-  projectStateErrors: string[];
+  deserializationResult: DeserializationResult;
 }) => {
-  const { resetToInitial } = useContext(SerializationContext);
+  const { resetToInitial, validatorFix } = useContext(SerializationContext);
 
   useEffect(() => {
-    if (projectStateErrors.length > 0) {
-      projectStateErrors.forEach((error) => {
+    if (deserializationResult.result === "parse_error") {
+      deserializationResult.messages.forEach((error) => {
+        console.error(error);
+      });
+    } else if (deserializationResult.result === "validator_error") {
+      deserializationResult.validator.messages.forEach((error) => {
         console.error(error);
       });
     }
-  }, [projectStateErrors]);
+  }, [deserializationResult]);
 
-  if (projectStateErrors.length > 0) {
+  if (deserializationResult.result === "parse_error") {
     return (
       <>
-        <h1>There was an error deserializing the file</h1>
+        <h1>There was an error parsing the file</h1>
         <samp>
-          {projectStateErrors.map((error) => (
-            <>
+          {deserializationResult.messages.map((error, i) => (
+            <span key={i}>
               {error}
               <br></br>
-            </>
+            </span>
           ))}
         </samp>
         <br></br>
-        <button onClick={() => resetToInitial()}>Reset autosave state</button>
+        <button onClick={() => resetToInitial()}>Clear autosave state</button>
+      </>
+    );
+  } else if (deserializationResult.result === "validator_error") {
+    return (
+      <>
+        <h1>There was an error validating the file</h1>
+        <samp>
+          {deserializationResult.validator.messages.map((error, i) => (
+            <span key={i}>
+              {error}
+              <br></br>
+            </span>
+          ))}
+        </samp>
+        <br></br>
+        <button onClick={() => validatorFix()}>Run autofix script</button>
+        <button onClick={() => resetToInitial()}>Clear autosave state</button>
       </>
     );
   }

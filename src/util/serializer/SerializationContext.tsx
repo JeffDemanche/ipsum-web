@@ -1,7 +1,12 @@
 import React, { createContext, useCallback, useEffect, useState } from "react";
 import { useIpsumIDBWrapper } from "util/indexed-db";
-import { readFromFile, writeToFile } from "util/serializer";
-import { PROJECT_STATE, ProjectState, useModifySearchParams } from "util/state";
+import { readFromFile, validate, writeToFile } from "util/serializer";
+import {
+  DeserializationResult,
+  PROJECT_STATE,
+  ProjectState,
+  useModifySearchParams,
+} from "util/state";
 
 import { autosave } from "./autosave";
 
@@ -9,6 +14,7 @@ interface ApolloSerialization {
   saveToFile: () => Promise<void>;
   loadFromFile: () => Promise<void>;
   resetToInitial: () => void;
+  validatorFix: () => void;
   hasLoadedAutosave: boolean;
 }
 
@@ -16,13 +22,15 @@ export const SerializationContext = createContext<ApolloSerialization>({
   saveToFile: async () => {},
   loadFromFile: async () => {},
   resetToInitial: () => {},
+  validatorFix: () => {},
   hasLoadedAutosave: false,
 });
 
 interface SerializationProviderProps {
   disableLoadFromAutosave: boolean;
   setProjectState: (projectState: ProjectState) => void;
-  setProjectStateErrors: (errors: string[]) => void;
+  deserializationResult: DeserializationResult;
+  setDeserializationResult: (result: DeserializationResult) => void;
   children: React.ReactNode;
 }
 
@@ -35,7 +43,8 @@ export const SerializationProvider: React.FunctionComponent<
 > = ({
   disableLoadFromAutosave,
   setProjectState,
-  setProjectStateErrors,
+  deserializationResult,
+  setDeserializationResult,
   children,
 }) => {
   const saveToFile = async () => {
@@ -47,6 +56,18 @@ export const SerializationProvider: React.FunctionComponent<
       ],
     });
   };
+
+  const loadFromString = useCallback(
+    (fileString: string) => {
+      const deserializationResult = ProjectState.fromSerialized(fileString);
+
+      if (deserializationResult.result === "success") {
+        setProjectState(deserializationResult.state);
+      }
+      setDeserializationResult(deserializationResult);
+    },
+    [setDeserializationResult, setProjectState]
+  );
 
   const modifySearchParams = useModifySearchParams();
 
@@ -62,25 +83,29 @@ export const SerializationProvider: React.FunctionComponent<
       ],
     });
 
-    const projectState = ProjectState.fromSerialized(fileString);
+    loadFromString(fileString);
 
-    if (Array.isArray(projectState)) {
-      setProjectStateErrors(projectState);
-      setProjectState(undefined);
-      return;
-    } else {
-      setProjectStateErrors([]);
-      setProjectState(projectState);
-    }
     modifySearchParams(() => ({}));
     autosave();
-  }, [modifySearchParams, setProjectState, setProjectStateErrors]);
+  }, [loadFromString, modifySearchParams]);
 
   const resetToInitial = useCallback(async () => {
     setProjectState(new ProjectState());
 
     autosave();
   }, [setProjectState]);
+
+  const validatorFix = () => {
+    if (deserializationResult.result === "validator_error") {
+      const fixedStaticState = deserializationResult.validator.fix();
+
+      if (validate(fixedStaticState).result === "pass") {
+        const projectState = new ProjectState(fixedStaticState);
+        setDeserializationResult({ result: "success", state: projectState });
+        setProjectState(projectState);
+      }
+    }
+  };
 
   // Autosave stuff
   const idbWrapper = useIpsumIDBWrapper();
@@ -99,15 +124,7 @@ export const SerializationProvider: React.FunctionComponent<
           setProjectState(new ProjectState());
           setHasLoadedAutosave(true);
         } else {
-          const stateFromAutosave = ProjectState.fromSerialized(state);
-
-          if (Array.isArray(stateFromAutosave)) {
-            setProjectStateErrors(stateFromAutosave);
-            setProjectState(undefined);
-          } else {
-            setProjectState(stateFromAutosave);
-            setProjectStateErrors([]);
-          }
+          loadFromString(state);
 
           setHasLoadedAutosave(true);
         }
@@ -117,8 +134,8 @@ export const SerializationProvider: React.FunctionComponent<
     disableLoadFromAutosave,
     hasLoadedAutosave,
     idbWrapper,
+    loadFromString,
     setProjectState,
-    setProjectStateErrors,
   ]);
 
   const dom = (() => {
@@ -132,9 +149,10 @@ export const SerializationProvider: React.FunctionComponent<
   return (
     <SerializationContext.Provider
       value={{
-        saveToFile: saveToFile,
-        loadFromFile: loadFromFile,
-        resetToInitial: resetToInitial,
+        saveToFile,
+        loadFromFile,
+        resetToInitial,
+        validatorFix,
         hasLoadedAutosave,
       }}
     >

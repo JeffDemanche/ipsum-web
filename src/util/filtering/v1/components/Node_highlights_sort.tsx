@@ -18,14 +18,7 @@ export const Node_highlights_sort: NodeComponent = ({
     </ChildrenContainer>
   );
 
-  const nonEditModeMarkup = (
-    <>
-      <Type display="inline" weight="light" size="small">
-        sorted by{" "}
-      </Type>
-      {childComponents}
-    </>
-  );
+  const nonEditModeMarkup = <>sorted by {childComponents}</>;
 
   return editMode ? editModeMarkup : nonEditModeMarkup;
 };

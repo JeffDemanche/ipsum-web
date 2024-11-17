@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { ProjectCollection } from "./project-collection";
 import {
+  DeserializationResult,
   InMemoryArc,
   InMemoryArcEntry,
   InMemoryComment,
@@ -113,12 +114,15 @@ export class ProjectState {
     });
   }
 
-  static fromSerialized(serializedState: string): ProjectState | string[] {
+  static fromSerialized(serializedState: string): DeserializationResult {
     const raw = JSON.parse(serializedState);
     const parsed = SerializedSchema.decode(raw);
 
     if (parsed._tag === "Left") {
-      return PathReporter.report(parsed);
+      return {
+        result: "parse_error",
+        messages: PathReporter.report(parsed),
+      };
     } else {
       const staticState = {
         projectVersion: parsed.right.projectVersion,
@@ -139,10 +143,16 @@ export class ProjectState {
 
       const validationResult = validate(staticState);
       if (validationResult.result === "fail") {
-        return validationResult.messages;
+        return {
+          result: "validator_error",
+          validator: validationResult,
+        };
       }
 
-      return new ProjectState(staticState);
+      return {
+        result: "success",
+        state: new ProjectState(staticState),
+      };
     }
   }
 }
