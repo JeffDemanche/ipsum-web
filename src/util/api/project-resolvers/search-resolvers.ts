@@ -5,6 +5,7 @@ import {
   FilterableHighlight,
   FilterableOutgoingRelation,
 } from "util/filtering";
+import { IpsumSRSCard } from "util/repetition";
 import { PROJECT_STATE } from "util/state";
 
 export const SearchResolvers: StrictTypedTypePolicies = {
@@ -35,11 +36,19 @@ export const SearchResolvers: StrictTypedTypePolicies = {
               };
             });
 
+          const highlightSRSCard =
+            PROJECT_STATE.collection("srsCards").get(highlight.srsCard) ?? null;
+
+          const srsCard = highlightSRSCard
+            ? IpsumSRSCard.fromProjectStateCard(highlightSRSCard)
+            : null;
+
           return {
             id: highlight.id,
             day: IpsumDay.fromString(highlight.history.dateCreated, "iso"),
             type: "highlight",
             outgoingRelations: filterableOutgoingRelations,
+            srsCard,
           };
         });
 

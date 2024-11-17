@@ -96,7 +96,7 @@ describe("LexicalFilterSelector", () => {
 
       it("should remove the sort expression when the user clicks the - sort button", async () => {
         renderFilterSelector({
-          programText: 'highlights sorted by recent as of "today"',
+          programText: 'highlights sorted by recent first as of "today"',
         });
 
         const removeSortButton = screen.getByText("- sort");

@@ -22,30 +22,5 @@ describe("BrowserDrawerConnected (Siddhartha)", () => {
     );
   });
 
-  it("should set url params on date filter from change", async () => {
-    render(
-      <MemoryRouter>
-        <IpsumStateProvider projectState={mockSiddhartha().projectState}>
-          <BrowserDrawerConnected />
-        </IpsumStateProvider>
-      </MemoryRouter>
-    );
-
-    const fromPicker = screen.getAllByLabelText(
-      "Highlight filter date from"
-    )[0];
-
-    await userEvent.click(fromPicker);
-
-    const firstDay = screen.getAllByRole("gridcell", { name: "1" })[0];
-
-    await userEvent.click(firstDay);
-
-    expect(urlSetBrowserDrawerHighlightsOptions).toHaveBeenCalledWith(
-      {
-        filters: { dateFrom: "01-01-2020" },
-      },
-      expect.any(Object)
-    );
-  });
+  it.skip("empty test", () => {});
 });

@@ -24,7 +24,7 @@ export const SRSResolvers: StrictTypedTypePolicies = {
   },
   SRSCard: {
     fields: {
-      upForReview(_, { readField }) {
+      upForReview(_, { readField, args }) {
         const history = readField<History>("history");
         const reviews = readField<InMemorySRSCardReview[]>("reviews");
 
@@ -37,7 +37,49 @@ export const SRSResolvers: StrictTypedTypePolicies = {
           })),
         });
 
-        return card.upForReview();
+        const day = args?.day
+          ? IpsumDay.fromString(args.day, "stored-day")
+          : undefined;
+
+        return card.upForReview(day);
+      },
+      ease(_, { readField, args }) {
+        const history = readField<History>("history");
+        const reviews = readField<InMemorySRSCardReview[]>("reviews");
+
+        const card = new IpsumSRSCard({
+          creationDay: IpsumDay.fromString(history.dateCreated, "iso"),
+          ratings: reviews.map((review) => ({
+            ...review,
+            day: IpsumDay.fromString(review.day, "stored-day"),
+            q: review.rating,
+          })),
+        });
+
+        const day = args?.day
+          ? IpsumDay.fromString(args.day, "stored-day")
+          : undefined;
+
+        return card.easeOnDay(day);
+      },
+      interval(_, { readField, args }) {
+        const history = readField<History>("history");
+        const reviews = readField<InMemorySRSCardReview[]>("reviews");
+
+        const card = new IpsumSRSCard({
+          creationDay: IpsumDay.fromString(history.dateCreated, "iso"),
+          ratings: reviews.map((review) => ({
+            ...review,
+            day: IpsumDay.fromString(review.day, "stored-day"),
+            q: review.rating,
+          })),
+        });
+
+        const day = args?.day
+          ? IpsumDay.fromString(args.day, "stored-day")
+          : undefined;
+
+        return card.intervalOnDay(day);
       },
     },
   },

@@ -316,11 +316,28 @@ export type RelationSubject = Arc | Highlight;
 
 export type SrsCard = {
   __typename?: 'SRSCard';
+  ease?: Maybe<Scalars['Float']>;
   history: History;
   id: Scalars['ID'];
+  interval?: Maybe<Scalars['Float']>;
   reviews: Array<SrsCardReview>;
   subject: Highlight;
   upForReview: Scalars['Boolean'];
+};
+
+
+export type SrsCardEaseArgs = {
+  day?: InputMaybe<Scalars['String']>;
+};
+
+
+export type SrsCardIntervalArgs = {
+  day?: InputMaybe<Scalars['String']>;
+};
+
+
+export type SrsCardUpForReviewArgs = {
+  day?: InputMaybe<Scalars['String']>;
 };
 
 export type SrsCardReview = {

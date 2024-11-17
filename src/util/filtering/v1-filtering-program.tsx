@@ -1,6 +1,7 @@
 import { IToken } from "ebnf";
 import _ from "lodash";
 import { IpsumDay } from "util/dates";
+import { IpsumSRSCard } from "util/repetition";
 
 import { IpsumFilteringProgram } from "./abstract-filtering-program";
 import { definitionForRule, ebnf } from "./definition";
@@ -9,6 +10,7 @@ import {
   EndowedNodeType,
   EvaluationElement,
   EvaluationSet,
+  FilterableHighlight,
 } from "./types";
 
 export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
@@ -166,25 +168,11 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
 
         const days = node.children.filter((child) => child.type === "day");
 
-        let dayFromString = days[0].rawNode.text.slice(1, -1);
-        let dayToString = days[1].rawNode.text.slice(1, -1);
+        const dayFromString = days[0].rawNode.text.slice(1, -1);
+        const dayToString = days[1].rawNode.text.slice(1, -1);
 
-        if (dayFromString === "today") {
-          dayFromString = IpsumDay.today().toString("stored-day");
-        }
-        if (dayFromString === "beginning") {
-          dayFromString = IpsumDay.beginning().toString("stored-day");
-        }
-
-        if (dayToString === "today") {
-          dayToString = IpsumDay.today().toString("stored-day");
-        }
-        if (dayToString === "beginning") {
-          dayToString = IpsumDay.beginning().toString("stored-day");
-        }
-
-        const dayFrom = IpsumDay.fromString(dayFromString, "stored-day");
-        const dayTo = IpsumDay.fromString(dayToString, "stored-day");
+        const dayFrom = this.evaluateDayNode(days[0]);
+        const dayTo = this.evaluateDayNode(days[1]);
 
         if (!dayFrom.toLuxonDateTime().isValid) {
           throw new IFLExecutionError(
@@ -223,7 +211,106 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
     }
   }
 
-  private executeSort() {}
+  private evaluateDayNode(node: EndowedNode): IpsumDay {
+    if (node.type === "day") {
+      let text = node.rawNode.text.slice(1, -1);
+
+      if (text === "today") {
+        text = IpsumDay.today().toString("stored-day");
+      }
+      if (text === "beginning") {
+        text = IpsumDay.beginning().toString("stored-day");
+      }
+      const day = IpsumDay.fromString(text, "stored-day");
+      if (!day.toLuxonDateTime().isValid) {
+        throw new IFLExecutionError(
+          `Invalid day string: ${text}. Valid day strings are "today", "beginning", or "M/D/YYYY"`
+        );
+      }
+
+      return day;
+    }
+    return undefined;
+  }
+
+  private findEndowedNodeByType(
+    node: EndowedNode,
+    type: EndowedNodeType
+  ): EndowedNode {
+    if (!node) {
+      return undefined;
+    }
+
+    if (node.type === type) {
+      return node;
+    }
+
+    return node.children
+      .map((child) => this.findEndowedNodeByType(child, type))
+      .find(Boolean);
+  }
+
+  private evalSortHighlights(
+    sortExpression: EndowedNode
+  ): (a: FilterableHighlight, b: FilterableHighlight) => number {
+    const sortType = this.findEndowedNodeByType(
+      sortExpression,
+      "highlights_sort_type"
+    )?.rawNode?.text;
+
+    const asOfNode = this.findEndowedNodeByType(
+      sortExpression,
+      "highlights_sort_as_of"
+    );
+
+    const sortAsOf = asOfNode
+      ? this.evaluateDayNode(asOfNode.children[0])
+      : undefined;
+
+    switch (sortType) {
+      case "review status": {
+        return (a: FilterableHighlight, b: FilterableHighlight) => {
+          const aUpForReview = a.srsCard?.upForReview(sortAsOf);
+          const bUpForReview = b.srsCard?.upForReview(sortAsOf);
+
+          if (!aUpForReview && !bUpForReview) {
+            return 0;
+          }
+          if (aUpForReview && !bUpForReview) {
+            return -1;
+          }
+          if (!aUpForReview && bUpForReview) {
+            return 1;
+          } else {
+            a.srsCard.intervalOnDay(sortAsOf) >
+            b.srsCard.intervalOnDay(sortAsOf)
+              ? -1
+              : 1;
+          }
+        };
+      }
+      case "importance": {
+        return (a: FilterableHighlight, b: FilterableHighlight) => {
+          return 0;
+        };
+      }
+      case "recent first": {
+        return (a: FilterableHighlight, b: FilterableHighlight) => {
+          return a.day.isBefore(b.day) ? 1 : -1;
+        };
+      }
+      case "oldest first": {
+        return (a: FilterableHighlight, b: FilterableHighlight) => {
+          return a.day.isBefore(b.day) ? -1 : 1;
+        };
+      }
+      default: {
+        return (a: FilterableHighlight, b: FilterableHighlight) => {
+          return 0;
+        };
+      }
+    }
+  }
 
   evaluate({ highlights, arcs }: EvaluationSet): EvaluationSet {
     // "highlights from "1/1/2020" to "2/1/2020" which relate to ..."
@@ -232,15 +319,22 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
     // "filter_expression_highlights" or "filter_expression_arcs"
     const filterType = filterExpression?.type;
 
-    const sortExpression = this.__ast.children[0].children[1];
+    const sortHighlightsEndowedNode = this.findEndowedNodeByType(
+      this.__endowedAst,
+      "highlights_sort"
+    );
+
+    const sortFn = this.evalSortHighlights(sortHighlightsEndowedNode);
 
     switch (filterType) {
       case "filter_expression_highlights":
         return {
           highlights:
-            highlights?.filter((highlight) =>
-              this.evalFiltersPerElement(this.__endowedAst, highlight)
-            ) ?? [],
+            highlights
+              ?.filter((highlight) =>
+                this.evalFiltersPerElement(this.__endowedAst, highlight)
+              )
+              ?.sort(sortFn) ?? [],
         };
       case "filter_expression_arcs":
         return {

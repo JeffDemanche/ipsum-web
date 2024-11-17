@@ -1,4 +1,5 @@
 import { IpsumDay } from "util/dates";
+import { IpsumSRSCard } from "util/repetition";
 
 import { EndowedNode, FilterableHighlight } from "../types";
 import { IpsumFilteringProgramV1 } from "../v1-filtering-program";
@@ -11,6 +12,7 @@ const mock_hl = (
     type: "highlight",
     day: IpsumDay.fromString("1/1/2020", "stored-day"),
     outgoingRelations: [],
+    srsCard: null,
     ...mock,
   };
 };
@@ -69,10 +71,10 @@ describe("IpsumFilterLanguage V1", () => {
       ],
       ["highlights sorted by importance", 0],
       ['highlights sorted by importance as of "1"', 0],
-      ["highlights sorted by recent", 0],
-      ['highlights sorted by recent as of "1"', 0],
+      ["highlights sorted by recent first", 0],
+      ['highlights sorted by recent first as of "1"', 0],
       [
-        'highlights (from "1" to "2" and which relates to "3") sorted by recent as of "1"',
+        'highlights (from "1" to "2" and which relates to "3") sorted by recent first as of "1"',
         0,
       ],
     ])("should be valid: `%s`", (text, expectedErrors) => {
@@ -85,191 +87,287 @@ describe("IpsumFilterLanguage V1", () => {
   });
 
   describe("evaluation", () => {
-    it("should execute simple day filter on highlights", () => {
-      const program = new IpsumFilteringProgramV1();
-      program.setProgram('highlights from "1/1/2020" to "2/1/2020"');
+    describe("filtering", () => {
+      it("should execute simple day filter on highlights", () => {
+        const program = new IpsumFilteringProgramV1();
+        program.setProgram('highlights from "1/1/2020" to "2/1/2020"');
 
-      const results = program.evaluate({
-        highlights: [
-          mock_hl({
-            type: "highlight",
-            id: "1",
-            day: IpsumDay.fromString("12/26/2019", "stored-day"),
-          }),
-          mock_hl({
-            type: "highlight",
-            id: "2",
-            day: IpsumDay.fromString("1/3/2020", "stored-day"),
-          }),
-          mock_hl({
-            type: "highlight",
-            id: "3",
-            day: IpsumDay.fromString("1/23/2020", "stored-day"),
-          }),
-          mock_hl({
-            type: "highlight",
-            id: "4",
-            day: IpsumDay.fromString("2/4/2020", "stored-day"),
-          }),
-        ],
+        const results = program.evaluate({
+          highlights: [
+            mock_hl({
+              id: "1",
+              day: IpsumDay.fromString("12/26/2019", "stored-day"),
+            }),
+            mock_hl({
+              id: "2",
+              day: IpsumDay.fromString("1/3/2020", "stored-day"),
+            }),
+            mock_hl({
+              id: "3",
+              day: IpsumDay.fromString("1/23/2020", "stored-day"),
+            }),
+            mock_hl({
+              id: "4",
+              day: IpsumDay.fromString("2/4/2020", "stored-day"),
+            }),
+          ],
+        });
+
+        expect(results.highlights).toHaveLength(2);
+        expect(results.highlights[0].day.toString("stored-day")).toBe(
+          "1/3/2020"
+        );
+        expect(results.highlights[1].day.toString("stored-day")).toBe(
+          "1/23/2020"
+        );
       });
 
-      expect(results.highlights).toHaveLength(2);
-      expect(results.highlights[0].day.toString("stored-day")).toBe("1/3/2020");
-      expect(results.highlights[1].day.toString("stored-day")).toBe(
-        "1/23/2020"
-      );
+      it("should execute simple relation filter on highlights", () => {
+        const program = new IpsumFilteringProgramV1();
+        program.setProgram('highlights which relates to "foo"');
+
+        const results = program.evaluate({
+          highlights: [
+            mock_hl({
+              id: "1",
+              outgoingRelations: [
+                {
+                  predicate: "relates to",
+                  objectType: "Arc",
+                  objectId: "arc_foo",
+                  objectName: "foo",
+                },
+                {
+                  predicate: "is",
+                  objectType: "Arc",
+                  objectId: "arc_bar",
+                  objectName: "bar",
+                },
+              ],
+            }),
+            mock_hl({
+              id: "2",
+              outgoingRelations: [
+                {
+                  predicate: "relates to",
+                  objectType: "Arc",
+                  objectId: "arc_bar",
+                  objectName: "bar",
+                },
+              ],
+            }),
+            mock_hl({
+              id: "3",
+              outgoingRelations: [
+                {
+                  predicate: "is",
+                  objectType: "Arc",
+                  objectId: "arc_foo",
+                  objectName: "foo",
+                },
+              ],
+            }),
+          ],
+        });
+        expect(results.highlights).toHaveLength(1);
+        expect(results.highlights[0].id).toBe("1");
+      });
+
+      it("should execute simple conjunction filter on highlights", () => {
+        const program = new IpsumFilteringProgramV1();
+        program.setProgram(
+          'highlights (which relates to "foo" and which is "bar")'
+        );
+
+        const results = program.evaluate({
+          highlights: [
+            mock_hl({
+              id: "1",
+              outgoingRelations: [
+                {
+                  predicate: "relates to",
+                  objectType: "Arc",
+                  objectId: "arc_foo",
+                  objectName: "foo",
+                },
+                {
+                  predicate: "is",
+                  objectType: "Arc",
+                  objectId: "arc_bar",
+                  objectName: "bar",
+                },
+              ],
+            }),
+            mock_hl({
+              id: "2",
+              outgoingRelations: [
+                {
+                  predicate: "relates to",
+                  objectType: "Arc",
+                  objectId: "arc_foo",
+                  objectName: "foo",
+                },
+              ],
+            }),
+            mock_hl({
+              id: "3",
+              outgoingRelations: [
+                {
+                  predicate: "is",
+                  objectType: "Arc",
+                  objectId: "arc_foo",
+                  objectName: "foo",
+                },
+              ],
+            }),
+          ],
+        });
+        expect(results.highlights).toHaveLength(1);
+        expect(results.highlights[0].id).toBe("1");
+      });
+
+      it("should execute simple disjunction filter on highlights", () => {
+        const program = new IpsumFilteringProgramV1();
+        program.setProgram(
+          'highlights (which relates to "foo" or from "1/1/2020" to "2/1/2020")'
+        );
+
+        const results = program.evaluate({
+          highlights: [
+            mock_hl({
+              id: "1",
+              day: IpsumDay.fromString("12/26/2019", "stored-day"),
+              outgoingRelations: [
+                {
+                  predicate: "relates to",
+                  objectType: "Arc",
+                  objectId: "arc_foo",
+                  objectName: "foo",
+                },
+              ],
+            }),
+            mock_hl({
+              id: "2",
+              day: IpsumDay.fromString("1/3/2020", "stored-day"),
+              outgoingRelations: [
+                {
+                  predicate: "relates to",
+                  objectType: "Arc",
+                  objectId: "arc_bar",
+                  objectName: "bar",
+                },
+              ],
+            }),
+          ],
+        });
+        expect(results.highlights).toHaveLength(2);
+        expect(results.highlights[0].id).toBe("1");
+        expect(results.highlights[1].id).toBe("2");
+      });
     });
 
-    it("should execute simple relation filter on highlights", () => {
-      const program = new IpsumFilteringProgramV1();
-      program.setProgram('highlights which relates to "foo"');
+    describe("sorting", () => {
+      it("should correctly sort by recent first as of today", () => {
+        const program = new IpsumFilteringProgramV1();
+        program.setProgram('highlights sorted by recent first as of "today"');
 
-      const results = program.evaluate({
-        highlights: [
-          mock_hl({
-            type: "highlight",
-            id: "1",
-            outgoingRelations: [
-              {
-                predicate: "relates to",
-                objectType: "Arc",
-                objectId: "arc_foo",
-                objectName: "foo",
-              },
-              {
-                predicate: "is",
-                objectType: "Arc",
-                objectId: "arc_bar",
-                objectName: "bar",
-              },
-            ],
-          }),
-          mock_hl({
-            type: "highlight",
-            id: "2",
-            outgoingRelations: [
-              {
-                predicate: "relates to",
-                objectType: "Arc",
-                objectId: "arc_bar",
-                objectName: "bar",
-              },
-            ],
-          }),
-          mock_hl({
-            type: "highlight",
-            id: "3",
-            outgoingRelations: [
-              {
-                predicate: "is",
-                objectType: "Arc",
-                objectId: "arc_foo",
-                objectName: "foo",
-              },
-            ],
-          }),
-        ],
+        const mockedHls = ["1/4/2020", "1/2/2020", "1/1/2020", "1/7/2020"].map(
+          (day) =>
+            mock_hl({
+              id: `hl_${day}`,
+              day: IpsumDay.fromString(day, "stored-day"),
+            })
+        );
+
+        const results = program.evaluate({ highlights: mockedHls });
+
+        expect(results.highlights).toHaveLength(4);
+        expect(results.highlights[0].id).toBe("hl_1/7/2020");
+        expect(results.highlights[1].id).toBe("hl_1/4/2020");
+        expect(results.highlights[2].id).toBe("hl_1/2/2020");
+        expect(results.highlights[3].id).toBe("hl_1/1/2020");
       });
-      expect(results.highlights).toHaveLength(1);
-      expect(results.highlights[0].id).toBe("1");
-    });
 
-    it("should execute simple conjunction filter on highlights", () => {
-      const program = new IpsumFilteringProgramV1();
-      program.setProgram(
-        'highlights (which relates to "foo" and which is "bar")'
-      );
+      it("should correctly sort by oldest first as of today", () => {
+        const program = new IpsumFilteringProgramV1();
+        program.setProgram('highlights sorted by oldest first as of "today"');
 
-      const results = program.evaluate({
-        highlights: [
-          mock_hl({
-            type: "highlight",
-            id: "1",
-            outgoingRelations: [
-              {
-                predicate: "relates to",
-                objectType: "Arc",
-                objectId: "arc_foo",
-                objectName: "foo",
-              },
-              {
-                predicate: "is",
-                objectType: "Arc",
-                objectId: "arc_bar",
-                objectName: "bar",
-              },
-            ],
-          }),
-          mock_hl({
-            type: "highlight",
-            id: "2",
-            outgoingRelations: [
-              {
-                predicate: "relates to",
-                objectType: "Arc",
-                objectId: "arc_foo",
-                objectName: "foo",
-              },
-            ],
-          }),
-          mock_hl({
-            type: "highlight",
-            id: "3",
-            outgoingRelations: [
-              {
-                predicate: "is",
-                objectType: "Arc",
-                objectId: "arc_foo",
-                objectName: "foo",
-              },
-            ],
-          }),
-        ],
+        const mockedHls = ["1/4/2020", "1/2/2020", "1/1/2020", "1/7/2020"].map(
+          (day) =>
+            mock_hl({
+              id: `hl_${day}`,
+              day: IpsumDay.fromString(day, "stored-day"),
+            })
+        );
+
+        const results = program.evaluate({ highlights: mockedHls });
+
+        expect(results.highlights).toHaveLength(4);
+        expect(results.highlights[0].id).toBe("hl_1/1/2020");
+        expect(results.highlights[1].id).toBe("hl_1/2/2020");
+        expect(results.highlights[2].id).toBe("hl_1/4/2020");
+        expect(results.highlights[3].id).toBe("hl_1/7/2020");
       });
-      expect(results.highlights).toHaveLength(1);
-      expect(results.highlights[0].id).toBe("1");
-    });
 
-    it("should execute simple disjunction filter on highlights", () => {
-      const program = new IpsumFilteringProgramV1();
-      program.setProgram(
-        'highlights (which relates to "foo" or from "1/1/2020" to "2/1/2020")'
-      );
+      it("should correctly sort by up for review", () => {
+        const program = new IpsumFilteringProgramV1();
+        program.setProgram(
+          'highlights sorted by review status as of "1/17/2020"'
+        );
 
-      const results = program.evaluate({
-        highlights: [
+        const srsCardHl1 = IpsumSRSCard.fromRatings({
+          creationDay: IpsumDay.fromString("1/1/2020", "stored-day"),
+          ratings: [
+            {
+              day: IpsumDay.fromString("1/2/2020", "stored-day"),
+              rating: 1,
+            },
+            {
+              day: IpsumDay.fromString("1/8/2020", "stored-day"),
+              rating: 1,
+            },
+          ],
+        });
+        const srsCardHl3 = IpsumSRSCard.fromRatings({
+          creationDay: IpsumDay.fromString("1/1/2020", "stored-day"),
+          ratings: [
+            {
+              day: IpsumDay.fromString("1/2/2020", "stored-day"),
+              rating: 4,
+            },
+            {
+              day: IpsumDay.fromString("1/8/2020", "stored-day"),
+              rating: 5,
+            },
+          ],
+        });
+
+        const mockedHls = [
           mock_hl({
-            type: "highlight",
-            id: "1",
-            day: IpsumDay.fromString("12/26/2019", "stored-day"),
-            outgoingRelations: [
-              {
-                predicate: "relates to",
-                objectType: "Arc",
-                objectId: "arc_foo",
-                objectName: "foo",
-              },
-            ],
+            id: "hl_1",
+            srsCard: srsCardHl1,
           }),
           mock_hl({
-            type: "highlight",
-            id: "2",
-            day: IpsumDay.fromString("1/3/2020", "stored-day"),
-            outgoingRelations: [
-              {
-                predicate: "relates to",
-                objectType: "Arc",
-                objectId: "arc_bar",
-                objectName: "bar",
-              },
-            ],
+            id: "hl_2",
+            srsCard: null,
           }),
-        ],
+          mock_hl({
+            id: "hl_3",
+            srsCard: srsCardHl3,
+          }),
+        ];
+
+        const results = program.evaluate({ highlights: mockedHls });
+
+        expect(srsCardHl1.upForReview(IpsumDay.fromString("1/17/2020"))).toBe(
+          true
+        );
+        expect(srsCardHl3.upForReview(IpsumDay.fromString("1/17/2020"))).toBe(
+          false
+        );
+        expect(results.highlights).toHaveLength(3);
+        expect(results.highlights[0].id).toBe("hl_1");
       });
-      expect(results.highlights).toHaveLength(2);
-      expect(results.highlights[0].id).toBe("1");
-      expect(results.highlights[1].id).toBe("2");
     });
   });
 

@@ -20,6 +20,8 @@ export const srsTypeDef = gql`
     history: History!
     subject: Highlight!
     reviews: [SRSCardReview!]!
-    upForReview: Boolean!
+    upForReview(day: String): Boolean!
+    ease(day: String): Float
+    interval(day: String): Float
   }
 `;

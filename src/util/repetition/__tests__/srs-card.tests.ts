@@ -25,6 +25,65 @@ describe("SRS Card", () => {
     ).toBe(true);
   });
 
+  it("upForReview should return correctly for non-today day", () => {
+    const card = new IpsumSRSCard({
+      creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
+      ratings: [],
+    });
+
+    const rating1 = card.review(
+      4,
+      IpsumDay.fromString("1/2/2020", "entry-printed-date")
+    );
+    const card1 = new IpsumSRSCard({
+      creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
+      ratings: [rating1],
+    });
+
+    const rating2 = card1.review(
+      4,
+      IpsumDay.fromString("1/8/2020", "entry-printed-date")
+    );
+    const card2 = new IpsumSRSCard({
+      creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
+      ratings: [rating1, rating2],
+    });
+
+    const rating3 = card2.review(
+      4,
+      IpsumDay.fromString("1/27/2020", "entry-printed-date")
+    );
+    const card3 = new IpsumSRSCard({
+      creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
+      ratings: [rating1, rating2, rating3],
+    });
+
+    expect(card1.interval).toBe(6);
+    expect(card2.interval).toBe(15);
+    expect(card3.interval).toBe(37.5);
+
+    [
+      ["1/1/2020", false],
+      ["1/2/2020", true],
+      ["1/3/2020", false],
+      ["1/7/2020", false],
+      // Up for review and reviewed on the same day
+      ["1/8/2020", true],
+      ["1/9/2020", false],
+      ["1/22/2020", false],
+      // Up for review
+      ["1/23/2020", true],
+      ["1/26/2020", true],
+      // Up for review and reviewed on the same day
+      ["1/27/2020", true],
+      ["1/28/2020", false],
+    ].forEach(([day, expected]: [string, boolean]) => {
+      expect(
+        card3.upForReview(IpsumDay.fromString(day, "entry-printed-date"))
+      ).toBe(expected);
+    });
+  });
+
   it("should have variable EF and constant interval after single 5 rating", () => {
     const card = new IpsumSRSCard({
       creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),

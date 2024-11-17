@@ -2,6 +2,7 @@ import { RelationChooserConnectedProps } from "components/hooks/use-relation-cho
 import { IToken } from "ebnf";
 import { FunctionComponent } from "react";
 import { IpsumDay } from "util/dates";
+import { IpsumSRSCard } from "util/repetition";
 
 import { IpsumFilteringProgramV1 } from "./v1-filtering-program";
 
@@ -17,6 +18,7 @@ export interface FilterableHighlight {
   id: string;
   day: IpsumDay;
   outgoingRelations: FilterableOutgoingRelation[];
+  srsCard: IpsumSRSCard | null;
 }
 
 export interface FilterableArc {

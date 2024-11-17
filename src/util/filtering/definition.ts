@@ -86,7 +86,7 @@ const definitions: Record<
     component: Node_highlights_sort_as_of,
   },
   highlights_sort_type: {
-    rule: '"review status" | "importance" | "recent"',
+    rule: '"review status" | "importance" | "recent first" | "oldest first"',
     component: Node_highlights_sort_type,
   },
   predicate: {

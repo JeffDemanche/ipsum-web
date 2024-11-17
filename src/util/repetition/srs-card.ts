@@ -3,7 +3,12 @@ import { InMemorySRSCard } from "util/state";
 
 import { SRSCardHistory, SRSCardRating } from "./types";
 
+const EASE_BEFORE_FIRST_REVIEW = 2.5;
+
+const INTERVAL_BEFORE_FIRST_REVIEW = 1;
+
 // https://www.supermemo.com/en/blog/application-of-a-computer-to-improve-the-results-obtained-in-working-with-the-supermemo-method
+// This is the interval set between the first and second review.
 const INITIAL_REP_INTERVAL = 6;
 
 export class IpsumSRSCard {
@@ -19,8 +24,8 @@ export class IpsumSRSCard {
     const numRatings = this.__cardHistory.ratings.length;
 
     if (numRatings === 0) {
-      this.__ease = 2.5;
-      this.__interval = 1;
+      this.__ease = EASE_BEFORE_FIRST_REVIEW;
+      this.__interval = INTERVAL_BEFORE_FIRST_REVIEW;
     } else {
       this.__lastRating = this.__cardHistory.ratings.reduce((a, b) =>
         a.day.isAfter(b.day) ? a : b
@@ -38,8 +43,31 @@ export class IpsumSRSCard {
     return this.__ease;
   }
 
+  lastRatingBeforeDay(day: IpsumDay): SRSCardRating {
+    if (this.__cardHistory.ratings.length === 0) return undefined;
+
+    return this.__cardHistory.ratings.reduce((prev, cur) =>
+      cur.day.isAfter(prev.day) && cur.day.isBefore(day) ? cur : prev
+    );
+  }
+
+  easeOnDay(day: IpsumDay): number {
+    return this.lastRatingBeforeDay(day)?.easeAfter ?? EASE_BEFORE_FIRST_REVIEW;
+  }
+
   get interval(): number {
     return this.__interval;
+  }
+
+  /**
+   * Note that this is not the same as the number of days until the next review.
+   * It is the interval in days that was set after the last review.
+   */
+  intervalOnDay(day: IpsumDay): number {
+    return (
+      this.lastRatingBeforeDay(day)?.intervalAfter ??
+      INTERVAL_BEFORE_FIRST_REVIEW
+    );
   }
 
   easeAfterRating(q: number): number {
@@ -70,14 +98,22 @@ export class IpsumSRSCard {
     return this.__interval;
   }
 
-  upForReview(today?: IpsumDay): boolean {
-    today = today ?? IpsumDay.today();
+  /**
+   * If the card was reviewed on the given day, it is considered up for review by convention.
+   */
+  upForReview(day?: IpsumDay): boolean {
+    day = day ?? IpsumDay.today();
 
-    const firstReviewDay = this.__lastRating
-      ? this.__lastRating.day.add(Math.ceil(this.__interval))
-      : this.__cardHistory.creationDay.add(this.__interval);
+    if (this.__cardHistory.ratings.some((rating) => rating.day.equals(day))) {
+      return true;
+    }
 
-    return firstReviewDay.isBefore(today) || firstReviewDay.equals(today);
+    const lastReviewDay =
+      this.lastRatingBeforeDay(day)?.day ?? this.__cardHistory.creationDay;
+
+    const nextReviewDay = lastReviewDay.add(Math.ceil(this.intervalOnDay(day)));
+
+    return nextReviewDay.isBefore(day) || nextReviewDay.equals(day);
   }
 
   nextReviewDay(): IpsumDay {
@@ -121,5 +157,25 @@ export class IpsumSRSCard {
         day: IpsumDay.fromString(review.day, "stored-day"),
       })),
     });
+  }
+
+  static fromRatings({
+    creationDay,
+    ratings,
+  }: {
+    creationDay: IpsumDay;
+    ratings: { day: IpsumDay; rating: number }[];
+  }) {
+    return ratings.reduce(
+      (acc, cur) => {
+        const rating = acc.review(cur.rating, cur.day);
+        const accRatings = acc.__cardHistory.ratings;
+        return new IpsumSRSCard({
+          creationDay,
+          ratings: rating ? [...accRatings, rating] : accRatings,
+        });
+      },
+      new IpsumSRSCard({ creationDay, ratings: [] })
+    );
   }
 }
