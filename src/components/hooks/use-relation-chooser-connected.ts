@@ -39,8 +39,8 @@ export const useRelationChooserConnected =
       apiCreateRelationFromHighlightToArc
     );
 
-    const onArcCreate = (name: string) => {
-      createArc({ name });
+    const onArcCreate = (name: string): string => {
+      return createArc({ name }).id;
     };
 
     const arcSearchResults: React.ComponentProps<

@@ -10,7 +10,12 @@ export const Node_highlights_sort_type: NodeComponent = ({
   transformProgram,
   childComponents,
 }: NodeComponentProps) => {
-  const sortTypeOptions = ["review status", "recent", "importance"];
+  const sortTypeOptions = [
+    "review status",
+    "recent first",
+    "oldest first",
+    "importance",
+  ];
 
   const onSortTypeChange = (newType: string) => {
     transformProgram((program) => program.updateNodeText(endowedNode, newType));

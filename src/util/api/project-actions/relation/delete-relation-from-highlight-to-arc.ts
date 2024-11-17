@@ -1,3 +1,5 @@
+import { client } from "util/apollo";
+
 import { APIFunction } from "../types";
 
 export const deleteRelationFromHighlightToArc: APIFunction<
@@ -30,7 +32,6 @@ export const deleteRelationFromHighlightToArc: APIFunction<
 
   const arc = projectState.collection("arcs").get(relation.object);
 
-  projectState.collection("relations").delete(args.id);
   projectState
     .collection("highlights")
     .mutate(highlight.id, ({ outgoingRelations }) => ({
@@ -39,6 +40,7 @@ export const deleteRelationFromHighlightToArc: APIFunction<
   projectState.collection("arcs").mutate(arc.id, ({ incomingRelations }) => ({
     incomingRelations: incomingRelations.filter((id) => id !== relation.id),
   }));
+  projectState.collection("relations").delete(args.id);
 
   return true;
 };

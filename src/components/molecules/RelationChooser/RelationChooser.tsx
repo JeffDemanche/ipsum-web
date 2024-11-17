@@ -21,7 +21,7 @@ interface RelationChooserProps {
   onArcSearch?: (search: string) => void;
 
   allowCreation?: boolean;
-  onArcCreate?: (name: string) => void;
+  onArcCreate?: (name: string) => string;
 
   onRelationChoose?: (relation: Relation) => void;
 }
@@ -60,14 +60,15 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
   );
 
   const onArcTagClick = (arcResult: ArcResult) => {
+    let arcId = arcResult.id;
     if (arcResult.id === "new") {
-      onArcCreate?.(search);
+      arcId = onArcCreate?.(search);
     }
     onRelationChoose?.({
       subjectType,
       subjectId,
       objectType: "Arc",
-      objectId: arcResult.id,
+      objectId: arcId,
       predicate: selectedPredicate,
     });
   };

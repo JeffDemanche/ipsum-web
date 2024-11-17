@@ -21,8 +21,6 @@ export const deleteRelationFromArcToArc: APIFunction<
   const subjectArc = projectState.collection("arcs").get(relation.subject);
   const objectArc = projectState.collection("arcs").get(relation.object);
 
-  projectState.collection("relations").delete(args.id);
-
   projectState
     .collection("arcs")
     .mutate(subjectArc.id, ({ outgoingRelations }) => ({
@@ -33,6 +31,7 @@ export const deleteRelationFromArcToArc: APIFunction<
     .mutate(objectArc.id, ({ incomingRelations }) => ({
       incomingRelations: incomingRelations.filter((id) => id !== relation.id),
     }));
+  projectState.collection("relations").delete(args.id);
 
   return true;
 };

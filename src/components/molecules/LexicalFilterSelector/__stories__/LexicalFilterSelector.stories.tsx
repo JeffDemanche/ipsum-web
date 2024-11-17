@@ -18,7 +18,7 @@ export const LexicalFilterSelectorExample: Story = {
     programText: "highlights",
     relationChooserProps: {
       arcResults: [{ id: "1", hue: 0, name: "arc1" }],
-      onArcCreate: () => {},
+      onArcCreate: () => "",
       onArcSearch: () => {},
       onRelationChoose: () => {},
     },
