@@ -2,26 +2,14 @@ import { IToken } from "ebnf";
 import _ from "lodash";
 import { IpsumDay } from "util/dates";
 
-import { IpsumFilteringProgram } from "../filtering-language";
-import { Node_day } from "./components/Node_day";
-import { Node_filter } from "./components/Node_filter";
-import { Node_filter_expression_arcs } from "./components/Node_filter_expression_arcs";
-import { Node_filter_expression_highlights } from "./components/Node_filter_expression_highlights";
-import { Node_highlights_criterion } from "./components/Node_highlights_criterion";
-import { Node_highlights_criterion_dates } from "./components/Node_highlights_criterion_dates";
-import { Node_highlights_criterion_relation } from "./components/Node_highlights_criterion_relation";
-import { Node_highlights_expression } from "./components/Node_highlights_expression";
-import { Node_highlights_expression_conjunction } from "./components/Node_highlights_expression_conjunction";
-import { Node_highlights_expression_disjunction } from "./components/Node_highlights_expression_disjunction";
-import { Node_highlights_sort } from "./components/Node_highlights_sort";
-import { Node_highlights_sort_as_of } from "./components/Node_highlights_sort_as_of";
-import { Node_highlights_sort_type } from "./components/Node_highlights_sort_type";
-import { Node_ifl } from "./components/Node_ifl";
-import { Node_predicate } from "./components/Node_predicate";
-import { Node_relation_object } from "./components/Node_relation_object";
-import { Node_sort_expression_highlights } from "./components/Node_sort_expression_highlights";
-import { ebnf } from "./definition";
-import { EndowedNode, EvaluationElement, EvaluationSet } from "./types";
+import { IpsumFilteringProgram } from "./abstract-filtering-program";
+import { definitionForRule, ebnf } from "./definition";
+import {
+  EndowedNode,
+  EndowedNodeType,
+  EvaluationElement,
+  EvaluationSet,
+} from "./types";
 
 export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
   private __program: string;
@@ -81,141 +69,31 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
       return null;
     }
 
-    const defaults = {
+    const definition = definitionForRule(
+      node.type as Exclude<EndowedNodeType, "undefined">
+    );
+
+    if (!definition) {
+      return {
+        type: "undefined",
+        component: null,
+        coordinates: currentCoords,
+        rawNode: node,
+        children: node.children.map((child, i) =>
+          this.generateEndowedASTPerNode(child, [...currentCoords, i])
+        ),
+      };
+    }
+
+    return {
+      component: definition.component,
+      type: node.type as EndowedNodeType,
       coordinates: currentCoords,
       rawNode: node,
       children: node.children.map((child, i) =>
         this.generateEndowedASTPerNode(child, [...currentCoords, i])
       ),
     };
-
-    switch (node.type) {
-      case "ifl":
-        return {
-          ...defaults,
-          type: "ifl",
-          component: Node_ifl,
-        };
-
-      case "filter":
-        return {
-          ...defaults,
-          type: "filter",
-          component: Node_filter,
-        };
-
-      case "filter_expression_highlights":
-        return {
-          ...defaults,
-          type: "filter_expression_highlights",
-          component: Node_filter_expression_highlights,
-        };
-
-      case "filter_expression_arcs":
-        return {
-          ...defaults,
-          type: "filter_expression_arcs",
-          component: Node_filter_expression_arcs,
-        };
-
-      case "sort_expression_highlights":
-        return {
-          ...defaults,
-          type: "sort_expression_highlights",
-          component: Node_sort_expression_highlights,
-        };
-
-      case "highlights_expression":
-        return {
-          ...defaults,
-          type: "highlights_expression",
-          component: Node_highlights_expression,
-        };
-
-      case "highlights_expression_conjunction":
-        return {
-          ...defaults,
-          type: "highlights_expression_conjunction",
-          component: Node_highlights_expression_conjunction,
-        };
-
-      case "highlights_expression_disjunction":
-        return {
-          ...defaults,
-          type: "highlights_expression_disjunction",
-          component: Node_highlights_expression_disjunction,
-        };
-
-      case "highlights_criterion":
-        return {
-          ...defaults,
-          type: "highlights_criterion",
-          component: Node_highlights_criterion,
-        };
-
-      case "highlights_criterion_dates":
-        return {
-          ...defaults,
-          type: "highlights_criterion_dates",
-          component: Node_highlights_criterion_dates,
-        };
-
-      case "highlights_criterion_relation":
-        return {
-          ...defaults,
-          type: "highlights_criterion_relation",
-          component: Node_highlights_criterion_relation,
-        };
-
-      case "highlights_sort":
-        return {
-          ...defaults,
-          type: "highlights_sort",
-          component: Node_highlights_sort,
-        };
-
-      case "highlights_sort_as_of":
-        return {
-          ...defaults,
-          type: "highlights_sort_as_of",
-          component: Node_highlights_sort_as_of,
-        };
-
-      case "highlights_sort_type":
-        return {
-          ...defaults,
-          type: "highlights_sort_type",
-          component: Node_highlights_sort_type,
-        };
-
-      case "predicate":
-        return {
-          ...defaults,
-          type: "predicate",
-          component: Node_predicate,
-        };
-
-      case "relation_object":
-        return {
-          ...defaults,
-          type: "relation_object",
-          component: Node_relation_object,
-        };
-
-      case "day":
-        return {
-          ...defaults,
-          type: "day",
-          component: Node_day,
-        };
-
-      default:
-        return {
-          ...defaults,
-          type: "undefined",
-          component: null,
-        };
-    }
   }
 
   getEndowedAST(): EndowedNode {

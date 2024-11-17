@@ -3,7 +3,7 @@ import { IToken } from "ebnf";
 import { FunctionComponent } from "react";
 import { IpsumDay } from "util/dates";
 
-import { IpsumFilteringProgramV1 } from "./program";
+import { IpsumFilteringProgramV1 } from "./v1-filtering-program";
 
 export interface FilterableOutgoingRelation {
   predicate: string;
@@ -62,7 +62,7 @@ export interface EndowedNode {
   component: NodeComponent;
 }
 
-type EndowedNodeType =
+export type EndowedNodeType =
   | "undefined"
   | "ifl"
   | "filter"
@@ -81,3 +81,8 @@ type EndowedNodeType =
   | "predicate"
   | "relation_object"
   | "day";
+
+export interface RuleDefinition {
+  rule: string;
+  component: NodeComponent;
+}

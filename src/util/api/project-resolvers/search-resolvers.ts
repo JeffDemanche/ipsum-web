@@ -47,9 +47,11 @@ export const SearchResolvers: StrictTypedTypePolicies = {
           highlights: filterableHighlights,
         });
 
-        return highlightResults.map((highlight) =>
-          PROJECT_STATE.collection("highlights").get(highlight.id)
-        );
+        return highlightResults
+          .map((highlight) =>
+            PROJECT_STATE.collection("highlights").get(highlight.id)
+          )
+          .slice(0, 50);
       },
       searchArcsByName(_, { args }) {
         const allArcs = Object.values(

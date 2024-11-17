@@ -1,4 +1,4 @@
-import { IpsumFilteringProgramV1 } from "./v1/program";
+import { IpsumFilteringProgramV1 } from "./v1-filtering-program";
 
 type IFLVersion = "v1";
 

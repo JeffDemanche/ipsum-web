@@ -1,7 +1,7 @@
 import { IpsumDay } from "util/dates";
 
-import { IpsumFilteringProgramV1 } from "../v1/program";
-import { EndowedNode, FilterableHighlight } from "../v1/types";
+import { EndowedNode, FilterableHighlight } from "../types";
+import { IpsumFilteringProgramV1 } from "../v1-filtering-program";
 import { createFilteringProgram } from "../versions";
 
 const mock_hl = (

@@ -1,5 +1,5 @@
 export { createFilteringProgram } from "./versions";
-export { IpsumFilteringProgram } from "./filtering-language";
+export { IpsumFilteringProgram } from "./abstract-filtering-program";
 export {
   NodeComponentProps,
   EndowedNode,
@@ -7,4 +7,4 @@ export {
   FilterableHighlight,
   FilterableOutgoingRelation,
   EvaluationSet,
-} from "./v1/types";
+} from "./types";
