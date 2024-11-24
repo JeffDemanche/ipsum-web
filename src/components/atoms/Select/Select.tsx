@@ -30,6 +30,7 @@ export const Select: React.FunctionComponent<SelectProps> = ({
 }) => {
   const textStyle: CSSProperties = {
     border: "none",
+    height: "unset",
   };
 
   const outlinedStyle: CSSProperties = {

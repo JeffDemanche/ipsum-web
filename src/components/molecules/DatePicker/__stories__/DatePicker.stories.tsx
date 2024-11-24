@@ -23,7 +23,7 @@ export const DatePickerExample: StoryDatePicker = {
       { label: "1 year", day: IpsumDay.today().add(0, -12) },
     ],
     selectedDay: IpsumDay.fromString("1/1/2024", "entry-printed-date"),
-    dataOnDay: (day: IpsumDay) => {
+    dataOnDay: async (day: IpsumDay) => {
       switch (day.toString("entry-printed-date")) {
         case "1/2/2024":
           return {

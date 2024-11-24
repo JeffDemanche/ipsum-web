@@ -7,6 +7,7 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import cx from "classnames";
 import { Button } from "components/atoms/Button";
+import { TextField } from "components/atoms/TextField";
 import {
   font_family_sans,
   font_weight_bold,
@@ -17,14 +18,16 @@ import React, {
   createContext,
   FunctionComponent,
   useContext,
+  useEffect,
   useMemo,
+  useState,
 } from "react";
 import { IpsumArcColor } from "util/colors";
 import { IpsumDay } from "util/dates";
 
 import styles from "./DatePicker.less";
 
-interface DayData {
+export interface DayData {
   entry: boolean;
   arcs: {
     name: string;
@@ -42,14 +45,15 @@ interface DatePickerProps {
   selectedDay?: IpsumDay;
   showButtonOptions?: boolean;
   buttonOptions?: ButtonOption[];
+  showManualInput?: boolean;
 
-  onSelect?: (day: IpsumDay) => void;
+  onSelect?: (day: IpsumDay, buttonLabel?: string) => void;
 
-  dataOnDay?: (day: IpsumDay) => DayData;
+  dataOnDay?: (day: IpsumDay) => Promise<DayData>;
 }
 
 interface CalendarContextProps {
-  dataOnDay?: (day: IpsumDay) => DayData;
+  dataOnDay?: (day: IpsumDay) => Promise<DayData>;
 }
 
 const CalendarContext = createContext<CalendarContextProps>({
@@ -60,9 +64,17 @@ const DayComponent: FunctionComponent<PickersDayProps<dayjs.Dayjs>> = (
   props
 ) => {
   const { dataOnDay } = useContext(CalendarContext);
+
   const day = IpsumDay.fromString((props.day as Dayjs).toISOString(), "iso");
 
-  const PickerDayComponent = dataOnDay?.(day)?.entry ? (
+  const [data, setData] = useState<DayData | undefined>(undefined);
+  useEffect(() => {
+    if (!data) {
+      dataOnDay?.(day).then(setData);
+    }
+  }, [data, dataOnDay, day]);
+
+  const PickerDayComponent = data?.entry ? (
     <PickersDay
       className={styles["day"]}
       style={{
@@ -75,11 +87,11 @@ const DayComponent: FunctionComponent<PickersDayProps<dayjs.Dayjs>> = (
   );
 
   const DayComponentWithDots =
-    dataOnDay?.(day)?.arcs.length > 0 ? (
+    data?.arcs?.length > 0 ? (
       <div className={styles["day-with-dots-wrapper"]}>
         {PickerDayComponent}
         <div className={styles["dot-group"]}>
-          {dataOnDay?.(day)?.arcs.map(({ hue }, index) => (
+          {data.arcs.map(({ hue }, index) => (
             <span
               key={index}
               className="dot"
@@ -108,20 +120,43 @@ export const DatePicker: FunctionComponent<DatePickerProps> = ({
   className,
   showButtonOptions,
   buttonOptions,
+  showManualInput,
   onSelect,
   selectedDay,
   dataOnDay,
 }) => {
-  const dayJsSelectedDay = useMemo(
-    () => (selectedDay ? dayjs(selectedDay.toString("url-format")) : undefined),
-    [selectedDay]
-  );
+  const [manualEntryValue, setManualEntryValue] = useState<string>("");
+
+  const manualEntryValid = useMemo(() => {
+    return IpsumDay.fromString(
+      manualEntryValue,
+      "entry-printed-date"
+    )?.toLuxonDateTime().isValid;
+  }, [manualEntryValue]);
+
+  const onManualEntryKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" && manualEntryValid) {
+      onSelect?.(IpsumDay.fromString(manualEntryValue, "entry-printed-date"));
+      e.preventDefault();
+    }
+  };
+
+  const dayJsSelectedDay = useMemo(() => {
+    if (manualEntryValid) {
+      return dayjs(
+        IpsumDay.fromString(manualEntryValue, "entry-printed-date").toString(
+          "url-format"
+        )
+      );
+    }
+    return selectedDay ? dayjs(selectedDay.toString("url-format")) : undefined;
+  }, [manualEntryValid, manualEntryValue, selectedDay]);
 
   const buttonOptionsComponent = useMemo(() => {
     return buttonOptions?.map(({ label, day }, index) => (
       <Button
         onClick={() => {
-          onSelect?.(day);
+          onSelect?.(day, label);
         }}
         key={index}
       >
@@ -135,28 +170,44 @@ export const DatePicker: FunctionComponent<DatePickerProps> = ({
       {showButtonOptions && (
         <div className={styles["button-options"]}>{buttonOptionsComponent}</div>
       )}
-      <CalendarContext.Provider value={{ dataOnDay }}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateCalendar
-            value={dayJsSelectedDay}
-            showDaysOutsideCurrentMonth
-            disableFuture
-            onChange={(newValue) => {
-              if (newValue) {
-                const day = IpsumDay.fromString(newValue.toISOString(), "iso");
-                onSelect?.(day);
-              }
+      <div>
+        {showManualInput && (
+          <TextField
+            className={styles["manual-entry-input"]}
+            placeholder="M/D/YYYY"
+            autoFocus
+            onChange={(e) => {
+              setManualEntryValue(e.target.value);
             }}
-            className={styles["calendar"]}
-            slots={{
-              day: DayComponent,
-            }}
-            slotProps={{
-              calendarHeader: { sx: { fontFamily: font_family_sans } },
-            }}
-          />
-        </LocalizationProvider>
-      </CalendarContext.Provider>
+            onKeyDown={onManualEntryKeyDown}
+          ></TextField>
+        )}
+        <CalendarContext.Provider value={{ dataOnDay }}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateCalendar
+              value={dayJsSelectedDay}
+              showDaysOutsideCurrentMonth
+              disableFuture
+              onChange={(newValue) => {
+                if (newValue) {
+                  const day = IpsumDay.fromString(
+                    newValue.toISOString(),
+                    "iso"
+                  );
+                  onSelect?.(day);
+                }
+              }}
+              className={styles["calendar"]}
+              slots={{
+                day: DayComponent,
+              }}
+              slotProps={{
+                calendarHeader: { sx: { fontFamily: font_family_sans } },
+              }}
+            />
+          </LocalizationProvider>
+        </CalendarContext.Provider>
+      </div>
     </div>
   );
 };

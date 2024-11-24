@@ -29,6 +29,7 @@ module.exports = {
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-restricted-imports": 0,
     "@typescript-eslint/no-unused-vars": "warn",
+    "react/prop-types": "off",
   },
   overrides: [
     {

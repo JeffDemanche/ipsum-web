@@ -1,7 +1,7 @@
 import { Button as MuiButton, Tooltip } from "@mui/material";
 import cx from "classnames";
 import { font_family_sans, font_weight_light } from "components/styles";
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, forwardRef } from "react";
 
 import styles from "./Button.less";
 
@@ -25,42 +25,54 @@ type ButtonProps = {
   | "onMouseLeave"
 >;
 
-export const Button: React.FunctionComponent<ButtonProps> = ({
-  variant,
-  tooltip,
-  disableRipple,
-  children,
-  style,
-  className,
-  ...muiButtonProps
-}) => {
-  const muiVariant = variant === "link" ? "text" : variant;
+export const Button: React.FunctionComponent<ButtonProps> = forwardRef(
+  (
+    {
+      variant,
+      tooltip,
+      disableRipple,
+      children,
+      style,
+      className,
+      ...muiButtonProps
+    },
+    ref
+  ) => {
+    const muiVariant = variant === "link" ? "text" : variant;
 
-  const linkStyle: CSSProperties = {
-    fontWeight: font_weight_light,
-    fontFamily: font_family_sans,
-    textDecoration: "underline",
-    backgroundColor: "transparent",
-  };
+    const linkStyle: CSSProperties = {
+      fontWeight: font_weight_light,
+      fontFamily: font_family_sans,
+      textDecoration: "underline",
+      backgroundColor: "transparent",
+      verticalAlign: "baseline",
+      height: "unset",
+      lineHeight: "unset",
+      padding: 0,
+    };
 
-  const nonLinkStyle: CSSProperties = {
-    fontWeight: font_weight_light,
-    fontFamily: font_family_sans,
-  };
+    const nonLinkStyle: CSSProperties = {
+      fontWeight: font_weight_light,
+      fontFamily: font_family_sans,
+    };
 
-  const button = (
-    <MuiButton
-      variant={muiVariant}
-      disableRipple={
-        disableRipple !== undefined ? disableRipple : variant === "link"
-      }
-      style={{ ...(variant === "link" ? linkStyle : nonLinkStyle), ...style }}
-      className={cx(styles["button"], className)}
-      {...muiButtonProps}
-    >
-      {children}
-    </MuiButton>
-  );
+    const button = (
+      <MuiButton
+        ref={ref}
+        variant={muiVariant}
+        disableRipple={
+          disableRipple !== undefined ? disableRipple : variant === "link"
+        }
+        style={{ ...(variant === "link" ? linkStyle : nonLinkStyle), ...style }}
+        className={cx(styles["button"], className)}
+        {...muiButtonProps}
+      >
+        {children}
+      </MuiButton>
+    );
 
-  return tooltip ? <Tooltip title={tooltip}>{button}</Tooltip> : button;
-};
+    return tooltip ? <Tooltip title={tooltip}>{button}</Tooltip> : button;
+  }
+);
+
+Button.displayName = "Button";

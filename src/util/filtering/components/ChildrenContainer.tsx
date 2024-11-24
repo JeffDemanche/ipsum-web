@@ -21,6 +21,7 @@ export const ChildrenContainer: React.FC<ChildrenContainerProps> = ({
     <div
       data-parent-node-type={node.type}
       className={cx(
+        styles["children-container"],
         layout === "block" ? styles["layout-block"] : styles["layout-inline"],
         highlight && styles["highlighted"]
       )}

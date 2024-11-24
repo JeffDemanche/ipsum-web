@@ -22,6 +22,14 @@ export const LexicalFilterSelectorExample: Story = {
       onArcSearch: () => {},
       onRelationChoose: () => {},
     },
+    dataOnDay: async () => ({
+      entry: Math.random() > 0.5,
+      arcs: [
+        Math.random() > 0.5
+          ? { name: "Arc 1", hue: Math.round(Math.random() * 360) }
+          : undefined,
+      ].filter((arc) => arc !== undefined),
+    }),
   },
 };
 

@@ -1,7 +1,6 @@
 import { IToken } from "ebnf";
 import _ from "lodash";
 import { IpsumDay } from "util/dates";
-import { IpsumSRSCard } from "util/repetition";
 
 import { IpsumFilteringProgram } from "./abstract-filtering-program";
 import { definitionForRule, ebnf } from "./definition";
@@ -171,8 +170,8 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
         const dayFromString = days[0].rawNode.text.slice(1, -1);
         const dayToString = days[1].rawNode.text.slice(1, -1);
 
-        const dayFrom = this.evaluateDayNode(days[0]);
-        const dayTo = this.evaluateDayNode(days[1]);
+        const dayFrom = IpsumFilteringProgramV1.evaluateDayNode(days[0]);
+        const dayTo = IpsumFilteringProgramV1.evaluateDayNode(days[1]);
 
         if (!dayFrom.toLuxonDateTime().isValid) {
           throw new IFLExecutionError(
@@ -211,7 +210,7 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
     }
   }
 
-  private evaluateDayNode(node: EndowedNode): IpsumDay {
+  static evaluateDayNode(node: EndowedNode): IpsumDay {
     if (node.type === "day") {
       let text = node.rawNode.text.slice(1, -1);
 
@@ -264,7 +263,7 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
     );
 
     const sortAsOf = asOfNode
-      ? this.evaluateDayNode(asOfNode.children[0])
+      ? IpsumFilteringProgramV1.evaluateDayNode(asOfNode.children[0])
       : undefined;
 
     switch (sortType) {

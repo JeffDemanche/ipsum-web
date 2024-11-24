@@ -10,6 +10,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { IpsumDay } from "util/dates";
 import {
   createFilteringProgram,
   EndowedNode,
@@ -17,6 +18,7 @@ import {
   NodeComponentProps,
 } from "util/filtering";
 
+import { DatePickerDayData } from "../DatePicker";
 import styles from "./LexicalFilterSelector.less";
 
 export interface LexicalFilterSelectorConnectionProps {}
@@ -33,6 +35,7 @@ type LexicalFilterSelectorProps = {
   ) => void;
 
   relationChooserProps: RelationChooserConnectedProps;
+  dataOnDay: (day: IpsumDay) => Promise<DatePickerDayData>;
 
   arcByIdOrName: (idOrName: string) => {
     id: string;
@@ -50,6 +53,7 @@ export const LexicalFilterSelector: React.FunctionComponent<
   programText,
   onFilterProgramChange,
   relationChooserProps,
+  dataOnDay,
 }) => {
   const [rawMode, setRawMode] = useState(false);
 
@@ -74,6 +78,7 @@ export const LexicalFilterSelector: React.FunctionComponent<
         endowedNode: node,
         key: node.coordinates.join("-"),
         relationChooserProps,
+        dataOnDay,
         transformProgram: (transform) => {
           const newProgram = transform(currentProgram);
           newProgram.errors.forEach((error) => {
@@ -90,7 +95,13 @@ export const LexicalFilterSelector: React.FunctionComponent<
           .filter(Boolean),
       });
     },
-    [currentProgram, editMode, onFilterProgramChange, relationChooserProps]
+    [
+      currentProgram,
+      dataOnDay,
+      editMode,
+      onFilterProgramChange,
+      relationChooserProps,
+    ]
   );
 
   const markupTree = useMemo(() => {

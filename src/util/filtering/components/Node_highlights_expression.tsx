@@ -37,8 +37,7 @@ export const Node_highlights_expression: NodeComponent = ({
       node={endowedNode}
       layout="inline"
     >
-      {childComponents}
-      {removeFilter}
+      {childComponents} {removeFilter}
     </ChildrenContainer>
   );
 

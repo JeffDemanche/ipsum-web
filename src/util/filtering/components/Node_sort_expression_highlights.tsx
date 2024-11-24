@@ -25,7 +25,10 @@ export const Node_sort_expression_highlights: NodeComponent = ({
       onClick={() => {
         transformProgram((program) => program.updateNodeText(endowedNode, ""));
       }}
-      style={{ fontSize: font_size_x_small, color: grey600 }}
+      style={{
+        fontSize: font_size_x_small,
+        color: grey600,
+      }}
     >
       - sort
     </Button>
@@ -37,8 +40,7 @@ export const Node_sort_expression_highlights: NodeComponent = ({
       node={endowedNode}
       layout="inline"
     >
-      {childComponents}
-      {removeSort}
+      {childComponents} {removeSort}
     </ChildrenContainer>
   );
 

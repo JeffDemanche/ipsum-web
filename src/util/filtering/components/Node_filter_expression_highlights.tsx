@@ -3,7 +3,7 @@ import { MenuItem } from "components/atoms/MenuItem";
 import { Popover } from "components/atoms/Popover";
 import { RelationChooser } from "components/molecules/RelationChooser";
 import { font_size_x_small, grey600 } from "components/styles";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
@@ -15,8 +15,8 @@ export const Node_filter_expression_highlights: NodeComponent = ({
   childComponents,
   relationChooserProps,
 }: NodeComponentProps) => {
-  const [addFilterPopoverTarget, setAddFilterPopoverTarget] =
-    useState<HTMLButtonElement>(null);
+  const [showAddFilterPopover, setShowAddFilterPopover] = useState(false);
+  const addFilterPopoverRef = useRef<HTMLButtonElement>();
 
   const [choosingRelation, setChoosingRelation] = useState(false);
 
@@ -24,10 +24,11 @@ export const Node_filter_expression_highlights: NodeComponent = ({
     <Popover
       anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       onClose={() => {
-        setAddFilterPopoverTarget(null);
+        setShowAddFilterPopover(false);
         setChoosingRelation(false);
       }}
-      anchorEl={addFilterPopoverTarget}
+      anchorEl={addFilterPopoverRef.current}
+      open={showAddFilterPopover}
     >
       {choosingRelation ? (
         <RelationChooser
@@ -39,7 +40,7 @@ export const Node_filter_expression_highlights: NodeComponent = ({
                 `${endowedNode.rawNode.text} which ${relation.predicate} "${relation.objectId}"`
               )
             );
-            setAddFilterPopoverTarget(null);
+            setShowAddFilterPopover(null);
             setChoosingRelation(false);
           }}
           maxArcResults={5}
@@ -48,6 +49,7 @@ export const Node_filter_expression_highlights: NodeComponent = ({
         <>
           <MenuItem
             onClick={() => {
+              setShowAddFilterPopover(false);
               const sortChild = endowedNode.children.find(
                 (child) => child.type === "sort_expression_highlights"
               );
@@ -66,7 +68,6 @@ export const Node_filter_expression_highlights: NodeComponent = ({
                   )
                 );
               }
-              setAddFilterPopoverTarget(null);
             }}
           >
             by dates
@@ -90,10 +91,11 @@ export const Node_filter_expression_highlights: NodeComponent = ({
   const addFilter = showAddFilter ? (
     <Button
       variant="link"
-      onClick={(e) => {
-        setAddFilterPopoverTarget(e.currentTarget);
-      }}
+      ref={addFilterPopoverRef}
       style={{ fontSize: font_size_x_small, color: grey600 }}
+      onClick={() => {
+        setShowAddFilterPopover(true);
+      }}
     >
       + filter
     </Button>
@@ -124,8 +126,7 @@ export const Node_filter_expression_highlights: NodeComponent = ({
     <ChildrenContainer node={endowedNode} layout="block">
       {childComponents}
       {addFilter}
-      {addFilterPopover}
-      {addSort}
+      {addFilterPopover} {addSort}
     </ChildrenContainer>
   );
 

@@ -1,4 +1,5 @@
 import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
+import { DatePickerDayData } from "components/molecules/DatePicker";
 import { IToken } from "ebnf";
 import { FunctionComponent } from "react";
 import { IpsumDay } from "util/dates";
@@ -43,6 +44,7 @@ export interface NodeComponentProps {
   endowedNode: EndowedNode;
 
   relationChooserProps: RelationChooserConnectedProps;
+  dataOnDay: (day: IpsumDay) => Promise<DatePickerDayData>;
 
   transformProgram: (
     transform: (program: IpsumFilteringProgramV1) => IpsumFilteringProgramV1
