@@ -1,5 +1,6 @@
 export { createFilteringProgram } from "./versions";
 export { IpsumFilteringProgram } from "./abstract-filtering-program";
+export { IpsumFilteringProgramV1 } from "./v1-filtering-program";
 export {
   NodeComponentProps,
   EndowedNode,
@@ -8,3 +9,4 @@ export {
   FilterableOutgoingRelation,
   EvaluationSet,
 } from "./types";
+export { FilterTreeAction } from "./components/filter-tree-actions";

@@ -1,15 +1,17 @@
 import { Button } from "components/atoms/Button";
 import { font_size_x_small, grey600 } from "components/styles";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
+import { NewFilterExpressionPopover } from "./NewFilterExpressionPopover";
 
 export const Node_highlights_expression: NodeComponent = ({
   editMode,
   endowedNode,
   childComponents,
   transformProgram,
+  relationChooserProps,
 }: NodeComponentProps) => {
   const [highlightChildren, setHighlightChildren] = useState(false);
 
@@ -31,13 +33,46 @@ export const Node_highlights_expression: NodeComponent = ({
     </Button>
   );
 
+  const [showAddFilterPopover, setShowAddFilterPopover] = useState(false);
+  const addFilterPopoverRef = useRef<HTMLButtonElement>();
+
+  const addAnd = (
+    <>
+      <NewFilterExpressionPopover
+        show={showAddFilterPopover}
+        setShow={setShowAddFilterPopover}
+        anchorEl={addFilterPopoverRef.current}
+        relationChooserProps={relationChooserProps}
+        onCreateDatesFilter={() => {
+          transformProgram((program) =>
+            program.updateNodeText(
+              endowedNode,
+              `(${endowedNode.rawNode.text} and from "beginning" to "today")`
+            )
+          );
+        }}
+        onRelationChoose={(relation) => {}}
+      />
+      <Button
+        variant="link"
+        ref={addFilterPopoverRef}
+        onClick={() => {
+          setShowAddFilterPopover(true);
+        }}
+        style={{ fontSize: font_size_x_small, color: grey600 }}
+      >
+        + and
+      </Button>
+    </>
+  );
+
   const editModeMarkup = (
     <ChildrenContainer
       highlight={highlightChildren}
       node={endowedNode}
       layout="inline"
     >
-      {childComponents} {removeFilter}
+      {childComponents} {addAnd} {removeFilter}
     </ChildrenContainer>
   );
 

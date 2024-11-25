@@ -232,6 +232,27 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
     return undefined;
   }
 
+  findEndowedNodesByType(type: EndowedNodeType): EndowedNode[] {
+    const findEndowedNodesByType = (
+      node: EndowedNode,
+      type: EndowedNodeType
+    ): EndowedNode[] => {
+      if (!node) {
+        return [];
+      }
+
+      if (node.type === type) {
+        return [node];
+      }
+
+      return node.children
+        .map((child) => findEndowedNodesByType(child, type))
+        .flat();
+    };
+
+    return findEndowedNodesByType(this.__endowedAst, type);
+  }
+
   private findEndowedNodeByType(
     node: EndowedNode,
     type: EndowedNodeType

@@ -5,6 +5,7 @@ import { FunctionComponent } from "react";
 import { IpsumDay } from "util/dates";
 import { IpsumSRSCard } from "util/repetition";
 
+import { FilterTreeAction } from "./components/filter-tree-actions";
 import { IpsumFilteringProgramV1 } from "./v1-filtering-program";
 
 export interface FilterableOutgoingRelation {
@@ -46,9 +47,15 @@ export interface NodeComponentProps {
   relationChooserProps: RelationChooserConnectedProps;
   dataOnDay: (day: IpsumDay) => Promise<DatePickerDayData>;
 
+  /** @deprecated */
   transformProgram: (
     transform: (program: IpsumFilteringProgramV1) => IpsumFilteringProgramV1
-  ) => boolean;
+  ) => IpsumFilteringProgramV1;
+
+  performAction: <A extends FilterTreeAction<Parameters<A>[0]["args"]>, T>(
+    action: A,
+    args: Parameters<A>[0]["args"]
+  ) => IpsumFilteringProgramV1;
 
   childComponents: JSX.Element[];
 }
