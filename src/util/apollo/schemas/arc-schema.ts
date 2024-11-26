@@ -3,6 +3,8 @@ import { gql } from "@apollo/client";
 export const arcTypeDef = gql`
   type Query {
     arc(id: ID!): Arc
+    arcByName(name: String!): Arc
+
     arcs(ids: [ID!], sort: ArcSortType): [Arc]
   }
 

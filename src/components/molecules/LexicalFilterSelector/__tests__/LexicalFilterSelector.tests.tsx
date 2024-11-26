@@ -18,7 +18,7 @@ describe("LexicalFilterSelector", () => {
         relationChooserProps={{ arcResults: [] }}
         onEnterEditMode={() => {}}
         onLeaveEditMode={() => {}}
-        dataOnDay={async () => ({ entry: false, arcs: [] })}
+        dataOnDay={() => ({ entry: false, arcs: [] })}
       />
     );
   };

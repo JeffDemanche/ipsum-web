@@ -50,11 +50,11 @@ interface DatePickerProps {
 
   onSelect?: (day: IpsumDay, buttonLabel?: string) => void;
 
-  dataOnDay?: (day: IpsumDay) => Promise<DayData>;
+  dataOnDay?: (day: IpsumDay) => DayData;
 }
 
 interface CalendarContextProps {
-  dataOnDay?: (day: IpsumDay) => Promise<DayData>;
+  dataOnDay?: (day: IpsumDay) => DayData;
 }
 
 const CalendarContext = createContext<CalendarContextProps>({
@@ -74,9 +74,7 @@ const DayComponent: FunctionComponent<PickersDayProps<dayjs.Dayjs>> = (
   useEffect(() => {
     if (dataOnDay && !loadedData.current) {
       loadedData.current = true;
-      dataOnDay?.(day).then((data) => {
-        setData(data);
-      });
+      setData(dataOnDay?.(day));
     }
   }, [data, dataOnDay, day]);
 

@@ -2,7 +2,6 @@ import { KeyboardArrowUpSharp } from "@mui/icons-material";
 import cx from "classnames";
 import { Button } from "components/atoms/Button";
 import { ToggleButton } from "components/atoms/ToggleButton";
-import { Type } from "components/atoms/Type";
 import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
 import React, {
   createElement,
@@ -40,7 +39,7 @@ type LexicalFilterSelectorProps = {
   ) => void;
 
   relationChooserProps: RelationChooserConnectedProps;
-  dataOnDay: (day: IpsumDay) => Promise<DatePickerDayData>;
+  dataOnDay: (day: IpsumDay) => DatePickerDayData;
 
   arcByIdOrName: (idOrName: string) => {
     id: string;

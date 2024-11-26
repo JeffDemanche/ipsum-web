@@ -20,7 +20,7 @@ export const LexicalFilterSelectorExample: Story = {
       onArcSearch: () => {},
       onRelationChoose: () => {},
     },
-    dataOnDay: async () => ({
+    dataOnDay: () => ({
       entry: Math.random() > 0.5,
       arcs: [
         Math.random() > 0.5

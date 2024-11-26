@@ -38,6 +38,21 @@ const LexicalFilterSelectorConnectedDataOnDayQuery = gql(`
   }
 `);
 
+const LexicalFilterSelectorConnectedArcByIdOrNameQuery = gql(`
+  query LexicalFilterSelectorConnectedArcByIdOrName($id: ID!, $name: String!) {
+    arc(id: $id) {
+      id
+      name
+      color
+    }
+    arcByName(name: $name) {
+      id
+      name
+      color
+    }
+  }
+`);
+
 export const useLexicalFilterSelectorConnected =
   (): LexicalFilterSelectorConnectedProps => {
     const [editMode, setEditMode] = useState(false);
@@ -48,7 +63,7 @@ export const useLexicalFilterSelectorConnected =
 
     const relationChooserProps = useRelationChooserConnected();
 
-    const dataOnDay = async (day: IpsumDay): Promise<DatePickerDayData> => {
+    const dataOnDay = (day: IpsumDay): DatePickerDayData => {
       const data = client.readQuery({
         query: LexicalFilterSelectorConnectedDataOnDayQuery,
         variables: { day: day.toString("stored-day") },
@@ -65,6 +80,20 @@ export const useLexicalFilterSelectorConnected =
           ) ?? [],
         entry: !!data?.day,
       };
+    };
+
+    const arcByIdOrName = (idOrName: string) => {
+      const arcsData = client.readQuery({
+        query: LexicalFilterSelectorConnectedArcByIdOrNameQuery,
+        variables: { id: idOrName, name: idOrName },
+      });
+
+      if (arcsData?.arc) {
+        return arcsData.arc;
+      } else if (arcsData?.arcByName) {
+        return arcsData.arcByName;
+      }
+      return null;
     };
 
     const onEnterEditMode = () => {
@@ -85,8 +114,6 @@ export const useLexicalFilterSelectorConnected =
       },
       relationChooserProps,
       dataOnDay,
-      arcByIdOrName: () => {
-        return undefined;
-      },
+      arcByIdOrName,
     };
   };

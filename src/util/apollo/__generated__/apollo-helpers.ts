@@ -84,9 +84,10 @@ export type JournalMetadataKeySpecifier = ('lastArcHue' | JournalMetadataKeySpec
 export type JournalMetadataFieldPolicy = {
 	lastArcHue?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('arc' | 'arcEntries' | 'arcEntry' | 'arcs' | 'comment' | 'commentEntries' | 'commentEntry' | 'comments' | 'commentsForDay' | 'day' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'searchArcs' | 'searchArcsByName' | 'searchHighlights' | 'srsCard' | 'srsCards' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('arc' | 'arcByName' | 'arcEntries' | 'arcEntry' | 'arcs' | 'comment' | 'commentEntries' | 'commentEntry' | 'comments' | 'commentsForDay' | 'day' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'searchArcs' | 'searchArcsByName' | 'searchHighlights' | 'srsCard' | 'srsCards' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
+	arcByName?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcEntries?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcs?: FieldPolicy<any> | FieldReadFunction<any>,

@@ -33,6 +33,13 @@ export class ProjectCollection<T> {
     return obj;
   }
 
+  getAllByField(key: keyof T, value: T): Record<string, T> {
+    // This is where we could add indexing to improve performance
+    return Object.entries(this.getAll())
+      .filter(([, v]) => v[key] === value)
+      .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+  }
+
   getReactiveVar(key: string): ReactiveVar<T> | undefined {
     return this.values()[key];
   }

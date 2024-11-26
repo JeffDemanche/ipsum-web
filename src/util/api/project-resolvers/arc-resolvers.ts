@@ -15,6 +15,15 @@ export const ArcResolvers: StrictTypedTypePolicies = {
         }
         return null;
       },
+      arcByName(_, { args }) {
+        if (args?.name) {
+          const arc = Object.values(
+            PROJECT_STATE.collection("arcs").getAllByField("name", args.name)
+          )?.[0];
+          return arc ?? null;
+        }
+        return null;
+      },
       arcs(_, { args }: { args: QueryArcsArgs }) {
         let results: InMemoryArc[] = [];
         if (args?.ids) {

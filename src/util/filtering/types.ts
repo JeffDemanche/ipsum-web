@@ -45,7 +45,7 @@ export interface NodeComponentProps {
   endowedNode: EndowedNode;
 
   relationChooserProps: RelationChooserConnectedProps;
-  dataOnDay: (day: IpsumDay) => Promise<DatePickerDayData>;
+  dataOnDay: (day: IpsumDay) => DatePickerDayData;
   arcByIdOrName: (idOrName: string) => {
     id: string;
     name: string;
