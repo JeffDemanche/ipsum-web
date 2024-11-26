@@ -47,6 +47,8 @@ type LexicalFilterSelectorProps = {
     name: string;
     color: number;
   };
+
+  onArcClick?: (arcId: string) => void;
 };
 
 export const LexicalFilterSelector: React.FunctionComponent<
@@ -59,6 +61,8 @@ export const LexicalFilterSelector: React.FunctionComponent<
   onFilterProgramChange,
   relationChooserProps,
   dataOnDay,
+  arcByIdOrName,
+  onArcClick,
 }) => {
   const [rawMode, setRawMode] = useState(false);
 
@@ -114,6 +118,8 @@ export const LexicalFilterSelector: React.FunctionComponent<
         key: node.coordinates.join("-"),
         relationChooserProps,
         dataOnDay,
+        arcByIdOrName,
+        onArcClick,
         transformProgram,
         performAction,
         childComponents: node.children
@@ -121,7 +127,15 @@ export const LexicalFilterSelector: React.FunctionComponent<
           .filter(Boolean),
       });
     },
-    [dataOnDay, editMode, performAction, relationChooserProps, transformProgram]
+    [
+      arcByIdOrName,
+      dataOnDay,
+      editMode,
+      onArcClick,
+      performAction,
+      relationChooserProps,
+      transformProgram,
+    ]
   );
 
   const markupTree = useMemo(() => {

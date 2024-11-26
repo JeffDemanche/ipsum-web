@@ -28,5 +28,11 @@ export const LexicalFilterSelectorExample: Story = {
           : undefined,
       ].filter((arc) => arc !== undefined),
     }),
+    arcByIdOrName: (idOrName: string) => {
+      return {
+        "1": { id: "1", name: "arc1", color: 0 },
+        arc1: { id: "1", name: "arc1", color: 0 },
+      }[idOrName];
+    },
   },
 };

@@ -46,6 +46,12 @@ export interface NodeComponentProps {
 
   relationChooserProps: RelationChooserConnectedProps;
   dataOnDay: (day: IpsumDay) => Promise<DatePickerDayData>;
+  arcByIdOrName: (idOrName: string) => {
+    id: string;
+    name: string;
+    color: number;
+  };
+  onArcClick?: (arcId: string) => void;
 
   /** @deprecated */
   transformProgram: (

@@ -1,20 +1,34 @@
-import { Button } from "components/atoms/Button";
-import React, { useState } from "react";
+import { ArcTag } from "components/molecules/ArcTag";
+import React from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
 
 export const Node_relation_object: NodeComponent = ({
-  editMode,
   endowedNode,
-  relationChooserProps,
-  childComponents,
+  arcByIdOrName,
+  onArcClick,
 }: NodeComponentProps) => {
-  const [showPopover, setShowPopover] = useState(false);
+  const idOrName = endowedNode.rawNode.text.slice(1, -1);
+
+  const arc = arcByIdOrName(idOrName) ?? {
+    id: "",
+    name: "(arc not found)",
+    color: 0,
+  };
 
   return (
     <ChildrenContainer node={endowedNode} layout="inline">
-      <Button variant="link">{endowedNode.rawNode.text}</Button>{" "}
+      <span>
+        <ArcTag
+          fontSize="x-small"
+          text={arc.name}
+          hue={arc.color}
+          onClick={() => {
+            onArcClick(arc.id);
+          }}
+        ></ArcTag>
+      </span>{" "}
     </ChildrenContainer>
   );
 };
