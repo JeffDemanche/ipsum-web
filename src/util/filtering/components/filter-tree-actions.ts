@@ -1,7 +1,7 @@
 import { IpsumDay } from "util/dates";
 
+import { IpsumFilteringProgramV1 } from "../ipsum-filtering-program-v1";
 import { EndowedNode, FilterType, SortType } from "../types";
-import { IpsumFilteringProgramV1 } from "../v1-filtering-program";
 
 export type FilterTreeAction<T> = ({
   program,

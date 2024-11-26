@@ -6,7 +6,7 @@ import {
   IpsumDateFormatFrom,
   IpsumDateFormatTo,
   IpsumDateTime,
-} from "./dates";
+} from "./ipsum-date-time";
 
 export const useToday = (refreshRate: number): IpsumDay => {
   const [day, setDay] = useState(

@@ -1,6 +1,6 @@
 import { IpsumDay } from "util/dates";
 
-import { IpsumSRSCard } from "../srs-card";
+import { IpsumSRSCard } from "../ipsum-srs-card";
 
 describe("SRS Card", () => {
   it("should have base case EF and interval", () => {

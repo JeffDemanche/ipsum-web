@@ -6,7 +6,7 @@ import { IpsumDay } from "util/dates";
 import { IpsumSRSCard } from "util/repetition";
 
 import { FilterTreeAction } from "./components/filter-tree-actions";
-import { IpsumFilteringProgramV1 } from "./v1-filtering-program";
+import { IpsumFilteringProgramV1 } from "./ipsum-filtering-program-v1";
 
 export interface FilterableOutgoingRelation {
   predicate: string;

@@ -9,5 +9,5 @@ export {
   useDateString,
   compareDatesAsc,
   compareDatesDesc,
-} from "./dates";
-export { IpsumDay, useToday } from "./day";
+} from "./ipsum-date-time";
+export { IpsumDay, useToday } from "./ipsum-day";

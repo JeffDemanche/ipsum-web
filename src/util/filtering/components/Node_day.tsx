@@ -4,8 +4,8 @@ import { DatePicker } from "components/molecules/DatePicker";
 import React, { useCallback, useRef, useState } from "react";
 import { IpsumDay } from "util/dates";
 
+import { IpsumFilteringProgramV1 } from "../ipsum-filtering-program-v1";
 import { NodeComponent, NodeComponentProps } from "../types";
-import { IpsumFilteringProgramV1 } from "../v1-filtering-program";
 
 export const Node_day: NodeComponent = ({
   editMode,

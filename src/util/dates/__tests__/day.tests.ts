@@ -1,5 +1,5 @@
-import { IpsumDateTime } from "../dates";
-import { IpsumDay } from "../day";
+import { IpsumDateTime } from "../ipsum-date-time";
+import { IpsumDay } from "../ipsum-day";
 
 describe("day", () => {
   it("should convert from IpsumDateTime", () => {

@@ -1,8 +1,8 @@
 import { IpsumDay } from "util/dates";
 import { IpsumSRSCard } from "util/repetition";
 
+import { IpsumFilteringProgramV1 } from "../ipsum-filtering-program-v1";
 import { EndowedNode, FilterableHighlight } from "../types";
-import { IpsumFilteringProgramV1 } from "../v1-filtering-program";
 import { createFilteringProgram } from "../versions";
 
 const mock_hl = (
@@ -17,7 +17,7 @@ const mock_hl = (
   };
 };
 
-describe("IpsumFilterLanguage V1", () => {
+describe("IpsumFilteringProgramV1", () => {
   describe("parsing", () => {
     it("should build AST from simple string", () => {
       const ifl = createFilteringProgram("v1");
