@@ -19,6 +19,11 @@ export const DayResolvers: StrictTypedTypePolicies = {
       day(day) {
         return day;
       },
+      journalEntry(day) {
+        if (!day) return null;
+
+        return PROJECT_STATE.collection("journalEntries").get(day) ?? null;
+      },
       hasJournalEntry(day) {
         if (!day.journalEntry) {
           return true;

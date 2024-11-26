@@ -6,11 +6,12 @@ import { IpsumDay } from "util/dates";
 
 import { IpsumFilteringProgramV1 } from "../ipsum-filtering-program-v1";
 import { NodeComponent, NodeComponentProps } from "../types";
+import { changeDay } from "./filter-tree-actions";
 
 export const Node_day: NodeComponent = ({
   editMode,
   endowedNode,
-  transformProgram,
+  performAction,
   dataOnDay,
   childComponents,
 }: NodeComponentProps) => {
@@ -29,12 +30,10 @@ export const Node_day: NodeComponent = ({
         dayString = "today";
       }
 
-      transformProgram((program) =>
-        program.updateNodeText(endowedNode, `"${dayString}"`)
-      );
+      performAction(changeDay, { day: dayString, dayNode: endowedNode });
       setShowPopover(false);
     },
-    [transformProgram, endowedNode]
+    [endowedNode, performAction]
   );
 
   const popover = (

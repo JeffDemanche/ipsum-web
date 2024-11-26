@@ -45,7 +45,7 @@ export const EntryResolvers: StrictTypedTypePolicies = {
   Entry: {
     keyFields: ["entryKey"],
     fields: {
-      highlights(_, { readField }) {
+      highlights(entry, { readField }) {
         return Object.values(
           PROJECT_STATE.collection("highlights").getAll()
         ).filter((highlight) => highlight.entry === readField("entryKey"));

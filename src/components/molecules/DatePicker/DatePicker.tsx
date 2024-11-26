@@ -20,6 +20,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { IpsumArcColor } from "util/colors";
@@ -57,7 +58,7 @@ interface CalendarContextProps {
 }
 
 const CalendarContext = createContext<CalendarContextProps>({
-  dataOnDay: () => undefined,
+  dataOnDay: undefined,
 });
 
 const DayComponent: FunctionComponent<PickersDayProps<dayjs.Dayjs>> = (
@@ -67,10 +68,15 @@ const DayComponent: FunctionComponent<PickersDayProps<dayjs.Dayjs>> = (
 
   const day = IpsumDay.fromString((props.day as Dayjs).toISOString(), "iso");
 
+  const loadedData = useRef(false);
+
   const [data, setData] = useState<DayData | undefined>(undefined);
   useEffect(() => {
-    if (!data) {
-      dataOnDay?.(day).then(setData);
+    if (dataOnDay && !loadedData.current) {
+      loadedData.current = true;
+      dataOnDay?.(day).then((data) => {
+        setData(data);
+      });
     }
   }, [data, dataOnDay, day]);
 
@@ -91,22 +97,24 @@ const DayComponent: FunctionComponent<PickersDayProps<dayjs.Dayjs>> = (
       <div className={styles["day-with-dots-wrapper"]}>
         {PickerDayComponent}
         <div className={styles["dot-group"]}>
-          {data.arcs.map(({ hue }, index) => (
-            <span
-              key={index}
-              className="dot"
-              style={{
-                color: new IpsumArcColor(hue)
-                  .toIpsumColor({
-                    saturation: 50,
-                    lightness: 50,
-                  })
-                  .toRgbaCSS(),
-              }}
-            >
-              .
-            </span>
-          ))}
+          {data.arcs.slice(0, 6).map(({ hue }, index) => {
+            return (
+              <span
+                key={index}
+                className="dot"
+                style={{
+                  color: new IpsumArcColor(hue)
+                    .toIpsumColor({
+                      saturation: 50,
+                      lightness: 50,
+                    })
+                    .toRgbaCSS(),
+                }}
+              >
+                .
+              </span>
+            );
+          })}
         </div>
       </div>
     ) : (
@@ -182,10 +190,10 @@ export const DatePicker: FunctionComponent<DatePickerProps> = ({
             onKeyDown={onManualEntryKeyDown}
           ></TextField>
         )}
-        <CalendarContext.Provider value={{ dataOnDay }}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <CalendarContext.Provider value={{ dataOnDay }}>
             <DateCalendar
-              value={dayJsSelectedDay}
+              defaultValue={dayJsSelectedDay}
               showDaysOutsideCurrentMonth
               disableFuture
               onChange={(newValue) => {
@@ -194,6 +202,7 @@ export const DatePicker: FunctionComponent<DatePickerProps> = ({
                     newValue.toISOString(),
                     "iso"
                   );
+                  console.log(day);
                   onSelect?.(day);
                 }
               }}
@@ -205,8 +214,8 @@ export const DatePicker: FunctionComponent<DatePickerProps> = ({
                 calendarHeader: { sx: { fontFamily: font_family_sans } },
               }}
             />
-          </LocalizationProvider>
-        </CalendarContext.Provider>
+          </CalendarContext.Provider>
+        </LocalizationProvider>
       </div>
     </div>
   );

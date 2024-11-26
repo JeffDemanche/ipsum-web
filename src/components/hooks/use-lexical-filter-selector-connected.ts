@@ -1,8 +1,7 @@
-import { useLazyQuery } from "@apollo/client";
 import { DatePickerDayData } from "components/molecules/DatePicker";
 import { LexicalFilterSelector } from "components/molecules/LexicalFilterSelector";
 import { useState } from "react";
-import { gql } from "util/apollo";
+import { client, gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 
 import { useRelationChooserConnected } from "./use-relation-chooser-connected";
@@ -21,7 +20,7 @@ export type LexicalFilterSelectorConnectedProps = Pick<
 
 const LexicalFilterSelectorConnectedDataOnDayQuery = gql(`
   query LexicalFilterSelectorConnectedDataOnDay($day: String!) {
-    day(day: $day) {
+    day(day: $day) @client {
       journalEntry {
         entry {
           entryKey
@@ -41,10 +40,6 @@ const LexicalFilterSelectorConnectedDataOnDayQuery = gql(`
 
 export const useLexicalFilterSelectorConnected =
   (): LexicalFilterSelectorConnectedProps => {
-    const [getDayData] = useLazyQuery(
-      LexicalFilterSelectorConnectedDataOnDayQuery
-    );
-
     const [editMode, setEditMode] = useState(false);
 
     const [programText, setProgramText] = useState(
@@ -54,14 +49,19 @@ export const useLexicalFilterSelectorConnected =
     const relationChooserProps = useRelationChooserConnected();
 
     const dataOnDay = async (day: IpsumDay): Promise<DatePickerDayData> => {
-      const { data } = await getDayData({
+      const data = client.readQuery({
+        query: LexicalFilterSelectorConnectedDataOnDayQuery,
         variables: { day: day.toString("stored-day") },
       });
+
       return {
         arcs:
           data?.day?.journalEntry?.entry?.highlights?.reduce(
-            (prev, cur) => [...prev, ...cur.arcs],
-            []
+            (prev, cur) => [
+              ...prev,
+              ...cur.arcs.map((arc) => ({ ...arc, hue: arc.color })),
+            ],
+            [] as DatePickerDayData["arcs"]
           ) ?? [],
         entry: !!data?.day,
       };

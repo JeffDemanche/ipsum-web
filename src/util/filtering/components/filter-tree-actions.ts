@@ -239,3 +239,16 @@ export const changeFilterType: FilterTreeAction<{
 
   return program.updateNodeText(args.filterNode, args.filterType);
 };
+
+export const changeDay: FilterTreeAction<{
+  dayNode: EndowedNode;
+  day: string;
+}> = ({ program, args }) => {
+  if (!args.dayNode || args.dayNode.type !== "day") {
+    throw new Error(
+      "Filtering program action error: incorrect node type for day change"
+    );
+  }
+
+  return program.updateNodeText(args.dayNode, `"${args.day}"`);
+};
