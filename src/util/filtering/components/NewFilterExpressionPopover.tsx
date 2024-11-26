@@ -42,6 +42,7 @@ export const NewFilterExpressionPopover: React.FunctionComponent<
         <RelationChooser
           {...relationChooserProps}
           onRelationChoose={(relation) => {
+            setShow(false);
             onRelationChoose(relation);
             setChoosingRelation(false);
           }}

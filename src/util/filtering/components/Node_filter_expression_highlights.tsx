@@ -4,14 +4,16 @@ import React, { useRef, useState } from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
-import { addHighlightsSort } from "./filter-tree-actions";
+import {
+  addHighlightsSort,
+  addRootLevelFilterExpression,
+} from "./filter-tree-actions";
 import { NewFilterExpressionPopover } from "./NewFilterExpressionPopover";
 
 export const Node_filter_expression_highlights: NodeComponent = ({
   editMode,
   endowedNode,
   performAction,
-  transformProgram,
   childComponents,
   relationChooserProps,
 }: NodeComponentProps) => {
@@ -25,34 +27,24 @@ export const Node_filter_expression_highlights: NodeComponent = ({
       anchorEl={addFilterPopoverRef.current}
       relationChooserProps={relationChooserProps}
       onCreateDatesFilter={() => {
+        performAction(addRootLevelFilterExpression, {
+          expression: {
+            type: "dates",
+            defaultDayFrom: "beginning",
+            defaultDayTo: "today",
+          },
+        });
         setShowAddFilterPopover(false);
-        const sortChild = endowedNode.children.find(
-          (child) => child.type === "sort_expression_highlights"
-        );
-        if (!sortChild) {
-          transformProgram((program) =>
-            program.updateNodeText(
-              endowedNode,
-              `${endowedNode.rawNode.text} from "beginning" to "today"`
-            )
-          );
-        } else {
-          transformProgram((program) =>
-            program.updateNodeText(
-              endowedNode,
-              `highlights from "beginning" to "today" ${sortChild.rawNode.text}`
-            )
-          );
-        }
       }}
       onRelationChoose={(relation) => {
-        transformProgram((program) =>
-          program.updateNodeText(
-            endowedNode,
-            `${endowedNode.rawNode.text} which ${relation.predicate} "${relation.objectId}"`
-          )
-        );
-        setShowAddFilterPopover(null);
+        performAction(addRootLevelFilterExpression, {
+          expression: {
+            type: "relation",
+            defaultPredicate: relation.predicate,
+            defaultObject: relation.objectId,
+          },
+        });
+        setShowAddFilterPopover(false);
       }}
     />
   );
@@ -91,7 +83,7 @@ export const Node_filter_expression_highlights: NodeComponent = ({
   ) : null;
 
   const editModeMarkup = (
-    <ChildrenContainer node={endowedNode} layout="block">
+    <ChildrenContainer node={endowedNode} layout="block" indentChildren>
       {childComponents}
       {addFilter}
       {addFilterPopover} {addSort}

@@ -1,8 +1,12 @@
 .children-container {
-  line-height: 1.0;
+  line-height: 1.5;
 }
 
 .layout-block{
+  &.indent-children > * {
+    padding-left: 8px;
+  }
+
   & > * {
     display: block;
   }

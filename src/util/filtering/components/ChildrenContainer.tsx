@@ -8,6 +8,7 @@ interface ChildrenContainerProps {
   node: EndowedNode;
   layout: "block" | "inline";
   highlight?: boolean;
+  indentChildren?: boolean;
   children: React.ReactNode;
 }
 
@@ -15,6 +16,7 @@ export const ChildrenContainer: React.FC<ChildrenContainerProps> = ({
   node,
   layout,
   highlight,
+  indentChildren,
   children,
 }) => {
   return (
@@ -23,7 +25,8 @@ export const ChildrenContainer: React.FC<ChildrenContainerProps> = ({
       className={cx(
         styles["children-container"],
         layout === "block" ? styles["layout-block"] : styles["layout-inline"],
-        highlight && styles["highlighted"]
+        highlight && styles["highlighted"],
+        indentChildren && styles["indent-children"]
       )}
     >
       {children}

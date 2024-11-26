@@ -4,7 +4,10 @@ import React, { useRef, useState } from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
-import { removeFilterExpression } from "./filter-tree-actions";
+import {
+  addFilterExpression,
+  removeFilterExpression,
+} from "./filter-tree-actions";
 import { NewFilterExpressionPopover } from "./NewFilterExpressionPopover";
 
 export const Node_highlights_expression: NodeComponent = ({
@@ -12,7 +15,6 @@ export const Node_highlights_expression: NodeComponent = ({
   endowedNode,
   childComponents,
   performAction,
-  transformProgram,
   relationChooserProps,
 }: NodeComponentProps) => {
   const [highlightChildren, setHighlightChildren] = useState(false);
@@ -38,6 +40,8 @@ export const Node_highlights_expression: NodeComponent = ({
   const [showAddFilterPopover, setShowAddFilterPopover] = useState(false);
   const addFilterPopoverRef = useRef<HTMLButtonElement>();
 
+  const firstChild = endowedNode.children[0];
+
   const addAnd = (
     <>
       <NewFilterExpressionPopover
@@ -46,14 +50,27 @@ export const Node_highlights_expression: NodeComponent = ({
         anchorEl={addFilterPopoverRef.current}
         relationChooserProps={relationChooserProps}
         onCreateDatesFilter={() => {
-          transformProgram((program) =>
-            program.updateNodeText(
-              endowedNode,
-              `(${endowedNode.rawNode.text} and from "beginning" to "today")`
-            )
-          );
+          performAction(addFilterExpression, {
+            expression: {
+              type: "dates",
+              defaultDayFrom: "beginning",
+              defaultDayTo: "today",
+            },
+            logicType: "and",
+            parentNode: firstChild,
+          });
         }}
-        onRelationChoose={(relation) => {}}
+        onRelationChoose={(relation) => {
+          performAction(addFilterExpression, {
+            expression: {
+              type: "relation",
+              defaultPredicate: relation.predicate,
+              defaultObject: relation.objectId,
+            },
+            logicType: "and",
+            parentNode: firstChild,
+          });
+        }}
       />
       <Button
         variant="link"

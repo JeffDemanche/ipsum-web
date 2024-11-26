@@ -1,5 +1,3 @@
-import { IpsumDay } from "util/dates";
-
 import { IpsumFilteringProgramV1 } from "../ipsum-filtering-program-v1";
 import { EndowedNode, FilterType, SortType } from "../types";
 
@@ -55,7 +53,11 @@ export const removeHighlightsSort: FilterTreeAction<Record<string, never>> = ({
 };
 
 type FilterExpression =
-  | { type: "dates"; defaultDateFrom: IpsumDay; defaultDateTo: IpsumDay }
+  | {
+      type: "dates";
+      defaultDayFrom: string;
+      defaultDayTo: string;
+    }
   | { type: "relation"; defaultPredicate: string; defaultObject: string };
 
 export const addRootLevelFilterExpression: FilterTreeAction<{
@@ -73,7 +75,7 @@ export const addRootLevelFilterExpression: FilterTreeAction<{
   let filterExpression = "";
   switch (args.expression.type) {
     case "dates":
-      filterExpression = `from "${args.expression.defaultDateFrom.toString("entry-printed-date")}" to "${args.expression.defaultDateTo.toString("entry-printed-date")}"`;
+      filterExpression = `from "${args.expression.defaultDayFrom}" to "${args.expression.defaultDayTo}"`;
       break;
     case "relation":
       filterExpression = `which ${args.expression.defaultPredicate} "${args.expression.defaultObject}"`;
@@ -85,7 +87,79 @@ export const addRootLevelFilterExpression: FilterTreeAction<{
       filterExpressionHighlights,
       `highlights ${filterExpression} ${sortNode.rawNode.text}`
     );
+  } else {
+    return program.updateNodeText(
+      filterExpressionHighlights,
+      `highlights ${filterExpression}`
+    );
   }
+};
+
+export const addFilterExpression: FilterTreeAction<{
+  parentNode: EndowedNode;
+  expression: FilterExpression;
+  logicType: "and" | "or";
+}> = ({ program, args }) => {
+  const parentNode = args.parentNode;
+
+  if (
+    ![
+      "highlights_criterion",
+      "highlights_expression_conjunction",
+      "highlights_expression_disjunction",
+    ].includes(parentNode.type)
+  ) {
+    throw new Error(
+      "Filtering program action error: incorrect node type for filter expression addition"
+    );
+  }
+
+  let filterExpression = "";
+  switch (args.expression.type) {
+    case "dates":
+      filterExpression = `from "${args.expression.defaultDayFrom}" to "${args.expression.defaultDayTo}"`;
+      break;
+    case "relation":
+      filterExpression = `which ${args.expression.defaultPredicate} "${args.expression.defaultObject}"`;
+      break;
+  }
+
+  const insertOutsideParens = () => {
+    return program.updateNodeText(
+      parentNode,
+      `(${parentNode.rawNode.text} ${args.logicType} ${filterExpression})`
+    );
+  };
+
+  const insertInsideParens = () => {
+    const sansParens = parentNode.rawNode.text.slice(1, -1);
+
+    return program.updateNodeText(
+      parentNode,
+      `(${sansParens} ${args.logicType} ${filterExpression})`
+    );
+  };
+
+  switch (parentNode.type) {
+    case "highlights_criterion": {
+      return insertOutsideParens();
+    }
+    case "highlights_expression_conjunction": {
+      if (args.logicType === "and") {
+        return insertInsideParens();
+      } else {
+        return insertOutsideParens();
+      }
+    }
+    case "highlights_expression_disjunction": {
+      if (args.logicType === "or") {
+        return insertInsideParens();
+      } else {
+        return insertOutsideParens();
+      }
+    }
+  }
+  return program;
 };
 
 export const removeFilterExpression: FilterTreeAction<{
@@ -117,8 +191,11 @@ export const removeFilterExpression: FilterTreeAction<{
       // Remove the conjunction, replacing it with the remaining expression
       return program.updateNodeText(
         logicalExpression,
-        logicalExpression.children.filter((child) => child !== expression)[0]
-          .rawNode.text
+        logicalExpression.children
+          .filter((child) => child.coordinates !== expression.coordinates)
+          .map((child) => child.rawNode.text)
+          .join("")
+          .trim()
       );
     } else {
       return program.updateNodeText(

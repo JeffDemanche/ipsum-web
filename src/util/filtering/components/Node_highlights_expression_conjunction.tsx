@@ -34,15 +34,17 @@ export const Node_highlights_expression_conjunction: NodeComponent = ({
   );
 
   const editModeMarkup = (
-    <ChildrenContainer node={endowedNode} layout="block">
+    <>
       <Type display="inline" weight="light" size="small">
         (
       </Type>
-      {andSeparatedChildComponents}
+      <ChildrenContainer node={endowedNode} layout="block" indentChildren>
+        {andSeparatedChildComponents}
+      </ChildrenContainer>
       <Type display="inline" weight="light" size="small">
         )
       </Type>
-    </ChildrenContainer>
+    </>
   );
 
   const nonEditModeMarkup = <>{andSeparatedChildComponents}</>;
