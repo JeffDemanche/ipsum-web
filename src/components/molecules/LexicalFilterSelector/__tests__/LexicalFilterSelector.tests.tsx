@@ -18,6 +18,7 @@ describe("LexicalFilterSelector", () => {
         relationChooserProps={{ arcResults: [] }}
         onEnterEditMode={() => {}}
         onLeaveEditMode={() => {}}
+        dataOnDay={async () => ({ entry: false, arcs: [] })}
       />
     );
   };
@@ -89,7 +90,7 @@ describe("LexicalFilterSelector", () => {
 
         expect(onFilterProgramChangeSpy).toHaveBeenCalledTimes(1);
         expect(onFilterProgramChangeSpy).toHaveBeenCalledWith(
-          'highlights sorted by importance as of "today"',
+          'highlights sorted by review status as of "today"',
           expect.anything()
         );
       });

@@ -1,5 +1,3 @@
-import { SortType } from "util/sort";
-
 export type View = "" | "journal";
 
 export type LayerType = "daily_journal" | "arc_detail" | "highlight_detail";
@@ -46,7 +44,6 @@ export interface URLHighlightFilterCriteria {
 
 export interface URLHighlightSortCriteria {
   day?: string;
-  type?: SortType;
 }
 
 export interface HighlightsBrowserTab {
