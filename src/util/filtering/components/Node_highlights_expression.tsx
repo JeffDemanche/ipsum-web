@@ -37,17 +37,20 @@ export const Node_highlights_expression: NodeComponent = ({
     </Button>
   );
 
-  const [showAddFilterPopover, setShowAddFilterPopover] = useState(false);
-  const addFilterPopoverRef = useRef<HTMLButtonElement>();
+  const [showAddAndFilterPopover, setShowAddAndFilterPopover] = useState(false);
+  const addAndFilterPopoverRef = useRef<HTMLButtonElement>();
+
+  const [showAddOrFilterPopover, setShowAddOrFilterPopover] = useState(false);
+  const addOrFilterPopoverRef = useRef<HTMLButtonElement>();
 
   const firstChild = endowedNode.children[0];
 
   const addAnd = (
     <>
       <NewFilterExpressionPopover
-        show={showAddFilterPopover}
-        setShow={setShowAddFilterPopover}
-        anchorEl={addFilterPopoverRef.current}
+        show={showAddAndFilterPopover}
+        setShow={setShowAddAndFilterPopover}
+        anchorEl={addAndFilterPopoverRef.current}
         relationChooserProps={relationChooserProps}
         onCreateDatesFilter={() => {
           performAction(addFilterExpression, {
@@ -74,13 +77,56 @@ export const Node_highlights_expression: NodeComponent = ({
       />
       <Button
         variant="link"
-        ref={addFilterPopoverRef}
+        ref={addAndFilterPopoverRef}
         onClick={() => {
-          setShowAddFilterPopover(true);
+          setShowAddAndFilterPopover(true);
         }}
         style={{ fontSize: font_size_x_small, color: grey600 }}
       >
         + and
+      </Button>
+    </>
+  );
+
+  const addOr = (
+    <>
+      <NewFilterExpressionPopover
+        show={showAddOrFilterPopover}
+        setShow={setShowAddOrFilterPopover}
+        anchorEl={addOrFilterPopoverRef.current}
+        relationChooserProps={relationChooserProps}
+        onCreateDatesFilter={() => {
+          performAction(addFilterExpression, {
+            expression: {
+              type: "dates",
+              defaultDayFrom: "beginning",
+              defaultDayTo: "today",
+            },
+            logicType: "or",
+            parentNode: firstChild,
+          });
+        }}
+        onRelationChoose={(relation) => {
+          performAction(addFilterExpression, {
+            expression: {
+              type: "relation",
+              defaultPredicate: relation.predicate,
+              defaultObject: relation.objectId,
+            },
+            logicType: "or",
+            parentNode: firstChild,
+          });
+        }}
+      />
+      <Button
+        variant="link"
+        ref={addOrFilterPopoverRef}
+        onClick={() => {
+          setShowAddOrFilterPopover(true);
+        }}
+        style={{ fontSize: font_size_x_small, color: grey600 }}
+      >
+        + or
       </Button>
     </>
   );
@@ -91,7 +137,7 @@ export const Node_highlights_expression: NodeComponent = ({
       node={endowedNode}
       layout="inline"
     >
-      {childComponents} {addAnd} {removeFilter}
+      {childComponents} {addOr} {addAnd} {removeFilter}
     </ChildrenContainer>
   );
 

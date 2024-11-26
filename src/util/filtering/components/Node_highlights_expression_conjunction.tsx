@@ -1,4 +1,5 @@
 import { Type } from "components/atoms/Type";
+import { grey700 } from "components/styles";
 import React from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
@@ -22,7 +23,13 @@ export const Node_highlights_expression_conjunction: NodeComponent = ({
           key={endowedNode.children[index].coordinates.join("")}
         >
           {" "}
-          <Type display="inline" weight="light" size="small" key={index}>
+          <Type
+            display="inline"
+            weight="light"
+            size="small"
+            color={grey700}
+            key={index}
+          >
             {" "}
             and{" "}
           </Type>
@@ -35,13 +42,13 @@ export const Node_highlights_expression_conjunction: NodeComponent = ({
 
   const editModeMarkup = (
     <>
-      <Type display="inline" weight="light" size="small">
+      <Type display="inline" weight="light" size="small" color={grey700}>
         (
       </Type>
       <ChildrenContainer node={endowedNode} layout="block" indentChildren>
         {andSeparatedChildComponents}
       </ChildrenContainer>
-      <Type display="inline" weight="light" size="small">
+      <Type display="inline" weight="light" size="small" color={grey700}>
         )
       </Type>
     </>
