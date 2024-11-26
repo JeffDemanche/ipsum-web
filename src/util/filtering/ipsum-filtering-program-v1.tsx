@@ -30,6 +30,10 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
   }
 
   get errors() {
+    if (!this.__ast) {
+      return ["AST failed to generate"];
+    }
+
     return this.__ast.errors;
   }
 

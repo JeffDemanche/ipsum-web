@@ -1,6 +1,8 @@
 import { KeyboardArrowUpSharp } from "@mui/icons-material";
+import cx from "classnames";
 import { Button } from "components/atoms/Button";
 import { ToggleButton } from "components/atoms/ToggleButton";
+import { Type } from "components/atoms/Type";
 import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
 import React, {
   createElement,
@@ -22,6 +24,7 @@ import {
 
 import { DatePickerDayData } from "../DatePicker";
 import styles from "./LexicalFilterSelector.less";
+import { RawModeEditor } from "./RawModeEditor";
 
 export interface LexicalFilterSelectorConnectionProps {}
 
@@ -152,7 +155,15 @@ export const LexicalFilterSelector: React.FunctionComponent<
           Raw
         </ToggleButton>
       )}
-      <div className={styles["non-raw-content"]}>{markupTree}</div>
+      <div className={cx(styles["non-raw-content"], rawMode && styles["hide"])}>
+        {markupTree}
+      </div>
+      <div className={cx(styles["raw-mode"], !rawMode && styles["hide"])}>
+        <RawModeEditor
+          program={currentProgram}
+          setProgram={setCurrentProgram}
+        />
+      </div>
       {editMode && (
         <Button variant="text" onClick={onLeaveEditMode}>
           <KeyboardArrowUpSharp />

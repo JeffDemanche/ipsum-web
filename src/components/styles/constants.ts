@@ -17,6 +17,7 @@ export const font_size_large = "20px";
 
 export const font_family_serif = "Amstelvar";
 export const font_family_sans = "Roboto";
+export const font_family_monospace = "Cutive Mono";
 
 export const font_weight_light = 300;
 export const font_weight_regular = 400;
