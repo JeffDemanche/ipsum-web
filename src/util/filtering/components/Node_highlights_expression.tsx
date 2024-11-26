@@ -4,12 +4,14 @@ import React, { useRef, useState } from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
+import { removeFilterExpression } from "./filter-tree-actions";
 import { NewFilterExpressionPopover } from "./NewFilterExpressionPopover";
 
 export const Node_highlights_expression: NodeComponent = ({
   editMode,
   endowedNode,
   childComponents,
+  performAction,
   transformProgram,
   relationChooserProps,
 }: NodeComponentProps) => {
@@ -25,7 +27,7 @@ export const Node_highlights_expression: NodeComponent = ({
         setHighlightChildren(false);
       }}
       onClick={() => {
-        transformProgram((program) => program.updateNodeText(endowedNode, ""));
+        performAction(removeFilterExpression, { expression: endowedNode });
       }}
       style={{ fontSize: font_size_x_small, color: grey600 }}
     >

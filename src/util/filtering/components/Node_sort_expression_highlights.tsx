@@ -4,11 +4,12 @@ import React, { useState } from "react";
 
 import { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
+import { removeHighlightsSort } from "./filter-tree-actions";
 
 export const Node_sort_expression_highlights: NodeComponent = ({
   editMode,
   childComponents,
-  transformProgram,
+  performAction,
   endowedNode,
 }: NodeComponentProps) => {
   const [highlightChildren, setHighlightChildren] = useState(false);
@@ -23,7 +24,7 @@ export const Node_sort_expression_highlights: NodeComponent = ({
         setHighlightChildren(false);
       }}
       onClick={() => {
-        transformProgram((program) => program.updateNodeText(endowedNode, ""));
+        performAction(removeHighlightsSort, {});
       }}
       style={{
         fontSize: font_size_x_small,

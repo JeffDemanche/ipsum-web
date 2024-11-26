@@ -2,23 +2,27 @@ import { MenuItem } from "components/atoms/MenuItem";
 import { Select } from "components/atoms/Select";
 import React from "react";
 
-import { NodeComponent, NodeComponentProps } from "../types";
+import { NodeComponent, NodeComponentProps, SortType } from "../types";
+import { changeSortType } from "./filter-tree-actions";
 
 export const Node_highlights_sort_type: NodeComponent = ({
   editMode,
   endowedNode,
-  transformProgram,
+  performAction,
   childComponents,
 }: NodeComponentProps) => {
-  const sortTypeOptions = [
+  const sortTypeOptions: SortType[] = [
     "review status",
     "recent first",
     "oldest first",
     "importance",
   ];
 
-  const onSortTypeChange = (newType: string) => {
-    transformProgram((program) => program.updateNodeText(endowedNode, newType));
+  const onSortTypeChange = (newType: SortType) => {
+    performAction(changeSortType, {
+      sortType: newType,
+      sortTypeNode: endowedNode,
+    });
   };
 
   const editModeMarkup = (

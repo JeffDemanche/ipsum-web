@@ -93,6 +93,14 @@ export type EndowedNodeType =
   | "relation_object"
   | "day";
 
+export type SortType =
+  | "review status"
+  | "importance"
+  | "recent first"
+  | "oldest first";
+
+export type FilterType = "highlights" | "arcs";
+
 export interface RuleDefinition {
   rule: string;
   component: NodeComponent;

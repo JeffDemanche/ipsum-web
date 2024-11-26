@@ -232,7 +232,10 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
     return undefined;
   }
 
-  findEndowedNodesByType(type: EndowedNodeType): EndowedNode[] {
+  findEndowedNodesByType(
+    type: EndowedNodeType,
+    sourceNode?: EndowedNode
+  ): EndowedNode[] {
     const findEndowedNodesByType = (
       node: EndowedNode,
       type: EndowedNodeType
@@ -242,7 +245,12 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
       }
 
       if (node.type === type) {
-        return [node];
+        return [
+          node,
+          ...node.children
+            .map((child) => findEndowedNodesByType(child, type))
+            .flat(),
+        ];
       }
 
       return node.children
@@ -250,7 +258,15 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
         .flat();
     };
 
-    return findEndowedNodesByType(this.__endowedAst, type);
+    return findEndowedNodesByType(sourceNode ?? this.__endowedAst, type);
+  }
+
+  findParentOfNode(node: EndowedNode): EndowedNode {
+    if (!node) {
+      return undefined;
+    }
+
+    return this.findEndowedNodeByCoordinates(node.coordinates.slice(0, -1));
   }
 
   private findEndowedNodeByType(
@@ -267,6 +283,23 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
 
     return node.children
       .map((child) => this.findEndowedNodeByType(child, type))
+      .find(Boolean);
+  }
+
+  private findEndowedNodeByCoordinates(
+    coordinates: number[],
+    node: EndowedNode = this.__endowedAst
+  ): EndowedNode {
+    if (!node) {
+      return undefined;
+    }
+
+    if (_.isEqual(node.coordinates, coordinates)) {
+      return node;
+    }
+
+    return node.children
+      .map((child) => this.findEndowedNodeByCoordinates(coordinates, child))
       .find(Boolean);
   }
 

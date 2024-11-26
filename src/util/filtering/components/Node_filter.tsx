@@ -3,26 +3,30 @@ import { Select } from "components/atoms/Select";
 import { Type } from "components/atoms/Type";
 import React from "react";
 
-import { NodeComponent, NodeComponentProps } from "../types";
+import { FilterType, NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
+import { changeFilterType } from "./filter-tree-actions";
 
 export const Node_filter: NodeComponent = ({
   editMode,
   endowedNode,
+  performAction,
   childComponents,
-  transformProgram,
 }: NodeComponentProps) => {
   const filterType = endowedNode.rawNode.text.startsWith("highlights")
     ? "filter_expression_highlights"
     : "filter_expression_arcs";
 
-  const filterTypeOptions = ["highlights", "arcs"];
+  const filterTypeOptions: FilterType[] = ["highlights", "arcs"];
 
-  const value =
+  const value: FilterType =
     filterType === "filter_expression_highlights" ? "highlights" : "arcs";
 
-  const onFilterTypeChange = (newType: string) => {
-    transformProgram((program) => program.updateNodeText(endowedNode, newType));
+  const onFilterTypeChange = (newType: FilterType) => {
+    performAction(changeFilterType, {
+      filterNode: endowedNode,
+      filterType: newType,
+    });
   };
 
   const editModeMarkup = (
