@@ -191,11 +191,11 @@ export const removeFilterExpression: FilterTreeAction<{
       // Remove the conjunction, replacing it with the remaining expression
       return program.updateNodeText(
         logicalExpression,
-        logicalExpression.children
-          .filter((child) => child.coordinates !== expression.coordinates)
-          .map((child) => child.rawNode.text)
-          .join("")
-          .trim()
+        logicalExpression.children.find(
+          (child) =>
+            child.type === "highlights_expression" &&
+            child.coordinates !== expression.coordinates
+        ).rawNode.text
       );
     } else {
       return program.updateNodeText(

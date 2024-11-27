@@ -9,7 +9,7 @@ describe("filter tree actions", () => {
     it("removes filter expression from conjuction", () => {
       const program = createFilteringProgram("v1");
       program.setProgram(
-        'highlights (from "beginning" to "today" and which relates to "arc name") sorted by review status as of "today"'
+        'highlights (which relates to "arc name" and which relates to "arc name 2") sorted by review status as of "today"'
       );
 
       const relationExpressionNode = program.findEndowedNodesByType(
@@ -22,10 +22,10 @@ describe("filter tree actions", () => {
       });
 
       expect(relationExpressionNode.rawNode.text).toEqual(
-        'which relates to "arc name"'
+        'which relates to "arc name 2"'
       );
       expect(newProgram.programString).toBe(
-        'highlights from "beginning" to "today" sorted by review status as of "today"'
+        'highlights which relates to "arc name" sorted by review status as of "today"'
       );
     });
 

@@ -112,63 +112,65 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
   }
 
   private evalFiltersPerElement(
-    node: EndowedNode,
-    element: EvaluationElement
-  ): boolean {
+    node: EndowedNode
+  ): (element: EvaluationElement) => boolean {
     if (!node) {
-      return true;
+      return () => false;
     }
 
     switch (node.type) {
       case "ifl": {
-        return this.evalFiltersPerElement(node.children[0], element);
+        return this.evalFiltersPerElement(node.children[0]);
       }
 
       case "filter": {
-        return this.evalFiltersPerElement(node.children[0], element);
+        return this.evalFiltersPerElement(node.children[0]);
       }
 
       case "filter_expression_highlights": {
-        if (element.type !== "highlight") return false;
-
         const rootExpression = node.children.find(
           (child) => child.type === "highlights_expression"
         );
 
-        return this.evalFiltersPerElement(rootExpression, element);
+        return (element) => {
+          if (element.type !== "highlight") return false;
+
+          if (
+            !this.findEndowedNodeByType(rootExpression, "highlights_expression")
+          )
+            return true;
+
+          return this.evalFiltersPerElement(rootExpression)(element);
+        };
       }
 
       case "highlights_expression": {
-        if (element.type !== "highlight") return false;
-
-        return this.evalFiltersPerElement(node.children[0], element);
+        return (element) =>
+          this.evalFiltersPerElement(node.children[0])(element);
       }
 
       case "highlights_criterion": {
-        if (element.type !== "highlight") return false;
-
-        return this.evalFiltersPerElement(node.children[0], element);
+        return (element) =>
+          this.evalFiltersPerElement(node.children[0])(element);
       }
 
       case "highlights_expression_conjunction": {
-        if (element.type !== "highlight") return false;
-
-        return node.children.every((child) =>
-          this.evalFiltersPerElement(child, element)
-        );
+        return (element) => {
+          return node.children.every((child) =>
+            this.evalFiltersPerElement(child)(element)
+          );
+        };
       }
 
       case "highlights_expression_disjunction": {
-        if (element.type !== "highlight") return false;
-
-        return node.children.some((child) =>
-          this.evalFiltersPerElement(child, element)
-        );
+        return (element) => {
+          return node.children.some((child) =>
+            this.evalFiltersPerElement(child)(element)
+          );
+        };
       }
 
       case "highlights_criterion_dates": {
-        if (element.type !== "highlight") return false;
-
         const days = node.children.filter((child) => child.type === "day");
 
         const dayFromString = days[0].rawNode.text.slice(1, -1);
@@ -188,12 +190,10 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
           );
         }
 
-        return element.day.isBetween(dayFrom, dayTo);
+        return (element) => element.day.isBetween(dayFrom, dayTo);
       }
 
       case "highlights_criterion_relation": {
-        if (element.type !== "highlight") return false;
-
         const filterPredicate = node.children.find(
           (child) => child.type === "predicate"
         ).rawNode.text;
@@ -201,16 +201,19 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
           .find((child) => child.type === "relation_object")
           .rawNode.text.slice(1, -1);
 
-        return element.outgoingRelations.some((relation) => {
-          return (
-            relation.predicate === filterPredicate &&
-            relation.objectName === filterRelationObject
-          );
-        });
+        return (element) => {
+          return element.outgoingRelations.some((relation) => {
+            return (
+              relation.predicate === filterPredicate &&
+              (relation.objectName === filterRelationObject ||
+                relation.objectId === filterRelationObject)
+            );
+          });
+        };
       }
 
       default:
-        return true;
+        return () => false;
     }
   }
 
@@ -383,22 +386,22 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
 
     const sortFn = this.evalSortHighlights(sortHighlightsEndowedNode);
 
+    const evalFn = this.evalFiltersPerElement(this.__endowedAst);
+
     switch (filterType) {
       case "filter_expression_highlights":
         return {
           highlights:
             highlights
-              ?.filter((highlight) =>
-                this.evalFiltersPerElement(this.__endowedAst, highlight)
-              )
+              ?.filter((highlight) => {
+                const c = evalFn(highlight);
+                return c;
+              })
               ?.sort(sortFn) ?? [],
         };
       case "filter_expression_arcs":
         return {
-          arcs:
-            arcs?.filter((arc) =>
-              this.evalFiltersPerElement(this.__endowedAst, arc)
-            ) ?? [],
+          arcs: arcs?.filter((arc) => evalFn(arc)) ?? [],
         };
       default:
         return {};
