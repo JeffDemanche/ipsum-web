@@ -9,7 +9,7 @@ const INTERVAL_BEFORE_FIRST_REVIEW = 1;
 
 // https://www.supermemo.com/en/blog/application-of-a-computer-to-improve-the-results-obtained-in-working-with-the-supermemo-method
 // This is the interval set between the first and second review.
-const INITIAL_REP_INTERVAL = 6;
+const INITIAL_REP_INTERVALS = [1, 1, 2, 3, 4, 5];
 
 export class IpsumSRSCard {
   private __cardHistory: Readonly<SRSCardHistory>;
@@ -33,6 +33,10 @@ export class IpsumSRSCard {
       this.__ease = this.__lastRating.easeAfter;
       this.__interval = this.__lastRating.intervalAfter;
     }
+  }
+
+  get cardHistory(): SRSCardHistory {
+    return this.__cardHistory;
   }
 
   ratedOnDay(day: IpsumDay): boolean {
@@ -88,7 +92,7 @@ export class IpsumSRSCard {
 
     // The first rating
     if (this.__cardHistory.ratings.length === 0) {
-      return INITIAL_REP_INTERVAL;
+      return INITIAL_REP_INTERVALS[Math.round(q)];
     }
 
     if (this.__lastRating) {
