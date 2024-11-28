@@ -13,7 +13,7 @@ type ToggleButtonProps = {
   variant?: "text" | "outlined";
   fontSize?: "x-small" | "small" | "medium" | "large" | "x-large";
   disableShadow?: boolean;
-  tooltip?: string;
+  tooltip?: JSX.Element | string;
   foregroundColor?: CSSProperties["color"];
   children: React.ReactNode;
 } & Pick<

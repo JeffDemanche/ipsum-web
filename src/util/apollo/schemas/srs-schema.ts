@@ -23,5 +23,6 @@ export const srsTypeDef = gql`
     upForReview(day: String): Boolean!
     ease(day: String): Float
     interval(day: String): Float
+    prospectiveIntervals(day: String): [Float!]!
   }
 `;

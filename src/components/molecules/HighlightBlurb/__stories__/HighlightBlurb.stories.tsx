@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { constructExcerpt } from "mocks/excerpts";
 import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import React from "react";
+import { IpsumDay } from "util/dates";
 
 import { HighlightBlurb } from "../HighlightBlurb";
 
@@ -30,6 +31,8 @@ export const HighlightBlurbExample: Story = {
   },
   args: {
     reviewState: { type: "reviewed", rating: 5 },
+    prospectiveIntervals: [0, 1, 2, 3, 4, 5],
+    today: IpsumDay.today(),
     highlightProps: {
       highlightId: "highlight-id",
       highlightNumber: 1,

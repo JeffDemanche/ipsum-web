@@ -126,12 +126,13 @@ export type RelationFieldPolicy = {
 	predicate?: FieldPolicy<any> | FieldReadFunction<any>,
 	subject?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type SRSCardKeySpecifier = ('ease' | 'history' | 'id' | 'interval' | 'reviews' | 'subject' | 'upForReview' | SRSCardKeySpecifier)[];
+export type SRSCardKeySpecifier = ('ease' | 'history' | 'id' | 'interval' | 'prospectiveIntervals' | 'reviews' | 'subject' | 'upForReview' | SRSCardKeySpecifier)[];
 export type SRSCardFieldPolicy = {
 	ease?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	interval?: FieldPolicy<any> | FieldReadFunction<any>,
+	prospectiveIntervals?: FieldPolicy<any> | FieldReadFunction<any>,
 	reviews?: FieldPolicy<any> | FieldReadFunction<any>,
 	subject?: FieldPolicy<any> | FieldReadFunction<any>,
 	upForReview?: FieldPolicy<any> | FieldReadFunction<any>

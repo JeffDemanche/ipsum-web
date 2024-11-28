@@ -22,9 +22,8 @@ export type HighlightBlurbConnectedProps = Pick<
   | "excerptProps"
   | "onHighlightClick"
   | "onHighlightObjectClick"
-  | "onRateDown"
-  | "onRateNeutral"
-  | "onRateUp"
+  | "prospectiveIntervals"
+  | "onRate"
   | "relations"
   | "relationsTableProps"
   | "onStartSRS"
@@ -90,6 +89,7 @@ const UseHighlightBlurbConnectedQuery = gql(`
           intervalBefore
           intervalAfter
         }
+        prospectiveIntervals(day: null)
       }
     }
   }  
@@ -194,27 +194,11 @@ export const useHighlightBlurbConnected = ({
 
   const srsCard = highlight.srsCard;
 
-  const onRateUp = () => {
+  const onRate = (q: number) => {
     srsCard &&
       reviewSRSCard({
         id: srsCard.id,
-        rating: 5,
-      });
-  };
-
-  const onRateNeutral = () => {
-    srsCard &&
-      reviewSRSCard({
-        id: srsCard.id,
-        rating: 4,
-      });
-  };
-
-  const onRateDown = () => {
-    srsCard &&
-      reviewSRSCard({
-        id: srsCard.id,
-        rating: 1,
+        rating: q,
       });
   };
 
@@ -258,9 +242,8 @@ export const useHighlightBlurbConnected = ({
     onHighlightClick,
     onHighlightObjectClick,
     onDelete,
-    onRateUp,
-    onRateNeutral,
-    onRateDown,
+    prospectiveIntervals: srsCard?.prospectiveIntervals,
+    onRate,
     onStartSRS,
     reviewState,
     today: IpsumDay.today(),

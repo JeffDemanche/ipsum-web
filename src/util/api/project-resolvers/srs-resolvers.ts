@@ -81,6 +81,35 @@ export const SRSResolvers: StrictTypedTypePolicies = {
 
         return card.intervalOnDay(day);
       },
+      prospectiveIntervals(_, { readField, args }) {
+        const history = readField<History>("history");
+        const reviews = readField<InMemorySRSCardReview[]>("reviews");
+
+        const day = args?.day
+          ? IpsumDay.fromString(args.day, "stored-day")
+          : IpsumDay.today();
+
+        const card = new IpsumSRSCard({
+          creationDay: IpsumDay.fromString(history.dateCreated, "iso"),
+          ratings: reviews
+            .map((review) =>
+              review.day !== day.toString("stored-day")
+                ? {
+                    ...review,
+                    day: IpsumDay.fromString(review.day, "stored-day"),
+                    q: review.rating,
+                  }
+                : undefined
+            )
+            .filter(Boolean),
+        });
+
+        const prospectiveCardReviews = [0, 1, 2, 3, 4, 5].map(
+          (rating) => card.review(rating, day).intervalAfter
+        );
+
+        return prospectiveCardReviews;
+      },
     },
   },
   SRSCardReview: {

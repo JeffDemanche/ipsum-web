@@ -7,7 +7,7 @@ import styles from "./Button.less";
 
 type ButtonProps = {
   variant?: "text" | "outlined" | "contained" | "link";
-  tooltip?: string;
+  tooltip?: JSX.Element | string;
   disableRipple?: boolean;
   children?: React.ReactNode;
   style?: CSSProperties;

@@ -1,8 +1,6 @@
 import {
-  ArrowDownward,
-  ArrowForward,
-  ArrowUpward,
   DeleteSharp,
+  DoneSharp,
   DoubleArrowSharp,
   KeyboardArrowUpSharp,
   PriorityHighSharp,
@@ -57,9 +55,8 @@ interface HighlightBlurbProps {
 
   onStartSRS?: () => void;
 
-  onRateUp?: () => void;
-  onRateNeutral?: () => void;
-  onRateDown?: () => void;
+  prospectiveIntervals?: number[];
+  onRate?: (q: number) => void;
 
   onHighlightClick?: () => void;
   onHighlightObjectClick?: () => void;
@@ -80,9 +77,8 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
   onDelete,
   reviewState,
   onStartSRS,
-  onRateUp,
-  onRateNeutral,
-  onRateDown,
+  prospectiveIntervals,
+  onRate,
   onHighlightClick,
   onHighlightObjectClick,
   relationsTableProps,
@@ -113,45 +109,94 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
       ? today.numDaysUntil(reviewState.nextReviewDay)
       : 0;
 
-  const showRatingControls = upForReview || typeof reviewState === "number";
+  const showRatingControls = upForReview || reviewState.type === "reviewed";
 
   const allowCardCreation = reviewState.type === "none";
 
   const ratedUp = reviewState.type === "reviewed" && reviewState.rating === 5;
   const ratedNeutral =
-    reviewState.type === "reviewed" && reviewState.rating === 4;
-  const ratedDown = reviewState.type === "reviewed" && reviewState.rating < 4;
+    reviewState.type === "reviewed" && reviewState.rating === 3;
+  const ratedDown = reviewState.type === "reviewed" && reviewState.rating === 1;
+
+  const toolTipForRating = (rating: number) => {
+    if (!prospectiveIntervals) {
+      return "No prospective interval";
+    }
+
+    const nextReviewDay = today.add(Math.ceil(prospectiveIntervals?.[rating]));
+
+    return `Next review: ${nextReviewDay.toString("entry-printed-date")}`;
+  };
+
+  let blurbNotification = null;
+  if (upForReview) {
+    blurbNotification = (
+      <div className={styles["blurb-notification"]}>
+        <Tooltip title="Up for review">
+          <PriorityHighSharp
+            style={{
+              color: hueSwatch(highlightProps.hue, "on_light_background"),
+            }}
+          />
+        </Tooltip>
+      </div>
+    );
+  } else if (reviewState.type === "reviewed") {
+    blurbNotification = (
+      <div className={styles["blurb-notification"]}>
+        <Tooltip title="Reviewed">
+          <DoneSharp
+            style={{
+              color: hueSwatch(highlightProps.hue, "on_light_background"),
+            }}
+          />
+        </Tooltip>
+      </div>
+    );
+  }
 
   const blurbRatingControls = (
     <>
-      {showRatingControls && upForReview && (
+      {showRatingControls && (
         <>
           <ToggleButton
-            tooltip="Important"
-            onClick={onRateUp}
+            tooltip={toolTipForRating(5)}
+            onClick={() => {
+              onRate(5);
+            }}
             value="check"
             selected={ratedUp}
             disableShadow
           >
-            <ArrowUpward />
+            <Type size="small">
+              {prospectiveIntervals?.[5].toPrecision(2) ?? 0}d
+            </Type>
           </ToggleButton>
           <ToggleButton
-            tooltip="Important"
-            onClick={onRateNeutral}
+            tooltip={toolTipForRating(3)}
+            onClick={() => {
+              onRate(3);
+            }}
             value="check"
             selected={ratedNeutral}
             disableShadow
           >
-            <ArrowForward />
+            <Type size="small">
+              {prospectiveIntervals?.[3].toPrecision(2) ?? 0}d
+            </Type>
           </ToggleButton>
           <ToggleButton
-            tooltip="Not important"
-            onClick={onRateDown}
+            tooltip={toolTipForRating(1)}
+            onClick={() => {
+              onRate(1);
+            }}
             value="check"
             selected={ratedDown}
             disableShadow
           >
-            <ArrowDownward />
+            <Type size="small">
+              {prospectiveIntervals?.[1].toPrecision(2) ?? 0}d
+            </Type>
           </ToggleButton>
         </>
       )}
@@ -211,17 +256,7 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
       </div>
       <div className={styles["blurb-right-column"]}>
         <div className={styles["blurb-header"]}>
-          {upForReview && (
-            <div className={styles["blurb-notification"]}>
-              <Tooltip title="Up for review">
-                <PriorityHighSharp
-                  style={{
-                    color: hueSwatch(highlightProps.hue, "on_light_background"),
-                  }}
-                />
-              </Tooltip>
-            </div>
-          )}
+          {blurbNotification}
           <HighlightTag
             fontSize="small"
             hue={highlightProps.hue}
