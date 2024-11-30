@@ -102,7 +102,9 @@ export const HighlightPageConnected: React.FunctionComponent<
     },
   });
 
-  const relationsTableProps = useHighlightRelationsTableConnected();
+  const relationsTableProps = useHighlightRelationsTableConnected({
+    highlightId,
+  });
 
   const highlight = data.highlight;
 

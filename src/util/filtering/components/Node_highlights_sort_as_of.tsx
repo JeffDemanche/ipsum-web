@@ -8,7 +8,7 @@ export const Node_highlights_sort_as_of: NodeComponent = ({
 }: NodeComponentProps) => {
   return (
     <>
-      <Type display="inline" weight="light" size="small">
+      <Type component="span" display="inline" weight="light" size="small">
         {" "}
         as of{" "}
       </Type>

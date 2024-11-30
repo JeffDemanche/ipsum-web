@@ -61,7 +61,9 @@ export const useLexicalFilterSelectorConnected =
       'highlights sorted by review status as of "today"'
     );
 
-    const relationChooserProps = useRelationChooserConnected();
+    const relationChooserProps = useRelationChooserConnected({
+      subjectType: "None",
+    });
 
     const dataOnDay = (day: IpsumDay): DatePickerDayData => {
       const data = client.readQuery({

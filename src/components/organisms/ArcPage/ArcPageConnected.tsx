@@ -97,7 +97,7 @@ export const ArcPageConnected: React.FunctionComponent<
 
   const removeLayer = useUrlAction(urlRemoveLayer);
 
-  const relationTableProps = useArcRelationsTableConnected();
+  const relationTableProps = useArcRelationsTableConnected({ arcId });
 
   return (
     <ArcPage

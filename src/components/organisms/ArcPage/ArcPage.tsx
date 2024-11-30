@@ -3,7 +3,6 @@ import cx from "classnames";
 import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { PageHeaderArc } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
-import { RelationsTable } from "components/molecules/RelationsTable";
 import { hueSwatch } from "components/styles";
 import React, { FunctionComponent } from "react";
 

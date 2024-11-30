@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useEffect, useState } from "react";
+import { urlOverwriteJournalUrl, useUrlAction } from "util/api";
 import { useIpsumIDBWrapper } from "util/indexed-db";
 import { readFromFile, validate, writeToFile } from "util/serializer";
 import {
@@ -89,11 +90,14 @@ export const SerializationProvider: React.FunctionComponent<
     autosave();
   }, [loadFromString, modifySearchParams]);
 
+  const overwriteJournalUrl = useUrlAction(urlOverwriteJournalUrl);
+
   const resetToInitial = useCallback(async () => {
+    overwriteJournalUrl({});
     setProjectState(new ProjectState());
 
     autosave();
-  }, [setProjectState]);
+  }, [overwriteJournalUrl, setProjectState]);
 
   const validatorFix = () => {
     if (deserializationResult.result === "validator_error") {

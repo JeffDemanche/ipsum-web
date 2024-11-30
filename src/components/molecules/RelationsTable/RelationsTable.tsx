@@ -5,7 +5,7 @@ import { Type } from "components/atoms/Type";
 import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
 import { ArcTag } from "components/molecules/ArcTag";
 import { grey700, grey800 } from "components/styles";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { RelationSubject } from "util/apollo";
 
 import { RelationChooser } from "../RelationChooser/RelationChooser";
@@ -106,9 +106,12 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
     });
   }, [clauses]);
 
-  const createRelationRef = useRef<HTMLButtonElement>();
+  const [createRelationAnchor, setCreateRelationAnchor] =
+    useState<HTMLElement>();
   const [showCreateRelationPopover, setShowCreateRelationPopover] =
     useState<boolean>(false);
+  const [relationChooserDefaultPredicate, setRelationChooserDefaultPredicate] =
+    useState<string>("relates to");
 
   const predicateRows = useMemo(() => {
     if (relations) {
@@ -122,7 +125,7 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
               return (
                 <ArcTag
                   fontSize="x-small"
-                  key={relation.arc.id}
+                  key={relation.id}
                   hue={relation.arc.hue}
                   text={relation.arc.name}
                   onDelete={() => onDeleteRelation?.(relation.id)}
@@ -136,8 +139,9 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                 className={styles["link-button"]}
                 disableRipple={false}
                 variant="link"
-                ref={createRelationRef}
                 onClick={(e) => {
+                  setRelationChooserDefaultPredicate(predicate);
+                  setCreateRelationAnchor(e.currentTarget);
                   setShowCreateRelationPopover(true);
                 }}
               >
@@ -184,8 +188,8 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
                   className={styles["link-button"]}
                   disableRipple={false}
                   variant="link"
-                  ref={createRelationRef}
                   onClick={(e) => {
+                    setCreateRelationAnchor(e.currentTarget);
                     setShowCreateRelationPopover(true);
                   }}
                 >
@@ -217,12 +221,18 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
         open={showCreateRelationPopover}
         onClose={() => {
           setShowCreateRelationPopover(false);
+          setCreateRelationAnchor(undefined);
         }}
-        anchorEl={createRelationRef.current}
+        anchorEl={createRelationAnchor}
         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
       >
         <RelationChooser
           {...relationChooserProps}
+          defaultSelectedPredicate={relationChooserDefaultPredicate}
+          onCloseAction={() => {
+            setShowCreateRelationPopover(false);
+            setCreateRelationAnchor(undefined);
+          }}
           maxArcResults={8}
           subjectType={subjectType}
           subjectId={subjectId}
@@ -234,11 +244,12 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
       {editable && !predicateRows.length && (
         <div className={styles["predicate-row"]}>
           <Button
-            ref={createRelationRef}
             className={styles["link-button"]}
             disableRipple={false}
             variant="link"
             onClick={(e) => {
+              setRelationChooserDefaultPredicate("relates to");
+              setCreateRelationAnchor(e.currentTarget);
               setShowCreateRelationPopover(true);
             }}
           >

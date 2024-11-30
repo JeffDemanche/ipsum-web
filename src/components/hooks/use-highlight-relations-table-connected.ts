@@ -8,25 +8,33 @@ import {
 import { RelationsTableConnectedProps } from "./use-arc-relations-table-connected";
 import { useRelationChooserConnected } from "./use-relation-chooser-connected";
 
-export const useHighlightRelationsTableConnected =
-  (): RelationsTableConnectedProps => {
-    const relationChooserProps = useRelationChooserConnected();
+interface UseHighlightRelationsTableConnectedProps {
+  highlightId: string;
+}
 
-    const [deleteRelationFromHighlightToArc] = useApiAction(
-      apiDeleteRelationFromHighlightToArc
-    );
+export const useHighlightRelationsTableConnected = ({
+  highlightId,
+}: UseHighlightRelationsTableConnectedProps): RelationsTableConnectedProps => {
+  const relationChooserProps = useRelationChooserConnected({
+    subjectType: "Highlight",
+    subjectId: highlightId,
+  });
 
-    const insertLayer = useUrlAction(urlInsertLayer);
+  const [deleteRelationFromHighlightToArc] = useApiAction(
+    apiDeleteRelationFromHighlightToArc
+  );
 
-    const onArcClick = (arcId: string) => {
-      insertLayer({ layer: { type: "arc_detail", arcId, expanded: "true" } });
-    };
+  const insertLayer = useUrlAction(urlInsertLayer);
 
-    return {
-      relationChooserProps,
-      onDeleteRelation: (id: string) => {
-        deleteRelationFromHighlightToArc({ id });
-      },
-      onArcClick,
-    };
+  const onArcClick = (arcId: string) => {
+    insertLayer({ layer: { type: "arc_detail", arcId, expanded: "true" } });
   };
+
+  return {
+    relationChooserProps,
+    onDeleteRelation: (id: string) => {
+      deleteRelationFromHighlightToArc({ id });
+    },
+    onArcClick,
+  };
+};

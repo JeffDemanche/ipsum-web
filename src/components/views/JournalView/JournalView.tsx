@@ -72,23 +72,23 @@ const WithSerializationProvider = ({
   const { resetToInitial, validatorFix } = useContext(SerializationContext);
 
   useEffect(() => {
-    if (deserializationResult.result === "parse_error") {
+    if (deserializationResult?.result === "parse_error") {
       deserializationResult.messages.forEach((error) => {
         console.error(error);
       });
-    } else if (deserializationResult.result === "validator_error") {
+    } else if (deserializationResult?.result === "validator_error") {
       deserializationResult.validator.messages.forEach((error) => {
         console.error(error);
       });
     }
   }, [deserializationResult]);
 
-  if (deserializationResult.result === "parse_error") {
+  if (deserializationResult?.result === "parse_error") {
     return (
       <>
         <h1>There was an error parsing the file</h1>
         <samp>
-          {deserializationResult.messages.map((error, i) => (
+          {deserializationResult?.messages.map((error, i) => (
             <span key={i}>
               {error}
               <br></br>
@@ -99,7 +99,7 @@ const WithSerializationProvider = ({
         <button onClick={() => resetToInitial()}>Clear autosave state</button>
       </>
     );
-  } else if (deserializationResult.result === "validator_error") {
+  } else if (deserializationResult?.result === "validator_error") {
     return (
       <>
         <h1>There was an error validating the file</h1>

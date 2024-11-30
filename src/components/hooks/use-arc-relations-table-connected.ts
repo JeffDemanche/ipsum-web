@@ -16,25 +16,33 @@ export type RelationsTableConnectedProps = Pick<
   "onDeleteRelation" | "onArcClick"
 > & { relationChooserProps: RelationChooserConnectedProps };
 
-export const useArcRelationsTableConnected =
-  (): RelationsTableConnectedProps => {
-    const relationChooserProps = useRelationChooserConnected();
+interface UseArcRelationsTableConnectedProps {
+  arcId: string;
+}
 
-    const [deleteRelationFromArcToArc] = useApiAction(
-      apiDeleteRelationFromArcToArc
-    );
+export const useArcRelationsTableConnected = ({
+  arcId,
+}: UseArcRelationsTableConnectedProps): RelationsTableConnectedProps => {
+  const relationChooserProps = useRelationChooserConnected({
+    subjectType: "Arc",
+    subjectId: arcId,
+  });
 
-    const insertLayer = useUrlAction(urlInsertLayer);
+  const [deleteRelationFromArcToArc] = useApiAction(
+    apiDeleteRelationFromArcToArc
+  );
 
-    const onArcClick = (arcId: string) => {
-      insertLayer({ layer: { type: "arc_detail", arcId, expanded: "true" } });
-    };
+  const insertLayer = useUrlAction(urlInsertLayer);
 
-    return {
-      relationChooserProps,
-      onDeleteRelation: (id: string) => {
-        deleteRelationFromArcToArc({ id });
-      },
-      onArcClick,
-    };
+  const onArcClick = (arcId: string) => {
+    insertLayer({ layer: { type: "arc_detail", arcId, expanded: "true" } });
   };
+
+  return {
+    relationChooserProps,
+    onDeleteRelation: (id: string) => {
+      deleteRelationFromArcToArc({ id });
+    },
+    onArcClick,
+  };
+};

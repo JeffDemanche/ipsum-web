@@ -114,7 +114,9 @@ export const useHighlightBlurbConnected = ({
 
   const highlight = data?.highlight;
 
-  const relationsTableProps = useHighlightRelationsTableConnected();
+  const relationsTableProps = useHighlightRelationsTableConnected({
+    highlightId,
+  });
 
   const highlightProps: HighlightBlurbConnectedProps["highlightProps"] = {
     highlightId,

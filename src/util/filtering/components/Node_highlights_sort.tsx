@@ -11,14 +11,18 @@ export const Node_highlights_sort: NodeComponent = ({
 }: NodeComponentProps) => {
   const editModeMarkup = (
     <ChildrenContainer node={endowedNode} layout="inline">
-      <Type display="inline" weight="light" size="small">
+      <Type component="span" display="inline" weight="light" size="small">
         sorted by{" "}
       </Type>
       {childComponents}
     </ChildrenContainer>
   );
 
-  const nonEditModeMarkup = <>sorted by {childComponents}</>;
+  const nonEditModeMarkup = (
+    <Type component="span" display="inline" weight="light" size="small">
+      sorted by {childComponents}
+    </Type>
+  );
 
   return editMode ? editModeMarkup : nonEditModeMarkup;
 };

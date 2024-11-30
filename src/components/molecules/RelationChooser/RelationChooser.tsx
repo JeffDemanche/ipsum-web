@@ -24,6 +24,8 @@ interface RelationChooserProps {
   onArcCreate?: (name: string) => string;
 
   onRelationChoose?: (relation: Relation) => void;
+
+  onCloseAction?: () => void;
 }
 
 export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
@@ -37,6 +39,7 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
   allowCreation = false,
   onArcCreate,
   onRelationChoose,
+  onCloseAction,
 }) => {
   const [search, setSearch] = useState(defaultSearch);
 
@@ -71,6 +74,7 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
       objectId: arcId,
       predicate: selectedPredicate,
     });
+    onCloseAction?.();
   };
 
   return (

@@ -56,10 +56,12 @@ export const Node_filter: NodeComponent = ({
   }
 
   const nonEditModeMarkup = (
-    <Type weight="light" size="small">
-      {filterType === "filter_expression_highlights" ? "highlights" : "arcs"}{" "}
+    <ChildrenContainer node={endowedNode} layout="inline">
+      <Type component="span" weight="light" size="small">
+        {filterType === "filter_expression_highlights" ? "highlights" : "arcs"}{" "}
+      </Type>
       {childComponents}
-    </Type>
+    </ChildrenContainer>
   );
 
   return editMode ? editModeMarkup : nonEditModeMarkup;
