@@ -3,6 +3,7 @@ import { Button } from "components/atoms/Button";
 import { TextField } from "components/atoms/TextField";
 import React, { FunctionComponent, useState } from "react";
 import { RelationSubject } from "util/apollo";
+import { TestIds } from "util/test-ids";
 
 import { ArcTag } from "../ArcTag";
 import styles from "./RelationChooser.less";
@@ -78,7 +79,10 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
   };
 
   return (
-    <div className={styles["relation-chooser"]}>
+    <div
+      data-testid={TestIds.RelationChooser.RelationChooser}
+      className={styles["relation-chooser"]}
+    >
       <div className={styles["column-left"]}>
         {predicateOptions.map((predicate) => {
           const isSelected = predicate === selectedPredicate;
@@ -107,6 +111,7 @@ export const RelationChooser: FunctionComponent<RelationChooserProps> = ({
       <div className={styles["column-right"]}>
         <div className={styles["row"]}>
           <TextField
+            data-testid={TestIds.RelationChooser.ArcSearchField}
             variant="underlined"
             autoFocus
             autoComplete="off"

@@ -1,6 +1,11 @@
-import { BrowserDrawer } from "components/organisms/BrowserDrawer";
-
 export const TestIds = {
+  ArcPage: {
+    ArcPage: "arc-page.arc-page",
+  },
+  ArcTag: {
+    ArcTag: "arc-tag.arc-tag",
+    LinkButton: "arc-tag.link-button",
+  },
   BrowserDrawer: {
     BrowserDrawerOpened: "browser-drawer.browser-drawer-opened",
   },
@@ -22,5 +27,14 @@ export const TestIds = {
   },
   FormattingControls: {
     HighlightButton: "formatting-controls.highlight-button",
+  },
+  RelationChooser: {
+    RelationChooser: "relation-chooser.relation-chooser",
+    ArcSearchField: "relation-chooser.arc-search-field",
+  },
+  RelationsTable: {
+    RelationsTable: "relations-table.relations-table",
+    PredicateRow: "relations-table.predicate-row",
+    EmptyTableAddLinkButton: "relations-table.empty-table-add-link-button",
   },
 };

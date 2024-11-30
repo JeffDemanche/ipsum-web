@@ -5,6 +5,7 @@ import { PageHeaderArc } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
 import { hueSwatch } from "components/styles";
 import React, { FunctionComponent } from "react";
+import { TestIds } from "util/test-ids";
 
 import styles from "./ArcPage.less";
 import { ArcPageSectionAbout } from "./ArcPageSectionAbout";
@@ -46,7 +47,10 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
   arcEntry,
 }) => {
   return (
-    <div className={cx(className, styles["arc-page-wrapper"])}>
+    <div
+      data-testid={TestIds.ArcPage.ArcPage}
+      className={cx(className, styles["arc-page-wrapper"])}
+    >
       <PageHeaderArc
         arc={arc}
         expanded={expanded}

@@ -7,6 +7,7 @@ import { ArcTag } from "components/molecules/ArcTag";
 import { grey700, grey800 } from "components/styles";
 import React, { useMemo, useState } from "react";
 import { RelationSubject } from "util/apollo";
+import { TestIds } from "util/test-ids";
 
 import { RelationChooser } from "../RelationChooser/RelationChooser";
 import { Relation as RelationChooserRelation } from "../RelationChooser/types";
@@ -117,7 +118,11 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
     if (relations) {
       return Object.keys(relationsByPredicate).map((predicate) => {
         return (
-          <div className={styles["predicate-row"]} key={predicate}>
+          <div
+            data-testid={TestIds.RelationsTable.PredicateRow}
+            className={styles["predicate-row"]}
+            key={predicate}
+          >
             <Type color={grey800} size="x-small" weight="light">
               {predicate}
             </Type>
@@ -212,6 +217,7 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
 
   return (
     <div
+      data-testid={TestIds.RelationsTable.RelationsTable}
       className={cx(
         styles["relations-table"],
         !expanded && styles["collapsed"]
@@ -242,8 +248,12 @@ export const RelationsTable: React.FunctionComponent<RelationsTableProps> = ({
       </Popover>
       {predicateRows}
       {editable && !predicateRows.length && (
-        <div className={styles["predicate-row"]}>
+        <div
+          data-testid={TestIds.RelationsTable.PredicateRow}
+          className={styles["predicate-row"]}
+        >
           <Button
+            data-testid={TestIds.RelationsTable.EmptyTableAddLinkButton}
             className={styles["link-button"]}
             disableRipple={false}
             variant="link"

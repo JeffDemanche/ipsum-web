@@ -9,6 +9,7 @@ import {
   font_size_x_small,
 } from "components/styles";
 import React from "react";
+import { TestIds } from "util/test-ids";
 
 import styles from "./ArcTag.less";
 
@@ -52,12 +53,14 @@ export const ArcTag: React.FunctionComponent<ArcTagProps> = ({
 
   return (
     <div
+      data-testid={TestIds.ArcTag.ArcTag}
       className={cx(styles["arc-tag"], visibleIcons && styles["visible-icons"])}
       style={{
         backgroundColor: `hsla(${hue}, 20%, 40%, 1)`,
       }}
     >
       <Button
+        data-testid={TestIds.ArcTag.LinkButton}
         className={styles["link-button"]}
         onClick={onClick}
         style={{
