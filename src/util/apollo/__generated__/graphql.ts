@@ -326,7 +326,7 @@ export type SrsCard = {
   history: History;
   id: Scalars['ID'];
   interval?: Maybe<Scalars['Float']>;
-  prospectiveIntervals: Array<Scalars['Float']>;
+  prospectiveIntervals?: Maybe<Array<Scalars['Float']>>;
   reviews: Array<SrsCardReview>;
   subject: Highlight;
   upForReview: Scalars['Boolean'];
@@ -367,7 +367,7 @@ export type UseHighlightBlurbConnectedQueryVariables = Exact<{
 }>;
 
 
-export type UseHighlightBlurbConnectedQuery = { __typename?: 'Query', highlight?: { __typename?: 'Highlight', id: string, excerpt: string, hue: number, number: number, objectText: string, importanceRatings: Array<{ __typename?: 'ImportanceRating', day: { __typename?: 'Day', day: string } }>, outgoingRelations: Array<{ __typename?: 'Relation', id: string, predicate: string, object: { __typename?: 'Arc', id: string, name: string, color: number } }>, object: { __typename: 'Arc', id: string } | { __typename: 'Comment', id: string, highlight: { __typename?: 'Highlight', id: string } } | { __typename: 'Day', day: string }, history: { __typename?: 'History', dateCreated?: string | null }, srsCard?: { __typename?: 'SRSCard', id: string, upForReview: boolean, prospectiveIntervals: Array<number>, history: { __typename?: 'History', dateCreated?: string | null }, reviews: Array<{ __typename?: 'SRSCardReview', rating: number, easeBefore: number, easeAfter: number, intervalBefore: number, intervalAfter: number, day: { __typename?: 'Day', day: string } }> } | null } | null };
+export type UseHighlightBlurbConnectedQuery = { __typename?: 'Query', highlight?: { __typename?: 'Highlight', id: string, excerpt: string, hue: number, number: number, objectText: string, importanceRatings: Array<{ __typename?: 'ImportanceRating', day: { __typename?: 'Day', day: string } }>, outgoingRelations: Array<{ __typename?: 'Relation', id: string, predicate: string, object: { __typename?: 'Arc', id: string, name: string, color: number } }>, object: { __typename: 'Arc', id: string } | { __typename: 'Comment', id: string, highlight: { __typename?: 'Highlight', id: string } } | { __typename: 'Day', day: string }, history: { __typename?: 'History', dateCreated?: string | null }, srsCard?: { __typename?: 'SRSCard', id: string, upForReview: boolean, prospectiveIntervals?: Array<number> | null, history: { __typename?: 'History', dateCreated?: string | null }, reviews: Array<{ __typename?: 'SRSCardReview', rating: number, easeBefore: number, easeAfter: number, intervalBefore: number, intervalAfter: number, day: { __typename?: 'Day', day: string } }> } | null } | null };
 
 export type LexicalFilterSelectorConnectedDataOnDayQueryVariables = Exact<{
   day: Scalars['String'];

@@ -129,7 +129,7 @@ export const useHighlightBlurbConnected = ({
 
   const excerptProps: HighlightBlurbConnectedProps["excerptProps"] = {
     htmlString: highlight.excerpt,
-    maxLines: 3,
+    maxLines: 5,
   };
 
   const arcRelations = highlight.outgoingRelations.filter(

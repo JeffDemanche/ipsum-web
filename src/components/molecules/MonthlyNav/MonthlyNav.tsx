@@ -112,7 +112,7 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
           </span>
         </div>
       </Button>
-      <div>
+      <div className={styles["middle-section"]}>
         <Button variant="link" className={styles["month-button"]}>
           <div className={cx(styles["nav-button-text"])}>
             <span className={styles["nav-button-top-span"]}>

@@ -153,6 +153,16 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
         </Tooltip>
       </div>
     );
+  } else if (reviewState.type === "not_up_for_review" && !expanded) {
+    blurbNotification = (
+      <div className={styles["blurb-notification"]}>
+        <Tooltip title="Not up for review">
+          <Type size="small" color={grey700}>
+            {daysUntilReview}d
+          </Type>
+        </Tooltip>
+      </div>
+    );
   }
 
   const blurbRatingControls = (
@@ -186,16 +196,16 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
             </Type>
           </ToggleButton>
           <ToggleButton
-            tooltip={toolTipForRating(1)}
+            tooltip={toolTipForRating(0)}
             onClick={() => {
-              onRate(1);
+              onRate(0);
             }}
             value="check"
             selected={ratedDown}
             disableShadow
           >
             <Type size="small">
-              {prospectiveIntervals?.[1].toPrecision(2) ?? 0}d
+              {prospectiveIntervals?.[0].toPrecision(2) ?? 0}d
             </Type>
           </ToggleButton>
         </>

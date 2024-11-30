@@ -104,6 +104,10 @@ export const SRSResolvers: StrictTypedTypePolicies = {
             .filter(Boolean),
         });
 
+        if (!card.upForReview(day)) {
+          return null;
+        }
+
         const prospectiveCardReviews = [0, 1, 2, 3, 4, 5].map(
           (rating) => card.review(rating, day).intervalAfter
         );

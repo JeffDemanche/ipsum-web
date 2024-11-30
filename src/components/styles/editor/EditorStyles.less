@@ -95,3 +95,13 @@
   blockquote { .editor-quote() }
   code { .editor-text-code() }
 }
+
+.styled-excerpt {
+  .styled-editor();
+
+  p {
+    .editor-paragraph();
+
+    font-size: @font_size_small;
+  }
+}

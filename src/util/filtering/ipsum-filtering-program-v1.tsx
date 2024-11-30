@@ -10,6 +10,7 @@ import {
   EvaluationElement,
   EvaluationSet,
   FilterableHighlight,
+  SortType,
 } from "./types";
 
 export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
@@ -323,27 +324,33 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
       "highlights_sort_as_of"
     );
 
-    const sortAsOf = asOfNode
-      ? IpsumFilteringProgramV1.evaluateDayNode(asOfNode.children[0])
-      : undefined;
+    const asOfDay = IpsumFilteringProgramV1.evaluateDayNode(
+      this.findEndowedNodeByType(asOfNode, "day")
+    );
 
     switch (sortType) {
       case "review status": {
         return (a: FilterableHighlight, b: FilterableHighlight) => {
-          const aUpForReview = a.srsCard?.upForReview(sortAsOf);
-          const bUpForReview = b.srsCard?.upForReview(sortAsOf);
+          const aUpForReview = a.srsCard?.upForReview(asOfDay);
+          const bUpForReview = b.srsCard?.upForReview(asOfDay);
 
-          if (!aUpForReview && !bUpForReview) {
-            return 0;
+          if (a.srsCard && !b.srsCard) {
+            return -1;
           }
+          if (!a.srsCard && b.srsCard) {
+            return 1;
+          }
+          if (!a.srsCard && !b.srsCard) {
+            return a.day.isBefore(b.day) ? 1 : -1;
+          }
+
           if (aUpForReview && !bUpForReview) {
             return -1;
           }
           if (!aUpForReview && bUpForReview) {
             return 1;
           } else {
-            a.srsCard.intervalOnDay(sortAsOf) >
-            b.srsCard.intervalOnDay(sortAsOf)
+            return a.srsCard.nextReviewDay().isBefore(b.srsCard.nextReviewDay())
               ? -1
               : 1;
           }
@@ -406,6 +413,16 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
       default:
         return {};
     }
+  }
+
+  get sortType() {
+    const sortExpression = this.findEndowedNodeByType(
+      this.__endowedAst,
+      "highlights_sort"
+    );
+
+    return this.findEndowedNodeByType(sortExpression, "highlights_sort_type")
+      ?.rawNode.text as SortType;
   }
 }
 

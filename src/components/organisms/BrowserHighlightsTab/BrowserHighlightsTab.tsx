@@ -5,13 +5,14 @@ import { IpsumDay } from "util/dates";
 import styles from "./BrowserHighlightsTab.less";
 
 interface BrowserHighlightsTabProps {
+  groupByDay: boolean;
   highlightsWithDay: { id: string; day: IpsumDay }[];
   renderHighlight: (highlightId: string) => React.ReactNode;
 }
 
 export const BrowserHighlightsTab: React.FunctionComponent<
   BrowserHighlightsTabProps
-> = ({ highlightsWithDay, renderHighlight }) => {
+> = ({ groupByDay, highlightsWithDay, renderHighlight }) => {
   const groupedHighlights = highlightsWithDay.reduce(
     (acc, highlight) => {
       const day = highlight.day.toString("url-format");
@@ -27,22 +28,26 @@ export const BrowserHighlightsTab: React.FunctionComponent<
   return (
     <div className={styles["highlights-drawer"]}>
       <div className={styles["highlight-results"]}>
-        {Object.entries(groupedHighlights).map(([dayString, highlights]) => {
-          const day = IpsumDay.fromString(dayString, "url-format");
+        {groupByDay
+          ? Object.entries(groupedHighlights).map(([dayString, highlights]) => {
+              const day = IpsumDay.fromString(dayString, "url-format");
 
-          return (
-            <div className={styles["day-group"]} key={dayString}>
-              <Type variant="sans" size="x-small" weight="light" underline>
-                {day.toString("entry-printed-date-nice-with-year")}
-              </Type>
-              <div className={styles["day-group-blurbs"]}>
-                {highlights.map((highlight) => {
-                  return renderHighlight(highlight.id);
-                })}
-              </div>
-            </div>
-          );
-        })}
+              return (
+                <div className={styles["day-group"]} key={dayString}>
+                  <Type variant="sans" size="x-small" weight="light" underline>
+                    {day.toString("entry-printed-date-nice-with-year")}
+                  </Type>
+                  <div className={styles["day-group-blurbs"]}>
+                    {highlights.map((highlight) => {
+                      return renderHighlight(highlight.id);
+                    })}
+                  </div>
+                </div>
+              );
+            })
+          : highlightsWithDay.map((highlight) => {
+              return renderHighlight(highlight.id);
+            })}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { LexicalFilterSelectorConnectedProps } from "components/hooks/use-lexica
 import { LexicalFilterSelector } from "components/molecules/LexicalFilterSelector";
 import React, { FunctionComponent, useMemo } from "react";
 import { IpsumDay } from "util/dates";
+import { IpsumFilteringProgramV1 } from "util/filtering";
 import { HighlightsBrowserTab } from "util/state";
 import { TestIds } from "util/test-ids";
 
@@ -41,6 +42,14 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
   renderHighlight,
   lexicalFilterSelectorProps,
 }) => {
+  const filterProgram = useMemo(
+    () =>
+      new IpsumFilteringProgramV1().setProgram(
+        lexicalFilterSelectorProps.programText
+      ),
+    [lexicalFilterSelectorProps.programText]
+  );
+
   const openedContent = useMemo(() => {
     switch (tab) {
       case "highlights":
@@ -59,6 +68,10 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
               <LexicalFilterSelector {...lexicalFilterSelectorProps} />
             </div>
             <BrowserHighlightsTab
+              groupByDay={
+                filterProgram.sortType === "recent first" ||
+                filterProgram.sortType === "oldest first"
+              }
               highlightsWithDay={highlightsWithDay}
               renderHighlight={renderHighlight}
             />
@@ -70,6 +83,7 @@ export const BrowserDrawer: FunctionComponent<BrowserDrawerProps> = ({
   }, [
     closedContentClassName,
     closedContentStyle,
+    filterProgram.sortType,
     highlightsWithDay,
     lexicalFilterSelectorProps,
     renderHighlight,

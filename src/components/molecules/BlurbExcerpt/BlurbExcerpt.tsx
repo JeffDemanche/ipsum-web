@@ -55,7 +55,7 @@ export const BlurbExcerpt: React.FunctionComponent<BlurbExcerptProps> = ({
           lineClamp: maxLines,
         }}
         className={cx(
-          editorStyles["styled-editor"],
+          editorStyles["styled-excerpt"],
           maxLines && styles["truncate"]
         )}
         dangerouslySetInnerHTML={{
