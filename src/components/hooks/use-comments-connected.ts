@@ -5,7 +5,14 @@ import { IpsumDay } from "util/dates";
 
 export type CommentsConnectedProps = Pick<
   React.ComponentProps<typeof Comments>,
-  "today" | "comments" | "onCreateComment" | "onUpdateComment"
+  | "today"
+  | "comments"
+  | "onCreateComment"
+  | "onUpdateComment"
+  | "onDeleteComment"
+  | "onCreateHighlight"
+  | "onDeleteHighlight"
+  | "onHighlightClick"
 >;
 
 const UseCommentsConnectedQuery = gql(`
@@ -19,6 +26,7 @@ const UseCommentsConnectedQuery = gql(`
         }
         commentEntry {
           entry {
+            entryKey
             highlights {
               id
               number
@@ -61,6 +69,7 @@ export const useCommentsConnected = ({
       id: comment.id,
       day: IpsumDay.fromString(comment.history.dateCreated, "iso"),
       commentEntry: {
+        entryKey: comment.commentEntry.entry.entryKey,
         highlights: comment.commentEntry.entry.highlights.map((highlight) => ({
           highlightId: highlight.id,
           highlightNumber: highlight.number,
@@ -78,5 +87,9 @@ export const useCommentsConnected = ({
     comments: comments ?? [],
     onCreateComment: () => "",
     onUpdateComment: () => false,
+    onDeleteComment: () => false,
+    onCreateHighlight: () => "",
+    onDeleteHighlight: () => false,
+    onHighlightClick: () => "",
   };
 };

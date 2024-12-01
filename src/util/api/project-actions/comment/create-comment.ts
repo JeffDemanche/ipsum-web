@@ -2,8 +2,8 @@ import { IpsumDay } from "util/dates";
 import { InMemoryComment } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
-import { apiCreateCommentEntry } from "..";
 import { updateDay } from "../day/update-day";
+import { createCommentEntry } from "../entry/create-comment-entry";
 import { APIFunction } from "../types";
 
 export const createComment: APIFunction<
@@ -35,7 +35,7 @@ export const createComment: APIFunction<
 
   const commentEntryKey = `comment-entry:${id}`;
 
-  const commentEntry = apiCreateCommentEntry(
+  const commentEntry = createCommentEntry(
     {
       comment: id,
       entryKey: commentEntryKey,

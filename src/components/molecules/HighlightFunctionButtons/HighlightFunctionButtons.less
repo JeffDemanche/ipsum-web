@@ -1,0 +1,19 @@
+@import "../../styles/vars.less";
+
+.function-buttons {
+  display: inline-flex;
+  gap: @grid_x_1;
+  align-items: center;
+
+  .blurb-notification {
+    display: flex;
+  }
+  
+  &.horizontal {
+    flex-direction: row;
+  }
+  
+  &.vertical {
+    flex-direction: column;
+  }
+}

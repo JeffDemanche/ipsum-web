@@ -4,6 +4,10 @@ import React from "react";
 
 import { ProjectState } from "../project-state";
 
+// Something weird with circular dependencies that probably means this module
+// isn't properly decoupled.
+jest.mock("util/serializer", () => ({}));
+
 describe("ProjectState", () => {
   it("initializes with empty state", () => {
     const state = new ProjectState();

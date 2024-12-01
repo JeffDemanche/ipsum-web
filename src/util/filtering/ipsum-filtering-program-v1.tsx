@@ -13,6 +13,8 @@ import {
   SortType,
 } from "./types";
 
+const DEFAULT_SORT_TYPE: SortType = "recent first";
+
 export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
   private __program: string;
   private __ast: IToken;
@@ -157,15 +159,22 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
 
       case "highlights_expression_conjunction": {
         return (element) => {
-          return node.children.every((child) =>
-            this.evalFiltersPerElement(child)(element)
+          // Ensure we're only evaluating the expressions, not other tokens
+          const childExpressions = node.children.filter(
+            (child) => child.type === "highlights_expression"
           );
+          return childExpressions.every((child) => {
+            return this.evalFiltersPerElement(child)(element);
+          });
         };
       }
 
       case "highlights_expression_disjunction": {
         return (element) => {
-          return node.children.some((child) =>
+          const childExpressions = node.children.filter(
+            (child) => child.type === "highlights_expression"
+          );
+          return childExpressions.some((child) =>
             this.evalFiltersPerElement(child)(element)
           );
         };
@@ -203,7 +212,15 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
           .rawNode.text.slice(1, -1);
 
         return (element) => {
+          console.log(element.id);
           return element.outgoingRelations.some((relation) => {
+            console.log(
+              filterPredicate,
+              filterRelationObject,
+              "|",
+              relation.predicate,
+              relation.objectName
+            );
             return (
               relation.predicate === filterPredicate &&
               (relation.objectName === filterRelationObject ||
@@ -314,19 +331,21 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
   private evalSortHighlights(
     sortExpression: EndowedNode
   ): (a: FilterableHighlight, b: FilterableHighlight) => number {
-    const sortType = this.findEndowedNodeByType(
-      sortExpression,
-      "highlights_sort_type"
-    )?.rawNode?.text;
+    const sortType =
+      this.findEndowedNodeByType(sortExpression, "highlights_sort_type")
+        ?.rawNode?.text ?? DEFAULT_SORT_TYPE;
 
     const asOfNode = this.findEndowedNodeByType(
       sortExpression,
       "highlights_sort_as_of"
     );
 
-    const asOfDay = IpsumFilteringProgramV1.evaluateDayNode(
-      this.findEndowedNodeByType(asOfNode, "day")
-    );
+    const asOfDayNode = this.findEndowedNodeByType(asOfNode, "day");
+    const asOfDay = asOfDayNode
+      ? IpsumFilteringProgramV1.evaluateDayNode(
+          this.findEndowedNodeByType(asOfNode, "day")
+        )
+      : IpsumDay.today();
 
     switch (sortType) {
       case "review status": {

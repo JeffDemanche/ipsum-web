@@ -1,4 +1,4 @@
-import { StaticInMemoryProjectState } from "util/state";
+import type { StaticInMemoryProjectState } from "util/state";
 
 type ValidatorStepResult =
   | { result: "pass" }

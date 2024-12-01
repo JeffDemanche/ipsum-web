@@ -122,7 +122,7 @@ describe("API srs actions", () => {
           easeBefore: 2.5,
           easeAfter: 2.6,
           intervalBefore: 1,
-          intervalAfter: 6,
+          intervalAfter: 5,
         },
         {
           __typename: "SRSCardReview",
@@ -130,8 +130,8 @@ describe("API srs actions", () => {
           rating: 3,
           easeBefore: 2.6,
           easeAfter: 2.46,
-          intervalBefore: 6,
-          intervalAfter: 14.76,
+          intervalBefore: 5,
+          intervalAfter: 12.3,
         },
       ]);
       expect(day1.srsCardsReviewed).toEqual([srsCard.id]);

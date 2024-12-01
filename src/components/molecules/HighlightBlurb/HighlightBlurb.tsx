@@ -1,24 +1,24 @@
-import {
-  DeleteSharp,
-  DoneSharp,
-  DoubleArrowSharp,
-  KeyboardArrowUpSharp,
-  PriorityHighSharp,
-} from "@mui/icons-material";
+import { DoubleArrowSharp, KeyboardArrowUpSharp } from "@mui/icons-material";
 import cx from "classnames";
 import { MiniButton } from "components/atoms/MiniButton";
 import { ToggleButton } from "components/atoms/ToggleButton";
-import { Tooltip } from "components/atoms/Tooltip";
 import { Type } from "components/atoms/Type";
 import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
-import { HighlightTag } from "components/molecules/HighlightTag";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import { grey700, hueSwatch } from "components/styles";
 import React, { useState } from "react";
 import { IpsumDay } from "util/dates";
 import { TestIds } from "util/test-ids";
 
+import {
+  HighlightFunctionButtons,
+  HighlightFunctionButtonsNotificationState,
+} from "../HighlightFunctionButtons";
+import {
+  HighlightSRSButtons,
+  HighlightSRSButtonsReviewState,
+} from "../HighlightSRSButtons/HighlightSRSButtons";
 import styles from "./HighlightBlurb.less";
 
 interface HighlightBlurbProps {
@@ -47,11 +47,7 @@ interface HighlightBlurbProps {
   onDelete?: () => void;
 
   today: IpsumDay;
-  reviewState?:
-    | { type: "none" }
-    | { type: "not_up_for_review"; nextReviewDay: IpsumDay }
-    | { type: "up_for_review" }
-    | { type: "reviewed"; rating: number };
+  reviewState?: HighlightSRSButtonsReviewState;
 
   onStartSRS?: () => void;
 
@@ -109,136 +105,19 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
       ? today.numDaysUntil(reviewState.nextReviewDay)
       : 0;
 
-  const showRatingControls = upForReview || reviewState.type === "reviewed";
-
-  const allowCardCreation = reviewState.type === "none";
-
-  const ratedUp = reviewState.type === "reviewed" && reviewState.rating === 5;
-  const ratedNeutral =
-    reviewState.type === "reviewed" && reviewState.rating === 3;
-  const ratedDown = reviewState.type === "reviewed" && reviewState.rating === 1;
-
-  const toolTipForRating = (rating: number) => {
-    if (!prospectiveIntervals) {
-      return "No prospective interval";
+  const notificationState: React.ComponentProps<
+    typeof HighlightFunctionButtons
+  >["notificationState"] = ((): HighlightFunctionButtonsNotificationState => {
+    if (upForReview) {
+      return { type: "Up for review" };
+    } else if (reviewState.type === "reviewed") {
+      return { type: "Reviewed" };
+    } else if (notUpForReview) {
+      return { type: "Not up for review", daysUntilReview };
+    } else {
+      return { type: "Up for review" };
     }
-
-    const nextReviewDay = today.add(Math.ceil(prospectiveIntervals?.[rating]));
-
-    return `Next review: ${nextReviewDay.toString("entry-printed-date")}`;
-  };
-
-  let blurbNotification = null;
-  if (upForReview) {
-    blurbNotification = (
-      <div className={styles["blurb-notification"]}>
-        <Tooltip title="Up for review">
-          <PriorityHighSharp
-            style={{
-              color: hueSwatch(highlightProps.hue, "on_light_background"),
-            }}
-          />
-        </Tooltip>
-      </div>
-    );
-  } else if (reviewState.type === "reviewed") {
-    blurbNotification = (
-      <div className={styles["blurb-notification"]}>
-        <Tooltip title="Reviewed">
-          <DoneSharp
-            style={{
-              color: hueSwatch(highlightProps.hue, "on_light_background"),
-            }}
-          />
-        </Tooltip>
-      </div>
-    );
-  } else if (reviewState.type === "not_up_for_review" && !expanded) {
-    blurbNotification = (
-      <div className={styles["blurb-notification"]}>
-        <Tooltip title="Not up for review">
-          <Type size="small" color={grey700}>
-            {daysUntilReview}d
-          </Type>
-        </Tooltip>
-      </div>
-    );
-  }
-
-  const blurbRatingControls = (
-    <>
-      {showRatingControls && (
-        <>
-          <ToggleButton
-            tooltip={toolTipForRating(5)}
-            onClick={() => {
-              onRate(5);
-            }}
-            value="check"
-            selected={ratedUp}
-            disableShadow
-          >
-            <Type size="small">
-              {prospectiveIntervals?.[5].toPrecision(2) ?? 0}d
-            </Type>
-          </ToggleButton>
-          <ToggleButton
-            tooltip={toolTipForRating(3)}
-            onClick={() => {
-              onRate(3);
-            }}
-            value="check"
-            selected={ratedNeutral}
-            disableShadow
-          >
-            <Type size="small">
-              {prospectiveIntervals?.[3].toPrecision(2) ?? 0}d
-            </Type>
-          </ToggleButton>
-          <ToggleButton
-            tooltip={toolTipForRating(0)}
-            onClick={() => {
-              onRate(0);
-            }}
-            value="check"
-            selected={ratedDown}
-            disableShadow
-          >
-            <Type size="small">
-              {prospectiveIntervals?.[0].toPrecision(2) ?? 0}d
-            </Type>
-          </ToggleButton>
-        </>
-      )}
-      {notUpForReview && (
-        <Type
-          size="small"
-          className={styles["days-until-review-text"]}
-          color={grey700}
-          tooltip={`Next review: ${reviewState.nextReviewDay.toString("entry-printed-date")}`}
-        >
-          {daysUntilReview}d
-        </Type>
-      )}
-      {allowCardCreation && (
-        <MiniButton
-          tooltip="Start spaced repetition"
-          onClick={onStartSRS}
-          foregroundColor={grey700}
-        >
-          <DoubleArrowSharp />
-        </MiniButton>
-      )}
-      <div style={{ flexGrow: "1" }}></div>
-      <MiniButton
-        tooltip="Collapse highlight"
-        foregroundColor={grey700}
-        onClick={onBlurbCollapse}
-      >
-        <KeyboardArrowUpSharp />
-      </MiniButton>
-    </>
-  );
+  })();
 
   return (
     <div
@@ -262,35 +141,31 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
           expanded && styles["expanded"]
         )}
       >
-        {blurbRatingControls}
+        <HighlightSRSButtons
+          orientation="vertical"
+          today={today}
+          reviewState={reviewState}
+          onRate={onRate}
+          onStartSRS={onStartSRS}
+          prospectiveIntervals={prospectiveIntervals}
+        />
+        <div style={{ flexGrow: "1" }}></div>
+        <MiniButton
+          tooltip="Collapse highlight"
+          foregroundColor={grey700}
+          onClick={onBlurbCollapse}
+        >
+          <KeyboardArrowUpSharp />
+        </MiniButton>
       </div>
       <div className={styles["blurb-right-column"]}>
         <div className={styles["blurb-header"]}>
-          {blurbNotification}
-          <HighlightTag
-            fontSize="small"
-            hue={highlightProps.hue}
-            arcNames={highlightProps.arcNames}
-            highlightNumber={highlightProps.highlightNumber}
-            objectText={highlightProps.objectText}
-            onObjectTextClick={onHighlightObjectClick}
-            onHighlightClick={onHighlightClick}
+          <HighlightFunctionButtons
+            orientation="horizontal"
+            highlightHue={highlightProps.hue}
+            notificationState={notificationState}
+            onDelete={expanded && onDelete}
           />
-          <div
-            className={cx(
-              styles["blurb-expanded-action-buttons"],
-              expanded && styles["expanded"]
-            )}
-          >
-            <MiniButton
-              data-testid={TestIds.HighlightBlurb.DeleteButton}
-              onClick={onDelete}
-              tooltip="Delete highlight"
-              foregroundColor={grey700}
-            >
-              <DeleteSharp />
-            </MiniButton>
-          </div>
         </div>
         <BlurbExcerpt
           highlightId={highlightProps.highlightId}

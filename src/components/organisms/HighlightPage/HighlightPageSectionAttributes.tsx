@@ -16,6 +16,7 @@ export const HighlightPageSectionAttributes: FunctionComponent<
 > = ({ highlightId, relations, relationTableProps }) => {
   return (
     <div className={styles["page-section"]}>
+      <div className={styles["action-buttons"]}>actions</div>
       <RelationsTable
         expanded
         relations={relations}

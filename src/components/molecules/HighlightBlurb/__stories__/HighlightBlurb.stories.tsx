@@ -19,19 +19,13 @@ const meta: Meta<typeof HighlightBlurb> = {
 export default meta;
 type Story = StoryObj<typeof HighlightBlurb>;
 
-const siddharthaMock = mockSiddhartha();
-const highlights = siddharthaMock.projectState
-  .collection("highlights")
-  .getAll();
-const entries = siddharthaMock.projectState.collection("entries").getAll();
-
 export const HighlightBlurbExample: Story = {
   parameters: {
     width: "400px",
   },
   args: {
     reviewState: { type: "reviewed", rating: 5 },
-    prospectiveIntervals: [0, 1, 2, 3, 4, 5],
+    prospectiveIntervals: [1, 1, 2, 3, 4, 5],
     today: IpsumDay.today(),
     highlightProps: {
       highlightId: "highlight-id",
@@ -41,6 +35,8 @@ export const HighlightBlurbExample: Story = {
       arcNames: ["arc1", "arc2", "arc3"],
       importanceRating: 0,
     },
+    onDelete: () => {},
+    onRate: (q: number) => console.log(q),
     excerptProps: {
       htmlString: constructExcerpt({
         excerptPieces: [

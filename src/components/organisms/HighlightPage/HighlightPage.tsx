@@ -70,7 +70,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
         <div
           className={styles["highlight-page-content"]}
           style={{
-            backgroundColor: hueSwatch(highlight.hue, "light_background"),
+            border: `2px solid ${hueSwatch(highlight.hue, "light_background")}`,
           }}
         >
           <PageLayout
@@ -106,8 +106,30 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
               {
                 sections: [
                   {
-                    elevated: true,
-                    component: <Comments {...commentsProps} />,
+                    elevated: false,
+                    component: (
+                      <hr
+                        style={{
+                          borderColor: hueSwatch(
+                            highlight.hue,
+                            "on_light_background_subtle"
+                          ),
+                        }}
+                      ></hr>
+                    ),
+                  },
+                ],
+              },
+              {
+                sections: [
+                  {
+                    elevated: false,
+                    component: (
+                      <Comments
+                        className={styles["comments-section"]}
+                        {...commentsProps}
+                      />
+                    ),
                   },
                 ],
               },

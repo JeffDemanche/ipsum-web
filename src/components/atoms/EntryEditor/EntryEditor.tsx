@@ -1,6 +1,7 @@
 import { LinkNode } from "@lexical/link";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
@@ -16,6 +17,7 @@ import { IpsumDateTime } from "util/dates";
 import { placeholderForDate } from "util/placeholders";
 
 import styles from "./EntryEditor.less";
+import { EditableStateChangePlugin } from "./plugins/EditableStateChangePlugin";
 import { EntryStatePlugin } from "./plugins/EntryStatePlugin";
 import { FormattingPlugin } from "./plugins/FormattingPlugin";
 import { HighlightAssignmentNode } from "./plugins/HighlightAssignmentNode";
@@ -136,6 +138,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
           <ListPlugin />
           <LinkPlugin />
           <HistoryPlugin />
+          <EditableStateChangePlugin editable={editable} />
         </div>
       </div>
     </LexicalComposer>

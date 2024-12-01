@@ -115,10 +115,10 @@ describe("IpsumFilteringProgramV1", () => {
 
         expect(results.highlights).toHaveLength(2);
         expect(results.highlights[0].day.toString("stored-day")).toBe(
-          "1/3/2020"
+          "1/23/2020"
         );
         expect(results.highlights[1].day.toString("stored-day")).toBe(
-          "1/23/2020"
+          "1/3/2020"
         );
       });
 
@@ -261,8 +261,8 @@ describe("IpsumFilteringProgramV1", () => {
           ],
         });
         expect(results.highlights).toHaveLength(2);
-        expect(results.highlights[0].id).toBe("1");
-        expect(results.highlights[1].id).toBe("2");
+        expect(results.highlights[0].id).toBe("2");
+        expect(results.highlights[1].id).toBe("1");
       });
     });
 

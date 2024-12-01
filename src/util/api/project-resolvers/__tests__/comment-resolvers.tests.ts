@@ -5,10 +5,8 @@ import { createHighlight } from "util/api/project-actions/highlight/create-highl
 import { EntryType } from "util/apollo/__generated__/graphql";
 import { client } from "util/apollo/client";
 import { IpsumDay } from "util/dates";
-import {
-  dangerous_initializeProjectState,
-  PROJECT_STATE,
-} from "util/state/IpsumStateContext";
+import { PROJECT_STATE } from "util/state";
+import { dangerous_initializeProjectState } from "util/state/IpsumStateContext";
 
 describe("Comment resolvers", () => {
   beforeEach(() => {
