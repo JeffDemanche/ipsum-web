@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client";
+import { useCommentsConnected } from "components/hooks/use-comments-connected";
 import { useHighlightRelationsTableConnected } from "components/hooks/use-highlight-relations-table-connected";
 import React from "react";
 import { urlRemoveLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
@@ -106,6 +107,8 @@ export const HighlightPageConnected: React.FunctionComponent<
     highlightId,
   });
 
+  const commentsProps = useCommentsConnected({ highlightId });
+
   const highlight = data.highlight;
 
   return (
@@ -155,7 +158,7 @@ export const HighlightPageConnected: React.FunctionComponent<
         })),
       }}
       relationTableProps={relationsTableProps}
-      today={IpsumDay.today()}
+      commentsProps={commentsProps}
       expanded={layers?.[layerIndex]?.expanded === "true"}
       onExpand={() => {
         setLayerExpanded({ index: layerIndex, expanded: true });

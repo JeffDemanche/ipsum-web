@@ -1,11 +1,12 @@
 import { Collapse } from "@mui/material";
 import cx from "classnames";
 import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
+import { CommentsConnectedProps } from "components/hooks/use-comments-connected";
+import { Comments } from "components/molecules/Comments";
 import { PageHeaderHighlight } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
 import { hueSwatch } from "components/styles";
 import React, { FunctionComponent } from "react";
-import { IpsumDay } from "util/dates";
 
 import styles from "./HighlightPage.less";
 import { HighlightPageSectionAttributes } from "./HighlightPageSectionAttributes";
@@ -38,7 +39,7 @@ interface HighlightPageProps {
     >["comments"];
   };
 
-  today: IpsumDay;
+  commentsProps: CommentsConnectedProps;
 }
 
 export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
@@ -49,7 +50,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
   onCollapse,
   onClose,
   relationTableProps,
-  today,
+  commentsProps,
 }) => {
   return (
     <div className={cx(className, styles["highlight-page-wrapper"])}>
@@ -106,12 +107,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
                 sections: [
                   {
                     elevated: true,
-                    component: (
-                      <HighlightPageSectionComments
-                        today={today}
-                        comments={highlight.comments}
-                      />
-                    ),
+                    component: <Comments {...commentsProps} />,
                   },
                 ],
               },

@@ -85,7 +85,6 @@ export const HighlightPageExample: StoryHighlightPage = {
         },
       ],
     },
-    today: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
     onCollapse: () => {},
     onExpand: () => {},
   },

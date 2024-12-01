@@ -19,11 +19,13 @@ interface HighlightPageSectionCommentsProps {
       htmlString: string;
     };
   }[];
+  onCreateComment: (htmlString: string) => string;
+  onUpdateComment: (args: { entryKey: string; htmlString: string }) => boolean;
 }
 
 export const HighlightPageSectionComments: FunctionComponent<
   HighlightPageSectionCommentsProps
-> = ({ today, comments }) => {
+> = ({ today, comments, onCreateComment, onUpdateComment }) => {
   const todayComment = comments.find((comment) => comment.day.equals(today));
 
   const commentsNodes = comments
@@ -56,8 +58,8 @@ export const HighlightPageSectionComments: FunctionComponent<
           highlights={todayComment?.commentEntry?.highlights ?? []}
           editable
           maxLines={3}
-          createEntry={() => ""}
-          updateEntry={() => true}
+          createEntry={onCreateComment}
+          updateEntry={onUpdateComment}
         />
       </div>
       <div className={styles["past-comments"]}>{commentsNodes}</div>
