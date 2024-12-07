@@ -24,7 +24,7 @@ const UseCommentsConnectedQuery = gql(`
         history {
           dateCreated
         }
-        commentEntry {
+        sourceEntry {
           entry {
             entryKey
             highlights {
@@ -32,17 +32,13 @@ const UseCommentsConnectedQuery = gql(`
               number
               hue
               outgoingRelations {
-                id
-                predicate
                 object {
                   ... on Arc {
-                    id
                     name
                   }
                 }
               }
             }
-            entryKey
             htmlString
           }
         }
@@ -68,9 +64,9 @@ export const useCommentsConnected = ({
     data?.highlight.comments.map((comment) => ({
       id: comment.id,
       day: IpsumDay.fromString(comment.history.dateCreated, "iso"),
-      commentEntry: {
-        entryKey: comment.commentEntry.entry.entryKey,
-        highlights: comment.commentEntry.entry.highlights.map((highlight) => ({
+      sourceEntry: {
+        entryKey: comment.sourceEntry.entry.entryKey,
+        highlights: comment.sourceEntry.entry.highlights.map((highlight) => ({
           highlightId: highlight.id,
           highlightNumber: highlight.number,
           hue: highlight.hue,
@@ -78,7 +74,7 @@ export const useCommentsConnected = ({
             (relation) => relation.object.name
           ),
         })),
-        htmlString: comment.commentEntry.entry.htmlString,
+        htmlString: comment.sourceEntry.entry.htmlString,
       },
     }));
 

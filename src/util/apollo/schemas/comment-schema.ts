@@ -12,8 +12,11 @@ export const commentTypeDef = gql`
   type Comment {
     id: ID!
     parent: Comment
+    sourceEntry: JournalEntry!
+    # deprecated
     commentEntry: CommentEntry!
     highlight: Highlight!
+    commentHighlight: Highlight!
     history: History!
   }
 `;

@@ -13,7 +13,7 @@ interface CommentsProps {
   comments: {
     id: string;
     day: IpsumDay;
-    commentEntry: {
+    sourceEntry: {
       entryKey: string;
       highlights: React.ComponentProps<typeof Entry>["highlights"];
       htmlString: string;
@@ -66,11 +66,11 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
       />
       {selectedComment && (
         <Entry
-          entryKey={selectedComment.commentEntry.entryKey}
+          entryKey={selectedComment.sourceEntry.entryKey}
           entryDay={selectedDay}
           editable={editable}
-          highlights={selectedComment.commentEntry.highlights}
-          htmlString={selectedComment.commentEntry.htmlString}
+          highlights={selectedComment.sourceEntry.highlights}
+          htmlString={selectedComment.sourceEntry.htmlString}
           createEntry={onCreateComment}
           deleteEntry={onDeleteComment}
           updateEntry={onUpdateComment}

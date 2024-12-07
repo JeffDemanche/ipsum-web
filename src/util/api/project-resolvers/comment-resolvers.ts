@@ -39,6 +39,15 @@ export const CommentResolvers: StrictTypedTypePolicies = {
   Comment: {
     keyFields: ["id"],
     fields: {
+      sourceEntry(_, { readField }) {
+        const journalEntryOnDayCreated = IpsumDay.fromString(
+          readField<{ dateCreated: string }>("history").dateCreated,
+          "iso"
+        ).toString("entry-printed-date");
+        return PROJECT_STATE.collection("journalEntries").get(
+          journalEntryOnDayCreated
+        );
+      },
       commentEntry(commentEntryKey) {
         return (
           PROJECT_STATE.collection("commentEntries").get(commentEntryKey) ??

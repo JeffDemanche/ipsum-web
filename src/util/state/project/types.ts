@@ -19,7 +19,7 @@ export interface InMemoryEntry {
   entryKey: string;
   trackedHTMLString: string;
   history: InMemoryHistory;
-  entryType: "JOURNAL" | "ARC" | "COMMENT";
+  entryType: "JOURNAL" | "ARC";
 }
 
 export interface InMemoryJournalEntry {
@@ -74,7 +74,7 @@ export interface InMemoryRelation {
   subjectType: "Arc" | "Highlight";
   subject: string;
   predicate: string;
-  objectType: "Arc";
+  objectType: "Arc" | "Highlight";
   object: string;
 }
 
@@ -93,6 +93,7 @@ export interface InMemoryComment {
   id: string;
   parent: string | null;
   highlight: string;
+  commentHighlight: string;
   commentEntry: string;
   history: InMemoryHistory;
 }
