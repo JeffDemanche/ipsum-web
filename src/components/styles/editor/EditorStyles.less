@@ -99,9 +99,49 @@
 .styled-excerpt {
   .styled-editor();
 
+  b {
+    .editor-paragraph();
+    font-size: @font_size_small;
+  }
+  em {
+    .editor-text-italic();
+    font-size: @font_size_small;
+  }
+  u {
+    .editor-text-underline();
+    font-size: @font_size_small;
+  }
+  s {
+    .editor-text-strikethrough();
+    font-size: @font_size_small;
+  }
+
   p {
     .editor-paragraph();
-
+    font-size: @font_size_small;
+  }
+  h1 {
+    .editor-heading-h1();
+    font-size: @font_size_medium;
+  }
+  h2 {
+    .editor-heading-h2();
+    font-size: @font_size_medium;
+  }
+  ul {
+    .editor-list-ul();
+    font-size: @font_size_small;
+  }
+  ol {
+    .editor-list-ol();
+    font-size: @font_size_small;
+  }
+  blockquote {
+    .editor-quote();
+    font-size: @font_size_small;
+  }
+  code {
+    .editor-text-code();
     font-size: @font_size_small;
   }
 }
