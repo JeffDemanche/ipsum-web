@@ -3,7 +3,6 @@ import { onError } from "@apollo/client/link/error";
 import {
   ArcEntryResolvers,
   ArcResolvers,
-  CommentEntryResolvers,
   CommentResolvers,
   DayResolvers,
   EntryResolvers,
@@ -18,7 +17,6 @@ import { PROJECT_STATE } from "util/state";
 import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import { arcEntryTypeDef } from "./schemas/arc-entry-schema";
 import { arcTypeDef } from "./schemas/arc-schema";
-import { commentEntryTypeDef } from "./schemas/comment-entry-schema";
 import { commentTypeDef } from "./schemas/comment-schema";
 import { dayTypeDef } from "./schemas/day-schema";
 import { entryTypeDef } from "./schemas/entry-schema";
@@ -70,11 +68,6 @@ export type UnhydratedType = {
     __typename: "ArcEntry";
     entry: string;
     arc: string;
-  };
-  CommentEntry: {
-    __typename: "CommentEntry";
-    entry: string;
-    comment: string;
   };
   Arc: {
     __typename: "Arc";
@@ -148,7 +141,6 @@ const typePolicies: StrictTypedTypePolicies = {
       ...DayResolvers.Query.fields,
       ...JournalEntryResolvers.Query.fields,
       ...CommentResolvers.Query.fields,
-      ...CommentEntryResolvers.Query.fields,
       ...SRSResolvers.Query.fields,
     },
   },
@@ -161,7 +153,6 @@ const typePolicies: StrictTypedTypePolicies = {
   Day: DayResolvers.Day,
   JournalEntry: JournalEntryResolvers.JournalEntry,
   Comment: CommentResolvers.Comment,
-  CommentEntry: CommentEntryResolvers.CommentEntry,
   SRSCard: SRSResolvers.SRSCard,
   SRSCardReview: SRSResolvers.SRSCardReview,
 };
@@ -187,7 +178,6 @@ export const client = new ApolloClient({
     dayTypeDef,
     journalEntryTypeDef,
     commentTypeDef,
-    commentEntryTypeDef,
     srsTypeDef,
   ],
   link: from([errorLink]),

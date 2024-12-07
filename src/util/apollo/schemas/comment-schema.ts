@@ -13,8 +13,6 @@ export const commentTypeDef = gql`
     id: ID!
     parent: Comment
     sourceEntry: JournalEntry!
-    # deprecated
-    commentEntry: CommentEntry!
     objectHighlight: Highlight!
     sourceHighlight: Highlight!
     history: History!

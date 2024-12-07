@@ -48,12 +48,6 @@ export const CommentResolvers: StrictTypedTypePolicies = {
           journalEntryOnDayCreated
         );
       },
-      commentEntry(commentEntryKey) {
-        return (
-          PROJECT_STATE.collection("commentEntries").get(commentEntryKey) ??
-          null
-        );
-      },
       objectHighlight(objectHighlightId) {
         return (
           PROJECT_STATE.collection("highlights").get(objectHighlightId) ?? null

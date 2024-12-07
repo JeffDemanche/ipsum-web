@@ -65,18 +65,6 @@ export const SerializedSchema = t.type(
       ),
       "arcEntries"
     ),
-    commentEntries: t.record(
-      t.string,
-      t.type(
-        {
-          __typename: t.literal("CommentEntry"),
-          entry: t.string,
-          comment: t.string,
-        },
-        "commentEntry"
-      ),
-      "commentEntries"
-    ),
     arcs: t.record(
       t.string,
       t.type(

@@ -38,7 +38,6 @@ describe("Comment resolvers", () => {
         {
           dayCreated: IpsumDay.fromString("1/6/2020", "stored-day"),
           objectHighlight: highlight.id,
-          highlightDay: IpsumDay.fromString("1/1/2020", "stored-day"),
           htmlString: "<div>goodbye world</div>",
         },
         { projectState: PROJECT_STATE }

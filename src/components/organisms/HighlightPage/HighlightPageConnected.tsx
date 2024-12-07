@@ -6,7 +6,6 @@ import { useHighlightSRSButtonsConnected } from "components/hooks/use-highlight-
 import React from "react";
 import { urlRemoveLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
-import { IpsumDay } from "util/dates";
 import { useIpsumSearchParams } from "util/state";
 
 import { HighlightPage } from "./HighlightPage";
@@ -62,27 +61,6 @@ const HighlightPageQuery = gql(`
                 color
               }
             }
-          }
-        }
-        commentEntry {
-          entry {
-            entryKey
-            highlights {
-              id
-              number
-              hue
-              outgoingRelations {
-                id
-                predicate
-                object {
-                  ... on Arc {
-                    id
-                    name
-                  }
-                }
-              }
-            }
-            htmlString
           }
         }
       }
@@ -145,41 +123,6 @@ export const HighlightPageConnected: React.FunctionComponent<
               : undefined
           )
           .filter(Boolean),
-        comments: highlight.comments.map((comment) => ({
-          id: comment.id,
-          day: IpsumDay.fromString(comment.history.dateCreated, "iso"),
-          highlight: {
-            id: comment.objectHighlight.id,
-            arcNames: comment.objectHighlight.outgoingRelations
-              .map((relation) =>
-                relation.object.__typename === "Arc"
-                  ? relation.object.name
-                  : undefined
-              )
-              .filter(Boolean),
-            highlightNumber: comment.objectHighlight.number,
-            hue: comment.objectHighlight.hue,
-            objectText: comment.objectHighlight.objectText,
-          },
-          commentEntry: {
-            entryKey: comment.commentEntry.entry.entryKey,
-            highlights: comment.commentEntry.entry.highlights.map(
-              (highlight) => ({
-                highlightId: highlight.id,
-                highlightNumber: highlight.number,
-                hue: highlight.hue,
-                arcNames: highlight.outgoingRelations
-                  .map((relation) =>
-                    relation.object.__typename === "Arc"
-                      ? relation.object.name
-                      : undefined
-                  )
-                  .filter(Boolean),
-              })
-            ),
-            htmlString: comment.commentEntry.entry.htmlString,
-          },
-        })),
       }}
       highlightFunctionButtonsProps={highlightFunctionButtonsProps}
       highlightSRSButtonsProps={highlightSRSButtonsProps}

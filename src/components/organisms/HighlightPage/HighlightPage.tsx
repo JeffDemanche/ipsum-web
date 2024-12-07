@@ -12,7 +12,6 @@ import React, { FunctionComponent } from "react";
 
 import styles from "./HighlightPage.less";
 import { HighlightPageSectionAttributes } from "./HighlightPageSectionAttributes";
-import { HighlightPageSectionComments } from "./HighlightPageSectionComments";
 import { HighlightPageSectionExcerpt } from "./HighlightPageSectionExcerpt";
 
 interface HighlightPageProps {
@@ -37,10 +36,6 @@ interface HighlightPageProps {
     relations: React.ComponentProps<
       typeof HighlightPageSectionAttributes
     >["relations"];
-
-    comments: React.ComponentProps<
-      typeof HighlightPageSectionComments
-    >["comments"];
   };
 
   commentsProps: CommentsConnectedProps;

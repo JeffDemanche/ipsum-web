@@ -34,12 +34,6 @@ export interface InMemoryArcEntry {
   arc: string;
 }
 
-export interface InMemoryCommentEntry {
-  __typename: "CommentEntry";
-  entry: string;
-  comment: string;
-}
-
 export interface InMemoryArc {
   __typename: "Arc";
   id: string;
@@ -129,7 +123,6 @@ export interface ReactiveInMemoryProjectCollections {
   entries: ProjectCollection<InMemoryEntry>;
   journalEntries: ProjectCollection<InMemoryJournalEntry>;
   arcEntries: ProjectCollection<InMemoryArcEntry>;
-  commentEntries: ProjectCollection<InMemoryCommentEntry>;
   arcs: ProjectCollection<InMemoryArc>;
   highlights: ProjectCollection<InMemoryHighlight>;
   relations: ProjectCollection<InMemoryRelation>;
@@ -155,7 +148,6 @@ export interface StaticInMemoryProjectState {
   entries: CollectionOf<InMemoryEntry>;
   journalEntries: CollectionOf<InMemoryJournalEntry>;
   arcEntries: CollectionOf<InMemoryArcEntry>;
-  commentEntries: CollectionOf<InMemoryCommentEntry>;
   arcs: CollectionOf<InMemoryArc>;
   highlights: CollectionOf<InMemoryHighlight>;
   relations: CollectionOf<InMemoryRelation>;
