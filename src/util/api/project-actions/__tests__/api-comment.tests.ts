@@ -35,7 +35,6 @@ describe("API comment actions", () => {
         {
           dayCreated,
           objectHighlight: objectHighlight.id,
-          highlightDay: dayCreated,
           htmlString: "<div>hello world</div>",
         },
         { projectState: state }
@@ -106,7 +105,6 @@ describe("API comment actions", () => {
         {
           dayCreated,
           objectHighlight: objectHighlight.id,
-          highlightDay: dayCreated,
           htmlString: "<div>goodbye world</div>",
         },
         { projectState: state }

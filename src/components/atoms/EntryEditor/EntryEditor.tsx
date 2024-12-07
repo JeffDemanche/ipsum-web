@@ -36,6 +36,8 @@ interface EntryEditorProps {
     }
   >;
   maxLines?: number;
+
+  /** Return new entry key */
   createEntry?: (htmlString: string) => string;
   updateEntry?: ({
     entryKey,

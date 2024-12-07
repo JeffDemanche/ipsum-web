@@ -13,9 +13,8 @@ import { APIFunction } from "../types";
 export const createComment: APIFunction<
   {
     id?: string;
-    dayCreated?: IpsumDay;
+    dayCreated: IpsumDay;
     objectHighlight: string;
-    highlightDay: IpsumDay;
     htmlString: string;
   },
   InMemoryComment
@@ -35,7 +34,7 @@ export const createComment: APIFunction<
   }
 
   const id = args.id ?? uuidv4();
-  const dayCreated = args.dayCreated ?? IpsumDay.today();
+  const dayCreated = args.dayCreated;
 
   const objectHighlight = projectState
     .collection("highlights")
@@ -86,7 +85,7 @@ export const createComment: APIFunction<
   const comment = projectState.collection("comments").create(id, {
     __typename: "Comment",
     id,
-    commentEntry: "",
+    sourceEntry: sourceHighlightEntryKey,
     objectHighlight: args.objectHighlight,
     sourceHighlight: sourceHighlight.id,
     parent: null,

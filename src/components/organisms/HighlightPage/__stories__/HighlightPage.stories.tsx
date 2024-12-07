@@ -88,6 +88,8 @@ export const HighlightPageExample: StoryHighlightPage = {
     onCollapse: () => {},
     onExpand: () => {},
     commentsProps: {
+      selectedDay: IpsumDay.fromString("1/1/2020"),
+      setSelectedDay: () => {},
       today: IpsumDay.fromString("1/1/2020"),
       comments: [
         {

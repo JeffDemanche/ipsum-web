@@ -91,7 +91,6 @@ describe("Comment resolvers", () => {
         {
           objectHighlight: highlight.id,
           dayCreated: IpsumDay.fromString("1/6/2020", "stored-day"),
-          highlightDay: IpsumDay.fromString("1/1/2020", "stored-day"),
           htmlString: "<p>comment 1</p>",
         },
         { projectState: PROJECT_STATE }
@@ -100,7 +99,6 @@ describe("Comment resolvers", () => {
         {
           objectHighlight: highlight.id,
           dayCreated: IpsumDay.fromString("1/7/2020", "stored-day"),
-          highlightDay: IpsumDay.fromString("1/1/2020", "stored-day"),
           htmlString: "<p>comment 2</p>",
         },
         { projectState: PROJECT_STATE }

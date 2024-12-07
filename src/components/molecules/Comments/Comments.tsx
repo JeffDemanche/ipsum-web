@@ -1,5 +1,5 @@
 import cx from "classnames";
-import React, { useState } from "react";
+import React from "react";
 import { IpsumDay } from "util/dates";
 
 import { Entry } from "../Entry";
@@ -10,6 +10,9 @@ interface CommentsProps {
   className?: string;
 
   today: IpsumDay;
+  selectedDay: IpsumDay;
+  setSelectedDay: (day: IpsumDay) => void;
+
   comments: {
     id: string;
     day: IpsumDay;
@@ -32,6 +35,8 @@ interface CommentsProps {
 export const Comments: React.FunctionComponent<CommentsProps> = ({
   className,
   today,
+  selectedDay,
+  setSelectedDay,
   comments,
   onCreateComment,
   onUpdateComment,
@@ -40,8 +45,6 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
   onDeleteHighlight,
   onHighlightClick,
 }) => {
-  const [selectedDay, setSelectedDay] = useState(today);
-
   const yesterday = today.add(-1);
 
   const editable = today.equals(selectedDay) || yesterday.equals(selectedDay);

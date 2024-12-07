@@ -1,11 +1,15 @@
 import { useQuery } from "@apollo/client";
 import { Comments } from "components/molecules/Comments";
+import { useState } from "react";
+import { apiCreateComment, useApiAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 
 export type CommentsConnectedProps = Pick<
   React.ComponentProps<typeof Comments>,
   | "today"
+  | "selectedDay"
+  | "setSelectedDay"
   | "comments"
   | "onCreateComment"
   | "onUpdateComment"
@@ -54,6 +58,10 @@ interface UseCommentsConnectedProps {
 export const useCommentsConnected = ({
   highlightId,
 }: UseCommentsConnectedProps): CommentsConnectedProps => {
+  const today = IpsumDay.today();
+
+  const [selectedDay, setSelectedDay] = useState(today);
+
   const { data } = useQuery(UseCommentsConnectedQuery, {
     variables: {
       highlightId,
@@ -82,10 +90,23 @@ export const useCommentsConnected = ({
       },
     }));
 
+  const [createComment] = useApiAction(apiCreateComment);
+
+  const onCreateComment = (htmlString: string) => {
+    const newComment = createComment({
+      dayCreated: selectedDay,
+      htmlString,
+      objectHighlight: highlightId,
+    });
+    return newComment.sourceEntry;
+  };
+
   return {
-    today: IpsumDay.today(),
+    today,
+    selectedDay,
+    setSelectedDay,
     comments: comments ?? [],
-    onCreateComment: () => "",
+    onCreateComment,
     onUpdateComment: () => false,
     onDeleteComment: () => false,
     onCreateHighlight: () => "",

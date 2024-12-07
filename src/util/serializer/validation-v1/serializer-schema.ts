@@ -142,7 +142,7 @@ export const SerializedSchema = t.type(
           id: t.string,
           parent: t.union([t.string, t.null]),
           history: HistorySchema,
-          commentEntry: t.string,
+          sourceEntry: t.string,
           sourceHighlight: t.string,
           objectHighlight: t.string,
         },

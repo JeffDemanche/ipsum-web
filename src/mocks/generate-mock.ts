@@ -59,7 +59,6 @@ export const generateMock = (props: GenerateMockProps): GeneratedMock => {
           {
             id: comment.id,
             objectHighlight: highlight.id,
-            highlightDay: highlight.dayCreated,
             htmlString: processEntrySections(comment.mockedEntry).htmlString,
             dayCreated: comment.dayCreated,
           },

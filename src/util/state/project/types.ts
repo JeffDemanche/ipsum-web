@@ -95,7 +95,7 @@ export interface InMemoryComment {
   parent: string | null;
   objectHighlight: string;
   sourceHighlight: string;
-  commentEntry: string;
+  sourceEntry: string;
   history: InMemoryHistory;
 }
 
