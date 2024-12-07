@@ -17,8 +17,8 @@ export const reviewSRSCard: APIFunction<
     );
   }
 
-  if (args.rating < 1 || args.rating > 5) {
-    throw new Error("Rating must be between 1 and 5");
+  if (args.rating < 0 || args.rating > 5) {
+    throw new Error("Rating must be between 0 and 5");
   }
 
   const priorReviews = projectState.collection("srsCards").get(args.id).reviews;

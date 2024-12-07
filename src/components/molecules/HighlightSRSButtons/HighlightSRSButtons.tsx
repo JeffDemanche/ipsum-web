@@ -11,9 +11,9 @@ import styles from "./HighlightSRSButtons.less";
 
 export type HighlightSRSButtonsReviewState =
   | { type: "none" }
-  | { type: "not_up_for_review"; nextReviewDay: IpsumDay }
-  | { type: "up_for_review" }
-  | { type: "reviewed"; rating: number };
+  | { type: "not_up_for_review"; nextReviewDay: IpsumDay; ease: number }
+  | { type: "up_for_review"; ease: number }
+  | { type: "reviewed"; rating: number; ease: number };
 
 interface HighlightSRSButtonsProps {
   today: IpsumDay;

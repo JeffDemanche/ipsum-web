@@ -1,34 +1,23 @@
 import { useQuery } from "@apollo/client";
 import { HighlightBlurb } from "components/molecules/HighlightBlurb";
-import { useMemo } from "react";
-import {
-  apiCreateSRSCard,
-  apiDeleteHighlight,
-  apiReviewSRSCard,
-  urlInsertLayer,
-  useApiAction,
-  useUrlAction,
-} from "util/api";
+import { urlInsertLayer, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { IpsumSRSCard } from "util/repetition";
 
+import { useHighlightFunctionButtonsConnected } from "./use-highlight-function-buttons-connected";
 import { useHighlightRelationsTableConnected } from "./use-highlight-relations-table-connected";
+import { useHighlightSRSButtonsConnected } from "./use-highlight-srs-buttons-connected";
 
 export type HighlightBlurbConnectedProps = Pick<
   React.ComponentProps<typeof HighlightBlurb>,
   | "highlightProps"
-  | "onDelete"
   | "excerptProps"
-  | "onHighlightClick"
-  | "onHighlightObjectClick"
-  | "prospectiveIntervals"
-  | "onRate"
   | "relations"
   | "relationsTableProps"
-  | "onStartSRS"
-  | "reviewState"
-  | "today"
+  | "onHighlightClick"
+  | "onHighlightObjectClick"
+  | "highlightFunctionButtonsProps"
+  | "highlightSRSButtonsProps"
 >;
 
 const UseHighlightBlurbConnectedQuery = gql(`
@@ -70,27 +59,6 @@ const UseHighlightBlurbConnectedQuery = gql(`
           }
         }
       }
-      history {
-        dateCreated
-      }
-      srsCard  {
-        id
-        upForReview
-        history {
-          dateCreated
-        }
-        reviews {
-          day {
-            day
-          }
-          rating
-          easeBefore
-          easeAfter
-          intervalBefore
-          intervalAfter
-        }
-        prospectiveIntervals(day: null)
-      }
     }
   }  
 `);
@@ -106,13 +74,9 @@ export const useHighlightBlurbConnected = ({
 
   const insertLayer = useUrlAction(urlInsertLayer);
 
-  const [deleteHighlight] = useApiAction(apiDeleteHighlight);
-
-  const [createSRSCard] = useApiAction(apiCreateSRSCard);
-
-  const [reviewSRSCard] = useApiAction(apiReviewSRSCard);
-
   const highlight = data?.highlight;
+
+  console.log(highlight.objectText);
 
   const relationsTableProps = useHighlightRelationsTableConnected({
     highlightId,
@@ -186,55 +150,12 @@ export const useHighlightBlurbConnected = ({
     }
   };
 
-  const onDelete = () => {
-    deleteHighlight({ id: highlightId });
-  };
-
-  const onStartSRS = () => {
-    createSRSCard({ subject: highlightId, subjectType: "Highlight" });
-  };
-
-  const srsCard = highlight.srsCard;
-
-  const onRate = (q: number) => {
-    srsCard &&
-      reviewSRSCard({
-        id: srsCard.id,
-        rating: q,
-      });
-  };
-
-  const card = useMemo(
-    () =>
-      srsCard
-        ? new IpsumSRSCard({
-            creationDay: IpsumDay.fromString(
-              srsCard.history.dateCreated,
-              "iso"
-            ),
-            ratings: srsCard.reviews.map((review) => ({
-              ...review,
-              day: IpsumDay.fromString(review.day.day, "stored-day"),
-              q: review.rating,
-            })),
-          })
-        : null,
-    [srsCard]
-  );
-
-  const ratedToday = card?.ratedOnDay(IpsumDay.today());
-
-  const reviewState: HighlightBlurbConnectedProps["reviewState"] = (() => {
-    if (!card) {
-      return { type: "none" };
-    } else if (ratedToday) {
-      return { type: "reviewed", rating: card?.lastRating.q };
-    } else if (card?.upForReview()) {
-      return { type: "up_for_review" };
-    } else {
-      return { type: "not_up_for_review", nextReviewDay: card.nextReviewDay() };
-    }
-  })();
+  const highlightFunctionButtonsProps = useHighlightFunctionButtonsConnected({
+    highlightId,
+  });
+  const highlightSRSButtonsProps = useHighlightSRSButtonsConnected({
+    highlightId,
+  });
 
   return {
     highlightProps,
@@ -243,11 +164,7 @@ export const useHighlightBlurbConnected = ({
     excerptProps,
     onHighlightClick,
     onHighlightObjectClick,
-    onDelete,
-    prospectiveIntervals: srsCard?.prospectiveIntervals,
-    onRate,
-    onStartSRS,
-    reviewState,
-    today: IpsumDay.today(),
+    highlightFunctionButtonsProps,
+    highlightSRSButtonsProps,
   };
 };

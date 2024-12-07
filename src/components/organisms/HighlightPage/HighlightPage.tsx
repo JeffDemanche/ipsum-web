@@ -2,6 +2,8 @@ import { Collapse } from "@mui/material";
 import cx from "classnames";
 import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { CommentsConnectedProps } from "components/hooks/use-comments-connected";
+import { HighlightFunctionButtonsConnectedProps } from "components/hooks/use-highlight-function-buttons-connected";
+import { HighlightSRSButtonsConnectedProps } from "components/hooks/use-highlight-srs-buttons-connected";
 import { Comments } from "components/molecules/Comments";
 import { PageHeaderHighlight } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
@@ -21,6 +23,8 @@ interface HighlightPageProps {
   onCollapse: () => void;
   onClose?: () => void;
 
+  highlightSRSButtonsProps: HighlightSRSButtonsConnectedProps;
+  highlightFunctionButtonsProps: HighlightFunctionButtonsConnectedProps;
   relationTableProps: RelationsTableConnectedProps;
 
   highlight: {
@@ -49,6 +53,8 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
   onExpand,
   onCollapse,
   onClose,
+  highlightFunctionButtonsProps,
+  highlightSRSButtonsProps,
   relationTableProps,
   commentsProps,
 }) => {
@@ -95,6 +101,10 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
                     elevated: false,
                     component: (
                       <HighlightPageSectionAttributes
+                        highlightFunctionButtonsProps={
+                          highlightFunctionButtonsProps
+                        }
+                        highlightSRSButtonsProps={highlightSRSButtonsProps}
                         highlightId={highlight.id}
                         relations={highlight.relations}
                         relationTableProps={relationTableProps}

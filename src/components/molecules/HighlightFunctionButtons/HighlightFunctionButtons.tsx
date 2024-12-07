@@ -10,25 +10,39 @@ import { TestIds } from "util/test-ids";
 import styles from "./HighlightFunctionButtons.less";
 
 export type HighlightFunctionButtonsNotificationState =
-  | { type: "Up for review" }
-  | { type: "Not up for review"; daysUntilReview: number }
-  | { type: "Reviewed" };
+  | { type: "Up for review"; ease: number }
+  | { type: "Not up for review"; ease: number; daysUntilReview: number }
+  | { type: "Reviewed"; ease: number };
 
 interface HighlightFunctionButtonsProps {
   orientation: "horizontal" | "vertical";
   highlightHue: number;
   notificationState?: HighlightFunctionButtonsNotificationState;
   onDelete?: () => void;
+  showDeleteButton?: boolean;
 }
 
 export const HighlightFunctionButtons: React.FunctionComponent<
   HighlightFunctionButtonsProps
-> = ({ orientation, highlightHue, notificationState, onDelete }) => {
+> = ({
+  orientation,
+  highlightHue,
+  notificationState,
+  onDelete,
+  showDeleteButton = true,
+}) => {
   let blurbNotification = null;
-  if (notificationState.type === "Up for review") {
+  if (notificationState?.type === "Up for review") {
     blurbNotification = (
       <div className={styles["blurb-notification"]}>
-        <Tooltip title="Up for review">
+        <Tooltip
+          title={
+            <>
+              <p>Up for review</p>
+              <p>Ease: {notificationState.ease}</p>
+            </>
+          }
+        >
           <PriorityHighSharp
             style={{
               color: hueSwatch(highlightHue, "on_light_background"),
@@ -37,10 +51,17 @@ export const HighlightFunctionButtons: React.FunctionComponent<
         </Tooltip>
       </div>
     );
-  } else if (notificationState.type === "Reviewed") {
+  } else if (notificationState?.type === "Reviewed") {
     blurbNotification = (
       <div className={styles["blurb-notification"]}>
-        <Tooltip title="Reviewed">
+        <Tooltip
+          title={
+            <>
+              <p>Reviewed</p>
+              <p>Ease: {notificationState.ease}</p>
+            </>
+          }
+        >
           <DoneSharp
             style={{
               color: hueSwatch(highlightHue, "on_light_background"),
@@ -49,10 +70,17 @@ export const HighlightFunctionButtons: React.FunctionComponent<
         </Tooltip>
       </div>
     );
-  } else if (notificationState.type === "Not up for review") {
+  } else if (notificationState?.type === "Not up for review") {
     blurbNotification = (
       <div className={styles["blurb-notification"]}>
-        <Tooltip title="Not up for review">
+        <Tooltip
+          title={
+            <>
+              <p>Not up for review</p>
+              <p>Ease: {notificationState.ease}</p>
+            </>
+          }
+        >
           <Type size="small" color={grey700}>
             {notificationState.daysUntilReview}d
           </Type>
@@ -64,7 +92,7 @@ export const HighlightFunctionButtons: React.FunctionComponent<
   return (
     <div className={cx(styles["function-buttons"], styles[orientation])}>
       {blurbNotification}
-      {onDelete && (
+      {showDeleteButton && onDelete && (
         <MiniButton
           data-testid={TestIds.HighlightBlurb.DeleteButton}
           onClick={onDelete}

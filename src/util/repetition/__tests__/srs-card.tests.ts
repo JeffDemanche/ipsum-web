@@ -106,32 +106,46 @@ describe("SRS Card", () => {
     expect(rating.intervalAfter).toBe(4);
   });
 
-  it.each<{ ratings: number[]; intervalsAfter: number[] }>([
+  it.each<{
+    ratings: number[];
+    intervalsAfter?: number[];
+    easesAfter?: number[];
+  }>([
     { ratings: [0, 0, 0], intervalsAfter: [1, 1.3, 1.69] },
     { ratings: [1, 1, 1], intervalsAfter: [1, 1.42, 1.846] },
     { ratings: [2, 2, 2], intervalsAfter: [2, 3.72, 5.728] },
     { ratings: [3, 3, 3], intervalsAfter: [3, 6.66, 13.853] },
     { ratings: [4, 4, 4], intervalsAfter: [4, 10, 25] },
     { ratings: [5, 5, 5], intervalsAfter: [5, 13.5, 37.8] },
+    {
+      ratings: [3, 3, 3, 0],
+      intervalsAfter: [3, 6.66, 13.853, 18.009],
+      easesAfter: [2.36, 2.22, 2.08, 1.3],
+    },
   ])(
-    "should have intervals: $intervalsAfter after ratings: $ratings",
-    ({ ratings, intervalsAfter }) => {
+    "should have correct intervals and eases after ratings: $ratings",
+    ({ ratings, intervalsAfter, easesAfter }) => {
       let nextCard = new IpsumSRSCard({
         creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
         ratings: [],
       });
       let nextReviewDay = IpsumDay.fromString("1/2/2020", "entry-printed-date");
-      const actualIntervalsAfter = ratings.map((rating, i) => {
+      const reviewsAfter = ratings.map((rating, i) => {
         const review = nextCard.review(rating, nextReviewDay);
         nextCard = new IpsumSRSCard({
           creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
           ratings: [...nextCard.cardHistory.ratings, review],
         });
         nextReviewDay = nextReviewDay.add(Math.ceil(review.intervalAfter));
-        return review.intervalAfter;
+        return review;
       });
-      actualIntervalsAfter.forEach((interval, i) => {
-        expect(interval).toBeCloseTo(intervalsAfter[i]);
+      reviewsAfter.forEach(({ intervalAfter, easeAfter }, i) => {
+        if (intervalsAfter) {
+          expect(intervalAfter).toBeCloseTo(intervalsAfter[i]);
+        }
+        if (easesAfter) {
+          expect(easeAfter).toBeCloseTo(easesAfter[i]);
+        }
       });
     }
   );

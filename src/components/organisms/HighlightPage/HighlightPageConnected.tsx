@@ -1,6 +1,8 @@
 import { useQuery } from "@apollo/client";
 import { useCommentsConnected } from "components/hooks/use-comments-connected";
+import { useHighlightFunctionButtonsConnected } from "components/hooks/use-highlight-function-buttons-connected";
 import { useHighlightRelationsTableConnected } from "components/hooks/use-highlight-relations-table-connected";
+import { useHighlightSRSButtonsConnected } from "components/hooks/use-highlight-srs-buttons-connected";
 import React from "react";
 import { urlRemoveLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
@@ -109,6 +111,14 @@ export const HighlightPageConnected: React.FunctionComponent<
 
   const commentsProps = useCommentsConnected({ highlightId });
 
+  const highlightSRSButtonsProps = useHighlightSRSButtonsConnected({
+    highlightId,
+  });
+
+  const highlightFunctionButtonsProps = useHighlightFunctionButtonsConnected({
+    highlightId,
+  });
+
   const highlight = data.highlight;
 
   return (
@@ -157,6 +167,8 @@ export const HighlightPageConnected: React.FunctionComponent<
           },
         })),
       }}
+      highlightFunctionButtonsProps={highlightFunctionButtonsProps}
+      highlightSRSButtonsProps={highlightSRSButtonsProps}
       relationTableProps={relationsTableProps}
       commentsProps={commentsProps}
       expanded={layers?.[layerIndex]?.expanded === "true"}

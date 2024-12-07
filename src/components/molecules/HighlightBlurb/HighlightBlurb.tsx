@@ -1,24 +1,18 @@
-import { DoubleArrowSharp, KeyboardArrowUpSharp } from "@mui/icons-material";
+import { KeyboardArrowUpSharp } from "@mui/icons-material";
 import cx from "classnames";
 import { MiniButton } from "components/atoms/MiniButton";
-import { ToggleButton } from "components/atoms/ToggleButton";
-import { Type } from "components/atoms/Type";
 import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
+import { HighlightFunctionButtonsConnectedProps } from "components/hooks/use-highlight-function-buttons-connected";
+import { HighlightSRSButtonsConnectedProps } from "components/hooks/use-highlight-srs-buttons-connected";
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import { grey700, hueSwatch } from "components/styles";
 import React, { useState } from "react";
-import { IpsumDay } from "util/dates";
 import { TestIds } from "util/test-ids";
 
-import {
-  HighlightFunctionButtons,
-  HighlightFunctionButtonsNotificationState,
-} from "../HighlightFunctionButtons";
-import {
-  HighlightSRSButtons,
-  HighlightSRSButtonsReviewState,
-} from "../HighlightSRSButtons/HighlightSRSButtons";
+import { HighlightFunctionButtons } from "../HighlightFunctionButtons";
+import { HighlightSRSButtons } from "../HighlightSRSButtons/HighlightSRSButtons";
+import { HighlightTag } from "../HighlightTag";
 import styles from "./HighlightBlurb.less";
 
 interface HighlightBlurbProps {
@@ -44,18 +38,11 @@ interface HighlightBlurbProps {
   onExpand?: () => void;
   onCollapse?: () => void;
 
-  onDelete?: () => void;
-
-  today: IpsumDay;
-  reviewState?: HighlightSRSButtonsReviewState;
-
-  onStartSRS?: () => void;
-
-  prospectiveIntervals?: number[];
-  onRate?: (q: number) => void;
-
   onHighlightClick?: () => void;
   onHighlightObjectClick?: () => void;
+
+  highlightSRSButtonsProps: HighlightSRSButtonsConnectedProps;
+  highlightFunctionButtonsProps: HighlightFunctionButtonsConnectedProps;
 
   relationsTableProps: RelationsTableConnectedProps;
 }
@@ -70,17 +57,13 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
   defaultExpanded,
   onExpand,
   onCollapse,
-  onDelete,
-  reviewState,
-  onStartSRS,
-  prospectiveIntervals,
-  onRate,
+  relationsTableProps,
   onHighlightClick,
   onHighlightObjectClick,
-  relationsTableProps,
-  today,
+  highlightSRSButtonsProps,
+  highlightFunctionButtonsProps,
 }) => {
-  const [expanded, setExpanded] = useState(defaultExpanded);
+  const [expanded, setExpanded] = useState(defaultExpanded ?? false);
 
   const onBlurbExpand = () => {
     setExpanded(true);
@@ -97,27 +80,6 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
       onBlurbExpand();
     }
   };
-
-  const upForReview = reviewState.type === "up_for_review";
-  const notUpForReview = reviewState.type === "not_up_for_review";
-  const daysUntilReview =
-    reviewState.type === "not_up_for_review"
-      ? today.numDaysUntil(reviewState.nextReviewDay)
-      : 0;
-
-  const notificationState: React.ComponentProps<
-    typeof HighlightFunctionButtons
-  >["notificationState"] = ((): HighlightFunctionButtonsNotificationState => {
-    if (upForReview) {
-      return { type: "Up for review" };
-    } else if (reviewState.type === "reviewed") {
-      return { type: "Reviewed" };
-    } else if (notUpForReview) {
-      return { type: "Not up for review", daysUntilReview };
-    } else {
-      return { type: "Up for review" };
-    }
-  })();
 
   return (
     <div
@@ -143,11 +105,7 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
       >
         <HighlightSRSButtons
           orientation="vertical"
-          today={today}
-          reviewState={reviewState}
-          onRate={onRate}
-          onStartSRS={onStartSRS}
-          prospectiveIntervals={prospectiveIntervals}
+          {...highlightSRSButtonsProps}
         />
         <div style={{ flexGrow: "1" }}></div>
         <MiniButton
@@ -162,9 +120,17 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
         <div className={styles["blurb-header"]}>
           <HighlightFunctionButtons
             orientation="horizontal"
-            highlightHue={highlightProps.hue}
-            notificationState={notificationState}
-            onDelete={expanded && onDelete}
+            showDeleteButton={expanded}
+            {...highlightFunctionButtonsProps}
+          />
+          <HighlightTag
+            fontSize="small"
+            hue={highlightProps.hue}
+            arcNames={highlightProps.arcNames}
+            highlightNumber={highlightProps.highlightNumber}
+            objectText={highlightProps.objectText}
+            onObjectTextClick={onHighlightObjectClick}
+            onHighlightClick={onHighlightClick}
           />
         </div>
         <BlurbExcerpt

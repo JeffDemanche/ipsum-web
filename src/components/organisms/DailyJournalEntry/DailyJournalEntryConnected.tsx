@@ -168,7 +168,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   const createEntry = (htmlString: string) => {
     return createJournalEntry({
-      entryKey: day.toString("stored-day"),
+      entryKey: entryDay.toString("entry-printed-date"),
       htmlString,
       dayCreated: today,
     }).entryKey;

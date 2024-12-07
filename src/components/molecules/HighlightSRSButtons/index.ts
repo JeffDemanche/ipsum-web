@@ -1,1 +1,4 @@
-export { HighlightSRSButtons } from "./HighlightSRSButtons";
+export {
+  HighlightSRSButtons,
+  HighlightSRSButtonsReviewState,
+} from "./HighlightSRSButtons";

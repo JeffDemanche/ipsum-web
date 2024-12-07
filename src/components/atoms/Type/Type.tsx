@@ -1,5 +1,5 @@
 import { Tooltip, Typography as MuiTypography } from "@mui/material";
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, forwardRef } from "react";
 
 import { TypeLineHeight, TypeSize, TypeVariant, TypeWeight } from "./types";
 
@@ -61,32 +61,39 @@ const sizeToCSSSize = (size: TypeSize): CSSProperties["fontSize"] => {
   }
 };
 
-export const Type: React.FunctionComponent<TypeProps> = ({
-  variant = "body",
-  weight = "regular",
-  size = "16pt",
-  underline = false,
-  lineHeight = 1.5,
-  component,
-  children,
-  color,
-  tooltip,
-  ...muiTypographyProps
-}) => {
-  const type = (
-    <MuiTypography
-      variant={variantToMuiVariant(variant)}
-      fontWeight={weight}
-      fontSize={sizeToCSSSize(size)}
-      lineHeight={lineHeight}
-      component={component}
-      color={color}
-      sx={{ textDecoration: underline ? "underline" : "none" }}
-      {...muiTypographyProps}
-    >
-      {children}
-    </MuiTypography>
-  );
+export const Type: React.FunctionComponent<TypeProps> = forwardRef(
+  (
+    {
+      variant = "body",
+      weight = "regular",
+      size = "16pt",
+      underline = false,
+      lineHeight = 1.5,
+      component,
+      children,
+      color,
+      tooltip,
+      ...muiTypographyProps
+    },
+    _
+  ) => {
+    const type = (
+      <MuiTypography
+        variant={variantToMuiVariant(variant)}
+        fontWeight={weight}
+        fontSize={sizeToCSSSize(size)}
+        lineHeight={lineHeight}
+        component={component}
+        color={color}
+        sx={{ textDecoration: underline ? "underline" : "none" }}
+        {...muiTypographyProps}
+      >
+        {children}
+      </MuiTypography>
+    );
 
-  return tooltip ? <Tooltip title={tooltip}>{type}</Tooltip> : type;
-};
+    return tooltip ? <Tooltip title={tooltip}>{type}</Tooltip> : type;
+  }
+);
+
+Type.displayName = "Type";

@@ -28,8 +28,6 @@ import { relationTypeDef } from "./schemas/relation-schema";
 import { searchTypeDef } from "./schemas/search-schema";
 import { srsTypeDef } from "./schemas/srs-schema";
 
-console.log(EntryResolvers, SRSResolvers);
-
 const typeDefs = gql`
   type Query {
     journalId: String!
