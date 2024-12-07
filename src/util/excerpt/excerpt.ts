@@ -6,7 +6,7 @@ interface ExcerptOptions {
   worldLimit?: number;
 }
 
-const removeNonHighlightChildren = (
+export const removeNonHighlightChildren = (
   element: HTMLElement,
   highlightId: string,
   highlightHue: number

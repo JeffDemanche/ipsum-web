@@ -11,7 +11,6 @@ export const entryTypeDef = gql`
   enum EntryType {
     JOURNAL
     ARC
-    COMMENT
   }
 
   type Entry {

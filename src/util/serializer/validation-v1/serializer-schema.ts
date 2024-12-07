@@ -35,11 +35,7 @@ export const SerializedSchema = t.type(
           entryKey: t.string,
           trackedHTMLString: t.string,
           history: HistorySchema,
-          entryType: t.union([
-            t.literal("JOURNAL"),
-            t.literal("ARC"),
-            t.literal("COMMENT"),
-          ]),
+          entryType: t.union([t.literal("JOURNAL"), t.literal("ARC")]),
         },
         "entry"
       ),
@@ -130,7 +126,7 @@ export const SerializedSchema = t.type(
           subjectType: t.union([t.literal("Arc"), t.literal("Highlight")]),
           subject: t.string,
           predicate: t.string,
-          objectType: t.literal("Arc"),
+          objectType: t.union([t.literal("Arc"), t.literal("Highlight")]),
           object: t.string,
         },
         "relation"

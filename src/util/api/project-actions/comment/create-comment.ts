@@ -1,9 +1,12 @@
 import { IpsumDay } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
 import { InMemoryComment } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { updateDay } from "../day/update-day";
-import { createCommentEntry } from "../entry/create-comment-entry";
+import { createJournalEntry } from "../entry/create-journal-entry";
+import { updateJournalEntry } from "../entry/update-journal-entry";
+import { createHighlight } from "../highlight/create-highlight";
 import { APIFunction } from "../types";
 
 export const createComment: APIFunction<
@@ -11,6 +14,7 @@ export const createComment: APIFunction<
     id?: string;
     dayCreated?: IpsumDay;
     highlight: string;
+    highlightDay: IpsumDay;
     htmlString: string;
   },
   InMemoryComment
@@ -30,18 +34,33 @@ export const createComment: APIFunction<
   }
 
   const id = args.id ?? uuidv4();
-  const dayCreated =
-    args.dayCreated?.toString("iso") ?? IpsumDay.today().toString("iso");
+  const dayCreated = args.dayCreated ?? IpsumDay.today();
 
-  const commentEntryKey = `comment-entry:${id}`;
+  const highlight = projectState.collection("highlights").get(args.highlight);
+  const highlightEntry = projectState
+    .collection("entries")
+    .get(highlight.entry);
+  const highlightEntryCurrentHTML = IpsumTimeMachine.fromString(
+    highlightEntry.trackedHTMLString
+  ).currentValue;
 
-  const commentEntry = createCommentEntry(
-    {
-      comment: id,
-      entryKey: commentEntryKey,
-      htmlString: args.htmlString,
-      dayCreated: IpsumDay.fromString(dayCreated, "iso"),
-    },
+  const dayCreatedEntryKey = dayCreated.toString("entry-printed-date");
+
+  if (!projectState.collection("entries").has(dayCreatedEntryKey)) {
+    createJournalEntry(
+      { dayCreated, entryKey: dayCreatedEntryKey, htmlString: "" },
+      context
+    );
+  }
+
+  const appendedHTMLString = `${highlightEntryCurrentHTML}${args.htmlString}`;
+  updateJournalEntry(
+    { entryKey: dayCreatedEntryKey, htmlString: appendedHTMLString },
+    context
+  );
+
+  const highlightOnToday = createHighlight(
+    { dayCreated, entryKey: dayCreatedEntryKey },
     context
   );
 
@@ -53,19 +72,21 @@ export const createComment: APIFunction<
   const comment = projectState.collection("comments").create(id, {
     __typename: "Comment",
     id,
-    commentEntry: commentEntry.entry,
+    commentEntry: "",
     highlight: args.highlight,
+    commentHighlight: highlightOnToday.id,
     parent: null,
     history: {
       __typename: "History",
-      dateCreated: dayCreated,
+      dateCreated: dayCreated.toString("iso"),
     },
   });
 
   updateDay(
     {
-      day: IpsumDay.fromString(dayCreated, "iso"),
+      day: dayCreated,
       comments: (previous) => [...previous, id],
+      journalEntryKey: () => dayCreatedEntryKey,
     },
     context
   );
