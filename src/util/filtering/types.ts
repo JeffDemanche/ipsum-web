@@ -10,7 +10,7 @@ import { IpsumFilteringProgramV1 } from "./ipsum-filtering-program-v1";
 
 export interface FilterableOutgoingRelation {
   predicate: string;
-  objectType: "Arc";
+  objectType: "Arc" | "Highlight";
   objectId: string;
   objectName: string;
 }

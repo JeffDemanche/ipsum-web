@@ -15,15 +15,15 @@ export type ArcEntryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CommentKeySpecifier = ('commentEntry' | 'commentHighlight' | 'highlight' | 'history' | 'id' | 'parent' | 'sourceEntry' | CommentKeySpecifier)[];
+export type CommentKeySpecifier = ('commentEntry' | 'history' | 'id' | 'objectHighlight' | 'parent' | 'sourceEntry' | 'sourceHighlight' | CommentKeySpecifier)[];
 export type CommentFieldPolicy = {
 	commentEntry?: FieldPolicy<any> | FieldReadFunction<any>,
-	commentHighlight?: FieldPolicy<any> | FieldReadFunction<any>,
-	highlight?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	objectHighlight?: FieldPolicy<any> | FieldReadFunction<any>,
 	parent?: FieldPolicy<any> | FieldReadFunction<any>,
-	sourceEntry?: FieldPolicy<any> | FieldReadFunction<any>
+	sourceEntry?: FieldPolicy<any> | FieldReadFunction<any>,
+	sourceHighlight?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type CommentEntryKeySpecifier = ('comment' | 'entry' | CommentEntryKeySpecifier)[];
 export type CommentEntryFieldPolicy = {

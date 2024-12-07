@@ -102,6 +102,7 @@ export const SerializedSchema = t.type(
           id: t.string,
           history: HistorySchema,
           entry: t.string,
+          incomingRelations: t.array(t.string),
           outgoingRelations: t.array(t.string),
           importanceRatings: t.array(
             t.type({
@@ -142,7 +143,8 @@ export const SerializedSchema = t.type(
           parent: t.union([t.string, t.null]),
           history: HistorySchema,
           commentEntry: t.string,
-          highlight: t.string,
+          sourceHighlight: t.string,
+          objectHighlight: t.string,
         },
         "comment"
       ),

@@ -60,7 +60,7 @@ const DailyJournalEntryQuery = gql(`
             }
           }
         }
-        highlight {
+        objectHighlight {
           id
           hue
           arcs {
@@ -114,11 +114,11 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
       day: entryDay,
       htmlString: comment.commentEntry.entry.htmlString,
       highlight: {
-        id: comment.highlight.id,
+        id: comment.objectHighlight.id,
         objectText: comment.commentEntry.entry.entryKey,
-        hue: comment.highlight.hue,
+        hue: comment.objectHighlight.hue,
         highlightNumber: 0, // TODO
-        arcNames: comment.highlight.arcs.map((arc) => arc.name),
+        arcNames: comment.objectHighlight.arcs.map((arc) => arc.name),
       },
       commentEntry: {
         highlights: comment.commentEntry.entry.highlights.map((highlight) => ({

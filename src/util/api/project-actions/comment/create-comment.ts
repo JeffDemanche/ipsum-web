@@ -7,13 +7,14 @@ import { updateDay } from "../day/update-day";
 import { createJournalEntry } from "../entry/create-journal-entry";
 import { updateJournalEntry } from "../entry/update-journal-entry";
 import { createHighlight } from "../highlight/create-highlight";
+import { createRelationFromHighlightToHighlight } from "../relation/create-relation-from-highlight-to-highlight";
 import { APIFunction } from "../types";
 
 export const createComment: APIFunction<
   {
     id?: string;
     dayCreated?: IpsumDay;
-    highlight: string;
+    objectHighlight: string;
     highlightDay: IpsumDay;
     htmlString: string;
   },
@@ -21,9 +22,9 @@ export const createComment: APIFunction<
 > = (args, context) => {
   const { projectState } = context;
 
-  if (!projectState.collection("highlights").has(args.highlight)) {
+  if (!projectState.collection("highlights").has(args.objectHighlight)) {
     throw new Error(
-      `No highlight with key ${args.highlight} exists in the project state`
+      `No highlight with key ${args.objectHighlight} exists in the project state`
     );
   }
 
@@ -36,45 +37,58 @@ export const createComment: APIFunction<
   const id = args.id ?? uuidv4();
   const dayCreated = args.dayCreated ?? IpsumDay.today();
 
-  const highlight = projectState.collection("highlights").get(args.highlight);
-  const highlightEntry = projectState
+  const objectHighlight = projectState
+    .collection("highlights")
+    .get(args.objectHighlight);
+  const objectHighlightEntry = projectState
     .collection("entries")
-    .get(highlight.entry);
-  const highlightEntryCurrentHTML = IpsumTimeMachine.fromString(
-    highlightEntry.trackedHTMLString
+    .get(objectHighlight.entry);
+  const objectHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
+    objectHighlightEntry.trackedHTMLString
   ).currentValue;
 
-  const dayCreatedEntryKey = dayCreated.toString("entry-printed-date");
+  const sourceHighlightEntryKey = dayCreated.toString("entry-printed-date");
 
-  if (!projectState.collection("entries").has(dayCreatedEntryKey)) {
+  if (!projectState.collection("entries").has(sourceHighlightEntryKey)) {
     createJournalEntry(
-      { dayCreated, entryKey: dayCreatedEntryKey, htmlString: "" },
+      { dayCreated, entryKey: sourceHighlightEntryKey, htmlString: "" },
       context
     );
   }
 
-  const appendedHTMLString = `${highlightEntryCurrentHTML}${args.htmlString}`;
+  const appendedHTMLString = `${objectHighlightEntryCurrentHTML}${args.htmlString}`;
   updateJournalEntry(
-    { entryKey: dayCreatedEntryKey, htmlString: appendedHTMLString },
+    { entryKey: sourceHighlightEntryKey, htmlString: appendedHTMLString },
     context
   );
 
-  const highlightOnToday = createHighlight(
-    { dayCreated, entryKey: dayCreatedEntryKey },
+  const sourceHighlight = createHighlight(
+    { dayCreated, entryKey: sourceHighlightEntryKey },
     context
   );
 
-  projectState.collection("highlights").mutate(args.highlight, (highlight) => ({
-    ...highlight,
-    comments: [...highlight.comments, id],
-  }));
+  createRelationFromHighlightToHighlight(
+    {
+      subject: sourceHighlight.id,
+      object: args.objectHighlight,
+      predicate: "responds to",
+    },
+    context
+  );
+
+  projectState
+    .collection("highlights")
+    .mutate(args.objectHighlight, (highlight) => ({
+      ...highlight,
+      comments: [...highlight.comments, id],
+    }));
 
   const comment = projectState.collection("comments").create(id, {
     __typename: "Comment",
     id,
     commentEntry: "",
-    highlight: args.highlight,
-    commentHighlight: highlightOnToday.id,
+    objectHighlight: args.objectHighlight,
+    sourceHighlight: sourceHighlight.id,
     parent: null,
     history: {
       __typename: "History",
@@ -86,7 +100,7 @@ export const createComment: APIFunction<
     {
       day: dayCreated,
       comments: (previous) => [...previous, id],
-      journalEntryKey: () => dayCreatedEntryKey,
+      journalEntryKey: () => sourceHighlightEntryKey,
     },
     context
   );

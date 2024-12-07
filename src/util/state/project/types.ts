@@ -62,6 +62,7 @@ export interface InMemoryHighlight {
   id: string;
   history: InMemoryHistory;
   entry: string;
+  incomingRelations: string[];
   outgoingRelations: string[];
   importanceRatings: InMemoryImportanceRating[];
   comments: string[];
@@ -92,8 +93,8 @@ export interface InMemoryComment {
   __typename: "Comment";
   id: string;
   parent: string | null;
-  highlight: string;
-  commentHighlight: string;
+  objectHighlight: string;
+  sourceHighlight: string;
   commentEntry: string;
   history: InMemoryHistory;
 }

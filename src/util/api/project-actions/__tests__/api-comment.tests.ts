@@ -9,11 +9,11 @@ import { createHighlight } from "../highlight/create-highlight";
 
 describe("API comment actions", () => {
   describe("createComment", () => {
-    it("should create a comment, highlight, and entry for the day created if it doesn't exist", () => {
+    it("should create a comment, highlight, relation, and entry for the day created if it doesn't exist", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
-      const subjectHighlightEntry = createEntry(
+      const objectHighlightEntry = createEntry(
         {
           dayCreated: IpsumDay.fromString("1/1/2020", "stored-day"),
           entryKey: dayCreated.toString("entry-printed-date"),
@@ -23,10 +23,10 @@ describe("API comment actions", () => {
         { projectState: state }
       );
 
-      const subjectHighlight = createHighlight(
+      let objectHighlight = createHighlight(
         {
-          dayCreated,
-          entryKey: subjectHighlightEntry.entryKey,
+          dayCreated: IpsumDay.fromString("1/1/2020", "stored-day"),
+          entryKey: objectHighlightEntry.entryKey,
         },
         { projectState: state }
       );
@@ -34,41 +34,50 @@ describe("API comment actions", () => {
       const comment = createComment(
         {
           dayCreated,
-          highlight: subjectHighlight.id,
+          objectHighlight: objectHighlight.id,
           highlightDay: dayCreated,
           htmlString: "<div>hello world</div>",
         },
         { projectState: state }
       );
 
-      const commentHighlight = state
+      const sourceHighlight = state
         .collection("highlights")
-        .get(comment.commentHighlight);
+        .get(comment.sourceHighlight);
 
-      const commentHighlightEntry = state
+      const sourceHighlightEntry = state
         .collection("entries")
-        .get(commentHighlight.entry);
+        .get(sourceHighlight.entry);
 
-      const commentHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
-        commentHighlightEntry.trackedHTMLString
+      const sourceHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
+        sourceHighlightEntry.trackedHTMLString
       ).currentValue;
 
+      objectHighlight = state.collection("highlights").get(objectHighlight.id);
+
+      const relation = Object.values(
+        state
+          .collection("relations")
+          .getAllByField("object", objectHighlight.id)
+      )[0];
+
       expect(state.collection("comments").get(comment.id)).toEqual(comment);
-      expect(comment.highlight).toEqual(subjectHighlight.id);
+      expect(comment.objectHighlight).toEqual(objectHighlight.id);
 
-      expect(commentHighlight).toBeDefined();
-      expect(commentHighlight.entry).toEqual(
+      expect(objectHighlight).toBeDefined();
+      expect(objectHighlight.entry).toEqual(
         dayCreated.toString("entry-printed-date")
       );
+      expect(objectHighlight.incomingRelations).toEqual([relation.id]);
 
-      expect(commentHighlightEntry).toBeDefined();
-      expect(commentHighlightEntry.entryKey).toEqual(
+      expect(sourceHighlight.outgoingRelations).toEqual([relation.id]);
+
+      expect(sourceHighlightEntry).toBeDefined();
+      expect(sourceHighlightEntry.entryKey).toEqual(
         dayCreated.toString("entry-printed-date")
       );
-      expect(commentHighlightEntry.entryType).toEqual("JOURNAL");
-      expect(commentHighlightEntryCurrentHTML).toEqual(
-        "<div>hello world</div>"
-      );
+      expect(sourceHighlightEntry.entryType).toEqual("JOURNAL");
+      expect(sourceHighlightEntryCurrentHTML).toEqual("<div>hello world</div>");
     });
 
     it("if the entry for the day created exists, should append HTML string to existing entry", () => {
@@ -85,7 +94,7 @@ describe("API comment actions", () => {
         { projectState: state }
       );
 
-      const highlight = createHighlight(
+      const objectHighlight = createHighlight(
         {
           dayCreated,
           entryKey: journalEntry.entryKey,
@@ -96,26 +105,26 @@ describe("API comment actions", () => {
       const comment = createComment(
         {
           dayCreated,
-          highlight: highlight.id,
+          objectHighlight: objectHighlight.id,
           highlightDay: dayCreated,
           htmlString: "<div>goodbye world</div>",
         },
         { projectState: state }
       );
 
-      const commentHighlight = state
+      const sourceHighlight = state
         .collection("highlights")
-        .get(comment.commentHighlight);
+        .get(comment.sourceHighlight);
 
-      const commentHighlightEntry = state
+      const sourceHighlightEntry = state
         .collection("entries")
-        .get(commentHighlight.entry);
+        .get(sourceHighlight.entry);
 
-      const commentHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
-        commentHighlightEntry.trackedHTMLString
+      const sourceHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
+        sourceHighlightEntry.trackedHTMLString
       ).currentValue;
 
-      expect(commentHighlightEntryCurrentHTML).toEqual(
+      expect(sourceHighlightEntryCurrentHTML).toEqual(
         "<div>hello world</div><div>goodbye world</div>"
       );
     });

@@ -37,7 +37,7 @@ describe("Comment resolvers", () => {
       const comment = createComment(
         {
           dayCreated: IpsumDay.fromString("1/6/2020", "stored-day"),
-          highlight: highlight.id,
+          objectHighlight: highlight.id,
           highlightDay: IpsumDay.fromString("1/1/2020", "stored-day"),
           htmlString: "<div>goodbye world</div>",
         },
@@ -55,7 +55,7 @@ describe("Comment resolvers", () => {
                   htmlString
                 }
               }
-              highlight {
+              objectHighlight {
                 id
               }
             }
@@ -89,7 +89,7 @@ describe("Comment resolvers", () => {
       );
       const comment1 = createComment(
         {
-          highlight: highlight.id,
+          objectHighlight: highlight.id,
           dayCreated: IpsumDay.fromString("1/6/2020", "stored-day"),
           highlightDay: IpsumDay.fromString("1/1/2020", "stored-day"),
           htmlString: "<p>comment 1</p>",
@@ -98,7 +98,7 @@ describe("Comment resolvers", () => {
       );
       const comment2 = createComment(
         {
-          highlight: highlight.id,
+          objectHighlight: highlight.id,
           dayCreated: IpsumDay.fromString("1/7/2020", "stored-day"),
           highlightDay: IpsumDay.fromString("1/1/2020", "stored-day"),
           htmlString: "<p>comment 2</p>",
@@ -117,7 +117,7 @@ describe("Comment resolvers", () => {
                   htmlString
                 }
               }
-              highlight {
+              objectHighlight {
                 id
               }
             }

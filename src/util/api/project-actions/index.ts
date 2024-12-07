@@ -27,11 +27,12 @@ export { updateJournalEntry as apiUpdateJournalEntry } from "./entry/update-jour
 export { deleteJournalEntry as apiDeleteJournalEntry } from "./entry/delete-journal-entry";
 export { createArcEntry as apiCreateArcEntry } from "./entry/create-arc-entry";
 export { updateArcEntry as apiUpdateArcEntry } from "./entry/update-arc-entry";
-export { createCommentEntry as apiCreateCommentEntry } from "./entry/create-comment-entry";
 
 export { createHighlight as apiCreateHighlight } from "./highlight/create-highlight";
 export { createRelationFromHighlightToArc as apiCreateRelationFromHighlightToArc } from "./relation/create-relation-from-highlight-to-arc";
 export { createRelationFromArcToArc as apiCreateRelationFromArcToArc } from "./relation/create-relation-from-arc-to-arc";
+export { createRelationFromHighlightToHighlight as apiCreateRelationFromHighlightToHighlight } from "./relation/create-relation-from-highlight-to-highlight";
+
 export { deleteHighlight as apiDeleteHighlight } from "./highlight/delete-highlight";
 export { deleteRelationFromHighlightToArc as apiDeleteRelationFromHighlightToArc } from "./relation/delete-relation-from-highlight-to-arc";
 export { deleteRelationFromArcToArc as apiDeleteRelationFromArcToArc } from "./relation/delete-relation-from-arc-to-arc";

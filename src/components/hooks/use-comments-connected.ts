@@ -70,9 +70,13 @@ export const useCommentsConnected = ({
           highlightId: highlight.id,
           highlightNumber: highlight.number,
           hue: highlight.hue,
-          arcNames: highlight.outgoingRelations.map(
-            (relation) => relation.object.name
-          ),
+          arcNames: highlight.outgoingRelations
+            .map((relation) =>
+              relation.object.__typename === "Arc"
+                ? relation.object.name
+                : undefined
+            )
+            .filter(Boolean),
         })),
         htmlString: comment.sourceEntry.entry.htmlString,
       },

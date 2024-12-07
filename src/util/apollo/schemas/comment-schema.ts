@@ -15,8 +15,8 @@ export const commentTypeDef = gql`
     sourceEntry: JournalEntry!
     # deprecated
     commentEntry: CommentEntry!
-    highlight: Highlight!
-    commentHighlight: Highlight!
+    objectHighlight: Highlight!
+    sourceHighlight: Highlight!
     history: History!
   }
 `;

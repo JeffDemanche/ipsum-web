@@ -179,8 +179,6 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
             ).toString("entry-printed-date");
           case "ARC":
             return entry.entryKey.split(":")[1] ?? "(arc not found)";
-          case "COMMENT":
-            return "Comment";
         }
       },
       object(_, { readField }) {
@@ -200,10 +198,6 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
           case "ARC":
             return PROJECT_STATE.collection("arcs").get(
               entry.entryKey.split(":")[2]
-            );
-          case "COMMENT":
-            return PROJECT_STATE.collection("comments").get(
-              entry.entryKey.split(":")[1]
             );
         }
       },

@@ -54,7 +54,7 @@ const UseHighlightBlurbConnectedQuery = gql(`
         }
         ... on Comment {
           id
-          highlight {
+          objectHighlight {
             id
           }
         }
@@ -87,9 +87,11 @@ export const useHighlightBlurbConnected = ({
     objectText: highlight.objectText,
     hue: highlight.hue,
     highlightNumber: highlight.number,
-    arcNames: highlight.outgoingRelations.map(
-      (relation) => relation.object.name
-    ),
+    arcNames: highlight.outgoingRelations
+      .map((relation) =>
+        relation.object.__typename === "Arc" ? relation.object.name : undefined
+      )
+      .filter(Boolean),
     importanceRating: 0,
   };
 
@@ -102,17 +104,21 @@ export const useHighlightBlurbConnected = ({
     (relation) => relation.object && relation.object.__typename === "Arc"
   );
 
-  const relations: HighlightBlurbConnectedProps["relations"] = arcRelations.map(
-    (relation) => ({
-      id: relation.id,
-      predicate: relation.predicate,
-      arc: {
-        id: relation.object.id,
-        hue: relation.object.color,
-        name: relation.object.name,
-      },
-    })
-  );
+  const relations: HighlightBlurbConnectedProps["relations"] = arcRelations
+    .map((relation) =>
+      relation.object.__typename === "Arc"
+        ? {
+            id: relation.id,
+            predicate: relation.predicate,
+            arc: {
+              id: relation.object.id,
+              hue: relation.object.color,
+              name: relation.object.name,
+            },
+          }
+        : undefined
+    )
+    .filter(Boolean);
 
   const onHighlightClick = () => {
     insertLayer({

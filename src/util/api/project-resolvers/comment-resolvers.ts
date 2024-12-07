@@ -54,8 +54,15 @@ export const CommentResolvers: StrictTypedTypePolicies = {
           null
         );
       },
-      highlight(highlightId) {
-        return PROJECT_STATE.collection("highlights").get(highlightId) ?? null;
+      objectHighlight(objectHighlightId) {
+        return (
+          PROJECT_STATE.collection("highlights").get(objectHighlightId) ?? null
+        );
+      },
+      sourceHighlight(sourceHighlightId) {
+        return (
+          PROJECT_STATE.collection("highlights").get(sourceHighlightId) ?? null
+        );
       },
     },
   },

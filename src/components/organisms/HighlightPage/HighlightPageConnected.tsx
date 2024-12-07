@@ -47,7 +47,7 @@ const HighlightPageQuery = gql(`
         history {
           dateCreated
         }
-        highlight {
+        objectHighlight {
           id
           number
           hue
@@ -130,26 +130,36 @@ export const HighlightPageConnected: React.FunctionComponent<
         highlightNumber: highlight.number,
         hue: highlight.hue,
         objectText: highlight.objectText,
-        relations: highlight.outgoingRelations.map((relation) => ({
-          id: relation.id,
-          predicate: relation.predicate,
-          arc: {
-            id: relation.object.id,
-            hue: relation.object.color,
-            name: relation.object.name,
-          },
-        })),
+        relations: highlight.outgoingRelations
+          .map((relation) =>
+            relation.object.__typename === "Arc"
+              ? {
+                  id: relation.id,
+                  predicate: relation.predicate,
+                  arc: {
+                    id: relation.object.id,
+                    hue: relation.object.color,
+                    name: relation.object.name,
+                  },
+                }
+              : undefined
+          )
+          .filter(Boolean),
         comments: highlight.comments.map((comment) => ({
           id: comment.id,
           day: IpsumDay.fromString(comment.history.dateCreated, "iso"),
           highlight: {
-            id: comment.highlight.id,
-            arcNames: comment.highlight.outgoingRelations.map(
-              (relation) => relation.object.name
-            ),
-            highlightNumber: comment.highlight.number,
-            hue: comment.highlight.hue,
-            objectText: comment.highlight.objectText,
+            id: comment.objectHighlight.id,
+            arcNames: comment.objectHighlight.outgoingRelations
+              .map((relation) =>
+                relation.object.__typename === "Arc"
+                  ? relation.object.name
+                  : undefined
+              )
+              .filter(Boolean),
+            highlightNumber: comment.objectHighlight.number,
+            hue: comment.objectHighlight.hue,
+            objectText: comment.objectHighlight.objectText,
           },
           commentEntry: {
             entryKey: comment.commentEntry.entry.entryKey,
@@ -158,9 +168,13 @@ export const HighlightPageConnected: React.FunctionComponent<
                 highlightId: highlight.id,
                 highlightNumber: highlight.number,
                 hue: highlight.hue,
-                arcNames: highlight.outgoingRelations.map(
-                  (relation) => relation.object.name
-                ),
+                arcNames: highlight.outgoingRelations
+                  .map((relation) =>
+                    relation.object.__typename === "Arc"
+                      ? relation.object.name
+                      : undefined
+                  )
+                  .filter(Boolean),
               })
             ),
             htmlString: comment.commentEntry.entry.htmlString,

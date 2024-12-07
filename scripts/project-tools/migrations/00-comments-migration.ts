@@ -1,5 +1,10 @@
 import { IpsumTimeMachine } from "util/diff";
 
+// 1. Create incomingRelations on highlights
+// 2. Remove all commentEntries
+// 3. On comment, rename "highlight" to "objectHighlight"
+// 4. On comment, add "sourceHighlight"
+
 export default function commentsMigration(data: any) {
   const commentsCopy = { ...data.comments };
 
