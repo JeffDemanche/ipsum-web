@@ -3,7 +3,6 @@ import { NodeEventPlugin } from "@lexical/react/LexicalNodeEventPlugin";
 import { mergeRegister } from "@lexical/utils";
 import {
   $isElementNode,
-  $nodesOfType,
   COMMAND_PRIORITY_NORMAL,
   createCommand,
   LexicalCommand,
@@ -13,6 +12,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { usePrevious } from "util/hooks";
 
 import {
+  $allHighlightAssignmentNodes,
   $isHighlightAssignmentNode,
   applyHighlightAssignment,
   fixHues,
@@ -25,6 +25,9 @@ import {
 interface HighlightAssignmentPluginProps {
   editable?: boolean;
   onHighlightClick?: (highlightId: string) => void;
+
+  /** This highlight ID will wrap the text of the editor no matter what. */
+  wrapWithHighlight?: string;
 
   /**
    * Fired when a highlight has been completely removed from the content
@@ -83,7 +86,7 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
 
   useEffect(() => {
     editor.update(() => {
-      $nodesOfType(HighlightAssignmentNode).forEach((node) => {
+      $allHighlightAssignmentNodes().forEach((node) => {
         fixHues(node.getKey(), highlightHueMap);
       });
     });
@@ -146,7 +149,7 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
               if ($isHighlightAssignmentNode(node)) {
                 const highlightId = node.__attributes.highlightId;
 
-                const allHighlightNodes = $nodesOfType(HighlightAssignmentNode);
+                const allHighlightNodes = $allHighlightAssignmentNodes();
                 const otherNodesWithHighlight = allHighlightNodes.filter(
                   (otherNode) => {
                     return (
@@ -208,7 +211,7 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
           return;
         }
 
-        $nodesOfType(HighlightAssignmentNode)
+        $allHighlightAssignmentNodes()
           .filter((node) => {
             return !payload.highlightIds.includes(
               node.__attributes.highlightId
@@ -218,7 +221,7 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
             node.setDarkened(false);
           });
 
-        $nodesOfType(HighlightAssignmentNode)
+        $allHighlightAssignmentNodes()
           .filter((node) => {
             return payload.highlightIds.includes(node.__attributes.highlightId);
           })

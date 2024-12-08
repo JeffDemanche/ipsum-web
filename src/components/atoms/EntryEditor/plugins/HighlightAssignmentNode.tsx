@@ -1,3 +1,4 @@
+import { $dfs, $filter } from "@lexical/utils";
 import {
   $applyNodeReplacement,
   $createTextNode,
@@ -6,7 +7,6 @@ import {
   $getSelection,
   $isElementNode,
   $isRangeSelection,
-  $nodesOfType,
   $selectAll,
   DOMConversionMap,
   DOMConversionOutput,
@@ -43,6 +43,13 @@ export function $isHighlightAssignmentNode(
   node: LexicalNode | null | undefined
 ): node is HighlightAssignmentNode {
   return node instanceof HighlightAssignmentNode;
+}
+
+export function $allHighlightAssignmentNodes() {
+  return $filter(
+    $dfs().map((result) => result.node),
+    (node) => ($isHighlightAssignmentNode(node) ? node : null)
+  ).filter(Boolean);
 }
 
 function convertHighlightAssignmentElement(
@@ -99,13 +106,13 @@ export function fixHues(nodeKey: string, hueMap: Record<string, number>) {
 }
 
 export function removeHighlightAssignmentFromEditor(highlightId: string) {
-  const highlightAssignmentNodes = $nodesOfType(HighlightAssignmentNode);
+  const highlightNodes = $allHighlightAssignmentNodes();
 
-  if (highlightAssignmentNodes.length === 0) {
+  if (highlightNodes.length === 0) {
     return;
   }
 
-  highlightAssignmentNodes.forEach((node) => {
+  highlightNodes.forEach((node) => {
     if (node.__attributes.highlightId === highlightId) {
       if ($isElementNode(node.getParent())) {
         const children = node.getChildren();
@@ -458,7 +465,7 @@ export class HighlightAssignmentNode extends ElementNode {
   }
 
   static clone(_data: HighlightAssignmentNode): HighlightAssignmentNode {
-    return new HighlightAssignmentNode(_data.__attributes);
+    return new HighlightAssignmentNode(_data.__attributes, _data.__key);
   }
 
   static getType(): string {

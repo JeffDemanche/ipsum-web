@@ -37,6 +37,12 @@ interface EntryEditorProps {
   >;
   maxLines?: number;
 
+  /**
+   * If this highlight ID is supplied, the editor will automatically apply that
+   * highlight to all content within it. Initial use case is comments.
+   */
+  wrapWithHighlight?: string;
+
   /** Return new entry key */
   createEntry?: (htmlString: string) => string;
   updateEntry?: ({
