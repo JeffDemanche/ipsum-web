@@ -9,8 +9,15 @@ export const TestIds = {
   BrowserDrawer: {
     BrowserDrawerOpened: "browser-drawer.browser-drawer-opened",
   },
+  Comments: {
+    Comments: "comments.comments",
+  },
   Entry: {
     HighlightsList: "entry.highlights-list",
+  },
+  EntryEditor: {
+    EntryEditor: "entry-editor.entry-editor",
+    ContentEditable: "entry-editor.content-editable",
   },
   DailyJournal: {
     DailyJournal: "daily-journal.daily-journal",
@@ -22,8 +29,12 @@ export const TestIds = {
     HighlightBlurb: "highlight-blurb.highlight-blurb",
     DeleteButton: "highlight-blurb.delete-button",
   },
+  HighlightPage: {
+    HighlightPage: "highlight-page.highlight-page",
+  },
   HighlightTag: {
     HighlightTag: "highlight-tag.highlight-tag",
+    ObjectTextButton: "highlight-tag.object-text-button",
   },
   FormattingControls: {
     HighlightButton: "formatting-controls.highlight-button",

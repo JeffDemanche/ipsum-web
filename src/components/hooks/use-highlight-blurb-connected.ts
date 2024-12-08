@@ -37,6 +37,7 @@ const UseHighlightBlurbConnectedQuery = gql(`
         id
         predicate
         object {
+          __typename
           ... on Arc {
             id
             name
@@ -75,8 +76,6 @@ export const useHighlightBlurbConnected = ({
   const insertLayer = useUrlAction(urlInsertLayer);
 
   const highlight = data?.highlight;
-
-  console.log(highlight.objectText);
 
   const relationsTableProps = useHighlightRelationsTableConnected({
     highlightId,

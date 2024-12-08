@@ -1,6 +1,7 @@
 import cx from "classnames";
 import React from "react";
 import { IpsumDay } from "util/dates";
+import { TestIds } from "util/test-ids";
 
 import { Entry } from "../Entry";
 import { MonthlyNav } from "../MonthlyNav";
@@ -53,6 +54,14 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
     comment.day.equals(selectedDay)
   );
 
+  const isNew = !selectedComment;
+
+  const entryKey = selectedDay.toString("entry-printed-date");
+
+  const highlights = isNew ? [] : selectedComment.sourceEntry.highlights;
+
+  const htmlString = isNew ? "" : selectedComment.sourceEntry.htmlString;
+
   const entryDays = comments.map((comment) => comment.day);
 
   const onSelectDay = (day: IpsumDay) => {
@@ -60,28 +69,29 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
   };
 
   return (
-    <div className={cx(className, styles["comments"])}>
+    <div
+      data-testid={TestIds.Comments.Comments}
+      className={cx(className, styles["comments"])}
+    >
       <MonthlyNav
         entryDays={entryDays}
         today={today}
         selectedDay={selectedDay}
         onDaySelect={onSelectDay}
       />
-      {selectedComment && (
-        <Entry
-          entryKey={selectedComment.sourceEntry.entryKey}
-          entryDay={selectedDay}
-          editable={editable}
-          highlights={selectedComment.sourceEntry.highlights}
-          htmlString={selectedComment.sourceEntry.htmlString}
-          createEntry={onCreateComment}
-          deleteEntry={onDeleteComment}
-          updateEntry={onUpdateComment}
-          createHighlight={onCreateHighlight}
-          deleteHighlight={onDeleteHighlight}
-          onHighlightClick={onHighlightClick}
-        />
-      )}
+      <Entry
+        entryKey={entryKey}
+        entryDay={selectedDay}
+        editable={editable}
+        highlights={highlights}
+        htmlString={htmlString}
+        createEntry={onCreateComment}
+        deleteEntry={onDeleteComment}
+        updateEntry={onUpdateComment}
+        createHighlight={onCreateHighlight}
+        deleteHighlight={onDeleteHighlight}
+        onHighlightClick={onHighlightClick}
+      />
     </div>
   );
 };

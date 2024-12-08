@@ -18,6 +18,8 @@ export const createJournalEntry: APIFunction<
 
   const dayCreated = args.dayCreated ?? IpsumDay.today();
 
+  if (projectState.collection("journalEntries").get(args.entryKey)) return;
+
   const entry = createEntry(
     {
       dayCreated: args.dayCreated,

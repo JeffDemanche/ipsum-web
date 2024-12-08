@@ -1,7 +1,6 @@
 import { LinkNode } from "@lexical/link";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
@@ -15,6 +14,7 @@ import { LexicalEditor } from "lexical";
 import React, { CSSProperties, useCallback, useState } from "react";
 import { IpsumDateTime } from "util/dates";
 import { placeholderForDate } from "util/placeholders";
+import { TestIds } from "util/test-ids";
 
 import styles from "./EntryEditor.less";
 import { EditableStateChangePlugin } from "./plugins/EditableStateChangePlugin";
@@ -100,6 +100,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
       }}
     >
       <div
+        data-testid={TestIds.EntryEditor.EntryEditor}
         style={lineClampStyle}
         className={cx(
           className,
@@ -117,7 +118,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
           <RichTextPlugin
             contentEditable={
               <ContentEditable
-                data-testid={`editor-${entryKey}`}
+                data-testid={TestIds.EntryEditor.ContentEditable}
                 autoCorrect="off"
                 style={{ outline: "none" }}
               />
