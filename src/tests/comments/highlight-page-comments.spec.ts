@@ -34,5 +34,7 @@ test.describe("Highlight Page Comments", () => {
     );
 
     await contentEditable.fill("This is a comment");
+
+    await page.waitForTimeout(1000);
   });
 });

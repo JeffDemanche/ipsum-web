@@ -43,6 +43,9 @@ const UseHighlightBlurbConnectedQuery = gql(`
             name
             color
           }
+          ... on Highlight {
+            id
+          }
         }
       }
       object {
@@ -52,12 +55,6 @@ const UseHighlightBlurbConnectedQuery = gql(`
         }
         ... on Day {
           day
-        }
-        ... on Comment {
-          id
-          objectHighlight {
-            id
-          }
         }
       }
     }
@@ -148,10 +145,6 @@ export const useHighlightBlurbConnected = ({
           },
         });
         break;
-      case "Comment":
-        insertLayer({
-          layer: { type: "highlight_detail", highlightId, expanded: "true" },
-        });
     }
   };
 
