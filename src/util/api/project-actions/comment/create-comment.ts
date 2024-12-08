@@ -36,30 +36,34 @@ export const createComment: APIFunction<
   const id = args.id ?? uuidv4();
   const dayCreated = args.dayCreated;
 
-  const objectHighlight = projectState
-    .collection("highlights")
-    .get(args.objectHighlight);
-  const objectHighlightEntry = projectState
-    .collection("entries")
-    .get(objectHighlight.entry);
-  const objectHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
-    objectHighlightEntry.trackedHTMLString
-  ).currentValue;
-
   const sourceHighlightEntryKey = dayCreated.toString("entry-printed-date");
 
   if (!projectState.collection("entries").has(sourceHighlightEntryKey)) {
+    // Case where today's journal entry doesn't exist yet. We need to create it.
     createJournalEntry(
-      { dayCreated, entryKey: sourceHighlightEntryKey, htmlString: "" },
+      {
+        dayCreated,
+        entryKey: sourceHighlightEntryKey,
+        htmlString: args.htmlString,
+      },
+      context
+    );
+  } else {
+    // Case where today's journal entry already exists. We need to perform logic
+    // to append the new comment to it.
+    const sourceHighlightEntry = projectState
+      .collection("entries")
+      .get(sourceHighlightEntryKey);
+    const sourceHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
+      sourceHighlightEntry.trackedHTMLString
+    ).currentValue;
+    const appendedHTMLString = `${sourceHighlightEntryCurrentHTML}${args.htmlString}`;
+
+    updateJournalEntry(
+      { entryKey: sourceHighlightEntryKey, htmlString: appendedHTMLString },
       context
     );
   }
-
-  const appendedHTMLString = `${objectHighlightEntryCurrentHTML}${args.htmlString}`;
-  updateJournalEntry(
-    { entryKey: sourceHighlightEntryKey, htmlString: appendedHTMLString },
-    context
-  );
 
   const sourceHighlight = createHighlight(
     { dayCreated, entryKey: sourceHighlightEntryKey },

@@ -36,5 +36,17 @@ test.describe("Highlight Page Comments", () => {
     await contentEditable.fill("This is a comment");
 
     await page.waitForTimeout(1000);
+
+    const dailyJournalEntry = page.getByTestId(
+      TestIds.DailyJournalEntry.DailyJournalEntry
+    );
+
+    const dailyJournalEntryContent = dailyJournalEntry.getByTestId(
+      TestIds.EntryEditor.ContentEditable
+    );
+
+    expect(await dailyJournalEntryContent.textContent()).toContain(
+      "This is a comment"
+    );
   });
 });

@@ -4,6 +4,7 @@ import { MonthlyNav } from "components/molecules/MonthlyNav";
 import { PageHeaderDailyJournal } from "components/molecules/PageHeader";
 import React, { ComponentProps } from "react";
 import { IpsumDay } from "util/dates";
+import { TestIds } from "util/test-ids";
 
 import styles from "./DailyJournalEntry.less";
 
@@ -56,7 +57,10 @@ export const DailyJournalEntry: React.FunctionComponent<
   onHighlightClick,
 }) => {
   return (
-    <div className={styles["daily-journal-page"]}>
+    <div
+      data-testid={TestIds.DailyJournalEntry.DailyJournalEntry}
+      className={styles["daily-journal-page"]}
+    >
       <PageHeaderDailyJournal {...headerProps} />
       <Collapse in={headerProps.expanded} orientation="vertical">
         <div className={styles["daily-journal-page-content"]}>

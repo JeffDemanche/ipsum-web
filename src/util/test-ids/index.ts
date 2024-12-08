@@ -1,3 +1,5 @@
+import { MonthlyNav } from "components/molecules/MonthlyNav";
+
 export const TestIds = {
   ArcPage: {
     ArcPage: "arc-page.arc-page",
@@ -19,11 +21,8 @@ export const TestIds = {
     EntryEditor: "entry-editor.entry-editor",
     ContentEditable: "entry-editor.content-editable",
   },
-  DailyJournal: {
-    DailyJournal: "daily-journal.daily-journal",
-    MonthlyNav: "daily-journal.monthly-nav",
-    MonthlyNavEntryButton: (label: string) =>
-      `daily-journal.monthly-nav-entry-button.${label}`,
+  DailyJournalEntry: {
+    DailyJournalEntry: "daily-journal-entry.daily-journal-entry",
   },
   HighlightBlurb: {
     HighlightBlurb: "highlight-blurb.highlight-blurb",
@@ -38,6 +37,10 @@ export const TestIds = {
   },
   FormattingControls: {
     HighlightButton: "formatting-controls.highlight-button",
+  },
+  MonthlyNav: {
+    MonthlyNav: "monthly-nav.monthly-nav",
+    EntryButton: "monthly-nav.entry-button",
   },
   RelationChooser: {
     RelationChooser: "relation-chooser.relation-chooser",
