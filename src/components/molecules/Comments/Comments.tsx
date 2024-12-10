@@ -17,6 +17,7 @@ interface CommentsProps {
   comments: {
     id: string;
     day: IpsumDay;
+    sourceHighlight: string;
     sourceEntry: {
       entryKey: string;
       highlights: React.ComponentProps<typeof Entry>["highlights"];
@@ -91,6 +92,7 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
         createHighlight={onCreateHighlight}
         deleteHighlight={onDeleteHighlight}
         onHighlightClick={onHighlightClick}
+        wrapWithHighlight={selectedComment?.sourceHighlight}
       />
     </div>
   );

@@ -8,14 +8,19 @@ export const useApiAction = <T, U>(f: APIFunction<T, U>) => {
 
   return [
     (args: T, options?: { autosave?: boolean }) => {
-      const result = f(args, { projectState });
+      try {
+        const result = f(args, { projectState });
 
-      // Autosave by default
-      if (options?.autosave || options?.autosave === undefined) {
-        autosave();
+        // Autosave by default
+        if (options?.autosave || options?.autosave === undefined) {
+          autosave();
+        }
+
+        return result;
+      } catch (e) {
+        console.error(e);
+        return null;
       }
-
-      return result;
     },
   ];
 };

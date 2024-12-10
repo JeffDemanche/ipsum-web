@@ -2,6 +2,7 @@ import { $dfs, $filter } from "@lexical/utils";
 import {
   $applyNodeReplacement,
   $createTextNode,
+  $getEditor,
   $getNodeByKey,
   $getRoot,
   $getSelection,
@@ -26,6 +27,7 @@ export interface HighlightAssignmentNodeAttributes {
 
 export interface ToggleHighlightAssignmentPayload {
   highlightId: string;
+  wholeEditor?: boolean;
 }
 
 export type SerializedHighlightAssignmentNode = Spread<
@@ -221,7 +223,7 @@ export function applyHighlightAssignment(
   }
 
   // Extract "cuts out" the selected nodes, including parent element nodes.
-  const nodes = selection.extract();
+  const nodes = attributes.wholeEditor ? selection.extract() : [$getRoot()];
 
   let prevParent: ElementNode | HighlightAssignmentNode | null = null;
   let highlightAssignmentNode: HighlightAssignmentNode | null = null;

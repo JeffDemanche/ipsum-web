@@ -2,7 +2,7 @@ import { LinkNode } from "@lexical/link";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -64,6 +64,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
   allowHighlighting = true,
   initialHtmlString,
   highlightsMap,
+  wrapWithHighlight,
   maxLines,
   createEntry,
   updateEntry,
@@ -120,6 +121,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
             editable={editable}
             highlightsMap={highlightsMap}
             onHighlightDelete={deleteHighlight}
+            wrapWithHighlight={wrapWithHighlight}
           />
           <RichTextPlugin
             contentEditable={

@@ -1,18 +1,28 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { NodeEventPlugin } from "@lexical/react/LexicalNodeEventPlugin";
-import { mergeRegister } from "@lexical/utils";
 import {
+  $dfs,
+  $filter,
+  $wrapNodeInElement,
+  mergeRegister,
+} from "@lexical/utils";
+import {
+  $getRoot,
+  $hasAncestor,
   $isElementNode,
+  $isTextNode,
   COMMAND_PRIORITY_NORMAL,
   createCommand,
   LexicalCommand,
   LexicalEditor,
+  LexicalNode,
 } from "lexical";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { usePrevious } from "util/hooks";
 
 import {
   $allHighlightAssignmentNodes,
+  $createHighlightAssignmentNode,
   $isHighlightAssignmentNode,
   applyHighlightAssignment,
   fixHues,
@@ -53,7 +63,13 @@ export const DARKEN_HIGHLIGHT_COMMAND: LexicalCommand<{
 
 export const HighlightAssignmentPlugin: React.FunctionComponent<
   HighlightAssignmentPluginProps
-> = ({ editable, onHighlightClick, onHighlightDelete, highlightsMap }) => {
+> = ({
+  editable,
+  wrapWithHighlight,
+  onHighlightClick,
+  onHighlightDelete,
+  highlightsMap,
+}) => {
   const [editor] = useLexicalComposerContext();
 
   const highlightIds = Object.keys(highlightsMap ?? {});
@@ -234,6 +250,42 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
       COMMAND_PRIORITY_NORMAL
     );
   });
+
+  useEffect(() => {
+    return editor.registerUpdateListener(({ editorState }) => {
+      // Goal here is to find all nodes not under the highlight node with id
+      // `wrapWithHighlight` and wrap them in that highlight node.
+      if (wrapWithHighlight) {
+        editor.update(() => {
+          const allNodes = $dfs().map(({ node }) => node);
+          const underHighlight: LexicalNode[] = [];
+          allNodes.forEach((node) => {
+            if (
+              (node &&
+                $isHighlightAssignmentNode(node) &&
+                node.getAttributes().highlightId === wrapWithHighlight) ||
+              underHighlight.some((under) => $hasAncestor(node, under))
+            ) {
+              underHighlight.push(node);
+            }
+          });
+          const notUnderHighlight = allNodes.filter(
+            (node) => !underHighlight.includes(node)
+          );
+          notUnderHighlight.forEach((node) => {
+            if ($isTextNode(node)) {
+              $wrapNodeInElement(node, () =>
+                $createHighlightAssignmentNode({
+                  highlightId: wrapWithHighlight,
+                  hue: 0,
+                })
+              );
+            }
+          });
+        });
+      }
+    });
+  }, [wrapWithHighlight, editor]);
 
   // useEffect(() => {
   //   return editor.update(() => {

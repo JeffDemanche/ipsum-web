@@ -33,6 +33,22 @@ export const createComment: APIFunction<
     );
   }
 
+  const otherCommentsOnHighlightOnDay = Object.values(
+    projectState
+      .collection("comments")
+      .getAllByField("objectHighlight", args.objectHighlight)
+  ).filter((comment) =>
+    IpsumDay.fromString(comment.history.dateCreated, "iso").equals(
+      args.dayCreated
+    )
+  );
+
+  if (otherCommentsOnHighlightOnDay.length > 0) {
+    throw new Error(
+      `A comment already exists on highlight ${args.objectHighlight} for day ${args.dayCreated.toString("entry-printed-date")}`
+    );
+  }
+
   const id = args.id ?? uuidv4();
   const dayCreated = args.dayCreated;
 
