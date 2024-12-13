@@ -8,6 +8,7 @@ import { TestIds } from "util/test-ids";
 import styles from "./Entry.less";
 
 interface EntryProps {
+  editorNamespace: string;
   entryKey?: string;
   entryDay?: IpsumDay;
   highlights: {
@@ -38,6 +39,7 @@ interface EntryProps {
 }
 
 export const Entry: React.FunctionComponent<EntryProps> = ({
+  editorNamespace,
   entryKey,
   entryDay,
   highlights,
@@ -91,6 +93,7 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
         </div>
       )}
       <EntryEditor
+        editorNamespace={editorNamespace}
         defaultEntryKey={entryKey}
         className={styles["entry-ipsum-editor"]}
         editable={editable}

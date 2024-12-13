@@ -71,6 +71,7 @@ export const DailyJournalEntry: React.FunctionComponent<
             onDaySelect={onDaySelect}
           />
           <Entry
+            editorNamespace={`daily-journal-${selectedDay.toString("stored-day")}`}
             entryKey={selectedDay.toString("stored-day")}
             entryDay={selectedDay}
             highlights={highlights}

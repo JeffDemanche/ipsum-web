@@ -33,6 +33,7 @@ export const HighlightPageExample: StoryHighlightPage = {
         {
           id: "comment1",
           day: IpsumDay.fromString("1/1/2020"),
+          sourceHighlight: "source highlight 1",
           sourceEntry: {
             entryKey: "comment-entry:comment1",
             htmlString: "<p>Comment 1</p>",
@@ -42,6 +43,7 @@ export const HighlightPageExample: StoryHighlightPage = {
         {
           id: "comment2",
           day: IpsumDay.fromString("12/14/2019"),
+          sourceHighlight: "source highlight 1",
           sourceEntry: {
             entryKey: "comment-entry:comment2",
             htmlString:

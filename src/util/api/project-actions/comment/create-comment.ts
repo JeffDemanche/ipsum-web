@@ -13,6 +13,7 @@ import { APIFunction } from "../types";
 export const createComment: APIFunction<
   {
     id?: string;
+    highlightId?: string;
     dayCreated: IpsumDay;
     objectHighlight: string;
     htmlString: string;
@@ -82,7 +83,11 @@ export const createComment: APIFunction<
   }
 
   const sourceHighlight = createHighlight(
-    { dayCreated, entryKey: sourceHighlightEntryKey },
+    {
+      id: args.highlightId ?? uuidv4(),
+      dayCreated,
+      entryKey: sourceHighlightEntryKey,
+    },
     context
   );
 

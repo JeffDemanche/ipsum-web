@@ -71,6 +71,7 @@ export const ArcPage: FunctionComponent<ArcPageProps> = ({
                     elevated: true,
                     component: (
                       <ArcPageSectionAbout
+                        arcId={arc.id}
                         highlights={arcEntry.highlights}
                         htmlString={arcEntry.htmlString}
                       />

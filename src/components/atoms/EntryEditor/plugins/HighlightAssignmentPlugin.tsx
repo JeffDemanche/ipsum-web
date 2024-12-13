@@ -253,10 +253,10 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
 
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
-      // Goal here is to find all nodes not under the highlight node with id
-      // `wrapWithHighlight` and wrap them in that highlight node.
-      if (wrapWithHighlight) {
-        editor.update(() => {
+      editor.update(() => {
+        // Goal here is to find all nodes not under the highlight node with id
+        // `wrapWithHighlight` and wrap them in that highlight node.
+        if (wrapWithHighlight) {
           const allNodes = $dfs().map(({ node }) => node);
           const underHighlight: LexicalNode[] = [];
           allNodes.forEach((node) => {
@@ -282,10 +282,10 @@ export const HighlightAssignmentPlugin: React.FunctionComponent<
               );
             }
           });
-        });
-      }
+        }
+      });
     });
-  }, [wrapWithHighlight, editor]);
+  });
 
   // useEffect(() => {
   //   return editor.update(() => {

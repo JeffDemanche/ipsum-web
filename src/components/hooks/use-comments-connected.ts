@@ -1,9 +1,15 @@
 import { useQuery } from "@apollo/client";
 import { Comments } from "components/molecules/Comments";
-import { useState } from "react";
-import { apiCreateComment, useApiAction } from "util/api";
+import { useMemo, useState } from "react";
+import {
+  apiCreateComment,
+  apiUpdateJournalEntry,
+  useApiAction,
+} from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
+import { replaceHighlightHtmlWith } from "util/excerpt";
+import { v4 as uuidv4 } from "uuid";
 
 export type CommentsConnectedProps = Pick<
   React.ComponentProps<typeof Comments>,
@@ -11,6 +17,7 @@ export type CommentsConnectedProps = Pick<
   | "selectedDay"
   | "setSelectedDay"
   | "comments"
+  | "pregeneratedHighlightId"
   | "onCreateComment"
   | "onUpdateComment"
   | "onDeleteComment"
@@ -96,8 +103,14 @@ export const useCommentsConnected = ({
 
   const [createComment] = useApiAction(apiCreateComment);
 
+  const [updateEntry] = useApiAction(apiUpdateJournalEntry);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const pregeneratedHighlightId = useMemo(() => uuidv4(), [selectedDay]);
+
   const onCreateComment = (htmlString: string) => {
     const newComment = createComment({
+      highlightId: pregeneratedHighlightId,
       dayCreated: selectedDay,
       htmlString,
       objectHighlight: highlightId,
@@ -105,14 +118,37 @@ export const useCommentsConnected = ({
     return newComment.sourceEntry;
   };
 
+  const selectedComment = comments.find((comment) =>
+    comment.day.equals(selectedDay)
+  );
+
+  const onUpdateComment = ({
+    entryKey,
+    htmlString,
+  }: {
+    entryKey: string;
+    htmlString: string;
+  }) => {
+    if (!selectedComment) return;
+
+    return updateEntry({
+      entryKey,
+      htmlString: replaceHighlightHtmlWith(
+        selectedComment.sourceEntry.htmlString,
+        htmlString,
+        highlightId
+      ),
+    });
+  };
+
   return {
     today,
     selectedDay,
     setSelectedDay,
     comments: comments ?? [],
+    pregeneratedHighlightId,
     onCreateComment,
-    onUpdateComment: () =>
-      comments.some((comment) => comment.day.equals(selectedDay)),
+    onUpdateComment,
     onDeleteComment: () => true,
     onCreateHighlight: () => "",
     onDeleteHighlight: () => false,

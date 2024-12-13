@@ -24,6 +24,7 @@ import { HighlightAssignmentNode } from "./plugins/HighlightAssignmentNode";
 import { HighlightAssignmentPlugin } from "./plugins/HighlightAssignmentPlugin";
 
 interface EntryEditorProps {
+  editorNamespace: string;
   defaultEntryKey?: string;
   editable?: boolean;
   allowHighlighting?: boolean;
@@ -59,6 +60,7 @@ interface EntryEditorProps {
 }
 
 export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
+  editorNamespace,
   defaultEntryKey,
   editable = true,
   allowHighlighting = true,
@@ -92,7 +94,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
     <LexicalComposer
       initialConfig={{
         theme: editorTheme,
-        namespace: entryKey,
+        namespace: editorNamespace,
         onError,
         editable,
         nodes: [

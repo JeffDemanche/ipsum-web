@@ -48,3 +48,31 @@ export const excerptDivString = ({
 
   return truncatedDiv.outerHTML;
 };
+
+export const replaceHighlightHtmlWith = (
+  originalHtmlString: string,
+  replaceWithHtmlString: string,
+  highlightId: string
+) => {
+  const div = document.createElement("div");
+  div.innerHTML = originalHtmlString;
+
+  div
+    .querySelectorAll(`[data-highlight-id="${highlightId}"]`)
+    .forEach((el, i) => {
+      let elHighestAncestor = el;
+
+      // Avoid the top level div
+      while (elHighestAncestor.parentElement.parentElement) {
+        elHighestAncestor = elHighestAncestor.parentElement;
+      }
+
+      if (i === 0) {
+        elHighestAncestor.outerHTML = replaceWithHtmlString;
+      } else {
+        elHighestAncestor.remove();
+      }
+    });
+
+  return div.innerHTML;
+};
