@@ -36,7 +36,7 @@ export { updateArcEntry as apiUpdateArcEntry } from "./entry/update-arc-entry";
 export { createHighlight as apiCreateHighlight } from "./highlight/create-highlight";
 export { createRelationFromHighlightToArc as apiCreateRelationFromHighlightToArc } from "./relation/create-relation-from-highlight-to-arc";
 export { createRelationFromArcToArc as apiCreateRelationFromArcToArc } from "./relation/create-relation-from-arc-to-arc";
-export { createRelationFromHighlightToHighlight as apiCreateRelationFromHighlightToHighlight } from "./relation/create-relation-from-highlight-to-highlight";
+export { createRelationFromCommentToHighlight as apiCreateRelationFromCommentToHighlight } from "./relation/create-relation-from-comment-to-highlight";
 
 export { deleteHighlight as apiDeleteHighlight } from "./highlight/delete-highlight";
 export { deleteRelationFromHighlightToArc as apiDeleteRelationFromHighlightToArc } from "./relation/delete-relation-from-highlight-to-arc";

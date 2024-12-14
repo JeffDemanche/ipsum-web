@@ -112,7 +112,11 @@ export const SerializedSchema = t.type(
         {
           __typename: t.literal("Relation"),
           id: t.string,
-          subjectType: t.union([t.literal("Arc"), t.literal("Highlight")]),
+          subjectType: t.union([
+            t.literal("Arc"),
+            t.literal("Highlight"),
+            t.literal("Comment"),
+          ]),
           subject: t.string,
           predicate: t.string,
           objectType: t.union([t.literal("Arc"), t.literal("Highlight")]),
@@ -131,7 +135,7 @@ export const SerializedSchema = t.type(
           parent: t.union([t.string, t.null]),
           history: HistorySchema,
           sourceEntry: t.string,
-          sourceHighlight: t.string,
+          outgoingRelations: t.array(t.string),
           objectHighlight: t.string,
         },
         "comment"

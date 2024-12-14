@@ -40,16 +40,11 @@ describe("API comment actions", () => {
         { projectState: state }
       );
 
-      const sourceHighlight = state
-        .collection("highlights")
-        .get(comment.sourceHighlight);
+      const sourceEntryKey = comment.sourceEntry;
+      const sourceEntry = state.collection("entries").get(sourceEntryKey);
 
-      const sourceHighlightEntry = state
-        .collection("entries")
-        .get(sourceHighlight.entry);
-
-      const sourceHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
-        sourceHighlightEntry.trackedHTMLString
+      const sourceEntryCurrentHTML = IpsumTimeMachine.fromString(
+        sourceEntry.trackedHTMLString
       ).currentValue;
 
       objectHighlight = state.collection("highlights").get(objectHighlight.id);
@@ -69,14 +64,16 @@ describe("API comment actions", () => {
       );
       expect(objectHighlight.incomingRelations).toEqual([relation.id]);
 
-      expect(sourceHighlight.outgoingRelations).toEqual([relation.id]);
+      expect(comment.outgoingRelations).toEqual([relation.id]);
 
-      expect(sourceHighlightEntry).toBeDefined();
-      expect(sourceHighlightEntry.entryKey).toEqual(
+      expect(sourceEntry).toBeDefined();
+      expect(sourceEntry.entryKey).toEqual(
         dayCreated.toString("entry-printed-date")
       );
-      expect(sourceHighlightEntry.entryType).toEqual("JOURNAL");
-      expect(sourceHighlightEntryCurrentHTML).toEqual("<div>hello world</div>");
+      expect(sourceEntry.entryType).toEqual("JOURNAL");
+      expect(sourceEntryCurrentHTML).toEqual(
+        `<div data-comment-id="${comment.id}"><div>hello world</div></div>`
+      );
     });
 
     it("if the entry for the day created exists, should append HTML string to existing entry", () => {
@@ -110,20 +107,14 @@ describe("API comment actions", () => {
         { projectState: state }
       );
 
-      const sourceHighlight = state
-        .collection("highlights")
-        .get(comment.sourceHighlight);
-
-      const sourceHighlightEntry = state
-        .collection("entries")
-        .get(sourceHighlight.entry);
+      const sourceEntry = state.collection("entries").get(comment.sourceEntry);
 
       const sourceHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
-        sourceHighlightEntry.trackedHTMLString
+        sourceEntry.trackedHTMLString
       ).currentValue;
 
       expect(sourceHighlightEntryCurrentHTML).toEqual(
-        "<div>hello world</div><div>goodbye world</div>"
+        `<div>hello world</div><div data-comment-id="${comment.id}"><div>goodbye world</div></div>`
       );
     });
   });

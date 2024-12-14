@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Comments } from "components/molecules/Comments";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   apiCreateComment,
   apiUpdateJournalEntry,
@@ -8,8 +8,7 @@ import {
 } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { replaceHighlightHtmlWith } from "util/excerpt";
-import { v4 as uuidv4 } from "uuid";
+import { replaceCommentDiv } from "util/excerpt";
 
 export type CommentsConnectedProps = Pick<
   React.ComponentProps<typeof Comments>,
@@ -17,7 +16,6 @@ export type CommentsConnectedProps = Pick<
   | "selectedDay"
   | "setSelectedDay"
   | "comments"
-  | "pregeneratedHighlightId"
   | "onCreateComment"
   | "onUpdateComment"
   | "onDeleteComment"
@@ -105,12 +103,8 @@ export const useCommentsConnected = ({
 
   const [updateEntry] = useApiAction(apiUpdateJournalEntry);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const pregeneratedHighlightId = useMemo(() => uuidv4(), [selectedDay]);
-
   const onCreateComment = (htmlString: string) => {
     const newComment = createComment({
-      highlightId: pregeneratedHighlightId,
       dayCreated: selectedDay,
       htmlString,
       objectHighlight: highlightId,
@@ -133,10 +127,10 @@ export const useCommentsConnected = ({
 
     return updateEntry({
       entryKey,
-      htmlString: replaceHighlightHtmlWith(
+      htmlString: replaceCommentDiv(
         selectedComment.sourceEntry.htmlString,
         htmlString,
-        highlightId
+        selectedComment.id
       ),
     });
   };
@@ -146,7 +140,6 @@ export const useCommentsConnected = ({
     selectedDay,
     setSelectedDay,
     comments: comments ?? [],
-    pregeneratedHighlightId,
     onCreateComment,
     onUpdateComment,
     onDeleteComment: () => true,

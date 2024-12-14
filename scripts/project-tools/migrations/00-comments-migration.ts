@@ -3,7 +3,7 @@ import { IpsumTimeMachine } from "util/diff";
 // 1. Create incomingRelations on highlights
 // 2. Remove all commentEntries
 // 3. On comment, rename "highlight" to "objectHighlight"
-// 4. On comment, add "sourceHighlight"
+// 4. On comment, add "outgoingRelations"
 // 5. On comment, remove "commentEntry"
 // 6. On comment, add "sourceEntry"
 

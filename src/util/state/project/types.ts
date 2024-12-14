@@ -66,7 +66,7 @@ export interface InMemoryHighlight {
 export interface InMemoryRelation {
   __typename: "Relation";
   id: string;
-  subjectType: "Arc" | "Highlight";
+  subjectType: "Arc" | "Highlight" | "Comment";
   subject: string;
   predicate: string;
   objectType: "Arc" | "Highlight";
@@ -88,7 +88,7 @@ export interface InMemoryComment {
   id: string;
   parent: string | null;
   objectHighlight: string;
-  sourceHighlight: string;
+  outgoingRelations: string[];
   sourceEntry: string;
   history: InMemoryHistory;
 }

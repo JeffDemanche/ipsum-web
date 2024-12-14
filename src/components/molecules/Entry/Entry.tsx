@@ -21,7 +21,6 @@ interface EntryProps {
   htmlString?: string;
   maxLines?: number;
   showHighlights?: boolean;
-  wrapWithHighlight?: string;
 
   createEntry?: (htmlString: string) => string;
   updateEntry?: ({
@@ -53,7 +52,6 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
   createHighlight,
   deleteHighlight,
   onHighlightClick,
-  wrapWithHighlight,
 }) => {
   const highlightsMarkup = highlights.map((highlight) => (
     <HighlightTag
@@ -105,7 +103,6 @@ export const Entry: React.FunctionComponent<EntryProps> = ({
         deleteEntry={deleteEntry}
         createHighlight={createHighlight}
         deleteHighlight={deleteHighlight}
-        wrapWithHighlight={wrapWithHighlight}
       />
     </div>
   );

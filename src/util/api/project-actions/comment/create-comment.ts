@@ -1,19 +1,18 @@
 import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
+import { wrapWithCommentDiv } from "util/excerpt";
 import { InMemoryComment } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { updateDay } from "../day/update-day";
 import { createJournalEntry } from "../entry/create-journal-entry";
 import { updateJournalEntry } from "../entry/update-journal-entry";
-import { createHighlight } from "../highlight/create-highlight";
-import { createRelationFromHighlightToHighlight } from "../relation/create-relation-from-highlight-to-highlight";
+import { createRelationFromCommentToHighlight } from "../relation/create-relation-from-comment-to-highlight";
 import { APIFunction } from "../types";
 
 export const createComment: APIFunction<
   {
     id?: string;
-    highlightId?: string;
     dayCreated: IpsumDay;
     objectHighlight: string;
     htmlString: string;
@@ -55,13 +54,17 @@ export const createComment: APIFunction<
 
   const sourceHighlightEntryKey = dayCreated.toString("entry-printed-date");
 
+  const commentWrappedHTMLString = wrapWithCommentDiv(args.htmlString, {
+    commentId: id,
+  });
+
   if (!projectState.collection("entries").has(sourceHighlightEntryKey)) {
     // Case where today's journal entry doesn't exist yet. We need to create it.
     createJournalEntry(
       {
         dayCreated,
         entryKey: sourceHighlightEntryKey,
-        htmlString: args.htmlString,
+        htmlString: commentWrappedHTMLString,
       },
       context
     );
@@ -74,7 +77,7 @@ export const createComment: APIFunction<
     const sourceHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
       sourceHighlightEntry.trackedHTMLString
     ).currentValue;
-    const appendedHTMLString = `${sourceHighlightEntryCurrentHTML}${args.htmlString}`;
+    const appendedHTMLString = `${sourceHighlightEntryCurrentHTML}${commentWrappedHTMLString}`;
 
     updateJournalEntry(
       { entryKey: sourceHighlightEntryKey, htmlString: appendedHTMLString },
@@ -82,18 +85,22 @@ export const createComment: APIFunction<
     );
   }
 
-  const sourceHighlight = createHighlight(
-    {
-      id: args.highlightId ?? uuidv4(),
-      dayCreated,
-      entryKey: sourceHighlightEntryKey,
+  const comment = projectState.collection("comments").create(id, {
+    __typename: "Comment",
+    id,
+    sourceEntry: sourceHighlightEntryKey,
+    objectHighlight: args.objectHighlight,
+    outgoingRelations: [],
+    parent: null,
+    history: {
+      __typename: "History",
+      dateCreated: dayCreated.toString("iso"),
     },
-    context
-  );
+  });
 
-  createRelationFromHighlightToHighlight(
+  createRelationFromCommentToHighlight(
     {
-      subject: sourceHighlight.id,
+      subject: id,
       object: args.objectHighlight,
       predicate: "responds to",
     },
@@ -107,19 +114,6 @@ export const createComment: APIFunction<
       comments: [...highlight.comments, id],
     }));
 
-  const comment = projectState.collection("comments").create(id, {
-    __typename: "Comment",
-    id,
-    sourceEntry: sourceHighlightEntryKey,
-    objectHighlight: args.objectHighlight,
-    sourceHighlight: sourceHighlight.id,
-    parent: null,
-    history: {
-      __typename: "History",
-      dateCreated: dayCreated.toString("iso"),
-    },
-  });
-
   updateDay(
     {
       day: dayCreated,
@@ -129,5 +123,5 @@ export const createComment: APIFunction<
     context
   );
 
-  return comment;
+  return projectState.collection("comments").get(comment.id);
 };

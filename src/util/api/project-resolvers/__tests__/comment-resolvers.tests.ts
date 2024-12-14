@@ -66,7 +66,7 @@ describe("Comment resolvers", () => {
       expect(result.comment.id).toEqual(comment.id);
       expect(result.comment.sourceEntry.entry.entryKey).toEqual("1/6/2020");
       expect(result.comment.sourceEntry.entry.htmlString).toEqual(
-        "<div>hello world</div><div>goodbye world</div>"
+        `<div data-comment-id="${result.comment.id}"><div>goodbye world</div></div>`
       );
     });
 
@@ -126,12 +126,12 @@ describe("Comment resolvers", () => {
       expect(result.comments[0].id).toEqual(comment1.id);
       expect(result.comments[0].sourceEntry.entry.entryKey).toEqual("1/6/2020");
       expect(result.comments[0].sourceEntry.entry.htmlString).toEqual(
-        "<p>unrelated journal content</p><p>comment 1</p>"
+        `<div data-comment-id="${comment1.id}"><p>comment 1</p></div>`
       );
       expect(result.comments[1].id).toEqual(comment2.id);
       expect(result.comments[1].sourceEntry.entry.entryKey).toEqual("1/7/2020");
       expect(result.comments[1].sourceEntry.entry.htmlString).toEqual(
-        "<p>unrelated journal content</p><p>comment 2</p>"
+        `<div data-comment-id="${comment2.id}"><p>comment 2</p></div>`
       );
     });
   });

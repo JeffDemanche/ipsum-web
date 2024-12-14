@@ -302,7 +302,7 @@ export type Relation = {
 
 export type RelationObject = Arc | Highlight;
 
-export type RelationSubject = Arc | Highlight;
+export type RelationSubject = Arc | Comment | Highlight;
 
 export type SrsCard = {
   __typename?: 'SRSCard';

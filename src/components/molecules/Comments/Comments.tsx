@@ -25,7 +25,6 @@ interface CommentsProps {
     };
   }[];
 
-  pregeneratedHighlightId: string;
   onCreateComment: (htmlString: string) => string;
   onUpdateComment: (args: { entryKey: string; htmlString: string }) => boolean;
   onDeleteComment: (entryKey: string) => void;
@@ -41,7 +40,6 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
   selectedDay,
   setSelectedDay,
   comments,
-  pregeneratedHighlightId,
   onCreateComment,
   onUpdateComment,
   onDeleteComment,
@@ -95,9 +93,6 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
         createHighlight={onCreateHighlight}
         deleteHighlight={onDeleteHighlight}
         onHighlightClick={onHighlightClick}
-        wrapWithHighlight={
-          selectedComment?.sourceHighlight ?? pregeneratedHighlightId
-        }
       />
     </div>
   );

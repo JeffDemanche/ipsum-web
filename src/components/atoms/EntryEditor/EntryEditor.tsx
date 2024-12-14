@@ -22,6 +22,8 @@ import { EntryStatePlugin } from "./plugins/EntryStatePlugin";
 import { FormattingPlugin } from "./plugins/FormattingPlugin";
 import { HighlightAssignmentNode } from "./plugins/HighlightAssignmentNode";
 import { HighlightAssignmentPlugin } from "./plugins/HighlightAssignmentPlugin";
+import { IpsumCommentNode } from "./plugins/IpsumCommentNode";
+import { IpsumCommentPlugin } from "./plugins/IpsumCommentPlugin";
 
 interface EntryEditorProps {
   editorNamespace: string;
@@ -37,12 +39,6 @@ interface EntryEditorProps {
     }
   >;
   maxLines?: number;
-
-  /**
-   * If this highlight ID is supplied, the editor will automatically apply that
-   * highlight to all content within it. Initial use case is comments.
-   */
-  wrapWithHighlight?: string;
 
   /** Return new entry key */
   createEntry?: (htmlString: string) => string;
@@ -66,7 +62,6 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
   allowHighlighting = true,
   initialHtmlString,
   highlightsMap,
-  wrapWithHighlight,
   maxLines,
   createEntry,
   updateEntry,
@@ -105,6 +100,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
           QuoteNode,
           LinkNode,
           HighlightAssignmentNode,
+          IpsumCommentNode,
         ],
       }}
     >
@@ -123,8 +119,8 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
             editable={editable}
             highlightsMap={highlightsMap}
             onHighlightDelete={deleteHighlight}
-            wrapWithHighlight={wrapWithHighlight}
           />
+          <IpsumCommentPlugin editable={editable} />
           <RichTextPlugin
             contentEditable={
               <ContentEditable

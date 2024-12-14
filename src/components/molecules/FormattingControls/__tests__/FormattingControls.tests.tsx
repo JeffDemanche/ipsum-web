@@ -10,7 +10,7 @@ const WithEditor = () => {
   return (
     <FormattingControlsProvider>
       <FormattingControls />
-      <EntryEditor />
+      <EntryEditor editorNamespace="test" />
     </FormattingControlsProvider>
   );
 };
@@ -35,6 +35,7 @@ describe("FormattingControls", () => {
         <FormattingControlsProvider>
           <FormattingControls />
           <EntryEditor
+            editorNamespace="test"
             // Lexical is buggy in the RTL environment unless you give the editor some initial content
             initialHtmlString="<p>It is written:</p>"
             highlightsMap={highlightsMap}

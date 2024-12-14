@@ -6,7 +6,7 @@ export const relationTypeDef = gql`
     relations(ids: [ID!]): [Relation]
   }
 
-  union RelationSubject = Arc | Highlight
+  union RelationSubject = Arc | Highlight | Comment
 
   union RelationObject = Arc | Highlight
 

@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { APIFunction } from "../types";
 
-export const createRelationFromHighlightToHighlight: APIFunction<
+export const createRelationFromCommentToHighlight: APIFunction<
   { id?: string; predicate: "responds to"; subject: string; object: string },
   InMemoryRelation
 > = (args, context) => {
@@ -11,9 +11,9 @@ export const createRelationFromHighlightToHighlight: APIFunction<
 
   const id = args.id ?? uuidv4();
 
-  if (!projectState.collection("highlights").has(args.subject)) {
+  if (!projectState.collection("comments").has(args.subject)) {
     throw new Error(
-      `No highlight with id ${args.subject} exists in the project state`
+      `No comment with id ${args.subject} exists in the project state`
     );
   }
 
@@ -27,14 +27,14 @@ export const createRelationFromHighlightToHighlight: APIFunction<
     __typename: "Relation",
     id,
     predicate: args.predicate,
-    subjectType: "Highlight",
+    subjectType: "Comment",
     subject: args.subject,
     objectType: "Highlight",
     object: args.object,
   });
 
   projectState
-    .collection("highlights")
+    .collection("comments")
     .mutate(args.subject, ({ outgoingRelations }) => ({
       outgoingRelations: [...outgoingRelations, relation.id],
     }));

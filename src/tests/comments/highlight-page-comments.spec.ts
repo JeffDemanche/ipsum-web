@@ -45,8 +45,11 @@ test.describe("Highlight Page Comments", () => {
       TestIds.EntryEditor.ContentEditable
     );
 
-    expect(await dailyJournalEntryContent.textContent()).toContain(
-      "This is a comment"
-    );
+    const commentNode = await dailyJournalEntryContent
+      .locator("[data-comment-id]")
+      .all();
+
+    expect(commentNode).toHaveLength(1);
+    expect((await commentNode[0].innerText()).trim()).toBe("This is a comment");
   });
 });
