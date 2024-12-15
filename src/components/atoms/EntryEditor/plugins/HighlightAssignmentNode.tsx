@@ -27,7 +27,6 @@ export interface HighlightAssignmentNodeAttributes {
 
 export interface ToggleHighlightAssignmentPayload {
   highlightId: string;
-  wholeEditor?: boolean;
 }
 
 export type SerializedHighlightAssignmentNode = Spread<
@@ -223,7 +222,7 @@ export function applyHighlightAssignment(
   }
 
   // Extract "cuts out" the selected nodes, including parent element nodes.
-  const nodes = attributes.wholeEditor ? selection.extract() : [$getRoot()];
+  const nodes = selection.extract();
 
   let prevParent: ElementNode | HighlightAssignmentNode | null = null;
   let highlightAssignmentNode: HighlightAssignmentNode | null = null;
