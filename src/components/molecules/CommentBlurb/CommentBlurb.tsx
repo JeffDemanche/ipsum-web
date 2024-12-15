@@ -91,6 +91,7 @@ export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
           )}
         </div>
         <Entry
+          editorNamespace="comment"
           editable={false}
           showHighlights={expanded}
           maxLines={expanded ? 0 : maxLines ?? 3}

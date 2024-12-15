@@ -33,7 +33,7 @@ export class ProjectCollection<T> {
     return obj;
   }
 
-  getAllByField(key: keyof T, value: T): Record<string, T> {
+  getAllByField<K extends keyof T>(key: K, value: T[K]): Record<string, T> {
     // This is where we could add indexing to improve performance
     return Object.entries(this.getAll())
       .filter(([, v]) => v[key] === value)

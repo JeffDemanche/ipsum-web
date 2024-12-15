@@ -18,23 +18,27 @@ export const SearchResolvers: StrictTypedTypePolicies = {
           PROJECT_STATE.collection("highlights").getAll()
         ).map((highlight): FilterableHighlight => {
           const filterableOutgoingRelations: FilterableOutgoingRelation[] =
-            highlight.outgoingRelations.map((relation) => {
-              const relationObj =
-                PROJECT_STATE.collection("relations").get(relation);
+            highlight.outgoingRelations
+              .map((relation) => {
+                const relationObj =
+                  PROJECT_STATE.collection("relations").get(relation);
 
-              const arcName =
-                relationObj.objectType === "Arc"
-                  ? PROJECT_STATE.collection("arcs").get(relationObj.object)
-                      .name
-                  : "";
+                if (relationObj.objectType !== "Arc") {
+                  return undefined;
+                }
 
-              return {
-                objectId: relationObj.object,
-                objectType: relationObj.objectType,
-                predicate: relationObj.predicate,
-                objectName: arcName,
-              };
-            });
+                const arcName = PROJECT_STATE.collection("arcs").get(
+                  relationObj.object
+                ).name;
+
+                return {
+                  objectId: relationObj.object,
+                  objectType: relationObj.objectType,
+                  predicate: relationObj.predicate,
+                  objectName: arcName,
+                };
+              })
+              .filter(Boolean);
 
           const highlightSRSCard =
             PROJECT_STATE.collection("srsCards").get(highlight.srsCard) ?? null;

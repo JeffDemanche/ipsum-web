@@ -15,6 +15,7 @@ export const WithEditor: React.FunctionComponent = () => {
     <FormattingControlsProvider>
       <FormattingControls />
       <EntryEditor
+        editorNamespace="test"
         highlightsMap={highlightsMap}
         createHighlight={() => {
           const id = uuidv4();

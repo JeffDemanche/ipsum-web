@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { getCurrentLocalDateTime, IpsumDateTime } from "util/dates";
 import { TestIds } from "util/test-ids";
 
 test.beforeEach(async ({ page }) => {
@@ -13,11 +12,9 @@ test.describe("Daily Journal Highlight", () => {
     const paragraphText =
       "Tonight, under the serene glow of the full moon, I sit by the riverbank, feeling the soft caress of the cool breeze. The murmurs of the flowing water create a symphony that resonates with the depths of my soul. It has been a day of profound contemplation, one that has stirred the depths of my being and ignited within me a thirst for knowledge and understanding.";
 
-    const todayEntryKey = new IpsumDateTime(getCurrentLocalDateTime()).toString(
-      "entry-printed-date"
+    const contentEditable = await page.getByTestId(
+      TestIds.EntryEditor.ContentEditable
     );
-
-    const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
 
     await contentEditable.fill(paragraphText);
 
@@ -50,11 +47,9 @@ test.describe("Daily Journal Highlight", () => {
     const paragraphText =
       "Tonight, under the serene glow of the full moon, I sit by the riverbank, feeling the soft caress of the cool breeze. The murmurs of the flowing water create a symphony that resonates with the depths of my soul. It has been a day of profound contemplation, one that has stirred the depths of my being and ignited within me a thirst for knowledge and understanding.";
 
-    const todayEntryKey = new IpsumDateTime(getCurrentLocalDateTime()).toString(
-      "entry-printed-date"
+    const contentEditable = await page.getByTestId(
+      TestIds.EntryEditor.ContentEditable
     );
-
-    const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
 
     await contentEditable.fill(paragraphText);
 

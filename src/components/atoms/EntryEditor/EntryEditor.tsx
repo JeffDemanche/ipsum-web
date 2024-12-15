@@ -1,9 +1,8 @@
 import { LinkNode } from "@lexical/link";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -15,6 +14,7 @@ import { LexicalEditor } from "lexical";
 import React, { CSSProperties, useCallback, useState } from "react";
 import { IpsumDateTime } from "util/dates";
 import { placeholderForDate } from "util/placeholders";
+import { TestIds } from "util/test-ids";
 
 import styles from "./EntryEditor.less";
 import { EditableStateChangePlugin } from "./plugins/EditableStateChangePlugin";
@@ -22,8 +22,11 @@ import { EntryStatePlugin } from "./plugins/EntryStatePlugin";
 import { FormattingPlugin } from "./plugins/FormattingPlugin";
 import { HighlightAssignmentNode } from "./plugins/HighlightAssignmentNode";
 import { HighlightAssignmentPlugin } from "./plugins/HighlightAssignmentPlugin";
+import { IpsumCommentNode } from "./plugins/IpsumCommentNode";
+import { IpsumCommentPlugin } from "./plugins/IpsumCommentPlugin";
 
 interface EntryEditorProps {
+  editorNamespace: string;
   defaultEntryKey?: string;
   editable?: boolean;
   allowHighlighting?: boolean;
@@ -36,6 +39,8 @@ interface EntryEditorProps {
     }
   >;
   maxLines?: number;
+
+  /** Return new entry key */
   createEntry?: (htmlString: string) => string;
   updateEntry?: ({
     entryKey,
@@ -51,6 +56,7 @@ interface EntryEditorProps {
 }
 
 export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
+  editorNamespace,
   defaultEntryKey,
   editable = true,
   allowHighlighting = true,
@@ -83,7 +89,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
     <LexicalComposer
       initialConfig={{
         theme: editorTheme,
-        namespace: entryKey,
+        namespace: editorNamespace,
         onError,
         editable,
         nodes: [
@@ -94,10 +100,12 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
           QuoteNode,
           LinkNode,
           HighlightAssignmentNode,
+          IpsumCommentNode,
         ],
       }}
     >
       <div
+        data-testid={TestIds.EntryEditor.EntryEditor}
         style={lineClampStyle}
         className={cx(
           className,
@@ -112,10 +120,11 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
             highlightsMap={highlightsMap}
             onHighlightDelete={deleteHighlight}
           />
+          <IpsumCommentPlugin editable={editable} />
           <RichTextPlugin
             contentEditable={
               <ContentEditable
-                data-testid={`editor-${entryKey}`}
+                data-testid={TestIds.EntryEditor.ContentEditable}
                 autoCorrect="off"
                 style={{ outline: "none" }}
               />

@@ -1,12 +1,13 @@
+import { $dfs, $filter } from "@lexical/utils";
 import {
   $applyNodeReplacement,
   $createTextNode,
+  $getEditor,
   $getNodeByKey,
   $getRoot,
   $getSelection,
   $isElementNode,
   $isRangeSelection,
-  $nodesOfType,
   $selectAll,
   DOMConversionMap,
   DOMConversionOutput,
@@ -26,6 +27,7 @@ export interface HighlightAssignmentNodeAttributes {
 
 export interface ToggleHighlightAssignmentPayload {
   highlightId: string;
+  wholeEditor?: boolean;
 }
 
 export type SerializedHighlightAssignmentNode = Spread<
@@ -43,6 +45,13 @@ export function $isHighlightAssignmentNode(
   node: LexicalNode | null | undefined
 ): node is HighlightAssignmentNode {
   return node instanceof HighlightAssignmentNode;
+}
+
+export function $allHighlightAssignmentNodes() {
+  return $filter(
+    $dfs().map((result) => result.node),
+    (node) => ($isHighlightAssignmentNode(node) ? node : null)
+  ).filter(Boolean);
 }
 
 function convertHighlightAssignmentElement(
@@ -99,13 +108,13 @@ export function fixHues(nodeKey: string, hueMap: Record<string, number>) {
 }
 
 export function removeHighlightAssignmentFromEditor(highlightId: string) {
-  const highlightAssignmentNodes = $nodesOfType(HighlightAssignmentNode);
+  const highlightNodes = $allHighlightAssignmentNodes();
 
-  if (highlightAssignmentNodes.length === 0) {
+  if (highlightNodes.length === 0) {
     return;
   }
 
-  highlightAssignmentNodes.forEach((node) => {
+  highlightNodes.forEach((node) => {
     if (node.__attributes.highlightId === highlightId) {
       if ($isElementNode(node.getParent())) {
         const children = node.getChildren();
@@ -214,7 +223,7 @@ export function applyHighlightAssignment(
   }
 
   // Extract "cuts out" the selected nodes, including parent element nodes.
-  const nodes = selection.extract();
+  const nodes = attributes.wholeEditor ? selection.extract() : [$getRoot()];
 
   let prevParent: ElementNode | HighlightAssignmentNode | null = null;
   let highlightAssignmentNode: HighlightAssignmentNode | null = null;
@@ -458,7 +467,7 @@ export class HighlightAssignmentNode extends ElementNode {
   }
 
   static clone(_data: HighlightAssignmentNode): HighlightAssignmentNode {
-    return new HighlightAssignmentNode(_data.__attributes);
+    return new HighlightAssignmentNode(_data.__attributes, _data.__key);
   }
 
   static getType(): string {

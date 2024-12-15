@@ -19,7 +19,7 @@ export interface InMemoryEntry {
   entryKey: string;
   trackedHTMLString: string;
   history: InMemoryHistory;
-  entryType: "JOURNAL" | "ARC" | "COMMENT";
+  entryType: "JOURNAL" | "ARC";
 }
 
 export interface InMemoryJournalEntry {
@@ -32,12 +32,6 @@ export interface InMemoryArcEntry {
   __typename: "ArcEntry";
   entry: string;
   arc: string;
-}
-
-export interface InMemoryCommentEntry {
-  __typename: "CommentEntry";
-  entry: string;
-  comment: string;
 }
 
 export interface InMemoryArc {
@@ -62,6 +56,7 @@ export interface InMemoryHighlight {
   id: string;
   history: InMemoryHistory;
   entry: string;
+  incomingRelations: string[];
   outgoingRelations: string[];
   importanceRatings: InMemoryImportanceRating[];
   comments: string[];
@@ -71,10 +66,10 @@ export interface InMemoryHighlight {
 export interface InMemoryRelation {
   __typename: "Relation";
   id: string;
-  subjectType: "Arc" | "Highlight";
+  subjectType: "Arc" | "Highlight" | "Comment";
   subject: string;
   predicate: string;
-  objectType: "Arc";
+  objectType: "Arc" | "Highlight";
   object: string;
 }
 
@@ -92,8 +87,9 @@ export interface InMemoryComment {
   __typename: "Comment";
   id: string;
   parent: string | null;
-  highlight: string;
-  commentEntry: string;
+  objectHighlight: string;
+  outgoingRelations: string[];
+  sourceEntry: string;
   history: InMemoryHistory;
 }
 
@@ -127,7 +123,6 @@ export interface ReactiveInMemoryProjectCollections {
   entries: ProjectCollection<InMemoryEntry>;
   journalEntries: ProjectCollection<InMemoryJournalEntry>;
   arcEntries: ProjectCollection<InMemoryArcEntry>;
-  commentEntries: ProjectCollection<InMemoryCommentEntry>;
   arcs: ProjectCollection<InMemoryArc>;
   highlights: ProjectCollection<InMemoryHighlight>;
   relations: ProjectCollection<InMemoryRelation>;
@@ -153,7 +148,6 @@ export interface StaticInMemoryProjectState {
   entries: CollectionOf<InMemoryEntry>;
   journalEntries: CollectionOf<InMemoryJournalEntry>;
   arcEntries: CollectionOf<InMemoryArcEntry>;
-  commentEntries: CollectionOf<InMemoryCommentEntry>;
   arcs: CollectionOf<InMemoryArc>;
   highlights: CollectionOf<InMemoryHighlight>;
   relations: CollectionOf<InMemoryRelation>;

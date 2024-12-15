@@ -1,5 +1,4 @@
 export { ArcResolvers } from "./arc-resolvers";
-export { CommentEntryResolvers } from "./comment-entry-resolvers";
 export { CommentResolvers } from "./comment-resolvers";
 export { DayResolvers } from "./day-resolvers";
 export { HighlightResolvers } from "./highlight-resolvers";

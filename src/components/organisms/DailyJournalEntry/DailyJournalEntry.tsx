@@ -1,11 +1,10 @@
 import { Collapse } from "@mui/material";
-import { Type } from "components/atoms/Type";
-import { CommentBlurb } from "components/molecules/CommentBlurb";
 import { Entry } from "components/molecules/Entry";
 import { MonthlyNav } from "components/molecules/MonthlyNav";
 import { PageHeaderDailyJournal } from "components/molecules/PageHeader";
-import React, { ComponentProps, useMemo } from "react";
+import React, { ComponentProps } from "react";
 import { IpsumDay } from "util/dates";
+import { TestIds } from "util/test-ids";
 
 import styles from "./DailyJournalEntry.less";
 
@@ -21,7 +20,6 @@ interface DailyJournalEntryProps {
     hue: number;
     arcNames: string[];
   }[];
-  comments: ComponentProps<typeof CommentBlurb>["comment"][];
   editable: boolean;
   htmlString?: string;
   createEntry: (htmlString: string) => string;
@@ -48,7 +46,6 @@ export const DailyJournalEntry: React.FunctionComponent<
   selectedDay,
   entryDays,
   highlights,
-  comments,
   editable,
   htmlString,
   createEntry,
@@ -59,32 +56,11 @@ export const DailyJournalEntry: React.FunctionComponent<
   onDaySelect,
   onHighlightClick,
 }) => {
-  const commentsMarkup = useMemo(() => {
-    if (!comments?.length) return null;
-
-    return (
-      <div>
-        <Type>Comments</Type>
-        {comments?.map((comment) => (
-          <CommentBlurb
-            key={comment.id}
-            selected={false}
-            onSelect={() => {}}
-            defaultExpanded={false}
-            onExpand={() => {}}
-            onCollapse={() => {}}
-            excerptProps={{
-              htmlString: comment.commentEntry.htmlString,
-            }}
-            comment={comment}
-          />
-        ))}
-      </div>
-    );
-  }, [comments]);
-
   return (
-    <div className={styles["daily-journal-page"]}>
+    <div
+      data-testid={TestIds.DailyJournalEntry.DailyJournalEntry}
+      className={styles["daily-journal-page"]}
+    >
       <PageHeaderDailyJournal {...headerProps} />
       <Collapse in={headerProps.expanded} orientation="vertical">
         <div className={styles["daily-journal-page-content"]}>
@@ -95,6 +71,7 @@ export const DailyJournalEntry: React.FunctionComponent<
             onDaySelect={onDaySelect}
           />
           <Entry
+            editorNamespace={`daily-journal-${selectedDay.toString("stored-day")}`}
             entryKey={selectedDay.toString("stored-day")}
             entryDay={selectedDay}
             highlights={highlights}
@@ -107,7 +84,6 @@ export const DailyJournalEntry: React.FunctionComponent<
             deleteHighlight={deleteHighlight}
             onHighlightClick={onHighlightClick}
           />
-          {commentsMarkup}
         </div>
       </Collapse>
     </div>

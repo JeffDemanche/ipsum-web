@@ -1,25 +1,29 @@
 import { IpsumDay } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
+import { wrapWithCommentDiv } from "util/excerpt";
 import { InMemoryComment } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { updateDay } from "../day/update-day";
-import { createCommentEntry } from "../entry/create-comment-entry";
+import { createJournalEntry } from "../entry/create-journal-entry";
+import { updateJournalEntry } from "../entry/update-journal-entry";
+import { createRelationFromCommentToHighlight } from "../relation/create-relation-from-comment-to-highlight";
 import { APIFunction } from "../types";
 
 export const createComment: APIFunction<
   {
     id?: string;
-    dayCreated?: IpsumDay;
-    highlight: string;
+    dayCreated: IpsumDay;
+    objectHighlight: string;
     htmlString: string;
   },
   InMemoryComment
 > = (args, context) => {
   const { projectState } = context;
 
-  if (!projectState.collection("highlights").has(args.highlight)) {
+  if (!projectState.collection("highlights").has(args.objectHighlight)) {
     throw new Error(
-      `No highlight with key ${args.highlight} exists in the project state`
+      `No highlight with key ${args.objectHighlight} exists in the project state`
     );
   }
 
@@ -29,46 +33,95 @@ export const createComment: APIFunction<
     );
   }
 
-  const id = args.id ?? uuidv4();
-  const dayCreated =
-    args.dayCreated?.toString("iso") ?? IpsumDay.today().toString("iso");
-
-  const commentEntryKey = `comment-entry:${id}`;
-
-  const commentEntry = createCommentEntry(
-    {
-      comment: id,
-      entryKey: commentEntryKey,
-      htmlString: args.htmlString,
-      dayCreated: IpsumDay.fromString(dayCreated, "iso"),
-    },
-    context
+  const otherCommentsOnHighlightOnDay = Object.values(
+    projectState
+      .collection("comments")
+      .getAllByField("objectHighlight", args.objectHighlight)
+  ).filter((comment) =>
+    IpsumDay.fromString(comment.history.dateCreated, "iso").equals(
+      args.dayCreated
+    )
   );
 
-  projectState.collection("highlights").mutate(args.highlight, (highlight) => ({
-    ...highlight,
-    comments: [...highlight.comments, id],
-  }));
+  if (otherCommentsOnHighlightOnDay.length > 0) {
+    throw new Error(
+      `A comment already exists on highlight ${args.objectHighlight} for day ${args.dayCreated.toString("entry-printed-date")}`
+    );
+  }
+
+  const id = args.id ?? uuidv4();
+  const dayCreated = args.dayCreated;
+
+  const sourceHighlightEntryKey = dayCreated.toString("entry-printed-date");
+
+  const commentWrappedHTMLString = wrapWithCommentDiv(args.htmlString, {
+    commentId: id,
+  });
+
+  if (!projectState.collection("entries").has(sourceHighlightEntryKey)) {
+    // Case where today's journal entry doesn't exist yet. We need to create it.
+    createJournalEntry(
+      {
+        dayCreated,
+        entryKey: sourceHighlightEntryKey,
+        htmlString: commentWrappedHTMLString,
+      },
+      context
+    );
+  } else {
+    // Case where today's journal entry already exists. We need to perform logic
+    // to append the new comment to it.
+    const sourceHighlightEntry = projectState
+      .collection("entries")
+      .get(sourceHighlightEntryKey);
+    const sourceHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
+      sourceHighlightEntry.trackedHTMLString
+    ).currentValue;
+    const appendedHTMLString = `${sourceHighlightEntryCurrentHTML}${commentWrappedHTMLString}`;
+
+    updateJournalEntry(
+      { entryKey: sourceHighlightEntryKey, htmlString: appendedHTMLString },
+      context
+    );
+  }
 
   const comment = projectState.collection("comments").create(id, {
     __typename: "Comment",
     id,
-    commentEntry: commentEntry.entry,
-    highlight: args.highlight,
+    sourceEntry: sourceHighlightEntryKey,
+    objectHighlight: args.objectHighlight,
+    outgoingRelations: [],
     parent: null,
     history: {
       __typename: "History",
-      dateCreated: dayCreated,
+      dateCreated: dayCreated.toString("iso"),
     },
   });
 
-  updateDay(
+  createRelationFromCommentToHighlight(
     {
-      day: IpsumDay.fromString(dayCreated, "iso"),
-      comments: (previous) => [...previous, id],
+      subject: id,
+      object: args.objectHighlight,
+      predicate: "responds to",
     },
     context
   );
 
-  return comment;
+  projectState
+    .collection("highlights")
+    .mutate(args.objectHighlight, (highlight) => ({
+      ...highlight,
+      comments: [...highlight.comments, id],
+    }));
+
+  updateDay(
+    {
+      day: dayCreated,
+      comments: (previous) => [...previous, id],
+      journalEntryKey: () => sourceHighlightEntryKey,
+    },
+    context
+  );
+
+  return projectState.collection("comments").get(comment.id);
 };

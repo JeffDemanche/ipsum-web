@@ -105,6 +105,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
           </Button>
         )}
         <Button
+          data-testid={TestIds.HighlightTag.ObjectTextButton}
           style={{
             ...buttonStyle,
             textDecoration: "none",

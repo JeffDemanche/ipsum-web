@@ -25,7 +25,7 @@ export const HighlightSRSButtonsExample: Story = {
     orientation: "horizontal",
     today: IpsumDay.fromString("1/1/2024", "entry-printed-date"),
     prospectiveIntervals: [0, 1, 2, 3, 4, 5],
-    reviewState: { type: "reviewed", rating: 5 },
+    reviewState: { type: "reviewed", rating: 5, ease: 2.5 },
     onRate: (q: number) => console.log(q),
     onStartSRS: () => console.log("start SRS"),
   },

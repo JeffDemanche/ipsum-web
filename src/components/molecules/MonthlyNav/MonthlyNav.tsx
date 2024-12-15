@@ -77,9 +77,7 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
   const entryButtons = entriesThisMonth.map((day) => (
     <Button
       key={day.toString("day")}
-      data-testid={TestIds.DailyJournal.MonthlyNavEntryButton(
-        day.toString("day")
-      )}
+      data-testid={TestIds.MonthlyNav.EntryButton}
       className={cx(
         styles["day-button"],
         day.equals(selectedDay) && styles["selected"]
@@ -95,7 +93,7 @@ export const MonthlyNav: React.FunctionComponent<MonthlyNavProps> = ({
 
   return (
     <div
-      data-testid={TestIds.DailyJournal.MonthlyNav}
+      data-testid={TestIds.MonthlyNav.MonthlyNav}
       className={cx(styles["monthly-nav"], className)}
     >
       <Button

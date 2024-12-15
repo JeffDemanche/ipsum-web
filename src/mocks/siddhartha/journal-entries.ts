@@ -18,17 +18,7 @@ export const journalEntry1_TheSonOfTheBrahman: MockedJournalEntry = {
             arcId: "arc3_understanding",
           },
         ],
-        comments: [
-          {
-            id: "comment1-chapter1-p-0",
-            highlightId: "highlight-chapter1-p-0",
-            mockedEntry: {
-              entryKey: "commentEntry1-chapter1-p-0",
-              sections: ["This is a comment on the first journal entry."],
-            },
-            dayCreated: IpsumDay.fromString("3/4/2020", "entry-printed-date"),
-          },
-        ],
+        comments: [],
       },
     },
 
@@ -238,17 +228,7 @@ export const journalEntry9_TheFerryman: MockedJournalEntry = {
             predicate: "relates to",
           },
         ],
-        comments: [
-          {
-            id: "comment1-chapter9-p-0",
-            highlightId: "highlight-chapter9-p-0",
-            mockedEntry: {
-              entryKey: "commentEntry1-chapter9-p-0",
-              sections: ["This is a comment on the first journal entry."],
-            },
-            dayCreated: IpsumDay.fromString("3/4/2020", "entry-printed-date"),
-          },
-        ],
+        comments: [],
       },
     },
 

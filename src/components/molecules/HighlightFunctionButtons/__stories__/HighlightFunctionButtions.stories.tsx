@@ -23,7 +23,7 @@ export const HighlightFunctionButtonsExample: Story = {
   args: {
     orientation: "horizontal",
     highlightHue: 90,
-    notificationState: { type: "Up for review" },
+    notificationState: { type: "Up for review", ease: 2.5 },
     onDelete: () => {},
   },
 };

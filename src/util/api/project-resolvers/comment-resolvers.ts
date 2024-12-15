@@ -39,14 +39,24 @@ export const CommentResolvers: StrictTypedTypePolicies = {
   Comment: {
     keyFields: ["id"],
     fields: {
-      commentEntry(commentEntryKey) {
-        return (
-          PROJECT_STATE.collection("commentEntries").get(commentEntryKey) ??
-          null
+      sourceEntry(_, { readField }) {
+        const journalEntryOnDayCreated = IpsumDay.fromString(
+          readField<{ dateCreated: string }>("history").dateCreated,
+          "iso"
+        ).toString("entry-printed-date");
+        return PROJECT_STATE.collection("journalEntries").get(
+          journalEntryOnDayCreated
         );
       },
-      highlight(highlightId) {
-        return PROJECT_STATE.collection("highlights").get(highlightId) ?? null;
+      objectHighlight(objectHighlightId) {
+        return (
+          PROJECT_STATE.collection("highlights").get(objectHighlightId) ?? null
+        );
+      },
+      sourceHighlight(sourceHighlightId) {
+        return (
+          PROJECT_STATE.collection("highlights").get(sourceHighlightId) ?? null
+        );
       },
     },
   },

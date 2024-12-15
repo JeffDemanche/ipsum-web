@@ -34,6 +34,7 @@ export const createHighlight: APIFunction<
       __typename: "History",
       dateCreated: dayCreated,
     },
+    incomingRelations: [],
     outgoingRelations: [],
     importanceRatings: [],
   });

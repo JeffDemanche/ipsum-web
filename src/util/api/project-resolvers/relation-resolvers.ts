@@ -38,6 +38,8 @@ export const RelationResolvers: StrictTypedTypePolicies = {
 
         if (type === "Arc") {
           return PROJECT_STATE.collection("arcs").get(objectId);
+        } else if (type === "Highlight") {
+          return PROJECT_STATE.collection("highlights").get(objectId);
         }
       },
     },

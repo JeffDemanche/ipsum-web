@@ -6,12 +6,14 @@ export const relationTypeDef = gql`
     relations(ids: [ID!]): [Relation]
   }
 
-  union RelationSubject = Arc | Highlight
+  union RelationSubject = Arc | Highlight | Comment
+
+  union RelationObject = Arc | Highlight
 
   type Relation {
     id: ID!
     subject: RelationSubject!
     predicate: String!
-    object: Arc!
+    object: RelationObject!
   }
 `;

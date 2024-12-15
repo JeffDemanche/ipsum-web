@@ -212,15 +212,7 @@ export class IpsumFilteringProgramV1 extends IpsumFilteringProgram {
           .rawNode.text.slice(1, -1);
 
         return (element) => {
-          console.log(element.id);
           return element.outgoingRelations.some((relation) => {
-            console.log(
-              filterPredicate,
-              filterRelationObject,
-              "|",
-              relation.predicate,
-              relation.objectName
-            );
             return (
               relation.predicate === filterPredicate &&
               (relation.objectName === filterRelationObject ||

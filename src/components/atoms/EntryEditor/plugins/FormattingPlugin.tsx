@@ -256,15 +256,15 @@ export const FormattingPlugin: React.FunctionComponent<
         return false;
       },
       COMMAND_PRIORITY_LOW
-    ),
-      editor.registerCommand(
-        FOCUS_COMMAND,
-        () => {
-          setEditorFocused(true);
-          return false;
-        },
-        COMMAND_PRIORITY_LOW
-      );
+    );
+    editor.registerCommand(
+      FOCUS_COMMAND,
+      () => {
+        setEditorFocused(true);
+        return false;
+      },
+      COMMAND_PRIORITY_LOW
+    );
   }, [editor, formattableEditor, setActiveEditor, updateFormattingState]);
 
   return null;

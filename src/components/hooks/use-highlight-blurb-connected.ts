@@ -37,10 +37,14 @@ const UseHighlightBlurbConnectedQuery = gql(`
         id
         predicate
         object {
+          __typename
           ... on Arc {
             id
             name
             color
+          }
+          ... on Highlight {
+            id
           }
         }
       }
@@ -51,12 +55,6 @@ const UseHighlightBlurbConnectedQuery = gql(`
         }
         ... on Day {
           day
-        }
-        ... on Comment {
-          id
-          highlight {
-            id
-          }
         }
       }
     }
@@ -76,8 +74,6 @@ export const useHighlightBlurbConnected = ({
 
   const highlight = data?.highlight;
 
-  console.log(highlight.objectText);
-
   const relationsTableProps = useHighlightRelationsTableConnected({
     highlightId,
   });
@@ -87,9 +83,11 @@ export const useHighlightBlurbConnected = ({
     objectText: highlight.objectText,
     hue: highlight.hue,
     highlightNumber: highlight.number,
-    arcNames: highlight.outgoingRelations.map(
-      (relation) => relation.object.name
-    ),
+    arcNames: highlight.outgoingRelations
+      .map((relation) =>
+        relation.object.__typename === "Arc" ? relation.object.name : undefined
+      )
+      .filter(Boolean),
     importanceRating: 0,
   };
 
@@ -102,17 +100,21 @@ export const useHighlightBlurbConnected = ({
     (relation) => relation.object && relation.object.__typename === "Arc"
   );
 
-  const relations: HighlightBlurbConnectedProps["relations"] = arcRelations.map(
-    (relation) => ({
-      id: relation.id,
-      predicate: relation.predicate,
-      arc: {
-        id: relation.object.id,
-        hue: relation.object.color,
-        name: relation.object.name,
-      },
-    })
-  );
+  const relations: HighlightBlurbConnectedProps["relations"] = arcRelations
+    .map((relation) =>
+      relation.object.__typename === "Arc"
+        ? {
+            id: relation.id,
+            predicate: relation.predicate,
+            arc: {
+              id: relation.object.id,
+              hue: relation.object.color,
+              name: relation.object.name,
+            },
+          }
+        : undefined
+    )
+    .filter(Boolean);
 
   const onHighlightClick = () => {
     insertLayer({
@@ -143,10 +145,6 @@ export const useHighlightBlurbConnected = ({
           },
         });
         break;
-      case "Comment":
-        insertLayer({
-          layer: { type: "highlight_detail", highlightId, expanded: "true" },
-        });
     }
   };
 
