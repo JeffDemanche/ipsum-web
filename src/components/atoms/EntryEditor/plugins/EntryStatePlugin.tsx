@@ -1,8 +1,14 @@
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import { $getRoot, EditorState, LexicalEditor } from "lexical";
-import React, { useEffect, useRef } from "react";
+import {
+  $getRoot,
+  $getSelection,
+  $setSelection,
+  EditorState,
+  LexicalEditor,
+} from "lexical";
+import React, { useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "util/hooks";
 
 interface EntryStatePluginProps {
@@ -37,34 +43,80 @@ export const EntryStatePlugin: React.FunctionComponent<
 
   const skipNextUpdate = useRef(false);
 
+  const editorFocused = useRef(false);
+
+  const onBlur = () => {
+    skipNextUpdate.current = false;
+    editorFocused.current = false;
+  };
+
+  const onFocus = () => {
+    editorFocused.current = true;
+  };
+
   useEffect(() => {
-    if (skipNextUpdate.current) return;
+    const contentEditable = editor.getRootElement();
+
+    contentEditable.addEventListener("blur", onBlur);
+    contentEditable.addEventListener("focus", onFocus);
+
+    return () => {
+      contentEditable.removeEventListener("blur", onBlur);
+      contentEditable.removeEventListener("focus", onFocus);
+    };
+  }, [editor]);
+
+  // This is where we handle deciding whether to overwrite the editor's content,
+  // and then do so.
+  useEffect(() => {
+    if (skipNextUpdate.current) {
+      skipNextUpdate.current = false;
+      return;
+    }
 
     skipNextUpdate.current = false;
 
-    editor.update(() => {
-      const parser = new DOMParser();
-      const dom = parser.parseFromString(initialHtmlString, "text/html");
+    editor.update(
+      () => {
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(initialHtmlString, "text/html");
 
-      const nodes = initialHtmlString
-        ? $generateNodesFromDOM(editor, dom)
-        : undefined;
+        const nodes = initialHtmlString
+          ? $generateNodesFromDOM(editor, dom)
+          : undefined;
 
-      const root = $getRoot();
-      root.clear();
+        if (!nodes) {
+          return;
+        } else {
+          const root = $getRoot();
+          root.clear();
 
-      if (!nodes) {
-        return;
-      } else {
-        nodes.forEach((node) => {
-          root.append(node);
-        });
-      }
-    });
+          nodes.forEach((node) => {
+            root.append(node);
+          });
+
+          if (!editorFocused.current) {
+            // This prevents changes to unfocused editors stealing focus after
+            // having their content updated.
+            $setSelection(null);
+          }
+        }
+      },
+      { discrete: true }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor, initialHtmlString]);
 
+  // This is where we fire callbacks that ultimately manipulate the entry state.
   const debouncedOnChange = useDebouncedCallback(
     (editorState: EditorState, editor: LexicalEditor, tags: Set<string>) => {
+      // Prevent changes to unfocused editors causing loops. The general
+      // prinicple is that only the active editor should be able to fire API
+      // changes.
+      if (!editorFocused.current) {
+        return;
+      }
+
       skipNextUpdate.current = true;
       editor.getEditorState().read(() => {
         const htmlString = $generateHtmlFromNodes(editor, null);

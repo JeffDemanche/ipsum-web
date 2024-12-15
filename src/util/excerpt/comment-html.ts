@@ -37,3 +37,21 @@ export const replaceCommentDiv = (
 
   return doc.body.innerHTML;
 };
+
+/**
+ * Gets the innerHTML of the first div with a data-comment-id attribute
+ */
+export const excerptCommentDivString = (
+  htmlString: string,
+  commentId: string
+): string => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+
+  const commentDiv = doc.querySelector(`div[data-comment-id="${commentId}"`);
+
+  if (!commentDiv) {
+    throw new Error(`No comment div found with commentId ${commentId}`);
+  }
+  return commentDiv.innerHTML;
+};

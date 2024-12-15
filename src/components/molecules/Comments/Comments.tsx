@@ -17,12 +17,12 @@ interface CommentsProps {
   comments: {
     id: string;
     day: IpsumDay;
-    sourceHighlight: string;
     sourceEntry: {
       entryKey: string;
       highlights: React.ComponentProps<typeof Entry>["highlights"];
       htmlString: string;
     };
+    excerptHtmlString: string;
   }[];
 
   onCreateComment: (htmlString: string) => string;
@@ -61,7 +61,7 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
 
   const highlights = isNew ? [] : selectedComment.sourceEntry.highlights;
 
-  const htmlString = isNew ? "" : selectedComment.sourceEntry.htmlString;
+  const htmlString = isNew ? "" : selectedComment.excerptHtmlString;
 
   const entryDays = comments.map((comment) => comment.day);
 

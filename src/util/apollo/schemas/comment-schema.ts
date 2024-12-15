@@ -13,8 +13,8 @@ export const commentTypeDef = gql`
     id: ID!
     parent: Comment
     sourceEntry: JournalEntry!
+    excerptHtmlString: String!
     objectHighlight: Highlight!
-    sourceHighlight: Highlight!
     history: History!
   }
 `;

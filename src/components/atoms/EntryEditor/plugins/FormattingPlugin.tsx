@@ -25,10 +25,12 @@ import {
   $isRangeSelection,
   BLUR_COMMAND,
   COMMAND_PRIORITY_LOW,
+  ElementNode,
   FOCUS_COMMAND,
   FORMAT_TEXT_COMMAND,
   RangeSelection,
   SELECTION_CHANGE_COMMAND,
+  TextNode,
 } from "lexical";
 import React, {
   useCallback,
@@ -39,6 +41,7 @@ import React, {
 } from "react";
 
 import { CREATE_HIGHLIGHT_ASSIGNMENT_COMMAND } from "./HighlightAssignmentPlugin";
+import { $isIpsumCommentNode } from "./IpsumCommentNode";
 
 function getSelectedNode(selection: RangeSelection) {
   const anchor = selection.anchor;
@@ -81,6 +84,17 @@ export const FormattingPlugin: React.FunctionComponent<
   const [underline, setIsUnderline] = useState(false);
   const [strikethrough, setIsStrikethrough] = useState(false);
 
+  const getFirstBlockParent = (node: TextNode | ElementNode) => {
+    let parent = node.getParent();
+    while (parent && parent.getType() !== "root") {
+      if (!parent.isInline()) {
+        return parent;
+      }
+      parent = parent.getParent();
+    }
+    return null;
+  };
+
   const updateFormattingState = useCallback(() => {
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
@@ -88,10 +102,10 @@ export const FormattingPlugin: React.FunctionComponent<
       const element =
         anchorNode.getKey() === "root"
           ? anchorNode
-          : anchorNode.getTopLevelElementOrThrow();
-      const elementKey = element.getKey();
+          : getFirstBlockParent(anchorNode);
+      const elementKey = element?.getKey();
       const elementDOM = editor.getElementByKey(elementKey);
-      if (elementDOM !== null) {
+      if (elementKey && elementDOM !== null) {
         setSelectedElementKey(elementKey);
         if ($isListNode(element)) {
           const parentList = $getNearestNodeOfType(anchorNode, ListNode);

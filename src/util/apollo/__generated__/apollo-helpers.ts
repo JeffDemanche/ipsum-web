@@ -15,14 +15,14 @@ export type ArcEntryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CommentKeySpecifier = ('history' | 'id' | 'objectHighlight' | 'parent' | 'sourceEntry' | 'sourceHighlight' | CommentKeySpecifier)[];
+export type CommentKeySpecifier = ('excerptHtmlString' | 'history' | 'id' | 'objectHighlight' | 'parent' | 'sourceEntry' | CommentKeySpecifier)[];
 export type CommentFieldPolicy = {
+	excerptHtmlString?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	objectHighlight?: FieldPolicy<any> | FieldReadFunction<any>,
 	parent?: FieldPolicy<any> | FieldReadFunction<any>,
-	sourceEntry?: FieldPolicy<any> | FieldReadFunction<any>,
-	sourceHighlight?: FieldPolicy<any> | FieldReadFunction<any>
+	sourceEntry?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type DayKeySpecifier = ('changedArcEntries' | 'comments' | 'day' | 'hasJournalEntry' | 'journalEntry' | 'ratedHighlights' | 'srsCardsReviewed' | DayKeySpecifier)[];
 export type DayFieldPolicy = {

@@ -26,14 +26,14 @@ export const HighlightPageExample: StoryHighlightPage = {
     onCollapse: () => {},
     onExpand: () => {},
     commentsProps: {
-      selectedDay: IpsumDay.fromString("1/1/2020"),
+      selectedDay: IpsumDay.fromString("1/1/2e020"),
       setSelectedDay: () => {},
       today: IpsumDay.fromString("1/1/2020"),
       comments: [
         {
           id: "comment1",
           day: IpsumDay.fromString("1/1/2020"),
-          sourceHighlight: "source highlight 1",
+          excerptHtmlString: "Comment 1",
           sourceEntry: {
             entryKey: "comment-entry:comment1",
             htmlString: "<p>Comment 1</p>",
@@ -43,7 +43,8 @@ export const HighlightPageExample: StoryHighlightPage = {
         {
           id: "comment2",
           day: IpsumDay.fromString("12/14/2019"),
-          sourceHighlight: "source highlight 1",
+          excerptHtmlString:
+            "In the days to come, I shall continue to walk this path of self-discovery and enlightenment, guided by the timeless wisdom of the Samanas. Though the road may be long and arduous, I am filled with a sense of purpose and determination, knowing that each step brings me closer to the ultimate truth.",
           sourceEntry: {
             entryKey: "comment-entry:comment2",
             htmlString:

@@ -28,6 +28,12 @@ export function $createIpsumCommentNode(
   return $applyNodeReplacement(new IpsumCommentNode(attributes, key));
 }
 
+export function $isIpsumCommentNode(
+  node: LexicalNode
+): node is IpsumCommentNode {
+  return node instanceof IpsumCommentNode;
+}
+
 function convertIpsumCommentNode(domNode: HTMLElement): DOMConversionOutput {
   const commentId = domNode.getAttribute("data-comment-id");
   const commentHighlightHue = Number.parseInt(
@@ -68,6 +74,18 @@ export class IpsumCommentNode extends ElementNode {
     return false;
   }
 
+  canInsertTextAfter(): boolean {
+    return true;
+  }
+
+  addStyle(element: HTMLElement): void {
+    element.classList.add("ipsum-comment");
+  }
+
+  removeStyle(element: HTMLElement): void {
+    element.classList.remove("ipsum-comment");
+  }
+
   static importJSON(_serializedNode: SerializedIpsumCommentNode): LexicalNode {
     const node = $createIpsumCommentNode({
       commentId: _serializedNode.commentId,
@@ -93,6 +111,8 @@ export class IpsumCommentNode extends ElementNode {
       element.setAttribute("data-comment-id", this.__attributes.commentId);
       const hue = this.__attributes.commentHighlightHue;
       hue && element.setAttribute("data-hue", `${hue}`);
+
+      this.addStyle(element);
     }
     return element;
   }
@@ -106,9 +126,13 @@ export class IpsumCommentNode extends ElementNode {
       _dom.setAttribute("data-comment-id", this.__attributes.commentId);
       const hue = this.__attributes.commentHighlightHue;
       hue && _dom.setAttribute("data-hue", `${hue}`);
+
+      this.addStyle(_dom);
     } else {
       _dom.removeAttribute("data-comment-id");
       _dom.removeAttribute("data-hue");
+
+      this.removeStyle(_dom);
     }
 
     return false;

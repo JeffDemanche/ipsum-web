@@ -1,5 +1,7 @@
 import { QueryCommentsArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumDay } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
+import { excerptCommentDivString } from "util/excerpt";
 import { PROJECT_STATE } from "util/state";
 
 export const CommentResolvers: StrictTypedTypePolicies = {
@@ -53,10 +55,16 @@ export const CommentResolvers: StrictTypedTypePolicies = {
           PROJECT_STATE.collection("highlights").get(objectHighlightId) ?? null
         );
       },
-      sourceHighlight(sourceHighlightId) {
-        return (
-          PROJECT_STATE.collection("highlights").get(sourceHighlightId) ?? null
-        );
+      excerptHtmlString(_, { readField }) {
+        const journalEntry = readField<{ entry: string }>("sourceEntry");
+        const entryHtmlString = IpsumTimeMachine.fromString(
+          PROJECT_STATE.collection("entries").get(journalEntry.entry)
+            .trackedHTMLString
+        ).currentValue;
+
+        const thisId = readField<string>("id");
+
+        return excerptCommentDivString(entryHtmlString, thisId);
       },
     },
   },

@@ -6,4 +6,8 @@ export {
 
 export { getHighlightOrder } from "./highlight-order";
 
-export { wrapWithCommentDiv, replaceCommentDiv } from "./comment-html";
+export {
+  wrapWithCommentDiv,
+  replaceCommentDiv,
+  excerptCommentDivString,
+} from "./comment-html";

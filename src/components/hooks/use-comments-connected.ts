@@ -33,9 +33,7 @@ const UseCommentsConnectedQuery = gql(`
         history {
           dateCreated
         }
-        sourceHighlight {
-          id
-        }
+        excerptHtmlString
         sourceEntry {
           entry {
             entryKey
@@ -80,7 +78,7 @@ export const useCommentsConnected = ({
     data?.highlight.comments.map((comment) => ({
       id: comment.id,
       day: IpsumDay.fromString(comment.history.dateCreated, "iso"),
-      sourceHighlight: comment.sourceHighlight.id,
+      excerptHtmlString: comment.excerptHtmlString,
       sourceEntry: {
         entryKey: comment.sourceEntry.entry.entryKey,
         highlights: comment.sourceEntry.entry.highlights.map((highlight) => ({
