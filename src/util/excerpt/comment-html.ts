@@ -38,6 +38,21 @@ export const replaceCommentDiv = (
   return doc.body.innerHTML;
 };
 
+export const removeEmptyCommentDivs = (htmlString: string): string => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+
+  const commentDivs = doc.querySelectorAll("div[data-comment-id]");
+
+  commentDivs.forEach((commentDiv) => {
+    if (commentDiv.textContent === "") {
+      commentDiv.remove();
+    }
+  });
+
+  return doc.body.innerHTML;
+};
+
 /**
  * Gets the innerHTML of the first div with a data-comment-id attribute
  */
@@ -54,4 +69,22 @@ export const excerptCommentDivString = (
     throw new Error(`No comment div found with commentId ${commentId}`);
   }
   return commentDiv.innerHTML;
+};
+
+export const removeCommentDiv = (
+  htmlString: string,
+  commentId: string
+): string => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+
+  const commentDivs = doc.querySelectorAll(
+    `div[data-comment-id="${commentId}"`
+  );
+
+  commentDivs.forEach((commentDiv) => {
+    commentDiv.remove();
+  });
+
+  return doc.body.innerHTML;
 };

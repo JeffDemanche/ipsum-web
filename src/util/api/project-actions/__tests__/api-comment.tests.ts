@@ -4,6 +4,7 @@ import { IpsumTimeMachine } from "util/diff";
 import { ProjectState } from "util/state";
 
 import { createComment } from "../comment/create-comment";
+import { deleteComment } from "../comment/delete-comment";
 import { createEntry } from "../entry/create-entry";
 import { createHighlight } from "../highlight/create-highlight";
 
@@ -116,6 +117,90 @@ describe("API comment actions", () => {
       expect(sourceHighlightEntryCurrentHTML).toEqual(
         `<div>hello world</div><div data-comment-id="${comment.id}"><div>goodbye world</div></div>`
       );
+    });
+  });
+
+  describe("deleteComment", () => {
+    it("removes comment from the state and updates the source entry", () => {
+      const state = new ProjectState();
+      const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
+
+      const journalEntry = createEntry(
+        {
+          dayCreated,
+          entryKey: dayCreated.toString("entry-printed-date"),
+          htmlString: "<p>hello world</p>",
+          entryType: EntryType.Journal,
+        },
+        { projectState: state }
+      );
+
+      const objectHighlight = createHighlight(
+        {
+          dayCreated,
+          entryKey: journalEntry.entryKey,
+        },
+        { projectState: state }
+      );
+
+      const comment = createComment(
+        {
+          dayCreated,
+          objectHighlight: objectHighlight.id,
+          htmlString: "<p>goodbye world</p>",
+        },
+        { projectState: state }
+      );
+
+      deleteComment({ id: comment.id }, { projectState: state });
+
+      expect(state.collection("comments").has(comment.id)).toBeFalsy();
+
+      const updatedSourceEntry = state
+        .collection("entries")
+        .get(comment.sourceEntry);
+
+      const updatedSourceEntryCurrentHTML = IpsumTimeMachine.fromString(
+        updatedSourceEntry.trackedHTMLString
+      ).currentValue;
+
+      expect(updatedSourceEntryCurrentHTML).toEqual("<p>hello world</p>");
+    });
+
+    it("deletes the source entry if it ends up being empty", () => {
+      const state = new ProjectState();
+      const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
+
+      const journalEntry = createEntry(
+        {
+          dayCreated,
+          entryKey: dayCreated.toString("entry-printed-date"),
+          htmlString: "<p></p>",
+          entryType: EntryType.Journal,
+        },
+        { projectState: state }
+      );
+
+      const objectHighlight = createHighlight(
+        {
+          dayCreated,
+          entryKey: journalEntry.entryKey,
+        },
+        { projectState: state }
+      );
+
+      const comment = createComment(
+        {
+          dayCreated,
+          objectHighlight: objectHighlight.id,
+          htmlString: "<p>goodbye world</p>",
+        },
+        { projectState: state }
+      );
+
+      deleteComment({ id: comment.id }, { projectState: state });
+
+      expect(state.collection("entries").has(comment.sourceEntry)).toBeFalsy();
     });
   });
 });

@@ -71,6 +71,36 @@ describe("API entry actions", () => {
           IpsumTimeMachine.fromString(entry?.trackedHTMLString).currentValue
         ).toEqual("<div>goodbye world</div>");
       });
+
+      it("should delete an entry and a journalEntry if the htmlString is empty", () => {
+        const state = new ProjectState();
+        const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
+
+        const journalEntry = createJournalEntry(
+          {
+            dayCreated,
+            entryKey: "entry1",
+            htmlString: "<div>hello world</div>",
+          },
+          { projectState: state }
+        );
+
+        expect(state.collection("journalEntries").get("entry1")).toEqual(
+          journalEntry
+        );
+
+        updateJournalEntry(
+          {
+            entryKey: "entry1",
+            htmlString: "<p></p>",
+          },
+          { projectState: state }
+        );
+
+        expect(
+          state.collection("journalEntries").get("entry1")
+        ).toBeUndefined();
+      });
     });
 
     describe("deleteJournalEntry", () => {

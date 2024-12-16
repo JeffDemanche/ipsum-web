@@ -141,7 +141,11 @@ export class IpsumCommentNode extends ElementNode {
   static importDOM(): DOMConversionMap {
     return {
       div: (domNode: HTMLElement) => {
-        if (!domNode.hasAttribute("data-comment-id")) return null;
+        if (
+          !domNode.hasAttribute("data-comment-id") ||
+          domNode.textContent === ""
+        )
+          return null;
 
         return {
           conversion: convertIpsumCommentNode,

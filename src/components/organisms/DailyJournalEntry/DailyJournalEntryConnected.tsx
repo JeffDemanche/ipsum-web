@@ -132,7 +132,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
   };
 
   const deleteEntry = (entryKey: string) => {
-    deleteJournalEntry({ entryKey });
+    if (entryKey) deleteJournalEntry({ entryKey });
   };
 
   const updateEntry = ({

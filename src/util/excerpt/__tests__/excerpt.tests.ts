@@ -1,4 +1,4 @@
-import { replaceHighlightHtmlWith } from "../excerpt";
+import { isEmptyHTMLString, replaceHighlightHtmlWith } from "../excerpt";
 
 describe("Excerpt", () => {
   describe("replaceHighlightHtmlWith", () => {
@@ -59,6 +59,22 @@ describe("Excerpt", () => {
       ).toEqual(`
         <ul><li><span data-highlight-id="1">New First</span></li></ul>
       `);
+    });
+  });
+
+  describe("isEmptyHTMLString", () => {
+    it.each([
+      ["<p></p>", true],
+      ["<p> </p>", false],
+      ["<p><br></p>", true],
+      ["<p><br> </p>", false],
+      ["<p><br> <br></p>", false],
+      ["<p>Text</p>", false],
+      ["<p>Text <br></p>", false],
+      ["<p><br> Text</p>", false],
+      ["<p>Text <br> Text</p>", false],
+    ])("should return %s as %s", (htmlString: string, expected: boolean) => {
+      expect(isEmptyHTMLString(htmlString)).toBe(expected);
     });
   });
 });

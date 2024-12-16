@@ -3,12 +3,13 @@ import { Comments } from "components/molecules/Comments";
 import { useState } from "react";
 import {
   apiCreateComment,
+  apiDeleteComment,
   apiUpdateJournalEntry,
   useApiAction,
 } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { replaceCommentDiv } from "util/excerpt";
+import { removeEmptyCommentDivs, replaceCommentDiv } from "util/excerpt";
 
 export type CommentsConnectedProps = Pick<
   React.ComponentProps<typeof Comments>,
@@ -101,6 +102,8 @@ export const useCommentsConnected = ({
 
   const [updateEntry] = useApiAction(apiUpdateJournalEntry);
 
+  const [deleteComment] = useApiAction(apiDeleteComment);
+
   const onCreateComment = (htmlString: string) => {
     const newComment = createComment({
       dayCreated: selectedDay,
@@ -125,12 +128,20 @@ export const useCommentsConnected = ({
 
     return updateEntry({
       entryKey,
-      htmlString: replaceCommentDiv(
-        selectedComment.sourceEntry.htmlString,
-        htmlString,
-        selectedComment.id
+      htmlString: removeEmptyCommentDivs(
+        replaceCommentDiv(
+          selectedComment.sourceEntry.htmlString,
+          htmlString,
+          selectedComment.id
+        )
       ),
     });
+  };
+
+  const onDeleteComment = () => {
+    if (!selectedComment) return;
+
+    deleteComment({ id: selectedComment.id });
   };
 
   return {
@@ -140,7 +151,7 @@ export const useCommentsConnected = ({
     comments: comments ?? [],
     onCreateComment,
     onUpdateComment,
-    onDeleteComment: () => true,
+    onDeleteComment,
     onCreateHighlight: () => "",
     onDeleteHighlight: () => false,
     onHighlightClick: () => "",

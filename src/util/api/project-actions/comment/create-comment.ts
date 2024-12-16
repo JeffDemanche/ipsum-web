@@ -1,6 +1,6 @@
 import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { wrapWithCommentDiv } from "util/excerpt";
+import { removeEmptyCommentDivs, wrapWithCommentDiv } from "util/excerpt";
 import { InMemoryComment } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
@@ -64,7 +64,7 @@ export const createComment: APIFunction<
       {
         dayCreated,
         entryKey: sourceHighlightEntryKey,
-        htmlString: commentWrappedHTMLString,
+        htmlString: removeEmptyCommentDivs(commentWrappedHTMLString),
       },
       context
     );
@@ -77,7 +77,9 @@ export const createComment: APIFunction<
     const sourceHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
       sourceHighlightEntry.trackedHTMLString
     ).currentValue;
-    const appendedHTMLString = `${sourceHighlightEntryCurrentHTML}${commentWrappedHTMLString}`;
+    const appendedHTMLString = removeEmptyCommentDivs(
+      `${sourceHighlightEntryCurrentHTML}${commentWrappedHTMLString}`
+    );
 
     updateJournalEntry(
       { entryKey: sourceHighlightEntryKey, htmlString: appendedHTMLString },

@@ -43,6 +43,7 @@ export { deleteRelationFromHighlightToArc as apiDeleteRelationFromHighlightToArc
 export { deleteRelationFromArcToArc as apiDeleteRelationFromArcToArc } from "./relation/delete-relation-from-arc-to-arc";
 
 export { createComment as apiCreateComment } from "./comment/create-comment";
+export { deleteComment as apiDeleteComment } from "./comment/delete-comment";
 
 export { createArc as apiCreateArc } from "./arc/create-arc";
 
