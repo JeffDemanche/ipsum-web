@@ -17,5 +17,12 @@
 }
 
 .ipsum-comment {
-  background-color: lightgrey;
+  font-family: 'Roboto', sans-serif;
+  font-weight: lighter;
+  border-left: 2px solid hsla(var(--hue), 80%, var(--lightness), 1);
+  padding-left: 8px;
+  
+  .ipsum-comment-label {
+    background-color: hsla(var(--hue), 80%, var(--lightness), 1);
+  }
 }

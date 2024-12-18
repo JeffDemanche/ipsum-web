@@ -1,7 +1,7 @@
 import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { removeEmptyCommentDivs, wrapWithCommentDiv } from "util/excerpt";
-import { InMemoryComment } from "util/state";
+import { HighlightWrapper, InMemoryComment } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { updateDay } from "../day/update-day";
@@ -52,18 +52,27 @@ export const createComment: APIFunction<
   const id = args.id ?? uuidv4();
   const dayCreated = args.dayCreated;
 
-  const sourceHighlightEntryKey = dayCreated.toString("entry-printed-date");
+  const sourceEntryKey = dayCreated.toString("entry-printed-date");
+
+  const objectHighlight = projectState
+    .collection("highlights")
+    .get(args.objectHighlight);
+
+  const wrappedHighlight = new HighlightWrapper(objectHighlight, projectState);
 
   const commentWrappedHTMLString = wrapWithCommentDiv(args.htmlString, {
     commentId: id,
+    highlightHue: wrappedHighlight.hue,
+    highlightNumber: wrappedHighlight.number,
+    highlightObjectText: wrappedHighlight.objectText,
   });
 
-  if (!projectState.collection("entries").has(sourceHighlightEntryKey)) {
+  if (!projectState.collection("entries").has(sourceEntryKey)) {
     // Case where today's journal entry doesn't exist yet. We need to create it.
     createJournalEntry(
       {
         dayCreated,
-        entryKey: sourceHighlightEntryKey,
+        entryKey: sourceEntryKey,
         htmlString: removeEmptyCommentDivs(commentWrappedHTMLString),
       },
       context
@@ -73,7 +82,7 @@ export const createComment: APIFunction<
     // to append the new comment to it.
     const sourceHighlightEntry = projectState
       .collection("entries")
-      .get(sourceHighlightEntryKey);
+      .get(sourceEntryKey);
     const sourceHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
       sourceHighlightEntry.trackedHTMLString
     ).currentValue;
@@ -82,7 +91,7 @@ export const createComment: APIFunction<
     );
 
     updateJournalEntry(
-      { entryKey: sourceHighlightEntryKey, htmlString: appendedHTMLString },
+      { entryKey: sourceEntryKey, htmlString: appendedHTMLString },
       context
     );
   }
@@ -90,7 +99,7 @@ export const createComment: APIFunction<
   const comment = projectState.collection("comments").create(id, {
     __typename: "Comment",
     id,
-    sourceEntry: sourceHighlightEntryKey,
+    sourceEntry: sourceEntryKey,
     objectHighlight: args.objectHighlight,
     outgoingRelations: [],
     parent: null,
@@ -120,7 +129,7 @@ export const createComment: APIFunction<
     {
       day: dayCreated,
       comments: (previous) => [...previous, id],
-      journalEntryKey: () => sourceHighlightEntryKey,
+      journalEntryKey: () => sourceEntryKey,
     },
     context
   );

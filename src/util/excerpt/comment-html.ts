@@ -1,8 +1,22 @@
 export const wrapWithCommentDiv = (
   htmlString: string,
-  options: { commentId: string }
+  options: {
+    commentId: string;
+    highlightHue: number;
+    highlightNumber: number;
+    highlightObjectText: string;
+  }
 ): string => {
-  return `<div data-comment-id="${options.commentId}">${htmlString}</div>`;
+  const hueString = options.highlightHue
+    ? ` data-hue="${options.highlightHue}"`
+    : "";
+  const numberString = options.highlightNumber
+    ? ` data-number="${options.highlightNumber}"`
+    : "";
+  const objectTextString = options.highlightObjectText
+    ? ` data-object-text="${options.highlightObjectText}"`
+    : "";
+  return `<div data-comment-id="${options.commentId}"${hueString}${numberString}${objectTextString}>${htmlString}</div>`;
 };
 
 /**

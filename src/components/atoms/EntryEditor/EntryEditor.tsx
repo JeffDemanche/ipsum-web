@@ -17,6 +17,7 @@ import { placeholderForDate } from "util/placeholders";
 import { TestIds } from "util/test-ids";
 
 import styles from "./EntryEditor.less";
+import { CommentLabelNode } from "./plugins/CommentLabelNode";
 import { EditableStateChangePlugin } from "./plugins/EditableStateChangePlugin";
 import { EntryStatePlugin } from "./plugins/EntryStatePlugin";
 import { FormattingPlugin } from "./plugins/FormattingPlugin";
@@ -101,6 +102,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
           LinkNode,
           HighlightAssignmentNode,
           IpsumCommentNode,
+          CommentLabelNode,
         ],
       }}
     >

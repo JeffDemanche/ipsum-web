@@ -101,8 +101,8 @@ export const EntryStatePlugin: React.FunctionComponent<
             $setSelection(null);
           }
         }
-      },
-      { discrete: true }
+      }
+      // { discrete: true }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor, initialHtmlString]);

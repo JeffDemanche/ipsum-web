@@ -2,6 +2,7 @@ import {
   $applyNodeReplacement,
   DOMConversionMap,
   DOMConversionOutput,
+  DOMExportOutput,
   EditorConfig,
   ElementNode,
   LexicalEditor,
@@ -11,9 +12,13 @@ import {
   Spread,
 } from "lexical";
 
+import { CommentLabelNode } from "./CommentLabelNode";
+
 interface IpsumCommentNodeAttributes {
   commentId: string;
   commentHighlightHue: number;
+  commentHighlightObjectText: string;
+  commentHighlightNumber: string;
 }
 
 export type SerializedIpsumCommentNode = Spread<
@@ -25,7 +30,10 @@ export function $createIpsumCommentNode(
   attributes: IpsumCommentNodeAttributes,
   key?: NodeKey
 ) {
-  return $applyNodeReplacement(new IpsumCommentNode(attributes, key));
+  const commentNode = new IpsumCommentNode(attributes, key);
+  const labelNode = new CommentLabelNode(attributes);
+  commentNode.append(labelNode);
+  return $applyNodeReplacement(commentNode);
 }
 
 export function $isIpsumCommentNode(
@@ -39,12 +47,17 @@ function convertIpsumCommentNode(domNode: HTMLElement): DOMConversionOutput {
   const commentHighlightHue = Number.parseInt(
     domNode.getAttribute("data-hue") ?? "0"
   );
+  const commentHighlightNumber = domNode.getAttribute("data-number") ?? "";
+  const commentHighlightObjectText =
+    domNode.getAttribute("data-object-text") ?? "";
 
   if (commentId && commentId.length && domNode.hasChildNodes())
     return {
       node: $createIpsumCommentNode({
         commentId,
         commentHighlightHue,
+        commentHighlightNumber,
+        commentHighlightObjectText,
       }),
     };
 }
@@ -78,18 +91,30 @@ export class IpsumCommentNode extends ElementNode {
     return true;
   }
 
+  canInsertTextBefore(): boolean {
+    return true;
+  }
+
   addStyle(element: HTMLElement): void {
     element.classList.add("ipsum-comment");
+
+    const hue = this.__attributes.commentHighlightHue;
+    hue && element.style.setProperty("--hue", `${hue}`);
+    element.style.setProperty("--lightness", `${hue ? "95%" : "0%"}`);
   }
 
   removeStyle(element: HTMLElement): void {
     element.classList.remove("ipsum-comment");
+    element.style.removeProperty("--hue");
+    element.style.removeProperty("--lightness");
   }
 
   static importJSON(_serializedNode: SerializedIpsumCommentNode): LexicalNode {
     const node = $createIpsumCommentNode({
       commentId: _serializedNode.commentId,
       commentHighlightHue: _serializedNode.commentHighlightHue,
+      commentHighlightNumber: _serializedNode.commentHighlightNumber,
+      commentHighlightObjectText: _serializedNode.commentHighlightObjectText,
     });
 
     node.setFormat(_serializedNode.format);
@@ -107,8 +132,18 @@ export class IpsumCommentNode extends ElementNode {
 
   createDOM(_config: EditorConfig, _editor: LexicalEditor): HTMLElement {
     const element = document.createElement("div");
+
     if (this.__attributes.commentId) {
       element.setAttribute("data-comment-id", this.__attributes.commentId);
+      element.setAttribute(
+        "data-number",
+        this.__attributes.commentHighlightNumber
+      );
+      element.setAttribute(
+        "data-object-text",
+        this.__attributes.commentHighlightObjectText
+      );
+
       const hue = this.__attributes.commentHighlightHue;
       hue && element.setAttribute("data-hue", `${hue}`);
 
@@ -152,6 +187,20 @@ export class IpsumCommentNode extends ElementNode {
           priority: 1,
         };
       },
+    };
+  }
+
+  exportDOM(editor: LexicalEditor): DOMExportOutput {
+    return {
+      after: (element: HTMLElement) => {
+        // Remove the comment label markup
+        if (element instanceof HTMLElement) {
+          const labelElement = element.querySelector("[data-comment-label]");
+          labelElement?.remove();
+        }
+        return element;
+      },
+      element: this.createDOM(editor._config, editor),
     };
   }
 

@@ -6,6 +6,8 @@ export {
 
 export { ProjectState } from "./project";
 
+export * from "./project/wrapper";
+
 export * from "./project/types";
 
 export {
