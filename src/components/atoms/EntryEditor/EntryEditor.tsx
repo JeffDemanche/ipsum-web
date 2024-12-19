@@ -11,7 +11,7 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import cx from "classnames";
 import { editorTheme } from "components/styles/editor";
 import { LexicalEditor } from "lexical";
-import React, { CSSProperties, useCallback, useState } from "react";
+import React, { CSSProperties, useCallback, useEffect, useState } from "react";
 import { IpsumDateTime } from "util/dates";
 import { placeholderForDate } from "util/placeholders";
 import { TestIds } from "util/test-ids";
@@ -77,6 +77,10 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
 
   const [entryKey, setEntryKey] = useState(defaultEntryKey);
 
+  useEffect(() => {
+    setEntryKey(defaultEntryKey);
+  }, [defaultEntryKey]);
+
   const lineClampStyle: CSSProperties = maxLines
     ? { WebkitLineClamp: maxLines, lineClamp: maxLines }
     : {};
@@ -122,7 +126,6 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
             highlightsMap={highlightsMap}
             onHighlightDelete={deleteHighlight}
           />
-          <IpsumCommentPlugin editable={editable} />
           <RichTextPlugin
             contentEditable={
               <ContentEditable
@@ -150,6 +153,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
           <LinkPlugin />
           <HistoryPlugin />
           <EditableStateChangePlugin editable={editable} />
+          <IpsumCommentPlugin editable={editable} />
         </div>
       </div>
     </LexicalComposer>

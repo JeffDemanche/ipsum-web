@@ -1,14 +1,8 @@
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import {
-  $getRoot,
-  $getSelection,
-  $setSelection,
-  EditorState,
-  LexicalEditor,
-} from "lexical";
-import React, { useEffect, useRef, useState } from "react";
+import { $getRoot, $setSelection, EditorState, LexicalEditor } from "lexical";
+import React, { useEffect, useRef } from "react";
 import { useDebouncedCallback } from "util/hooks";
 
 interface EntryStatePluginProps {

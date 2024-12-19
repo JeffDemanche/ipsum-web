@@ -124,7 +124,7 @@ export const useCommentsConnected = ({
     entryKey: string;
     htmlString: string;
   }) => {
-    if (!selectedComment) return;
+    if (!selectedComment) return false;
 
     return updateEntry({
       entryKey,

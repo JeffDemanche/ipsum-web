@@ -80,7 +80,7 @@ export const excerptCommentDivString = (
   const commentDiv = doc.querySelector(`div[data-comment-id="${commentId}"`);
 
   if (!commentDiv) {
-    throw new Error(`No comment div found with commentId ${commentId}`);
+    return undefined;
   }
   return commentDiv.innerHTML;
 };

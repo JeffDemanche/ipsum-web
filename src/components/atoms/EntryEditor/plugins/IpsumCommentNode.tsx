@@ -12,7 +12,7 @@ import {
   Spread,
 } from "lexical";
 
-import { CommentLabelNode } from "./CommentLabelNode";
+import { $isCommentLabelNode, CommentLabelNode } from "./CommentLabelNode";
 
 interface IpsumCommentNodeAttributes {
   commentId: string;
@@ -83,16 +83,22 @@ export class IpsumCommentNode extends ElementNode {
     return false;
   }
 
+  isEmpty(): boolean {
+    return this.getChildren()
+      .filter((child) => !$isCommentLabelNode(child))
+      .every((node) => node.getTextContent() === "");
+  }
+
   isInline(): boolean {
     return false;
   }
 
   canInsertTextAfter(): boolean {
-    return true;
+    return false;
   }
 
   canInsertTextBefore(): boolean {
-    return true;
+    return false;
   }
 
   addStyle(element: HTMLElement): void {
