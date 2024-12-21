@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, Page, test } from "@playwright/test";
 import { TestIds } from "util/test-ids";
 
 test.beforeEach(async ({ page }) => {
@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:9000/journal/?siddhartha");
 });
 
-const createComment = async (page) => {
+const createComment = async (page: Page) => {
   const drawer = page.getByTestId(TestIds.BrowserDrawer.BrowserDrawerOpened);
 
   const firstHighlightBlurb = drawer

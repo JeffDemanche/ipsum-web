@@ -110,7 +110,7 @@ export const useCommentsConnected = ({
       htmlString,
       objectHighlight: highlightId,
     });
-    return newComment.sourceEntry;
+    return newComment.commentEntry;
   };
 
   const selectedComment = comments.find((comment) =>
