@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Comments } from "components/molecules/Comments";
+import { CommentsNavigator } from "components/molecules/CommentsNavigator";
 import { useState } from "react";
 import {
   apiCreateComment,
@@ -12,7 +12,7 @@ import { IpsumDay } from "util/dates";
 import { removeEmptyCommentDivs, replaceCommentDiv } from "util/excerpt";
 
 export type CommentsConnectedProps = Pick<
-  React.ComponentProps<typeof Comments>,
+  React.ComponentProps<typeof CommentsNavigator>,
   | "today"
   | "selectedDay"
   | "setSelectedDay"

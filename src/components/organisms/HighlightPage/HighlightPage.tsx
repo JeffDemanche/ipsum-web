@@ -4,7 +4,7 @@ import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations
 import { CommentsConnectedProps } from "components/hooks/use-comments-connected";
 import { HighlightFunctionButtonsConnectedProps } from "components/hooks/use-highlight-function-buttons-connected";
 import { HighlightSRSButtonsConnectedProps } from "components/hooks/use-highlight-srs-buttons-connected";
-import { Comments } from "components/molecules/Comments";
+import { CommentsNavigator } from "components/molecules/CommentsNavigator";
 import { PageHeaderHighlight } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
 import { hueSwatch } from "components/styles";
@@ -134,7 +134,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
                   {
                     elevated: false,
                     component: (
-                      <Comments
+                      <CommentsNavigator
                         className={styles["comments-section"]}
                         {...commentsProps}
                       />

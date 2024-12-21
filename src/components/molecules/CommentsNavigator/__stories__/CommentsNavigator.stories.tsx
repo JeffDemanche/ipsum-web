@@ -1,15 +1,15 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { IpsumDay } from "util/dates";
 
-import { Comments } from "../Comments";
+import { CommentsNavigator } from "../CommentsNavigator";
 
-const meta: Meta<typeof Comments> = {
+const meta: Meta<typeof CommentsNavigator> = {
   title: "Molecules/Comments",
-  component: Comments,
+  component: CommentsNavigator,
 };
 
 export default meta;
-type StoryComments = StoryObj<typeof Comments>;
+type StoryComments = StoryObj<typeof CommentsNavigator>;
 
 export const CommentsExample: StoryComments = {
   args: {

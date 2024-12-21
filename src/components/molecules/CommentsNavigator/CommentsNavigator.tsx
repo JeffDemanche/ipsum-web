@@ -5,9 +5,9 @@ import { TestIds } from "util/test-ids";
 
 import { Entry } from "../Entry";
 import { MonthlyNav } from "../MonthlyNav";
-import styles from "./Comments.less";
+import styles from "./CommentsNavigator.less";
 
-interface CommentsProps {
+interface CommentsNavigatorProps {
   className?: string;
 
   today: IpsumDay;
@@ -34,7 +34,9 @@ interface CommentsProps {
   onHighlightClick: (highlightId: string) => void;
 }
 
-export const Comments: React.FunctionComponent<CommentsProps> = ({
+export const CommentsNavigator: React.FunctionComponent<
+  CommentsNavigatorProps
+> = ({
   className,
   today,
   selectedDay,
