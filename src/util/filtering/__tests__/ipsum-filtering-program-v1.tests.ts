@@ -19,7 +19,7 @@ const mock_hl = (
 
 describe("IpsumFilteringProgramV1", () => {
   describe("parsing", () => {
-    it("should build AST from simple string", () => {
+    test("should build AST from simple string", () => {
       const ifl = createFilteringProgram("v1");
 
       const ast = ifl.createAst("highlights", {});
@@ -27,7 +27,7 @@ describe("IpsumFilteringProgramV1", () => {
       expect(ast.errors).toHaveLength(0);
     });
 
-    it("should return error when parsing simple invalid string", () => {
+    test("should return error when parsing simple invalid string", () => {
       const ifl = createFilteringProgram("v1");
 
       const ast = ifl.createAst("highlights bad", {});
@@ -36,7 +36,7 @@ describe("IpsumFilteringProgramV1", () => {
       expect(ast.errors[0].message).toBe("Unexpected end of input: \nbad");
     });
 
-    it("should validate simple highlight filter expression", () => {
+    test("should validate simple highlight filter expression", () => {
       const ifl = createFilteringProgram("v1");
 
       const ast = ifl.createAst('highlights from "1" to "2"', {});
@@ -44,7 +44,7 @@ describe("IpsumFilteringProgramV1", () => {
       expect(ast.errors).toHaveLength(0);
     });
 
-    it("should validate conjuction", () => {
+    test("should validate conjuction", () => {
       const ifl = createFilteringProgram("v1");
 
       const ast = ifl.createAst(
@@ -55,7 +55,7 @@ describe("IpsumFilteringProgramV1", () => {
       expect(ast.errors).toHaveLength(0);
     });
 
-    it.each([
+    test.each([
       ['highlights from "1" to "2"', 0],
       ['highlights which is "1"', 0],
       ['highlights which relates to "1"', 0],
@@ -88,7 +88,7 @@ describe("IpsumFilteringProgramV1", () => {
 
   describe("evaluation", () => {
     describe("filtering", () => {
-      it("should execute simple day filter on highlights", () => {
+      test("should execute simple day filter on highlights", () => {
         const program = new IpsumFilteringProgramV1();
         program.setProgram('highlights from "1/1/2020" to "2/1/2020"');
 
@@ -122,7 +122,7 @@ describe("IpsumFilteringProgramV1", () => {
         );
       });
 
-      it("should execute simple relation filter on highlights", () => {
+      test("should execute simple relation filter on highlights", () => {
         const program = new IpsumFilteringProgramV1();
         program.setProgram('highlights which relates to "foo"');
 
@@ -173,7 +173,7 @@ describe("IpsumFilteringProgramV1", () => {
         expect(results.highlights[0].id).toBe("1");
       });
 
-      it("should execute simple conjunction filter on highlights", () => {
+      test("should execute simple conjunction filter on highlights", () => {
         const program = new IpsumFilteringProgramV1();
         program.setProgram(
           'highlights (which relates to "foo" and which is "bar")'
@@ -226,7 +226,7 @@ describe("IpsumFilteringProgramV1", () => {
         expect(results.highlights[0].id).toBe("1");
       });
 
-      it("should execute simple disjunction filter on highlights", () => {
+      test("should execute simple disjunction filter on highlights", () => {
         const program = new IpsumFilteringProgramV1();
         program.setProgram(
           'highlights (which relates to "foo" or from "1/1/2020" to "2/1/2020")'
@@ -267,7 +267,7 @@ describe("IpsumFilteringProgramV1", () => {
     });
 
     describe("sorting", () => {
-      it("should correctly sort by recent first as of today", () => {
+      test("should correctly sort by recent first as of today", () => {
         const program = new IpsumFilteringProgramV1();
         program.setProgram('highlights sorted by recent first as of "today"');
 
@@ -288,7 +288,7 @@ describe("IpsumFilteringProgramV1", () => {
         expect(results.highlights[3].id).toBe("hl_1/1/2020");
       });
 
-      it("should correctly sort by oldest first as of today", () => {
+      test("should correctly sort by oldest first as of today", () => {
         const program = new IpsumFilteringProgramV1();
         program.setProgram('highlights sorted by oldest first as of "today"');
 
@@ -309,7 +309,7 @@ describe("IpsumFilteringProgramV1", () => {
         expect(results.highlights[3].id).toBe("hl_1/7/2020");
       });
 
-      it("should correctly sort by up for review", () => {
+      test("should correctly sort by up for review", () => {
         const program = new IpsumFilteringProgramV1();
         program.setProgram(
           'highlights sorted by review status as of "1/17/2020"'
@@ -390,7 +390,7 @@ describe("IpsumFilteringProgramV1", () => {
       return null;
     };
 
-    it.each<{
+    test.each<{
       input: string;
       expectedOutput: string;
       findNode: (program: IpsumFilteringProgramV1) => EndowedNode;

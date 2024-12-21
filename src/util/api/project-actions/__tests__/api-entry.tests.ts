@@ -11,7 +11,7 @@ import { updateJournalEntry } from "../entry/update-journal-entry";
 
 describe("API entry actions", () => {
   describe("createEntry", () => {
-    it("should create an entry and a journalEntry", () => {
+    test("should create an entry and a journalEntry", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -40,7 +40,7 @@ describe("API entry actions", () => {
 
   describe("Journal Entry", () => {
     describe("updateJournalEntry", () => {
-      it("should update an entry and a journalEntry", () => {
+      test("should update an entry and a journalEntry", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -72,7 +72,7 @@ describe("API entry actions", () => {
         ).toEqual("<div>goodbye world</div>");
       });
 
-      it("should delete an entry and a journalEntry if the htmlString is empty", () => {
+      test("should delete an entry and a journalEntry if the htmlString is empty", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -104,7 +104,7 @@ describe("API entry actions", () => {
     });
 
     describe("deleteJournalEntry", () => {
-      it("should delete an entry and a journalEntry", () => {
+      test("should delete an entry and a journalEntry", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -132,7 +132,7 @@ describe("API entry actions", () => {
 
   describe("Arc Entry", () => {
     describe("createArcEntry", () => {
-      it("should create an entry and an arcEntry", () => {
+      test("should create an entry and an arcEntry", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -159,7 +159,7 @@ describe("API entry actions", () => {
     });
 
     describe("updateArcEntry", () => {
-      it("should update an entry and an arcEntry", () => {
+      test("should update an entry and an arcEntry", () => {
         const state = new ProjectState();
 
         const theSeventh = IpsumDay.fromString("1/7/2020", "stored-day");

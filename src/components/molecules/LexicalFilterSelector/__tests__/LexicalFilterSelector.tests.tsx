@@ -29,7 +29,7 @@ describe("LexicalFilterSelector", () => {
 
   describe("nodes", () => {
     describe("filter type", () => {
-      it("should change from highlights to arcs", async () => {
+      test("should change from highlights to arcs", async () => {
         renderFilterSelector({
           programText: 'highlights from "beginning" to "today"',
         });
@@ -53,7 +53,7 @@ describe("LexicalFilterSelector", () => {
     });
 
     describe("filters", () => {
-      it("should add a filter expression with none currently enabled when the user clicks the + filter button", async () => {
+      test("should add a filter expression with none currently enabled when the user clicks the + filter button", async () => {
         renderFilterSelector({
           programText: "highlights",
         });
@@ -77,7 +77,7 @@ describe("LexicalFilterSelector", () => {
     });
 
     describe("sort", () => {
-      it("should add a sort expression when the user clicks the + sort button", async () => {
+      test("should add a sort expression when the user clicks the + sort button", async () => {
         renderFilterSelector({
           programText: "highlights",
         });
@@ -95,7 +95,7 @@ describe("LexicalFilterSelector", () => {
         );
       });
 
-      it("should remove the sort expression when the user clicks the - sort button", async () => {
+      test("should remove the sort expression when the user clicks the - sort button", async () => {
         renderFilterSelector({
           programText: 'highlights sorted by recent first as of "today"',
         });

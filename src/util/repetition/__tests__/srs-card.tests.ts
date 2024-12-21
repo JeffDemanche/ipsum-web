@@ -3,7 +3,7 @@ import { IpsumDay } from "util/dates";
 import { IpsumSRSCard } from "../ipsum-srs-card";
 
 describe("SRS Card", () => {
-  it("should have base case EF and interval", () => {
+  test("should have base case EF and interval", () => {
     const card = new IpsumSRSCard({
       creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
       ratings: [],
@@ -12,7 +12,7 @@ describe("SRS Card", () => {
     expect(card.interval).toBe(1);
   });
 
-  it("should become up for review the day after creation, but not on creation day", () => {
+  test("should become up for review the day after creation, but not on creation day", () => {
     const card = new IpsumSRSCard({
       creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
       ratings: [],
@@ -25,7 +25,7 @@ describe("SRS Card", () => {
     ).toBe(true);
   });
 
-  it("upForReview should return correctly for non-today day", () => {
+  test("upForReview should return correctly for non-today day", () => {
     const card = new IpsumSRSCard({
       creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
       ratings: [],
@@ -80,7 +80,7 @@ describe("SRS Card", () => {
     });
   });
 
-  it("should have variable EF and constant interval after single 5 rating", () => {
+  test("should have variable EF and constant interval after single 5 rating", () => {
     const card = new IpsumSRSCard({
       creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
       ratings: [],
@@ -93,7 +93,7 @@ describe("SRS Card", () => {
     expect(rating.intervalAfter).toBe(5);
   });
 
-  it("should have variable EF and constant interval after single 4 rating", () => {
+  test("should have variable EF and constant interval after single 4 rating", () => {
     const card = new IpsumSRSCard({
       creationDay: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
       ratings: [],
@@ -106,7 +106,7 @@ describe("SRS Card", () => {
     expect(rating.intervalAfter).toBe(4);
   });
 
-  it.each<{
+  test.each<{
     ratings: number[];
     intervalsAfter?: number[];
     easesAfter?: number[];
@@ -150,7 +150,7 @@ describe("SRS Card", () => {
     }
   );
 
-  it.each<{
+  test.each<{
     priorEase: number;
     priorInterval: number;
     q: number;

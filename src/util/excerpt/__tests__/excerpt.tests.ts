@@ -2,7 +2,7 @@ import { isEmptyHTMLString, replaceHighlightHtmlWith } from "../excerpt";
 
 describe("Excerpt", () => {
   describe("replaceHighlightHtmlWith", () => {
-    it("should replace the first highlight with the replacement string", () => {
+    test("should replace the first highlight with the replacement string", () => {
       const originalHtmlString = `
         <p><span data-highlight-id="1">First</span></p>
         <p><span data-highlight-id="2">Second</span></p>
@@ -19,7 +19,7 @@ describe("Excerpt", () => {
       `);
     });
 
-    it("should replace multi-block highlights with the replacement string", () => {
+    test("should replace multi-block highlights with the replacement string", () => {
       const originalHtmlString = `
         <p><span data-highlight-id="1">First</span></p>
         <p><span data-highlight-id="1">Second</span></p>
@@ -43,7 +43,7 @@ describe("Excerpt", () => {
       );
     });
 
-    it("should replace a list where every element belongs to the highlight", () => {
+    test("should replace a list where every element belongs to the highlight", () => {
       const originalHtmlString = `
         <ul>
           <li><span data-highlight-id="1">First</span></li>
@@ -63,7 +63,7 @@ describe("Excerpt", () => {
   });
 
   describe("isEmptyHTMLString", () => {
-    it.each([
+    test.each([
       ["<p></p>", true],
       ["<p> </p>", false],
       ["<p><br></p>", true],

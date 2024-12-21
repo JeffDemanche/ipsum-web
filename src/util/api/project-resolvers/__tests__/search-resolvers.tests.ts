@@ -19,7 +19,7 @@ describe("Search resolvers", () => {
 
   describe("root queries", () => {
     describe("searchHighlights", () => {
-      it("should return result of filter program", async () => {
+      test("should return result of filter program", async () => {
         createEntry(
           {
             entryKey: "entry",

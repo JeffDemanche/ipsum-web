@@ -10,7 +10,7 @@ import { createHighlight } from "../highlight/create-highlight";
 
 describe("API comment actions", () => {
   describe("createComment", () => {
-    it("should create a comment, highlight, relation, and entry for the day created if it doesn't exist", () => {
+    test("should create a comment, highlight, relation, and entry for the day created if it doesn't exist", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -77,7 +77,7 @@ describe("API comment actions", () => {
       );
     });
 
-    it("if the entry for the day created exists, should append HTML string to existing entry", () => {
+    test("if the entry for the day created exists, should append HTML string to existing entry", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -121,7 +121,7 @@ describe("API comment actions", () => {
   });
 
   describe("deleteComment", () => {
-    it("removes comment from the state and updates the source entry", () => {
+    test("removes comment from the state and updates the source entry", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -167,7 +167,7 @@ describe("API comment actions", () => {
       expect(updatedSourceEntryCurrentHTML).toEqual("<p>hello world</p>");
     });
 
-    it("deletes the source entry if it ends up being empty", () => {
+    test("deletes the source entry if it ends up being empty", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 

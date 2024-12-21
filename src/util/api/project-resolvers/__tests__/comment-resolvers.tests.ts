@@ -18,7 +18,7 @@ describe("Comment resolvers", () => {
   });
 
   describe("root queries", () => {
-    it("should query a single comment", () => {
+    test("should query a single comment", () => {
       createEntry(
         {
           entryKey: "1/1/2020",
@@ -70,7 +70,7 @@ describe("Comment resolvers", () => {
       );
     });
 
-    it("should query multiple comments", () => {
+    test("should query multiple comments", () => {
       createEntry(
         {
           entryKey: "1/1/2020",

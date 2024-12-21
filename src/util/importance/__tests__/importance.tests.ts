@@ -3,11 +3,11 @@ import { IpsumDay } from "util/dates";
 import { highlightImportanceOnDay } from "..";
 
 describe("highlightImportanceOnDay", () => {
-  it("should return 0 if no ratings", () => {
+  test("should return 0 if no ratings", () => {
     expect(highlightImportanceOnDay({ ratings: [] })).toEqual(0);
   });
 
-  it.each([
+  test.each([
     [7, [{ day: "1/1/2024", value: 1 }], "12/31/2023", 0],
     [7, [{ day: "1/1/2024", value: 1 }], "1/1/2024", 1],
     [7, [{ day: "1/1/2024", value: 1 }], "1/8/2024", 0.5],

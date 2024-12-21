@@ -6,7 +6,7 @@ import { createFilteringProgram } from "../versions";
 
 describe("filter tree actions", () => {
   describe("removeFilterExpression", () => {
-    it("removes filter expression from conjuction", () => {
+    test("removes filter expression from conjuction", () => {
       const program = createFilteringProgram("v1");
       program.setProgram(
         'highlights (which relates to "arc name" and which relates to "arc name 2") sorted by review status as of "today"'
@@ -29,7 +29,7 @@ describe("filter tree actions", () => {
       );
     });
 
-    it("removes filter expression from disjunction", () => {
+    test("removes filter expression from disjunction", () => {
       const program = createFilteringProgram("v1");
       program.setProgram(
         'highlights (from "beginning" to "today" or which relates to "arc 1 name" or which relates to "arc 2 name") sorted by review status as of "today"'
@@ -52,7 +52,7 @@ describe("filter tree actions", () => {
       );
     });
 
-    it("removes first clause from conjunction", () => {
+    test("removes first clause from conjunction", () => {
       const program = createFilteringProgram("v1");
       program.setProgram(
         'highlights (from "beginning" to "today" and which relates to "arc name") sorted by review status as of "today"'
@@ -77,7 +77,7 @@ describe("filter tree actions", () => {
   });
 
   describe("addFilterExpression", () => {
-    it("adds filter expression as new conjunction", () => {
+    test("adds filter expression as new conjunction", () => {
       const program = createFilteringProgram("v1");
       program.setProgram(
         'highlights from "beginning" to "today" sorted by review status as of "today"'
@@ -105,7 +105,7 @@ describe("filter tree actions", () => {
       );
     });
 
-    it("appends filter expression to existing conjunction", () => {
+    test("appends filter expression to existing conjunction", () => {
       const program = createFilteringProgram("v1");
       program.setProgram(
         'highlights (from "beginning" to "today" and which relates to "arc name") sorted by review status as of "today"'
@@ -133,7 +133,7 @@ describe("filter tree actions", () => {
       );
     });
 
-    it("appends a third filter expression to existing conjunction", () => {
+    test("appends a third filter expression to existing conjunction", () => {
       const program = createFilteringProgram("v1");
       program.setProgram(
         'highlights (from "beginning" to "today" and which relates to "arc name" and which relates to "arc name 2") sorted by review status as of "today"'
@@ -161,7 +161,7 @@ describe("filter tree actions", () => {
       );
     });
 
-    it("adds disjunction within existing conjunction", () => {
+    test("adds disjunction within existing conjunction", () => {
       const program = createFilteringProgram("v1");
       program.setProgram(
         'highlights (from "beginning" to "today" and which relates to "arc name") sorted by review status as of "today"'

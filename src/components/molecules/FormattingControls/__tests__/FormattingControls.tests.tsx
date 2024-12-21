@@ -16,7 +16,7 @@ const WithEditor = () => {
 };
 
 describe("FormattingControls", () => {
-  it("should render", async () => {
+  test("should render", async () => {
     render(<WithEditor />);
 
     await waitFor(() => {});
@@ -26,7 +26,7 @@ describe("FormattingControls", () => {
     /**
      * Lexical with RTL is buggy and the test fails.
      */
-    it.skip("should highlight the selected text", async () => {
+    test.skip("should highlight the selected text", async () => {
       const createHighlight = jest.fn(() => "highlight-id");
       const highlightsMap = {
         "highlight-id": { id: "highlight-id", hue: 0 },

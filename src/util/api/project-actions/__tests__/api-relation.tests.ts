@@ -15,7 +15,7 @@ import {
 describe("API relation actions", () => {
   describe("highlight as subject", () => {
     describe("createRelationFromHighlightToArc", () => {
-      it("should reject if the highlight does not exist", () => {
+      test("should reject if the highlight does not exist", () => {
         const state = new ProjectState();
 
         expect(() =>
@@ -32,7 +32,7 @@ describe("API relation actions", () => {
         );
       });
 
-      it("should reject if the arc does not exist", () => {
+      test("should reject if the arc does not exist", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -62,7 +62,7 @@ describe("API relation actions", () => {
         ).toThrowError("No arc with id arc-id exists in the project state");
       });
 
-      it("should create a relation from a highlight to an arc", () => {
+      test("should create a relation from a highlight to an arc", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -95,7 +95,7 @@ describe("API relation actions", () => {
         expect(relationInState.subject).toEqual(highlight.id);
       });
 
-      it("should update subject and object outgoing and incoming relations, respectively", () => {
+      test("should update subject and object outgoing and incoming relations, respectively", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -137,7 +137,7 @@ describe("API relation actions", () => {
     });
 
     describe("deleteRelationFromHighlightToArc", () => {
-      it("should reject if the relation does not exist", () => {
+      test("should reject if the relation does not exist", () => {
         const state = new ProjectState();
 
         expect(() =>
@@ -154,7 +154,7 @@ describe("API relation actions", () => {
         );
       });
 
-      it("should delete a relation from a highlight to an arc, and update incoming/outgoing relation fields", () => {
+      test("should delete a relation from a highlight to an arc, and update incoming/outgoing relation fields", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -202,7 +202,7 @@ describe("API relation actions", () => {
 
   describe("arc as subject", () => {
     describe("createRelationFromArcToArc", () => {
-      it("should reject if the subject arc does not exist", () => {
+      test("should reject if the subject arc does not exist", () => {
         const state = new ProjectState();
 
         expect(() =>
@@ -219,7 +219,7 @@ describe("API relation actions", () => {
         );
       });
 
-      it("should reject if the object arc does not exist", () => {
+      test("should reject if the object arc does not exist", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -242,7 +242,7 @@ describe("API relation actions", () => {
         );
       });
 
-      it("should create a relation from an arc to an arc and update both arc's relation fields", () => {
+      test("should create a relation from an arc to an arc and update both arc's relation fields", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -284,7 +284,7 @@ describe("API relation actions", () => {
     });
 
     describe("deleteRelationFromArcToArc", () => {
-      it("should reject if the relation does not exist", () => {
+      test("should reject if the relation does not exist", () => {
         const state = new ProjectState();
 
         expect(() =>
@@ -299,7 +299,7 @@ describe("API relation actions", () => {
         );
       });
 
-      it("should delete a relation from an arc to an arc, and update incoming/outgoing relation fields", () => {
+      test("should delete a relation from an arc to an arc, and update incoming/outgoing relation fields", () => {
         const state = new ProjectState();
         const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
