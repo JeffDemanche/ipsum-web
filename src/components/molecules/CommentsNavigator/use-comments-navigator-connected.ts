@@ -10,7 +10,7 @@ import {
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 
-export type CommentsConnectedProps = Pick<
+export type CommentsNavigatorConnectedProps = Pick<
   React.ComponentProps<typeof CommentsNavigator>,
   | "today"
   | "selectedDay"
@@ -58,9 +58,9 @@ interface UseCommentsConnectedProps {
   highlightId: string;
 }
 
-export const useCommentsConnected = ({
+export const useCommentsNavigatorConnected = ({
   highlightId,
-}: UseCommentsConnectedProps): CommentsConnectedProps => {
+}: UseCommentsConnectedProps): CommentsNavigatorConnectedProps => {
   const today = IpsumDay.today();
 
   const [selectedDay, setSelectedDay] = useState(today);
@@ -71,9 +71,8 @@ export const useCommentsConnected = ({
     },
   });
 
-  const comments: CommentsConnectedProps["comments"] = data?.highlight.comments
-    .filter(Boolean)
-    .map((comment) => ({
+  const comments: CommentsNavigatorConnectedProps["comments"] =
+    data?.highlight.comments.filter(Boolean).map((comment) => ({
       id: comment.id,
       day: IpsumDay.fromString(comment.history.dateCreated, "iso"),
       htmlString: comment.htmlString,

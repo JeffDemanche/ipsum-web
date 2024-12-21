@@ -1,10 +1,12 @@
 import { Collapse } from "@mui/material";
 import cx from "classnames";
 import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
-import { CommentsConnectedProps } from "components/hooks/use-comments-connected";
 import { HighlightFunctionButtonsConnectedProps } from "components/hooks/use-highlight-function-buttons-connected";
 import { HighlightSRSButtonsConnectedProps } from "components/hooks/use-highlight-srs-buttons-connected";
-import { CommentsNavigator } from "components/molecules/CommentsNavigator";
+import {
+  CommentsNavigator,
+  CommentsNavigatorConnectedProps,
+} from "components/molecules/CommentsNavigator";
 import { PageHeaderHighlight } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
 import { hueSwatch } from "components/styles";
@@ -39,7 +41,7 @@ interface HighlightPageProps {
     >["relations"];
   };
 
-  commentsProps: CommentsConnectedProps;
+  commentsProps: CommentsNavigatorConnectedProps;
 }
 
 export const HighlightPage: FunctionComponent<HighlightPageProps> = ({

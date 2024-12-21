@@ -1,8 +1,8 @@
 import { useQuery } from "@apollo/client";
-import { useCommentsConnected } from "components/hooks/use-comments-connected";
 import { useHighlightFunctionButtonsConnected } from "components/hooks/use-highlight-function-buttons-connected";
 import { useHighlightRelationsTableConnected } from "components/hooks/use-highlight-relations-table-connected";
 import { useHighlightSRSButtonsConnected } from "components/hooks/use-highlight-srs-buttons-connected";
+import { useCommentsNavigatorConnected } from "components/molecules/CommentsNavigator";
 import React from "react";
 import { urlRemoveLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
@@ -87,7 +87,7 @@ export const HighlightPageConnected: React.FunctionComponent<
     highlightId,
   });
 
-  const commentsProps = useCommentsConnected({ highlightId });
+  const commentsProps = useCommentsNavigatorConnected({ highlightId });
 
   const highlightSRSButtonsProps = useHighlightSRSButtonsConnected({
     highlightId,
