@@ -32,6 +32,9 @@ export { updateJournalEntry as apiUpdateJournalEntry } from "./entry/update-jour
 export { deleteJournalEntry as apiDeleteJournalEntry } from "./entry/delete-journal-entry";
 export { createArcEntry as apiCreateArcEntry } from "./entry/create-arc-entry";
 export { updateArcEntry as apiUpdateArcEntry } from "./entry/update-arc-entry";
+export { createCommentEntry as apiCreateCommentEntry } from "./entry/create-comment-entry";
+export { updateCommentEntry as apiUpdateCommentEntry } from "./entry/update-comment-entry";
+export { deleteCommentEntry as apiDeleteCommentEntry } from "./entry/delete-comment-entry";
 
 export { createHighlight as apiCreateHighlight } from "./highlight/create-highlight";
 export { createRelationFromHighlightToArc as apiCreateRelationFromHighlightToArc } from "./relation/create-relation-from-highlight-to-arc";

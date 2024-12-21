@@ -47,6 +47,12 @@ export type Comment = {
   sourceEntry: JournalEntry;
 };
 
+export type CommentEntry = {
+  __typename?: 'CommentEntry';
+  comment: Comment;
+  entry: Entry;
+};
+
 export type Day = {
   __typename?: 'Day';
   changedArcEntries?: Maybe<Array<ArcEntry>>;
@@ -71,6 +77,7 @@ export type Entry = {
 
 export enum EntryType {
   Arc = 'ARC',
+  Comment = 'COMMENT',
   Journal = 'JOURNAL'
 }
 
@@ -130,6 +137,8 @@ export type Query = {
   arcEntry?: Maybe<ArcEntry>;
   arcs?: Maybe<Array<Maybe<Arc>>>;
   comment?: Maybe<Comment>;
+  commentEntries?: Maybe<Array<Maybe<CommentEntry>>>;
+  commentEntry?: Maybe<CommentEntry>;
   comments?: Maybe<Array<Maybe<Comment>>>;
   commentsForDay?: Maybe<Array<Maybe<Comment>>>;
   day?: Maybe<Day>;
@@ -185,6 +194,16 @@ export type QueryArcsArgs = {
 
 export type QueryCommentArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryCommentEntriesArgs = {
+  entryKeys?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+
+export type QueryCommentEntryArgs = {
+  commentId: Scalars['ID'];
 };
 
 
