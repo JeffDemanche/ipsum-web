@@ -5,7 +5,7 @@ import { apiCreateArc } from "..";
 
 describe("API arc actions", () => {
   describe("createArc", () => {
-    it("should create an arc and entry", () => {
+    test("should create an arc and entry", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 

@@ -27,11 +27,9 @@ test.describe("Text Highlights", () => {
     test("highlights a single letter at the end of the entry", async ({
       page,
     }) => {
-      const todayEntryKey = new IpsumDateTime(
-        getCurrentLocalDateTime()
-      ).toString("entry-printed-date");
-
-      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(
+        TestIds.EntryEditor.ContentEditable
+      );
 
       await contentEditable.fill("This is a test");
 
@@ -55,11 +53,9 @@ test.describe("Text Highlights", () => {
     });
 
     test("applies two highlights to the same word", async ({ page }) => {
-      const todayEntryKey = new IpsumDateTime(
-        getCurrentLocalDateTime()
-      ).toString("entry-printed-date");
-
-      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(
+        TestIds.EntryEditor.ContentEditable
+      );
 
       await contentEditable.fill("123");
 
@@ -94,11 +90,9 @@ test.describe("Text Highlights", () => {
     });
 
     test("applies two highlights to the same text", async ({ page }) => {
-      const todayEntryKey = new IpsumDateTime(
-        getCurrentLocalDateTime()
-      ).toString("entry-printed-date");
-
-      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(
+        TestIds.EntryEditor.ContentEditable
+      );
 
       await contentEditable.fill("12345");
 
@@ -139,11 +133,9 @@ test.describe("Text Highlights", () => {
     });
 
     test("applies highlight across multiple paragraphs", async ({ page }) => {
-      const todayEntryKey = new IpsumDateTime(
-        getCurrentLocalDateTime()
-      ).toString("entry-printed-date");
-
-      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(
+        TestIds.EntryEditor.ContentEditable
+      );
 
       await contentEditable.pressSequentially("line 1");
 
@@ -180,11 +172,9 @@ test.describe("Text Highlights", () => {
     });
 
     test("applies partially overlapping highlight", async ({ page }) => {
-      const todayEntryKey = new IpsumDateTime(
-        getCurrentLocalDateTime()
-      ).toString("entry-printed-date");
-
-      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(
+        TestIds.EntryEditor.ContentEditable
+      );
 
       await contentEditable.fill("123");
 
@@ -234,11 +224,9 @@ test.describe("Text Highlights", () => {
     });
 
     test("applies highlight to a word with formatting", async ({ page }) => {
-      const todayEntryKey = new IpsumDateTime(
-        getCurrentLocalDateTime()
-      ).toString("entry-printed-date");
-
-      const contentEditable = page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = page.getByTestId(
+        TestIds.EntryEditor.ContentEditable
+      );
 
       await contentEditable.press("Meta+b");
       await contentEditable.pressSequentially("12");

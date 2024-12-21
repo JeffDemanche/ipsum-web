@@ -9,10 +9,10 @@ import { PageHeaderHighlight } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
 import { hueSwatch } from "components/styles";
 import React, { FunctionComponent } from "react";
+import { TestIds } from "util/test-ids";
 
 import styles from "./HighlightPage.less";
 import { HighlightPageSectionAttributes } from "./HighlightPageSectionAttributes";
-import { HighlightPageSectionComments } from "./HighlightPageSectionComments";
 import { HighlightPageSectionExcerpt } from "./HighlightPageSectionExcerpt";
 
 interface HighlightPageProps {
@@ -37,10 +37,6 @@ interface HighlightPageProps {
     relations: React.ComponentProps<
       typeof HighlightPageSectionAttributes
     >["relations"];
-
-    comments: React.ComponentProps<
-      typeof HighlightPageSectionComments
-    >["comments"];
   };
 
   commentsProps: CommentsConnectedProps;
@@ -59,7 +55,10 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
   commentsProps,
 }) => {
   return (
-    <div className={cx(className, styles["highlight-page-wrapper"])}>
+    <div
+      data-testid={TestIds.HighlightPage.HighlightPage}
+      className={cx(className, styles["highlight-page-wrapper"])}
+    >
       <PageHeaderHighlight
         highlight={{
           hue: highlight.hue,

@@ -9,7 +9,7 @@ import { ProjectState } from "../project-state";
 jest.mock("util/serializer", () => ({}));
 
 describe("ProjectState", () => {
-  it("initializes with empty state", () => {
+  test("initializes with empty state", () => {
     const state = new ProjectState();
     expect(state.collection("days").toObject()).toEqual({});
   });
@@ -42,7 +42,7 @@ describe("ProjectState", () => {
       });
     });
 
-    it("updates to one collection entry do not cause re-renders for users of other entries", async () => {
+    test("updates to one collection entry do not cause re-renders for users of other entries", async () => {
       const getArc1Reactive = jest.fn(() =>
         state.collection("arcs").getReactiveVar("1")
       );
@@ -83,7 +83,7 @@ describe("ProjectState", () => {
   });
 
   describe("crud operations", () => {
-    it("creates a new entry", () => {
+    test("creates a new entry", () => {
       const state = new ProjectState();
       state.collection("arcs").create("1", {
         __typename: "Arc",

@@ -12,8 +12,9 @@ export const commentTypeDef = gql`
   type Comment {
     id: ID!
     parent: Comment
-    commentEntry: CommentEntry!
-    highlight: Highlight!
+    sourceEntry: JournalEntry!
+    excerptHtmlString: String!
+    objectHighlight: Highlight!
     history: History!
   }
 `;

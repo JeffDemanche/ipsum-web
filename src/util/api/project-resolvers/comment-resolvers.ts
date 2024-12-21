@@ -1,5 +1,7 @@
 import { QueryCommentsArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumDay } from "util/dates";
+import { IpsumTimeMachine } from "util/diff";
+import { excerptCommentDivString } from "util/excerpt";
 import { PROJECT_STATE } from "util/state";
 
 export const CommentResolvers: StrictTypedTypePolicies = {
@@ -39,14 +41,30 @@ export const CommentResolvers: StrictTypedTypePolicies = {
   Comment: {
     keyFields: ["id"],
     fields: {
-      commentEntry(commentEntryKey) {
-        return (
-          PROJECT_STATE.collection("commentEntries").get(commentEntryKey) ??
-          null
+      sourceEntry(_, { readField }) {
+        const journalEntryOnDayCreated = IpsumDay.fromString(
+          readField<{ dateCreated: string }>("history").dateCreated,
+          "iso"
+        ).toString("entry-printed-date");
+        return PROJECT_STATE.collection("journalEntries").get(
+          journalEntryOnDayCreated
         );
       },
-      highlight(highlightId) {
-        return PROJECT_STATE.collection("highlights").get(highlightId) ?? null;
+      objectHighlight(objectHighlightId) {
+        return (
+          PROJECT_STATE.collection("highlights").get(objectHighlightId) ?? null
+        );
+      },
+      excerptHtmlString(_, { readField }) {
+        const journalEntry = readField<{ entry: string }>("sourceEntry");
+        const entryHtmlString = IpsumTimeMachine.fromString(
+          PROJECT_STATE.collection("entries").get(journalEntry.entry)
+            .trackedHTMLString
+        ).currentValue;
+
+        const thisId = readField<string>("id");
+
+        return excerptCommentDivString(entryHtmlString, thisId);
       },
     },
   },

@@ -16,6 +16,10 @@ export const createJournalEntry: APIFunction<
 > = (args, context) => {
   const { projectState } = context;
 
+  const dayCreated = args.dayCreated ?? IpsumDay.today();
+
+  if (projectState.collection("journalEntries").get(args.entryKey)) return;
+
   const entry = createEntry(
     {
       dayCreated: args.dayCreated,
@@ -35,7 +39,7 @@ export const createJournalEntry: APIFunction<
     });
 
   updateDay(
-    { day: args.dayCreated, journalEntryKey: () => journalEntry.entryKey },
+    { day: dayCreated, journalEntryKey: () => journalEntry.entryKey },
     context
   );
 

@@ -16,7 +16,7 @@ describe("Day resolvers", () => {
     await client.clearStore();
   });
 
-  it("should get a day", () => {
+  test("should get a day", () => {
     updateDay(
       { day: IpsumDay.fromString("1/1/2021", "stored-day") },
       { projectState: PROJECT_STATE }

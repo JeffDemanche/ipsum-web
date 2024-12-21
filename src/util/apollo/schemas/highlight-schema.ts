@@ -11,7 +11,7 @@ export const highlightTypeDef = gql`
     ): [Highlight]
   }
 
-  union HighlightObject = Arc | Day | Comment
+  union HighlightObject = Arc | Day
 
   type Highlight {
     id: ID!

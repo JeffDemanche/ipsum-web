@@ -10,13 +10,13 @@ const WithEditor = () => {
   return (
     <FormattingControlsProvider>
       <FormattingControls />
-      <EntryEditor />
+      <EntryEditor editorNamespace="test" />
     </FormattingControlsProvider>
   );
 };
 
 describe("FormattingControls", () => {
-  it("should render", async () => {
+  test("should render", async () => {
     render(<WithEditor />);
 
     await waitFor(() => {});
@@ -26,7 +26,7 @@ describe("FormattingControls", () => {
     /**
      * Lexical with RTL is buggy and the test fails.
      */
-    it.skip("should highlight the selected text", async () => {
+    test.skip("should highlight the selected text", async () => {
       const createHighlight = jest.fn(() => "highlight-id");
       const highlightsMap = {
         "highlight-id": { id: "highlight-id", hue: 0 },
@@ -35,6 +35,7 @@ describe("FormattingControls", () => {
         <FormattingControlsProvider>
           <FormattingControls />
           <EntryEditor
+            editorNamespace="test"
             // Lexical is buggy in the RTL environment unless you give the editor some initial content
             initialHtmlString="<p>It is written:</p>"
             highlightsMap={highlightsMap}

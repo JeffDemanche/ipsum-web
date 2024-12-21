@@ -6,7 +6,7 @@ import { apiCreateEntry, apiCreateHighlight } from "..";
 
 describe("API highlight actions", () => {
   describe("createHighlight", () => {
-    it("should reject if the entry does not exist", () => {
+    test("should reject if the entry does not exist", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -18,7 +18,7 @@ describe("API highlight actions", () => {
       ).toThrowError("No entry with key entry-key exists in the project state");
     });
 
-    it("should create a highlight", () => {
+    test("should create a highlight", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 

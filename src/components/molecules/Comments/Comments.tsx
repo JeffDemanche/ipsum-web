@@ -1,6 +1,7 @@
 import cx from "classnames";
-import React, { useState } from "react";
+import React from "react";
 import { IpsumDay } from "util/dates";
+import { TestIds } from "util/test-ids";
 
 import { Entry } from "../Entry";
 import { MonthlyNav } from "../MonthlyNav";
@@ -10,14 +11,18 @@ interface CommentsProps {
   className?: string;
 
   today: IpsumDay;
+  selectedDay: IpsumDay;
+  setSelectedDay: (day: IpsumDay) => void;
+
   comments: {
     id: string;
     day: IpsumDay;
-    commentEntry: {
+    sourceEntry: {
       entryKey: string;
       highlights: React.ComponentProps<typeof Entry>["highlights"];
       htmlString: string;
     };
+    excerptHtmlString: string;
   }[];
 
   onCreateComment: (htmlString: string) => string;
@@ -32,6 +37,8 @@ interface CommentsProps {
 export const Comments: React.FunctionComponent<CommentsProps> = ({
   className,
   today,
+  selectedDay,
+  setSelectedDay,
   comments,
   onCreateComment,
   onUpdateComment,
@@ -40,8 +47,6 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
   onDeleteHighlight,
   onHighlightClick,
 }) => {
-  const [selectedDay, setSelectedDay] = useState(today);
-
   const yesterday = today.add(-1);
 
   const editable = today.equals(selectedDay) || yesterday.equals(selectedDay);
@@ -50,6 +55,14 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
     comment.day.equals(selectedDay)
   );
 
+  const isNew = !selectedComment;
+
+  const entryKey = selectedDay.toString("entry-printed-date");
+
+  const highlights = isNew ? [] : selectedComment.sourceEntry.highlights;
+
+  const htmlString = isNew ? "" : selectedComment.excerptHtmlString;
+
   const entryDays = comments.map((comment) => comment.day);
 
   const onSelectDay = (day: IpsumDay) => {
@@ -57,28 +70,30 @@ export const Comments: React.FunctionComponent<CommentsProps> = ({
   };
 
   return (
-    <div className={cx(className, styles["comments"])}>
+    <div
+      data-testid={TestIds.Comments.Comments}
+      className={cx(className, styles["comments"])}
+    >
       <MonthlyNav
         entryDays={entryDays}
         today={today}
         selectedDay={selectedDay}
         onDaySelect={onSelectDay}
       />
-      {selectedComment && (
-        <Entry
-          entryKey={selectedComment.commentEntry.entryKey}
-          entryDay={selectedDay}
-          editable={editable}
-          highlights={selectedComment.commentEntry.highlights}
-          htmlString={selectedComment.commentEntry.htmlString}
-          createEntry={onCreateComment}
-          deleteEntry={onDeleteComment}
-          updateEntry={onUpdateComment}
-          createHighlight={onCreateHighlight}
-          deleteHighlight={onDeleteHighlight}
-          onHighlightClick={onHighlightClick}
-        />
-      )}
+      <Entry
+        editorNamespace={`comments-${selectedDay.toString("stored-day")}`}
+        entryKey={entryKey}
+        entryDay={selectedDay}
+        editable={editable}
+        highlights={highlights}
+        htmlString={htmlString}
+        createEntry={onCreateComment}
+        deleteEntry={onDeleteComment}
+        updateEntry={onUpdateComment}
+        createHighlight={onCreateHighlight}
+        deleteHighlight={onDeleteHighlight}
+        onHighlightClick={onHighlightClick}
+      />
     </div>
   );
 };

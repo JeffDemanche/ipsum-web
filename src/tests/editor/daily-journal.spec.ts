@@ -13,18 +13,22 @@ test.describe("Daily Journal", () => {
         getCurrentLocalDateTime()
       ).toString("entry-printed-date");
 
-      const contentEditable = await page.getByTestId(`editor-${todayEntryKey}`);
+      const contentEditable = await page.getByTestId(
+        TestIds.EntryEditor.ContentEditable
+      );
 
       await contentEditable.fill("This is a test");
 
       // Wait for entry debounce.
       await page.waitForTimeout(1000);
 
-      const todayNavButton = await page.getByTestId(
-        TestIds.DailyJournal.MonthlyNavEntryButton(
-          IpsumDay.fromString(todayEntryKey, "stored-day").toString("day")
-        )
-      );
+      const todayNavButton = page
+        .getByTestId(TestIds.MonthlyNav.EntryButton)
+        .filter({
+          hasText: IpsumDay.fromString(todayEntryKey, "stored-day").toString(
+            "day"
+          ),
+        });
 
       await expect(todayNavButton).toBeVisible();
 

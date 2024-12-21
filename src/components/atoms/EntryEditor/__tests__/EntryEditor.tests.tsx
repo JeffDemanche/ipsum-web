@@ -15,6 +15,6 @@ jest.mock("util/placeholders", () => ({
 
 describe("EntryEditor", () => {
   describe("entry state lifecycle", () => {
-    it("should create a new entry after typing in an editor with no entryKey", async () => {});
+    test("should create a new entry after typing in an editor with no entryKey", async () => {});
   });
 });

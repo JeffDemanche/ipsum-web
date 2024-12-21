@@ -15,18 +15,14 @@ export type ArcEntryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CommentKeySpecifier = ('commentEntry' | 'highlight' | 'history' | 'id' | 'parent' | CommentKeySpecifier)[];
+export type CommentKeySpecifier = ('excerptHtmlString' | 'history' | 'id' | 'objectHighlight' | 'parent' | 'sourceEntry' | CommentKeySpecifier)[];
 export type CommentFieldPolicy = {
-	commentEntry?: FieldPolicy<any> | FieldReadFunction<any>,
-	highlight?: FieldPolicy<any> | FieldReadFunction<any>,
+	excerptHtmlString?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	parent?: FieldPolicy<any> | FieldReadFunction<any>
-};
-export type CommentEntryKeySpecifier = ('comment' | 'entry' | CommentEntryKeySpecifier)[];
-export type CommentEntryFieldPolicy = {
-	comment?: FieldPolicy<any> | FieldReadFunction<any>,
-	entry?: FieldPolicy<any> | FieldReadFunction<any>
+	objectHighlight?: FieldPolicy<any> | FieldReadFunction<any>,
+	parent?: FieldPolicy<any> | FieldReadFunction<any>,
+	sourceEntry?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type DayKeySpecifier = ('changedArcEntries' | 'comments' | 'day' | 'hasJournalEntry' | 'journalEntry' | 'ratedHighlights' | 'srsCardsReviewed' | DayKeySpecifier)[];
 export type DayFieldPolicy = {
@@ -84,7 +80,7 @@ export type JournalMetadataKeySpecifier = ('lastArcHue' | JournalMetadataKeySpec
 export type JournalMetadataFieldPolicy = {
 	lastArcHue?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('arc' | 'arcByName' | 'arcEntries' | 'arcEntry' | 'arcs' | 'comment' | 'commentEntries' | 'commentEntry' | 'comments' | 'commentsForDay' | 'day' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'searchArcs' | 'searchArcsByName' | 'searchHighlights' | 'srsCard' | 'srsCards' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('arc' | 'arcByName' | 'arcEntries' | 'arcEntry' | 'arcs' | 'comment' | 'comments' | 'commentsForDay' | 'day' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'searchArcs' | 'searchArcsByName' | 'searchHighlights' | 'srsCard' | 'srsCards' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcByName?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -92,8 +88,6 @@ export type QueryFieldPolicy = {
 	arcEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcs?: FieldPolicy<any> | FieldReadFunction<any>,
 	comment?: FieldPolicy<any> | FieldReadFunction<any>,
-	commentEntries?: FieldPolicy<any> | FieldReadFunction<any>,
-	commentEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	comments?: FieldPolicy<any> | FieldReadFunction<any>,
 	commentsForDay?: FieldPolicy<any> | FieldReadFunction<any>,
 	day?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -158,10 +152,6 @@ export type StrictTypedTypePolicies = {
 	Comment?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CommentKeySpecifier | (() => undefined | CommentKeySpecifier),
 		fields?: CommentFieldPolicy,
-	},
-	CommentEntry?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | CommentEntryKeySpecifier | (() => undefined | CommentEntryKeySpecifier),
-		fields?: CommentEntryFieldPolicy,
 	},
 	Day?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | DayKeySpecifier | (() => undefined | DayKeySpecifier),

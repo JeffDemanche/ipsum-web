@@ -20,7 +20,7 @@ describe("Arc resolvers", () => {
       createArc({ name: "arc 3" }, { projectState: PROJECT_STATE });
     });
 
-    it("should sort arc results alphabetically descending", () => {
+    test("should sort arc results alphabetically descending", () => {
       const result = client.readQuery({
         query: gql(`
           query ReadArcs {
@@ -39,7 +39,7 @@ describe("Arc resolvers", () => {
       ]);
     });
 
-    it("should sort arc results alphabetically ascending", () => {
+    test("should sort arc results alphabetically ascending", () => {
       const result = client.readQuery({
         query: gql(`
           query ReadArcs {

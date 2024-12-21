@@ -22,5 +22,5 @@ describe("BrowserDrawerConnected (Siddhartha)", () => {
     );
   });
 
-  it.skip("empty test", () => {});
+  test.skip("empty test", () => {});
 });

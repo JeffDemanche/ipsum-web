@@ -1,7 +1,7 @@
 import { IpsumTimeMachine } from "../diff";
 
 describe("diff", () => {
-  it("sets and gets a single entry", () => {
+  test("sets and gets a single entry", () => {
     const timeMachine = new IpsumTimeMachine().setValueAtDate(
       new Date("2020-01-01"),
       "goob"
@@ -12,13 +12,13 @@ describe("diff", () => {
     expect(result).toEqual("goob");
   });
 
-  it("returns undefined when there are no patches", () => {
+  test("returns undefined when there are no patches", () => {
     const timeMachine = new IpsumTimeMachine();
 
     expect(timeMachine.valueAtDate(new Date("2020-01-01"))).toBeUndefined();
   });
 
-  it("sets and gets multiple entries", () => {
+  test("sets and gets multiple entries", () => {
     const timeMachine = new IpsumTimeMachine()
       .setValueAtDate(new Date("2020-01-01"), "goob")
       .setValueAtDate(new Date("2020-01-02"), "gob")
@@ -31,7 +31,7 @@ describe("diff", () => {
     expect(timeMachine.valueAtDate(new Date("2020-01-06"))).toEqual("gob blob");
   });
 
-  it("is able to overwrite the most recent date with only one date", () => {
+  test("is able to overwrite the most recent date with only one date", () => {
     const timeMachine = new IpsumTimeMachine()
       .setValueAtDate(new Date("2020-01-01"), "goob")
       .setValueAtDate(new Date("2020-01-01"), "gob")
@@ -40,7 +40,7 @@ describe("diff", () => {
     expect(timeMachine.valueAtDate(new Date("2020-01-01"))).toEqual("goober");
   });
 
-  it("is able to overwrite the most recent date with multiple dates", () => {
+  test("is able to overwrite the most recent date with multiple dates", () => {
     const timeMachine = new IpsumTimeMachine()
       .setValueAtDate(new Date("2020-01-01"), "goob")
       .setValueAtDate(new Date("2020-01-02"), "gob")
@@ -49,7 +49,7 @@ describe("diff", () => {
     expect(timeMachine.valueAtDate(new Date("2020-01-02"))).toEqual("goober");
   });
 
-  it("throws when setting a date before the last patch date", () => {
+  test("throws when setting a date before the last patch date", () => {
     const timeMachine = new IpsumTimeMachine()
       .setValueAtDate(new Date("2020-01-01"), "goob")
       .setValueAtDate(new Date("2020-01-02"), "gob");
@@ -59,7 +59,7 @@ describe("diff", () => {
     }).toThrowError("Cannot set value for date before last patch date");
   });
 
-  it("works with large generated text", () => {
+  test("works with large generated text", () => {
     const chunk1 =
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl vitae aliquam lacinia, nunc nisl aliquet nunc, vitae aliquam nisl.";
     const chunk2 =

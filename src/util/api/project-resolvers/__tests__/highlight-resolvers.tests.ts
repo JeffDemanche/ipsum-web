@@ -12,7 +12,7 @@ describe("Highlight resolvers", () => {
   });
 
   describe("fields", () => {
-    it("should resolve srsCard", () => {});
+    test("should resolve srsCard", () => {});
   });
 
   describe.skip("field queries", () => {});

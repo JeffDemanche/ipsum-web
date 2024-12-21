@@ -11,11 +11,19 @@ export const deleteJournalEntry: APIFunction<
 > = (args, context) => {
   const { projectState } = context;
 
-  projectState.collection("entries").delete(args.entryKey);
-
   const day = IpsumDay.fromString(args.entryKey, "stored-day");
 
   updateDay({ day, journalEntryKey: () => null }, context);
+
+  const comments = projectState
+    .collection("comments")
+    .getAllByField("sourceEntry", args.entryKey);
+
+  Object.values(comments).forEach((comment) => {
+    projectState.collection("comments").delete(comment.id);
+  });
+
+  projectState.collection("entries").delete(args.entryKey);
 
   return projectState.collection("journalEntries").delete(args.entryKey);
 };

@@ -8,14 +8,19 @@ export const useApiAction = <T, U>(f: APIFunction<T, U>) => {
 
   return [
     (args: T, options?: { autosave?: boolean }) => {
-      const result = f(args, { projectState });
+      try {
+        const result = f(args, { projectState });
 
-      // Autosave by default
-      if (options?.autosave || options?.autosave === undefined) {
-        autosave();
+        // Autosave by default
+        if (options?.autosave || options?.autosave === undefined) {
+          autosave();
+        }
+
+        return result;
+      } catch (e) {
+        console.error(e);
+        return null;
       }
-
-      return result;
     },
   ];
 };
@@ -27,16 +32,18 @@ export { updateJournalEntry as apiUpdateJournalEntry } from "./entry/update-jour
 export { deleteJournalEntry as apiDeleteJournalEntry } from "./entry/delete-journal-entry";
 export { createArcEntry as apiCreateArcEntry } from "./entry/create-arc-entry";
 export { updateArcEntry as apiUpdateArcEntry } from "./entry/update-arc-entry";
-export { createCommentEntry as apiCreateCommentEntry } from "./entry/create-comment-entry";
 
 export { createHighlight as apiCreateHighlight } from "./highlight/create-highlight";
 export { createRelationFromHighlightToArc as apiCreateRelationFromHighlightToArc } from "./relation/create-relation-from-highlight-to-arc";
 export { createRelationFromArcToArc as apiCreateRelationFromArcToArc } from "./relation/create-relation-from-arc-to-arc";
+export { createRelationFromCommentToHighlight as apiCreateRelationFromCommentToHighlight } from "./relation/create-relation-from-comment-to-highlight";
+
 export { deleteHighlight as apiDeleteHighlight } from "./highlight/delete-highlight";
 export { deleteRelationFromHighlightToArc as apiDeleteRelationFromHighlightToArc } from "./relation/delete-relation-from-highlight-to-arc";
 export { deleteRelationFromArcToArc as apiDeleteRelationFromArcToArc } from "./relation/delete-relation-from-arc-to-arc";
 
 export { createComment as apiCreateComment } from "./comment/create-comment";
+export { deleteComment as apiDeleteComment } from "./comment/delete-comment";
 
 export { createArc as apiCreateArc } from "./arc/create-arc";
 

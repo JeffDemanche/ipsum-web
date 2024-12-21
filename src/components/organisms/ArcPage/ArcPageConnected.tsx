@@ -68,24 +68,34 @@ export const ArcPageConnected: React.FunctionComponent<
 
   const arcOutgoingRelations: React.ComponentProps<
     typeof ArcPage
-  >["arc"]["relations"] = arc.outgoingRelations.map((relation) => ({
-    id: relation.id,
-    arc: {
-      id: relation.object.id,
-      hue: relation.object.color,
-      name: relation.object.name,
-    },
-    predicate: relation.predicate,
-  }));
+  >["arc"]["relations"] = arc.outgoingRelations
+    .map((relation) =>
+      relation.object.__typename === "Arc"
+        ? {
+            id: relation.id,
+            arc: {
+              id: relation.object.id,
+              hue: relation.object.color,
+              name: relation.object.name,
+            },
+            predicate: relation.predicate,
+          }
+        : undefined
+    )
+    .filter(Boolean);
 
   const arcEntryHighlights: React.ComponentProps<
     typeof ArcPage
   >["arcEntry"]["highlights"] = arc.arcEntry.entry.highlights.map(
     (highlight) => ({
       highlightId: highlight.id,
-      arcNames: highlight.outgoingRelations.map(
-        (relation) => relation.object.name
-      ),
+      arcNames: highlight.outgoingRelations
+        .map((relation) =>
+          relation.object.__typename === "Arc"
+            ? relation.object.name
+            : undefined
+        )
+        .filter(Boolean),
       highlightNumber: highlight.number,
       hue: highlight.hue,
     })

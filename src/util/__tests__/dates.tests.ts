@@ -3,7 +3,7 @@ import { getDaysBetween, IpsumDateTime, sortDates } from "util/dates";
 
 describe("dates", () => {
   describe("date formatting", () => {
-    it("formats date in entry title format", () => {
+    test("formats date in entry title format", () => {
       const ipsumDate = IpsumDateTime.fromString(
         "8/9/1998",
         "entry-printed-date"
@@ -16,7 +16,7 @@ describe("dates", () => {
       expect(ipsumDate.toString("entry-printed-date")).toBe("8/9/1998");
     });
 
-    it("formats month as a word (as for calendar headings)", () => {
+    test("formats month as a word (as for calendar headings)", () => {
       const ipsumDate = IpsumDateTime.fromString(
         "2/2/1345",
         "entry-printed-date"
@@ -26,7 +26,7 @@ describe("dates", () => {
   });
 
   describe("sort dates", () => {
-    it("sorts dates in ascending order", () => {
+    test("sorts dates in ascending order", () => {
       const ipsumDates = [
         new IpsumDateTime(DateTime.fromISO("2000-03-03")),
         new IpsumDateTime(DateTime.fromISO("2000-01-01")),
@@ -39,7 +39,7 @@ describe("dates", () => {
       ).toEqual(["1/1/2000", "2/2/2000", "3/3/2000", "4/4/2000"]);
     });
 
-    it("sorts dates in descending order", () => {
+    test("sorts dates in descending order", () => {
       const ipsumDates = [
         new IpsumDateTime(DateTime.fromISO("2000-03-03")),
         new IpsumDateTime(DateTime.fromISO("2000-01-01")),
@@ -54,7 +54,7 @@ describe("dates", () => {
   });
 
   describe("get days between", () => {
-    it("gets days over a week", () => {
+    test("gets days over a week", () => {
       const out = getDaysBetween(
         IpsumDateTime.fromString("8/9/1998", "entry-printed-date"),
         IpsumDateTime.fromString("8/15/1998", "entry-printed-date")
@@ -67,7 +67,7 @@ describe("dates", () => {
       expect(out[6].toString("entry-printed-date")).toBe("8/15/1998");
     });
 
-    it("gets days over a month", () => {
+    test("gets days over a month", () => {
       const out = getDaysBetween(
         IpsumDateTime.fromString("8/9/1998", "entry-printed-date"),
         IpsumDateTime.fromString("9/9/1998", "entry-printed-date")
@@ -80,7 +80,7 @@ describe("dates", () => {
       expect(out[31].toString("entry-printed-date")).toBe("9/9/1998");
     });
 
-    it("gets 28 days in february", () => {
+    test("gets 28 days in february", () => {
       const dayInFeb = DateTime.fromObject({
         month: 2,
         year: 2022,
@@ -93,7 +93,7 @@ describe("dates", () => {
       expect(out).toHaveLength(28);
     });
 
-    it("gets days over a week", () => {
+    test("gets days over a week", () => {
       const out = getDaysBetween(
         IpsumDateTime.fromString("8/9/1998", "entry-printed-date"),
         IpsumDateTime.fromString("8/9/1999", "entry-printed-date")
@@ -104,7 +104,7 @@ describe("dates", () => {
   });
 
   describe("isInRange", () => {
-    it("specify date within range", () => {
+    test("specify date within range", () => {
       expect(
         IpsumDateTime.fromString("10/28/2022", "entry-printed-date").isInRange(
           IpsumDateTime.fromString("10/27/2022", "entry-printed-date"),
@@ -131,7 +131,7 @@ describe("dates", () => {
       ).toBeTruthy();
     });
 
-    it("inclusive to before and after params", () => {
+    test("inclusive to before and after params", () => {
       expect(
         IpsumDateTime.fromString("10/27/2022", "entry-printed-date").isInRange(
           IpsumDateTime.fromString("10/27/2022", "entry-printed-date"),

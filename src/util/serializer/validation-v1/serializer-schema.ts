@@ -35,11 +35,7 @@ export const SerializedSchema = t.type(
           entryKey: t.string,
           trackedHTMLString: t.string,
           history: HistorySchema,
-          entryType: t.union([
-            t.literal("JOURNAL"),
-            t.literal("ARC"),
-            t.literal("COMMENT"),
-          ]),
+          entryType: t.union([t.literal("JOURNAL"), t.literal("ARC")]),
         },
         "entry"
       ),
@@ -69,18 +65,6 @@ export const SerializedSchema = t.type(
       ),
       "arcEntries"
     ),
-    commentEntries: t.record(
-      t.string,
-      t.type(
-        {
-          __typename: t.literal("CommentEntry"),
-          entry: t.string,
-          comment: t.string,
-        },
-        "commentEntry"
-      ),
-      "commentEntries"
-    ),
     arcs: t.record(
       t.string,
       t.type(
@@ -106,6 +90,7 @@ export const SerializedSchema = t.type(
           id: t.string,
           history: HistorySchema,
           entry: t.string,
+          incomingRelations: t.array(t.string),
           outgoingRelations: t.array(t.string),
           importanceRatings: t.array(
             t.type({
@@ -127,10 +112,14 @@ export const SerializedSchema = t.type(
         {
           __typename: t.literal("Relation"),
           id: t.string,
-          subjectType: t.union([t.literal("Arc"), t.literal("Highlight")]),
+          subjectType: t.union([
+            t.literal("Arc"),
+            t.literal("Highlight"),
+            t.literal("Comment"),
+          ]),
           subject: t.string,
           predicate: t.string,
-          objectType: t.literal("Arc"),
+          objectType: t.union([t.literal("Arc"), t.literal("Highlight")]),
           object: t.string,
         },
         "relation"
@@ -145,8 +134,9 @@ export const SerializedSchema = t.type(
           id: t.string,
           parent: t.union([t.string, t.null]),
           history: HistorySchema,
-          commentEntry: t.string,
-          highlight: t.string,
+          sourceEntry: t.string,
+          outgoingRelations: t.array(t.string),
+          objectHighlight: t.string,
         },
         "comment"
       ),

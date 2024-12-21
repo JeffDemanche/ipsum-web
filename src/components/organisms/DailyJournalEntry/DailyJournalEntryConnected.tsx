@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import React, { ComponentProps, useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   apiCreateHighlight,
   apiCreateJournalEntry,
@@ -45,22 +45,7 @@ const DailyJournalEntryQuery = gql(`
     day(day: $day) {
       comments {
         id
-        commentEntry {
-          entry {
-            entryKey
-            htmlString
-            highlights {
-              id
-              hue
-              number
-              arcs {
-                id
-                name
-              }
-            }
-          }
-        }
-        highlight {
+        objectHighlight {
           id
           hue
           arcs {
@@ -103,34 +88,6 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
           ),
     [data.journalEntry?.entry?.highlights, isNew]
   );
-
-  const comments = useMemo((): ComponentProps<
-    typeof DailyJournalEntry
-  >["comments"] => {
-    if (isNew || !data.day.comments) return [];
-
-    return data.day.comments.map((comment) => ({
-      id: comment.id,
-      day: entryDay,
-      htmlString: comment.commentEntry.entry.htmlString,
-      highlight: {
-        id: comment.highlight.id,
-        objectText: comment.commentEntry.entry.entryKey,
-        hue: comment.highlight.hue,
-        highlightNumber: 0, // TODO
-        arcNames: comment.highlight.arcs.map((arc) => arc.name),
-      },
-      commentEntry: {
-        highlights: comment.commentEntry.entry.highlights.map((highlight) => ({
-          highlightId: highlight.id,
-          hue: highlight.hue,
-          arcNames: highlight.arcs.map((arc) => arc.name),
-          highlightNumber: highlight.number,
-        })),
-        htmlString: comment.commentEntry.entry.htmlString,
-      },
-    }));
-  }, [data.day?.comments, entryDay, isNew]);
 
   const htmlString = isNew ? "" : data.journalEntry.entry.htmlString;
 
@@ -175,7 +132,7 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
   };
 
   const deleteEntry = (entryKey: string) => {
-    deleteJournalEntry({ entryKey });
+    if (entryKey) deleteJournalEntry({ entryKey });
   };
 
   const updateEntry = ({
@@ -236,7 +193,6 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
       htmlString={htmlString}
       editable={editable}
       highlights={highlights}
-      comments={comments}
       createEntry={createEntry}
       deleteEntry={deleteEntry}
       updateEntry={updateEntry}

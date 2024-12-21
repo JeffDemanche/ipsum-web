@@ -4,16 +4,22 @@ import { Entry } from "../../molecules/Entry";
 import styles from "./ArcPage.less";
 
 interface ArcPageSectionAboutProps {
+  arcId: string;
   highlights: React.ComponentProps<typeof Entry>["highlights"];
   htmlString: string;
 }
 
 export const ArcPageSectionAbout: FunctionComponent<
   ArcPageSectionAboutProps
-> = ({ highlights, htmlString }) => {
+> = ({ arcId, highlights, htmlString }) => {
   return (
     <div className={styles["page-section"]}>
-      <Entry highlights={highlights} editable htmlString={htmlString} />
+      <Entry
+        editorNamespace={`arc-${arcId}`}
+        highlights={highlights}
+        editable
+        htmlString={htmlString}
+      />
     </div>
   );
 };

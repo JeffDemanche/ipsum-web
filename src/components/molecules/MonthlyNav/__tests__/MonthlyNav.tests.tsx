@@ -33,7 +33,7 @@ describe("molecules/MonthlyNav", () => {
     jest.clearAllMocks();
   });
 
-  it("fires onDaySelect when a day is clicked", () => {
+  test("fires onDaySelect when a day is clicked", () => {
     render(<MonthlyNav {...defaultProps()} />);
 
     const day = screen.getByText("5");

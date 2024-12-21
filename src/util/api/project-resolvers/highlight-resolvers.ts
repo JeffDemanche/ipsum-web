@@ -1,9 +1,10 @@
 import { QueryHighlightsArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { excerptDivString, getHighlightOrder } from "util/excerpt";
+import { excerptDivString } from "util/excerpt";
 import { highlightImportanceOnDay } from "util/importance";
 import {
+  HighlightWrapper,
   InMemoryEntry,
   InMemoryHighlight,
   InMemoryImportanceRating,
@@ -103,22 +104,11 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
         );
       },
       hue(_, { readField }) {
-        const entry = readField<{ history: { dateCreated: string } }>("entry");
-
-        if (!entry) {
-          return null;
-        }
-
-        const entryDay = IpsumDay.fromString(entry.history.dateCreated, "iso");
-        const dayOfYear = entryDay.toLuxonDateTime().ordinal;
-
-        const number = (readField("number") as number) + dayOfYear;
-
-        const goldenRatioConjugate = 0.618033988749895;
-
-        const hue = ((number * goldenRatioConjugate) % 1.0) * 360;
-
-        return hue;
+        const highlightId = readField<string>("id");
+        return new HighlightWrapper(
+          PROJECT_STATE.collection("highlights").get(highlightId),
+          PROJECT_STATE
+        ).hue;
       },
       excerpt(_, { readField }) {
         const entry = readField<{
@@ -150,38 +140,19 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
         const comments = PROJECT_STATE.collection("comments").getAll();
         return commentIds.map((id) => comments[id]);
       },
-      number(_, { readField }) {
-        const entry = readField<{ trackedHTMLString: string }>("entry");
-
-        if (!entry) {
-          throw new Error("Entry not found for highlight");
-        }
-
-        const domString = IpsumTimeMachine.fromString(
-          entry.trackedHTMLString
-        ).currentValue;
-        const highlightOrder = getHighlightOrder(domString);
-
-        return highlightOrder.findIndex((id) => id === readField("id")) + 1;
+      number(test, { readField }) {
+        const highlightId = readField<string>("id");
+        return new HighlightWrapper(
+          PROJECT_STATE.collection("highlights").get(highlightId),
+          PROJECT_STATE
+        ).number;
       },
       objectText(_, { readField }) {
-        const entry = readField<InMemoryEntry>("entry");
-
-        if (!entry) {
-          throw new Error("Entry not found for highlight");
-        }
-
-        switch (entry.entryType) {
-          case "JOURNAL":
-            return IpsumDay.fromString(
-              entry.history.dateCreated,
-              "iso"
-            ).toString("entry-printed-date");
-          case "ARC":
-            return entry.entryKey.split(":")[1] ?? "(arc not found)";
-          case "COMMENT":
-            return "Comment";
-        }
+        const highlightId = readField<string>("id");
+        return new HighlightWrapper(
+          PROJECT_STATE.collection("highlights").get(highlightId),
+          PROJECT_STATE
+        ).objectText;
       },
       object(_, { readField }) {
         const entry = readField<InMemoryEntry>("entry");
@@ -200,10 +171,6 @@ export const HighlightResolvers: StrictTypedTypePolicies = {
           case "ARC":
             return PROJECT_STATE.collection("arcs").get(
               entry.entryKey.split(":")[2]
-            );
-          case "COMMENT":
-            return PROJECT_STATE.collection("comments").get(
-              entry.entryKey.split(":")[1]
             );
         }
       },

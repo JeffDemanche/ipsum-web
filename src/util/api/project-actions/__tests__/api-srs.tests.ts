@@ -11,7 +11,7 @@ import {
 
 describe("API srs actions", () => {
   describe("createSrsCard", () => {
-    it("should create an srs card and update highlight with its ID", () => {
+    test("should create an srs card and update highlight with its ID", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -58,7 +58,7 @@ describe("API srs actions", () => {
   });
 
   describe("reviewSrsCard", () => {
-    it("should add a review to an srs card and update the day object", () => {
+    test("should add a review to an srs card and update the day object", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
       const dayReviewed1 = IpsumDay.fromString("1/8/2020", "stored-day");
