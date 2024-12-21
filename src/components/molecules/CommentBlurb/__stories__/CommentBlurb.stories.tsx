@@ -17,24 +17,6 @@ export const CommentBlurbExample: StoryCommentBlurb = {
   args: {
     selected: false,
     defaultExpanded: false,
-    excerptProps: {
-      htmlString: constructExcerpt({
-        excerptPieces: [
-          {
-            blockType: "paragraph",
-            innerHtml: siddhartha.journalEntry1_TheSonOfTheBrahman
-              .sections[1] as string,
-            highlight: { id: "highlight-id", hue: 90 },
-          },
-          {
-            blockType: "paragraph",
-            innerHtml: siddhartha.journalEntry1_TheSonOfTheBrahman
-              .sections[2] as string,
-            highlight: { id: "highlight-id", hue: 90 },
-          },
-        ],
-      }),
-    },
     comment: {
       id: "comment-id",
       day: IpsumDay.today(),
@@ -44,6 +26,7 @@ export const CommentBlurbExample: StoryCommentBlurb = {
         highlightNumber: 1,
         objectText: "1/2/2024",
         arcNames: ["arc1", "arc2", "arc3"],
+        object: { __typename: "Day", day: "1/2/2024" },
       },
       commentEntry: {
         highlights: [],

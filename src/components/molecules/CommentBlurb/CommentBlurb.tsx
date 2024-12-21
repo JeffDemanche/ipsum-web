@@ -1,15 +1,27 @@
 import cx from "classnames";
-import { Type } from "components/atoms/Type";
 import { BlurbWrapper } from "components/molecules/BlurbWrapper";
 import { HighlightTag } from "components/molecules/HighlightTag";
 import React, { useState } from "react";
+import { Arc, Day } from "util/apollo";
 import { IpsumDay } from "util/dates";
 
 import { Entry } from "../Entry";
 import styles from "./CommentBlurb.less";
 
+type HighlightObject =
+  | {
+      __typename: Day["__typename"];
+      day: string;
+    }
+  | {
+      __typename: Arc["__typename"];
+      id: string;
+    };
+
 interface CommentBlurbProps {
   className?: string;
+
+  today: IpsumDay;
 
   selected?: boolean;
   onSelect?: () => void;
@@ -21,7 +33,6 @@ interface CommentBlurbProps {
   maxLines?: number;
   showHighlightTag?: boolean;
 
-  excerptProps: { htmlString: string; maxLines?: number };
   comment: {
     id: string;
     day: IpsumDay;
@@ -35,12 +46,25 @@ interface CommentBlurbProps {
       hue: number;
       highlightNumber: number;
       arcNames: string[];
+      object: HighlightObject;
     };
   };
+
+  onCreateEntry?: (htmlString: string) => string;
+  onDeleteEntry?: (entryKey: string) => void;
+  onUpdateEntry?: (args: { entryKey: string; htmlString: string }) => boolean;
+  onCreateHighlight?: () => string;
+  onDeleteHighlight?: (highlightId: string) => void;
+  onHighlightClick?: (highlightId: string) => void;
+  onHighlightObjectClick?: (
+    highlightId: string,
+    object: HighlightObject
+  ) => void;
 }
 
 export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
   className,
+  today,
   selected,
   onSelect,
   defaultExpanded = false,
@@ -48,10 +72,20 @@ export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
   onCollapse,
   maxLines,
   showHighlightTag = true,
-  excerptProps,
   comment,
+  onCreateEntry,
+  onDeleteEntry,
+  onUpdateEntry,
+  onCreateHighlight,
+  onDeleteHighlight,
+  onHighlightClick,
+  onHighlightObjectClick,
 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
+
+  const yesterday = today.add(-1);
+
+  const editable = today.equals(comment.day) || yesterday.equals(comment.day);
 
   const onBlurbWrapperExpand = () => {
     setExpanded(!expanded);
@@ -77,9 +111,6 @@ export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
     >
       <div className={styles["blurb-content"]}>
         <div className={styles["blurb-header"]}>
-          <Type variant="serif" size="small">
-            {comment.day.toString("entry-printed-date")}
-          </Type>
           {showHighlightTag && (
             <HighlightTag
               highlightNumber={comment.highlight.highlightNumber}
@@ -87,16 +118,30 @@ export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
               objectText={comment.highlight.objectText}
               arcNames={comment.highlight.arcNames}
               fontSize="x-small"
+              onHighlightClick={() => onHighlightClick(comment.highlight.id)}
+              onObjectTextClick={() =>
+                onHighlightObjectClick(
+                  comment.highlight.id,
+                  comment.highlight.object
+                )
+              }
             />
           )}
         </div>
         <Entry
-          editorNamespace="comment"
-          editable={false}
+          editorNamespace={`comment-blurb:${comment.id}`}
+          entryKey={`comment-entry:${comment.id}`}
+          editable={editable}
           showHighlights={expanded}
           maxLines={expanded ? 0 : maxLines ?? 3}
           highlights={comment.commentEntry.highlights}
           htmlString={comment.commentEntry.htmlString}
+          createEntry={onCreateEntry}
+          updateEntry={onUpdateEntry}
+          deleteEntry={onDeleteEntry}
+          createHighlight={onCreateHighlight}
+          deleteHighlight={onDeleteHighlight}
+          onHighlightClick={onHighlightClick}
         />
       </div>
     </BlurbWrapper>
