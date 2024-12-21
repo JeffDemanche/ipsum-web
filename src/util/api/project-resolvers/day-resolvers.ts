@@ -1,4 +1,4 @@
-import { StrictTypedTypePolicies } from "util/apollo";
+import { QueryDaysArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumTimeMachine } from "util/diff";
 import { PROJECT_STATE } from "util/state";
 
@@ -10,6 +10,19 @@ export const DayResolvers: StrictTypedTypePolicies = {
           return null;
         }
         return PROJECT_STATE.collection("days").get(args.day) ?? null;
+      },
+      days(_, { args }: { args: QueryDaysArgs }) {
+        if (args.days) {
+          return args.days.map((day) =>
+            PROJECT_STATE.collection("days").get(day)
+          );
+        }
+        return Object.values(PROJECT_STATE.collection("days").getAll());
+      },
+      daysWithJournalEntryOrComments() {
+        return Object.values(PROJECT_STATE.collection("days").getAll()).filter(
+          (day) => day.journalEntry || day.comments?.length > 0
+        );
       },
     },
   },

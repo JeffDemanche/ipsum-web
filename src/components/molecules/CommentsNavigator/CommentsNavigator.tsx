@@ -17,12 +17,12 @@ interface CommentsNavigatorProps {
   comments: {
     id: string;
     day: IpsumDay;
-    sourceEntry: {
+    commentEntry: {
       entryKey: string;
       highlights: React.ComponentProps<typeof Entry>["highlights"];
       htmlString: string;
     };
-    excerptHtmlString: string;
+    htmlString: string;
   }[];
 
   onCreateComment: (htmlString: string) => string;
@@ -59,11 +59,11 @@ export const CommentsNavigator: React.FunctionComponent<
 
   const isNew = !selectedComment;
 
-  const entryKey = selectedDay.toString("entry-printed-date");
+  const entryKey = isNew ? undefined : `comment-entry:${selectedComment.id}`;
 
-  const highlights = isNew ? [] : selectedComment.sourceEntry.highlights;
+  const highlights = isNew ? [] : selectedComment.commentEntry.highlights;
 
-  const htmlString = isNew ? "" : selectedComment.excerptHtmlString;
+  const htmlString = isNew ? "" : selectedComment.commentEntry.htmlString;
 
   const entryDays = comments.map((comment) => comment.day);
 
@@ -83,7 +83,7 @@ export const CommentsNavigator: React.FunctionComponent<
         onDaySelect={onSelectDay}
       />
       <Entry
-        editorNamespace={`comments-${selectedDay.toString("stored-day")}`}
+        editorNamespace={entryKey}
         entryKey={entryKey}
         entryDay={selectedDay}
         editable={editable}

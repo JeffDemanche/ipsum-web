@@ -6,6 +6,8 @@ import React, { ComponentProps } from "react";
 import { IpsumDay } from "util/dates";
 import { TestIds } from "util/test-ids";
 
+import { DailyJournalEntryComments } from "../DailyJournalEntryComments";
+import { DailyJournalEntryCommentsConnectedProps } from "../DailyJournalEntryComments/use-daily-journal-entry-comments-connected";
 import styles from "./DailyJournalEntry.less";
 
 interface DailyJournalEntryProps {
@@ -34,6 +36,7 @@ interface DailyJournalEntryProps {
   createHighlight: () => string;
   deleteHighlight: (highlightId: string) => void;
   onDaySelect: (day: IpsumDay) => void;
+  dailyJournalEntryCommentsConnectedProps: DailyJournalEntryCommentsConnectedProps;
 
   onHighlightClick?: (highlightId: string) => void;
 }
@@ -54,6 +57,7 @@ export const DailyJournalEntry: React.FunctionComponent<
   createHighlight,
   deleteHighlight,
   onDaySelect,
+  dailyJournalEntryCommentsConnectedProps,
   onHighlightClick,
 }) => {
   return (
@@ -83,6 +87,10 @@ export const DailyJournalEntry: React.FunctionComponent<
             createHighlight={createHighlight}
             deleteHighlight={deleteHighlight}
             onHighlightClick={onHighlightClick}
+          />
+          <hr />
+          <DailyJournalEntryComments
+            {...dailyJournalEntryCommentsConnectedProps}
           />
         </div>
       </Collapse>

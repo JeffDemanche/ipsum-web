@@ -1,7 +1,6 @@
 import { EntryType } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { InMemoryCommentEntry } from "util/state";
 
 import { APIFunction } from "../types";
 
@@ -11,25 +10,24 @@ export const updateCommentEntry: APIFunction<
     htmlString?: string;
     updateDay?: IpsumDay;
   },
-  InMemoryCommentEntry
+  boolean
 > = (args, context) => {
   const { projectState } = context;
 
   const entry = projectState.collection("entries").get(args.entryKey);
 
-  if (!entry) {
-    throw new Error(
-      `No entry with key ${args.entryKey} exists in the project state`
-    );
+  if (!entry || entry.entryType !== EntryType.Comment) {
+    return false;
   }
 
-  if (entry.entryType !== EntryType.Comment) {
-    throw new Error(`Entry with key ${args.entryKey} is not a comment entry`);
-  }
+  const updateDay = args.updateDay ?? IpsumDay.today();
+  let timeMachine = IpsumTimeMachine.fromString(entry.trackedHTMLString);
 
-  const timeMachine = IpsumTimeMachine.fromString(entry.trackedHTMLString);
   if (args.htmlString) {
-    timeMachine.setValueAtDate(args.updateDay.toJsDate(), args.htmlString);
+    timeMachine = timeMachine.setValueAtDate(
+      updateDay.toJsDate(),
+      args.htmlString
+    );
   }
 
   projectState.collection("entries").mutate(args.entryKey, (entry) => ({
@@ -37,5 +35,5 @@ export const updateCommentEntry: APIFunction<
     trackedHTMLString: timeMachine.toString(),
   }));
 
-  return projectState.collection("commentEntries").get(args.entryKey);
+  return true;
 };

@@ -38,6 +38,7 @@ describe("diff", () => {
       .setValueAtDate(new Date("2020-01-01"), "goober");
 
     expect(timeMachine.valueAtDate(new Date("2020-01-01"))).toEqual("goober");
+    expect(timeMachine.currentValue).toEqual("goober");
   });
 
   test("is able to overwrite the most recent date with multiple dates", () => {

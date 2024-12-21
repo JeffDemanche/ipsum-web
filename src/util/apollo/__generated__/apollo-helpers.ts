@@ -15,14 +15,14 @@ export type ArcEntryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CommentKeySpecifier = ('excerptHtmlString' | 'history' | 'id' | 'objectHighlight' | 'parent' | 'sourceEntry' | CommentKeySpecifier)[];
+export type CommentKeySpecifier = ('commentEntry' | 'history' | 'htmlString' | 'id' | 'objectHighlight' | 'parent' | CommentKeySpecifier)[];
 export type CommentFieldPolicy = {
-	excerptHtmlString?: FieldPolicy<any> | FieldReadFunction<any>,
+	commentEntry?: FieldPolicy<any> | FieldReadFunction<any>,
 	history?: FieldPolicy<any> | FieldReadFunction<any>,
+	htmlString?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	objectHighlight?: FieldPolicy<any> | FieldReadFunction<any>,
-	parent?: FieldPolicy<any> | FieldReadFunction<any>,
-	sourceEntry?: FieldPolicy<any> | FieldReadFunction<any>
+	parent?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type CommentEntryKeySpecifier = ('comment' | 'entry' | CommentEntryKeySpecifier)[];
 export type CommentEntryFieldPolicy = {
@@ -85,7 +85,7 @@ export type JournalMetadataKeySpecifier = ('lastArcHue' | JournalMetadataKeySpec
 export type JournalMetadataFieldPolicy = {
 	lastArcHue?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('arc' | 'arcByName' | 'arcEntries' | 'arcEntry' | 'arcs' | 'comment' | 'commentEntries' | 'commentEntry' | 'comments' | 'commentsForDay' | 'day' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'searchArcs' | 'searchArcsByName' | 'searchHighlights' | 'srsCard' | 'srsCards' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('arc' | 'arcByName' | 'arcEntries' | 'arcEntry' | 'arcs' | 'comment' | 'commentEntries' | 'commentEntry' | 'comments' | 'commentsForDay' | 'day' | 'days' | 'daysWithJournalEntryOrComments' | 'entries' | 'entry' | 'entryKeys' | 'highlight' | 'highlights' | 'journalEntries' | 'journalEntry' | 'journalEntryDates' | 'journalEntryKeys' | 'journalId' | 'journalMetadata' | 'journalTitle' | 'recentEntries' | 'recentJournalEntries' | 'relation' | 'relations' | 'searchArcs' | 'searchArcsByName' | 'searchHighlights' | 'srsCard' | 'srsCards' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	arc?: FieldPolicy<any> | FieldReadFunction<any>,
 	arcByName?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -98,6 +98,8 @@ export type QueryFieldPolicy = {
 	comments?: FieldPolicy<any> | FieldReadFunction<any>,
 	commentsForDay?: FieldPolicy<any> | FieldReadFunction<any>,
 	day?: FieldPolicy<any> | FieldReadFunction<any>,
+	days?: FieldPolicy<any> | FieldReadFunction<any>,
+	daysWithJournalEntryOrComments?: FieldPolicy<any> | FieldReadFunction<any>,
 	entries?: FieldPolicy<any> | FieldReadFunction<any>,
 	entry?: FieldPolicy<any> | FieldReadFunction<any>,
 	entryKeys?: FieldPolicy<any> | FieldReadFunction<any>,

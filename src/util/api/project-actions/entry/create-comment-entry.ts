@@ -21,7 +21,7 @@ export const createCommentEntry: APIFunction<
     {
       dayCreated: args.dayCreated,
       entryKey: commentEntryKey,
-      htmlString: args.comment,
+      htmlString: args.htmlString,
       entryType: EntryType.Comment,
     },
     context

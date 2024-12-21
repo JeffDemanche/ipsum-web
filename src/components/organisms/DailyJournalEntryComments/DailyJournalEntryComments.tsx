@@ -29,9 +29,6 @@ export const DailyJournalEntryComments: React.FunctionComponent<
 > = ({ comments }) => {
   return (
     <div>
-      <Type variant="sans" weight="regular" size="small">
-        Comments
-      </Type>
       {comments.map((comment) => (
         <CommentBlurb
           key={comment.id}

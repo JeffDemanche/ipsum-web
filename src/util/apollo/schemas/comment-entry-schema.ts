@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const commentEntryTypeDef = gql`
   type Query {
-    commentEntry(commentId: ID!): CommentEntry
+    commentEntry(entryKey: ID!): CommentEntry
     commentEntries(entryKeys: [ID!]): [CommentEntry]
   }
 
