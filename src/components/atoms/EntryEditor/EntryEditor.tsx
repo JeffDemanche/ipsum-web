@@ -105,8 +105,8 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
           QuoteNode,
           LinkNode,
           HighlightAssignmentNode,
-          IpsumCommentNode,
-          CommentLabelNode,
+          // IpsumCommentNode,
+          // CommentLabelNode,
         ],
       }}
     >
@@ -153,7 +153,7 @@ export const EntryEditor: React.FunctionComponent<EntryEditorProps> = ({
           <LinkPlugin />
           <HistoryPlugin />
           <EditableStateChangePlugin editable={editable} />
-          <IpsumCommentPlugin editable={editable} />
+          {/* <IpsumCommentPlugin editable={editable} /> */}
         </div>
       </div>
     </LexicalComposer>
