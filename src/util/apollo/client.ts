@@ -1,8 +1,12 @@
 import { ApolloClient, from, gql, InMemoryCache } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
+import { PROJECT_STATE } from "util/state";
+
+import type { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import {
   ArcEntryResolvers,
   ArcResolvers,
+  CommentEntryResolvers,
   CommentResolvers,
   DayResolvers,
   EntryResolvers,
@@ -11,12 +15,10 @@ import {
   RelationResolvers,
   SearchResolvers,
   SRSResolvers,
-} from "util/api";
-import { PROJECT_STATE } from "util/state";
-
-import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
+} from "./project-resolvers";
 import { arcEntryTypeDef } from "./schemas/arc-entry-schema";
 import { arcTypeDef } from "./schemas/arc-schema";
+import { commentEntryTypeDef } from "./schemas/comment-entry-schema";
 import { commentTypeDef } from "./schemas/comment-schema";
 import { dayTypeDef } from "./schemas/day-schema";
 import { entryTypeDef } from "./schemas/entry-schema";
@@ -43,83 +45,6 @@ const typeDefs = gql`
   }
 `;
 
-export type UnhydratedType = {
-  History: {
-    __typename: "History";
-    dateCreated?: string;
-  };
-  JournalMetadata: {
-    __typename: "JournalMetadata";
-    lastArcHue: number;
-  };
-  Entry: {
-    __typename: "Entry";
-    entryKey: string;
-    trackedHTMLString: string;
-    history: UnhydratedType["History"];
-    entryType: "JOURNAL" | "ARC" | "COMMENT";
-  };
-  JournalEntry: {
-    __typename: "JournalEntry";
-    entryKey: string;
-    entry: string;
-  };
-  ArcEntry: {
-    __typename: "ArcEntry";
-    entry: string;
-    arc: string;
-  };
-  Arc: {
-    __typename: "Arc";
-    id: string;
-    history: UnhydratedType["History"];
-    arcEntry: string;
-    name: string;
-    color: number;
-    incomingRelations: string[];
-    outgoingRelations: string[];
-  };
-  ImportanceRating: {
-    __typename: "ImportanceRating";
-    day: string;
-    value: number;
-  };
-  Highlight: {
-    __typename: "Highlight";
-    id: string;
-    history: UnhydratedType["History"];
-    entry: string;
-    outgoingRelations: string[];
-    importanceRatings: UnhydratedType["ImportanceRating"][];
-    comments: string[];
-  };
-  Relation: {
-    __typename: "Relation";
-    id: string;
-    subjectType: "Arc" | "Highlight";
-    subject: string;
-    predicate: string;
-    objectType: "Arc";
-    object: string;
-  };
-  Day: {
-    __typename: "Day";
-    day: string;
-    journalEntry?: string;
-    ratedHighlights: string[];
-    changedArcEntries: string[];
-    comments: string[];
-  };
-  Comment: {
-    __typename: "Comment";
-    id: string;
-    parent: string | null;
-    highlight: string;
-    commentEntry: string;
-    history: UnhydratedType["History"];
-  };
-};
-
 const typePolicies: StrictTypedTypePolicies = {
   Query: {
     fields: {
@@ -133,7 +58,8 @@ const typePolicies: StrictTypedTypePolicies = {
         return PROJECT_STATE.get("journalMetadata");
       },
       ...EntryResolvers.Query.fields,
-      ...ArcResolvers.Query.fields,
+      ...ArcEntryResolvers.Query.fields,
+      ...CommentEntryResolvers.Query.fields,
       ...RelationResolvers.Query.fields,
       ...HighlightResolvers.Query.fields,
       ...SearchResolvers.Query.fields,
@@ -146,6 +72,7 @@ const typePolicies: StrictTypedTypePolicies = {
   },
   Entry: EntryResolvers.Entry,
   ArcEntry: ArcEntryResolvers.ArcEntry,
+  CommentEntry: CommentEntryResolvers.CommentEntry,
   Relation: RelationResolvers.Relation,
   Arc: ArcResolvers.Arc,
   Highlight: HighlightResolvers.Highlight,
@@ -171,6 +98,7 @@ export const client = new ApolloClient({
     typeDefs,
     entryTypeDef,
     arcEntryTypeDef,
+    commentEntryTypeDef,
     relationTypeDef,
     arcTypeDef,
     searchTypeDef,

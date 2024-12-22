@@ -1,4 +1,4 @@
-import { RelationsTable } from "components/molecules/RelationsTable";
+import type { RelationsTable } from "components/molecules/RelationsTable";
 import {
   apiDeleteRelationFromArcToArc,
   urlInsertLayer,
@@ -6,8 +6,9 @@ import {
   useUrlAction,
 } from "util/api";
 
+import type {
+  RelationChooserConnectedProps} from "./use-relation-chooser-connected";
 import {
-  RelationChooserConnectedProps,
   useRelationChooserConnected,
 } from "./use-relation-chooser-connected";
 

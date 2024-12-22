@@ -1,4 +1,4 @@
-import { RelationSubject } from "util/apollo";
+import type { RelationSubject } from "util/apollo";
 
 export interface ArcResult {
   id: string;

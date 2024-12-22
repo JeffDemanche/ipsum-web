@@ -7,7 +7,8 @@ import {
   grey500,
   grey700,
 } from "components/styles";
-import React, { CSSProperties } from "react";
+import type { CSSProperties } from "react";
+import React from "react";
 
 type ToggleButtonProps = {
   variant?: "text" | "outlined";

@@ -2,26 +2,28 @@ import { KeyboardArrowUpSharp } from "@mui/icons-material";
 import cx from "classnames";
 import { Button } from "components/atoms/Button";
 import { ToggleButton } from "components/atoms/ToggleButton";
-import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
+import type { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
+import type {
+  FC} from "react";
 import React, {
   createElement,
-  FC,
   useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { IpsumDay } from "util/dates";
-import {
-  createFilteringProgram,
+import type { IpsumDay } from "util/dates";
+import type {
   EndowedNode,
   FilterTreeAction,
   IpsumFilteringProgram,
   IpsumFilteringProgramV1,
-  NodeComponentProps,
+  NodeComponentProps} from "util/filtering";
+import {
+  createFilteringProgram
 } from "util/filtering";
 
-import { DatePickerDayData } from "../DatePicker";
+import type { DatePickerDayData } from "../DatePicker";
 import styles from "./LexicalFilterSelector.less";
 import { RawModeEditor } from "./RawModeEditor";
 

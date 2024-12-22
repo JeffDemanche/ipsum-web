@@ -4,7 +4,7 @@ import { urlOverwriteJournalUrl, useUrlAction } from "util/api";
 import { IpsumDay } from "util/dates";
 
 import { useIpsumSearchParams } from ".";
-import { IpsumURLSearch, View } from "./types";
+import type { IpsumURLSearch, View } from "./types";
 
 /**
  * This hook gets run toward the top of the app to transform the URL when it's

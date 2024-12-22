@@ -1,8 +1,8 @@
-import { DatePickerDayData } from "components/molecules/DatePicker";
-import { LexicalFilterSelector } from "components/molecules/LexicalFilterSelector";
+import type { DatePickerDayData } from "components/molecules/DatePicker";
+import type { LexicalFilterSelector } from "components/molecules/LexicalFilterSelector";
 import { useState } from "react";
 import { client, gql } from "util/apollo";
-import { IpsumDay } from "util/dates";
+import type { IpsumDay } from "util/dates";
 
 import { useRelationChooserConnected } from "./use-relation-chooser-connected";
 

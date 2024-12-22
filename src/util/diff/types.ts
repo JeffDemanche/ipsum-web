@@ -1,4 +1,4 @@
-import { patch_obj } from "diff-match-patch";
+import type { patch_obj } from "diff-match-patch";
 
 export interface TimeMachine {
   initialText: string;

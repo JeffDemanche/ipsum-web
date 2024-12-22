@@ -4,11 +4,12 @@ import { SerializedSchema, validate } from "util/serializer";
 import { v4 as uuidv4 } from "uuid";
 
 import { ProjectCollection } from "./project-collection";
-import {
+import type {
   DeserializationResult,
   InMemoryArc,
   InMemoryArcEntry,
   InMemoryComment,
+  InMemoryCommentEntry,
   InMemoryDay,
   InMemoryEntry,
   InMemoryHighlight,
@@ -34,6 +35,7 @@ export class ProjectState {
     "entries",
     "journalEntries",
     "arcEntries",
+    "commentEntries",
     "arcs",
     "highlights",
     "relations",
@@ -67,6 +69,7 @@ export class ProjectState {
         entries: new ProjectCollection<InMemoryEntry>(),
         journalEntries: new ProjectCollection<InMemoryJournalEntry>(),
         arcEntries: new ProjectCollection<InMemoryArcEntry>(),
+        commentEntries: new ProjectCollection<InMemoryCommentEntry>(),
         arcs: new ProjectCollection<InMemoryArc>(),
         highlights: new ProjectCollection<InMemoryHighlight>(),
         relations: new ProjectCollection<InMemoryRelation>(),
@@ -129,6 +132,7 @@ export class ProjectState {
         entries: parsed.right.entries,
         journalEntries: parsed.right.journalEntries,
         arcEntries: parsed.right.arcEntries,
+        commentEntries: parsed.right.commentEntries,
         arcs: parsed.right.arcs,
         highlights: parsed.right.highlights,
         relations: parsed.right.relations,
@@ -167,6 +171,7 @@ const makeStateReactive = (
       entries: new ProjectCollection(state.entries),
       journalEntries: new ProjectCollection(state.journalEntries),
       arcEntries: new ProjectCollection(state.arcEntries),
+      commentEntries: new ProjectCollection(state.commentEntries),
       arcs: new ProjectCollection(state.arcs),
       highlights: new ProjectCollection(state.highlights),
       relations: new ProjectCollection(state.relations),

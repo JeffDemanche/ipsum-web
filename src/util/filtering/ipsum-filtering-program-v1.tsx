@@ -1,10 +1,10 @@
-import { IToken } from "ebnf";
+import type { IToken } from "ebnf";
 import _ from "lodash";
 import { IpsumDay } from "util/dates";
 
 import { IpsumFilteringProgram } from "./abstract-filtering-program";
 import { definitionForRule, ebnf } from "./definition";
-import {
+import type {
   EndowedNode,
   EndowedNodeType,
   EvaluationElement,

@@ -2,8 +2,9 @@ import React, { createContext, useCallback, useEffect, useState } from "react";
 import { urlOverwriteJournalUrl, useUrlAction } from "util/api";
 import { useIpsumIDBWrapper } from "util/indexed-db";
 import { readFromFile, validate, writeToFile } from "util/serializer";
+import type {
+  DeserializationResult} from "util/state";
 import {
-  DeserializationResult,
   PROJECT_STATE,
   ProjectState,
   useModifySearchParams,

@@ -5,7 +5,7 @@ import {
   useUrlAction,
 } from "util/api";
 
-import { RelationsTableConnectedProps } from "./use-arc-relations-table-connected";
+import type { RelationsTableConnectedProps } from "./use-arc-relations-table-connected";
 import { useRelationChooserConnected } from "./use-relation-chooser-connected";
 
 interface UseHighlightRelationsTableConnectedProps {

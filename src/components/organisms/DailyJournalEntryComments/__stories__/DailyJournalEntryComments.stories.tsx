@@ -16,20 +16,18 @@ type StoryDailyJournalEntryComments = StoryObj<
 export const DailyJournalEntryCommentsExample: StoryDailyJournalEntryComments =
   {
     args: {
+      today: IpsumDay.fromString("1/7/2024"),
       comments: [
         {
           id: "1",
           day: IpsumDay.fromString("1/7/2024"),
-          excerptProps: {
-            htmlString:
-              "<p>Lorem ipsum dolor sit amet.</p><p>Consectetur adipiscing elit.</p><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>",
-          },
           highlight: {
             id: "highlight-id",
             highlightNumber: 1,
             hue: 90,
             objectText: "1/2/2024",
             arcNames: ["sam"],
+            object: { __typename: "Day", day: "1/2/2024" },
           },
           commentEntry: {
             highlights: [],

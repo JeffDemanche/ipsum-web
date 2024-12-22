@@ -1,5 +1,6 @@
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
-import React, { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
+import React from "react";
 
 import styles from "./HighlightPage.less";
 

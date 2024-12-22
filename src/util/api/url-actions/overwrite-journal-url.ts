@@ -1,6 +1,6 @@
-import { IpsumURLSearch } from "util/state";
+import type { IpsumURLSearch } from "util/state";
 
-import { URLFunction } from "./types";
+import type { URLFunction } from "./types";
 
 export const overwriteJournalUrl: URLFunction<
   IpsumURLSearch<"journal">,

@@ -35,7 +35,11 @@ export const SerializedSchema = t.type(
           entryKey: t.string,
           trackedHTMLString: t.string,
           history: HistorySchema,
-          entryType: t.union([t.literal("JOURNAL"), t.literal("ARC")]),
+          entryType: t.union([
+            t.literal("JOURNAL"),
+            t.literal("ARC"),
+            t.literal("COMMENT"),
+          ]),
         },
         "entry"
       ),
@@ -64,6 +68,18 @@ export const SerializedSchema = t.type(
         "arcEntry"
       ),
       "arcEntries"
+    ),
+    commentEntries: t.record(
+      t.string,
+      t.type(
+        {
+          __typename: t.literal("CommentEntry"),
+          entry: t.string,
+          comment: t.string,
+        },
+        "commentEntry"
+      ),
+      "commentEntries"
     ),
     arcs: t.record(
       t.string,
@@ -134,7 +150,7 @@ export const SerializedSchema = t.type(
           id: t.string,
           parent: t.union([t.string, t.null]),
           history: HistorySchema,
-          sourceEntry: t.string,
+          commentEntry: t.string,
           outgoingRelations: t.array(t.string),
           objectHighlight: t.string,
         },

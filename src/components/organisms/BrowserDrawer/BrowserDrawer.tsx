@@ -1,11 +1,12 @@
 import cx from "classnames";
 import { Drawer } from "components/atoms/Drawer";
-import { LexicalFilterSelectorConnectedProps } from "components/hooks/use-lexical-filter-selector-connected";
+import type { LexicalFilterSelectorConnectedProps } from "components/hooks/use-lexical-filter-selector-connected";
 import { LexicalFilterSelector } from "components/molecules/LexicalFilterSelector";
-import React, { FunctionComponent, useMemo } from "react";
-import { IpsumDay } from "util/dates";
+import type { FunctionComponent} from "react";
+import React, { useMemo } from "react";
+import type { IpsumDay } from "util/dates";
 import { IpsumFilteringProgramV1 } from "util/filtering";
-import { HighlightsBrowserTab } from "util/state";
+import type { HighlightsBrowserTab } from "util/state";
 import { TestIds } from "util/test-ids";
 
 import { BrowserHighlightsTab } from "../BrowserHighlightsTab";

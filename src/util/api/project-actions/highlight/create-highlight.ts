@@ -1,8 +1,8 @@
 import { IpsumDay } from "util/dates";
-import { InMemoryHighlight } from "util/state";
+import type { InMemoryHighlight } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const createHighlight: APIFunction<
   {

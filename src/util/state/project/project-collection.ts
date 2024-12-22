@@ -1,4 +1,5 @@
-import { makeVar, ReactiveVar } from "@apollo/client";
+import type { ReactiveVar } from "@apollo/client";
+import { makeVar } from "@apollo/client";
 
 export class ProjectCollection<T> {
   private readonly values: ReactiveVar<Record<string, ReactiveVar<T>>>;

@@ -1,15 +1,16 @@
-import {
-  $applyNodeReplacement,
+import type {
   DOMConversionMap,
   DOMConversionOutput,
   DOMExportOutput,
   EditorConfig,
-  ElementNode,
   LexicalEditor,
   LexicalNode,
   NodeKey,
   SerializedElementNode,
-  Spread,
+  Spread} from "lexical";
+import {
+  $applyNodeReplacement,
+  ElementNode
 } from "lexical";
 
 import { $isCommentLabelNode, CommentLabelNode } from "./CommentLabelNode";

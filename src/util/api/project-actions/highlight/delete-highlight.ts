@@ -1,4 +1,4 @@
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const deleteHighlight: APIFunction<{ id: string }, boolean> = (
   args,

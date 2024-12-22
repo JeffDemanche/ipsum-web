@@ -1,14 +1,11 @@
 import { IpsumDay } from "util/dates";
-import { IpsumTimeMachine } from "util/diff";
-import { removeEmptyCommentDivs, wrapWithCommentDiv } from "util/excerpt";
-import { HighlightWrapper, InMemoryComment } from "util/state";
+import type { InMemoryComment } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { updateDay } from "../day/update-day";
-import { createJournalEntry } from "../entry/create-journal-entry";
-import { updateJournalEntry } from "../entry/update-journal-entry";
+import { createCommentEntry } from "../entry/create-comment-entry";
 import { createRelationFromCommentToHighlight } from "../relation/create-relation-from-comment-to-highlight";
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const createComment: APIFunction<
   {
@@ -52,54 +49,19 @@ export const createComment: APIFunction<
   const id = args.id ?? uuidv4();
   const dayCreated = args.dayCreated;
 
-  const sourceEntryKey = dayCreated.toString("entry-printed-date");
-
-  const objectHighlight = projectState
-    .collection("highlights")
-    .get(args.objectHighlight);
-
-  const wrappedHighlight = new HighlightWrapper(objectHighlight, projectState);
-
-  const commentWrappedHTMLString = wrapWithCommentDiv(args.htmlString, {
-    commentId: id,
-    highlightHue: wrappedHighlight.hue,
-    highlightNumber: wrappedHighlight.number,
-    highlightObjectText: wrappedHighlight.objectText,
-  });
-
-  if (!projectState.collection("entries").has(sourceEntryKey)) {
-    // Case where today's journal entry doesn't exist yet. We need to create it.
-    createJournalEntry(
-      {
-        dayCreated,
-        entryKey: sourceEntryKey,
-        htmlString: removeEmptyCommentDivs(commentWrappedHTMLString),
-      },
-      context
-    );
-  } else {
-    // Case where today's journal entry already exists. We need to perform logic
-    // to append the new comment to it.
-    const sourceHighlightEntry = projectState
-      .collection("entries")
-      .get(sourceEntryKey);
-    const sourceHighlightEntryCurrentHTML = IpsumTimeMachine.fromString(
-      sourceHighlightEntry.trackedHTMLString
-    ).currentValue;
-    const appendedHTMLString = removeEmptyCommentDivs(
-      `${sourceHighlightEntryCurrentHTML}${commentWrappedHTMLString}`
-    );
-
-    updateJournalEntry(
-      { entryKey: sourceEntryKey, htmlString: appendedHTMLString },
-      context
-    );
-  }
+  const commentEntry = createCommentEntry(
+    {
+      comment: id,
+      dayCreated,
+      htmlString: args.htmlString,
+    },
+    context
+  );
 
   const comment = projectState.collection("comments").create(id, {
     __typename: "Comment",
     id,
-    sourceEntry: sourceEntryKey,
+    commentEntry: commentEntry.entry,
     objectHighlight: args.objectHighlight,
     outgoingRelations: [],
     parent: null,
@@ -129,7 +91,6 @@ export const createComment: APIFunction<
     {
       day: dayCreated,
       comments: (previous) => [...previous, id],
-      journalEntryKey: () => sourceEntryKey,
     },
     context
   );

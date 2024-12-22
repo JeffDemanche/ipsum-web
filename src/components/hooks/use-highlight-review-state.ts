@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { HighlightSRSButtonsReviewState } from "components/molecules/HighlightSRSButtons";
+import type { HighlightSRSButtonsReviewState } from "components/molecules/HighlightSRSButtons";
 import { useMemo } from "react";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";

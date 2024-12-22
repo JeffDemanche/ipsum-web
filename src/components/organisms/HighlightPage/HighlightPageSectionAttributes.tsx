@@ -1,10 +1,11 @@
-import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
-import { HighlightFunctionButtonsConnectedProps } from "components/hooks/use-highlight-function-buttons-connected";
-import { HighlightSRSButtonsConnectedProps } from "components/hooks/use-highlight-srs-buttons-connected";
+import type { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
+import type { HighlightFunctionButtonsConnectedProps } from "components/hooks/use-highlight-function-buttons-connected";
+import type { HighlightSRSButtonsConnectedProps } from "components/hooks/use-highlight-srs-buttons-connected";
 import { HighlightFunctionButtons } from "components/molecules/HighlightFunctionButtons";
 import { HighlightSRSButtons } from "components/molecules/HighlightSRSButtons";
 import { RelationsTable } from "components/molecules/RelationsTable";
-import React, { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
+import React from "react";
 
 import styles from "./HighlightPage.less";
 

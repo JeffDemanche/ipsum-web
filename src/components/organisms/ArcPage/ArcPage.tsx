@@ -1,10 +1,11 @@
 import { Collapse } from "@mui/material";
 import cx from "classnames";
-import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
+import type { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { PageHeaderArc } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
 import { hueSwatch } from "components/styles";
-import React, { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
+import React from "react";
 import { TestIds } from "util/test-ids";
 
 import styles from "./ArcPage.less";

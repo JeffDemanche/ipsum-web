@@ -48,7 +48,7 @@ describe("Comment resolvers", () => {
           query ReadComment($commentId: ID!) {
             comment(id: $commentId) {
               id
-              sourceEntry {
+              commentEntry {
                 entry {
                   entryKey
                   htmlString
@@ -64,9 +64,11 @@ describe("Comment resolvers", () => {
       });
 
       expect(result.comment.id).toEqual(comment.id);
-      expect(result.comment.sourceEntry.entry.entryKey).toEqual("1/6/2020");
-      expect(result.comment.sourceEntry.entry.htmlString).toEqual(
-        `<div data-comment-id="${result.comment.id}"><div>goodbye world</div></div>`
+      expect(result.comment.commentEntry.entry.entryKey).toEqual(
+        `comment-entry:${comment.id}`
+      );
+      expect(result.comment.commentEntry.entry.htmlString).toEqual(
+        "<div>goodbye world</div>"
       );
     });
 
@@ -108,7 +110,7 @@ describe("Comment resolvers", () => {
           query ReadComments($commentIds: [ID!]) {
             comments(ids: $commentIds) {
               id
-              sourceEntry {
+              commentEntry {
                 entry {
                   entryKey
                   htmlString
@@ -124,14 +126,18 @@ describe("Comment resolvers", () => {
       });
 
       expect(result.comments[0].id).toEqual(comment1.id);
-      expect(result.comments[0].sourceEntry.entry.entryKey).toEqual("1/6/2020");
-      expect(result.comments[0].sourceEntry.entry.htmlString).toEqual(
-        `<div data-comment-id="${comment1.id}"><p>comment 1</p></div>`
+      expect(result.comments[0].commentEntry.entry.entryKey).toEqual(
+        `comment-entry:${comment1.id}`
+      );
+      expect(result.comments[0].commentEntry.entry.htmlString).toEqual(
+        "<p>comment 1</p>"
       );
       expect(result.comments[1].id).toEqual(comment2.id);
-      expect(result.comments[1].sourceEntry.entry.entryKey).toEqual("1/7/2020");
-      expect(result.comments[1].sourceEntry.entry.htmlString).toEqual(
-        `<div data-comment-id="${comment2.id}"><p>comment 2</p></div>`
+      expect(result.comments[1].commentEntry.entry.entryKey).toEqual(
+        `comment-entry:${comment2.id}`
+      );
+      expect(result.comments[1].commentEntry.entry.htmlString).toEqual(
+        "<p>comment 2</p>"
       );
     });
   });

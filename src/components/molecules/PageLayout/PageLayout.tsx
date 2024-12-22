@@ -1,5 +1,6 @@
 import cx from "classnames";
-import React, { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
+import React from "react";
 
 import styles from "./PageLayout.less";
 

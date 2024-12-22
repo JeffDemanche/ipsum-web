@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FormattingControlsContextType } from "./types";
+import type { FormattingControlsContextType } from "./types";
 
 export const FormattingControlsContext =
   React.createContext<FormattingControlsContextType>({

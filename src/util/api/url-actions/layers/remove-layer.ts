@@ -1,4 +1,4 @@
-import { URLFunction } from "../types";
+import type { URLFunction } from "../types";
 
 export const removeLayer: URLFunction<{ index: number }, "journal"> = (
   props,

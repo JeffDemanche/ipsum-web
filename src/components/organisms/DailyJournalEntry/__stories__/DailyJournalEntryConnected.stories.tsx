@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import React from "react";
 import { MemoryRouter } from "react-router";
-import { dataToSearchParams } from "util/state";
-import { IpsumStateProvider } from "util/state/IpsumStateContext";
+import { IpsumDay } from "util/dates";
+import { dataToSearchParams, IpsumStateProvider } from "util/state";
 
 import { DailyJournalEntryConnected } from "../DailyJournalEntryConnected";
 
@@ -21,6 +21,7 @@ export const DailyJournalEntryConnectedExample: StoryDailyJournalEntryConnected 
   {
     args: {
       layerIndex: 0,
+      day: IpsumDay.fromString("03-04-2020", "url-format"),
     },
     decorators: [
       (Story) => {

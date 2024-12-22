@@ -1,4 +1,4 @@
-import { IpsumURLSearch, View } from "util/state";
+import type { IpsumURLSearch, View } from "util/state";
 
 export type URLFunction<T, V extends View> = (
   args: T,

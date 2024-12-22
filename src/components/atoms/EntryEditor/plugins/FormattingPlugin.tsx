@@ -14,25 +14,28 @@ import {
 } from "@lexical/rich-text";
 import { $isAtNodeEnd, $setBlocksType } from "@lexical/selection";
 import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
-import { BlockType } from "components/atoms/EntryEditor";
+import type { BlockType } from "components/atoms/EntryEditor";
+import type {
+  FormattableEditor} from "components/molecules/FormattingControls";
 import {
-  FormattableEditor,
   FormattingControlsContext,
 } from "components/molecules/FormattingControls";
+import type {
+  ElementNode,
+  RangeSelection,
+  TextNode} from "lexical";
 import {
   $createParagraphNode,
   $getSelection,
   $isRangeSelection,
   BLUR_COMMAND,
   COMMAND_PRIORITY_LOW,
-  ElementNode,
   FOCUS_COMMAND,
   FORMAT_TEXT_COMMAND,
-  RangeSelection,
-  SELECTION_CHANGE_COMMAND,
-  TextNode,
+  SELECTION_CHANGE_COMMAND
 } from "lexical";
-import React, {
+import type React from "react";
+import {
   useCallback,
   useContext,
   useEffect,

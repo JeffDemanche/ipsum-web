@@ -1,8 +1,7 @@
-import { IpsumTimeMachine } from "util/diff";
-import { removeCommentDiv } from "util/excerpt";
+import { IpsumDay } from "util/dates";
 
-import { updateJournalEntry } from "../entry/update-journal-entry";
-import { APIFunction } from "../types";
+import { updateDay } from "../day/update-day";
+import type { APIFunction } from "../types";
 
 export const deleteComment: APIFunction<{ id: string }, boolean> = (
   args,
@@ -16,20 +15,14 @@ export const deleteComment: APIFunction<{ id: string }, boolean> = (
 
   const comment = projectState.collection("comments").get(args.id);
 
-  const sourceEntry = projectState
-    .collection("entries")
-    .get(comment.sourceEntry);
-
-  const sourceEntryHTMLString = IpsumTimeMachine.fromString(
-    sourceEntry.trackedHTMLString
-  ).currentValue;
+  projectState.collection("commentEntries").delete(comment.commentEntry);
 
   projectState.collection("comments").delete(args.id);
 
-  updateJournalEntry(
+  updateDay(
     {
-      entryKey: sourceEntry.entryKey,
-      htmlString: removeCommentDiv(sourceEntryHTMLString, args.id),
+      day: IpsumDay.fromString(comment.history.dateCreated, "iso"),
+      comments: (comments) => comments.filter((c) => c !== args.id),
     },
     context
   );

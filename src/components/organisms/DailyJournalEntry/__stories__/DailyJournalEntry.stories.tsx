@@ -23,5 +23,14 @@ export const DailyJournalEntryExample: StoryDailyJournalEntry = {
       day: IpsumDay.fromString("1/7/2024"),
       expanded: true,
     },
+    dailyJournalEntryCommentsConnectedProps: {
+      comments: [],
+      onCreateCommentEntry: () => "",
+      onDeleteCommentEntry: () => {},
+      onCreateCommentHighlight: () => "",
+      onDeleteCommentHighlight: () => {},
+      onUpdateCommentEntry: () => true,
+      today: IpsumDay.fromString("1/7/2024", "entry-printed-date"),
+    },
   },
 };

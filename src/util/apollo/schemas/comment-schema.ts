@@ -12,8 +12,8 @@ export const commentTypeDef = gql`
   type Comment {
     id: ID!
     parent: Comment
-    sourceEntry: JournalEntry!
-    excerptHtmlString: String!
+    commentEntry: CommentEntry!
+    htmlString: String!
     objectHighlight: Highlight!
     history: History!
   }

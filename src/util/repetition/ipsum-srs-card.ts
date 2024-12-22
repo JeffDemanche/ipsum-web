@@ -1,7 +1,7 @@
 import { IpsumDay } from "util/dates";
-import { InMemorySRSCard } from "util/state";
+import type { InMemorySRSCard } from "util/state";
 
-import { SRSCardHistory, SRSCardRating } from "./types";
+import type { SRSCardHistory, SRSCardRating } from "./types";
 
 const EASE_BEFORE_FIRST_REVIEW = 2.5;
 

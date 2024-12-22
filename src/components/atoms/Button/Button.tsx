@@ -1,7 +1,8 @@
 import { Button as MuiButton, Tooltip } from "@mui/material";
 import cx from "classnames";
 import { font_family_sans, font_weight_light } from "components/styles";
-import React, { CSSProperties, forwardRef } from "react";
+import type { CSSProperties} from "react";
+import React, { forwardRef } from "react";
 
 import styles from "./Button.less";
 

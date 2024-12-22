@@ -1,7 +1,7 @@
-import { InMemoryRelation } from "util/state";
+import type { InMemoryRelation } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const createRelationFromCommentToHighlight: APIFunction<
   { id?: string; predicate: "responds to"; subject: string; object: string },

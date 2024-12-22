@@ -1,10 +1,11 @@
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 
+import type {
+  IpsumDateFormatFrom,
+  IpsumDateFormatTo} from "./ipsum-date-time";
 import {
   getCurrentLocalDateTime,
-  IpsumDateFormatFrom,
-  IpsumDateFormatTo,
   IpsumDateTime,
 } from "./ipsum-date-time";
 

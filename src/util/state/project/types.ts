@@ -1,8 +1,8 @@
-import { ReactiveVar } from "@apollo/client";
-import { ValidatorResult } from "util/serializer";
+import type { ReactiveVar } from "@apollo/client";
+import type { ValidatorResult } from "util/serializer";
 
-import { ProjectCollection } from "./project-collection";
-import { ProjectState } from "./project-state";
+import type { ProjectCollection } from "./project-collection";
+import type { ProjectState } from "./project-state";
 
 export interface InMemoryHistory {
   __typename: "History";
@@ -19,7 +19,7 @@ export interface InMemoryEntry {
   entryKey: string;
   trackedHTMLString: string;
   history: InMemoryHistory;
-  entryType: "JOURNAL" | "ARC";
+  entryType: "JOURNAL" | "ARC" | "COMMENT";
 }
 
 export interface InMemoryJournalEntry {
@@ -32,6 +32,12 @@ export interface InMemoryArcEntry {
   __typename: "ArcEntry";
   entry: string;
   arc: string;
+}
+
+export interface InMemoryCommentEntry {
+  __typename: "CommentEntry";
+  entry: string;
+  comment: string;
 }
 
 export interface InMemoryArc {
@@ -89,7 +95,7 @@ export interface InMemoryComment {
   parent: string | null;
   objectHighlight: string;
   outgoingRelations: string[];
-  sourceEntry: string;
+  commentEntry: string;
   history: InMemoryHistory;
 }
 
@@ -123,6 +129,7 @@ export interface ReactiveInMemoryProjectCollections {
   entries: ProjectCollection<InMemoryEntry>;
   journalEntries: ProjectCollection<InMemoryJournalEntry>;
   arcEntries: ProjectCollection<InMemoryArcEntry>;
+  commentEntries: ProjectCollection<InMemoryCommentEntry>;
   arcs: ProjectCollection<InMemoryArc>;
   highlights: ProjectCollection<InMemoryHighlight>;
   relations: ProjectCollection<InMemoryRelation>;
@@ -148,6 +155,7 @@ export interface StaticInMemoryProjectState {
   entries: CollectionOf<InMemoryEntry>;
   journalEntries: CollectionOf<InMemoryJournalEntry>;
   arcEntries: CollectionOf<InMemoryArcEntry>;
+  commentEntries: CollectionOf<InMemoryCommentEntry>;
   arcs: CollectionOf<InMemoryArc>;
   highlights: CollectionOf<InMemoryHighlight>;
   relations: CollectionOf<InMemoryRelation>;

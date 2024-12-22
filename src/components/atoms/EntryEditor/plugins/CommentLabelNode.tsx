@@ -1,12 +1,14 @@
 import { hueSwatch } from "components/styles";
-import {
-  DecoratorNode,
+import type {
   LexicalNode,
   SerializedElementNode,
   SerializedLexicalNode,
-  Spread,
+  Spread} from "lexical";
+import {
+  DecoratorNode
 } from "lexical";
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
+import React from "react";
 
 interface CommentLabelProps {
   commentHighlightHue: number;

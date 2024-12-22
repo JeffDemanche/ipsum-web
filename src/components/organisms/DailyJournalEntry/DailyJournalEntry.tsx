@@ -2,10 +2,13 @@ import { Collapse } from "@mui/material";
 import { Entry } from "components/molecules/Entry";
 import { MonthlyNav } from "components/molecules/MonthlyNav";
 import { PageHeaderDailyJournal } from "components/molecules/PageHeader";
-import React, { ComponentProps } from "react";
-import { IpsumDay } from "util/dates";
+import type { ComponentProps } from "react";
+import React from "react";
+import type { IpsumDay } from "util/dates";
 import { TestIds } from "util/test-ids";
 
+import { DailyJournalEntryComments } from "../DailyJournalEntryComments";
+import type { DailyJournalEntryCommentsConnectedProps } from "../DailyJournalEntryComments/use-daily-journal-entry-comments-connected";
 import styles from "./DailyJournalEntry.less";
 
 interface DailyJournalEntryProps {
@@ -34,6 +37,7 @@ interface DailyJournalEntryProps {
   createHighlight: () => string;
   deleteHighlight: (highlightId: string) => void;
   onDaySelect: (day: IpsumDay) => void;
+  dailyJournalEntryCommentsConnectedProps: DailyJournalEntryCommentsConnectedProps;
 
   onHighlightClick?: (highlightId: string) => void;
 }
@@ -54,6 +58,7 @@ export const DailyJournalEntry: React.FunctionComponent<
   createHighlight,
   deleteHighlight,
   onDaySelect,
+  dailyJournalEntryCommentsConnectedProps,
   onHighlightClick,
 }) => {
   return (
@@ -84,6 +89,14 @@ export const DailyJournalEntry: React.FunctionComponent<
             deleteHighlight={deleteHighlight}
             onHighlightClick={onHighlightClick}
           />
+          {!!dailyJournalEntryCommentsConnectedProps.comments?.length && (
+            <>
+              <hr />
+              <DailyJournalEntryComments
+                {...dailyJournalEntryCommentsConnectedProps}
+              />
+            </>
+          )}
         </div>
       </Collapse>
     </div>

@@ -1,7 +1,8 @@
 import { TextField as MuiTextField } from "@mui/material";
 import cx from "classnames";
 import { grid_x_1 } from "components/styles";
-import React, { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
+import React from "react";
 
 import styles from "./TextField.less";
 

@@ -1,6 +1,7 @@
-import { useModifySearchParams, View } from "util/state";
+import type { View } from "util/state";
+import { useModifySearchParams } from "util/state";
 
-import { URLFunction } from "./types";
+import type { URLFunction } from "./types";
 
 export const useUrlAction = <T, V extends View>(
   urlAction: URLFunction<T, V>

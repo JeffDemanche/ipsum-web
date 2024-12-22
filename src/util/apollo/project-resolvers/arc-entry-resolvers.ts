@@ -1,4 +1,4 @@
-import { QueryArcEntriesArgs, StrictTypedTypePolicies } from "util/apollo";
+import type { QueryArcEntriesArgs, StrictTypedTypePolicies } from "util/apollo";
 import { PROJECT_STATE } from "util/state";
 
 export const ArcEntryResolvers: StrictTypedTypePolicies = {

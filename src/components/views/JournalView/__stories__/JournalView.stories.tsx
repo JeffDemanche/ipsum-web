@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import React from "react";
 import { MemoryRouter } from "react-router";

@@ -1,9 +1,9 @@
 import { EntryType } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { InMemoryJournalEntry } from "util/state";
+import type { InMemoryJournalEntry } from "util/state";
 
 import { updateDay } from "../day/update-day";
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 import { createEntry } from "./create-entry";
 
 export const createJournalEntry: APIFunction<

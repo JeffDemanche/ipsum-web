@@ -1,18 +1,17 @@
 import { useQuery } from "@apollo/client";
-import { Comments } from "components/molecules/Comments";
+import type { CommentsNavigator } from "components/molecules/CommentsNavigator";
 import { useState } from "react";
 import {
   apiCreateComment,
   apiDeleteComment,
-  apiUpdateJournalEntry,
+  apiUpdateCommentEntry,
   useApiAction,
 } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import { removeEmptyCommentDivs, replaceCommentDiv } from "util/excerpt";
 
-export type CommentsConnectedProps = Pick<
-  React.ComponentProps<typeof Comments>,
+export type CommentsNavigatorConnectedProps = Pick<
+  React.ComponentProps<typeof CommentsNavigator>,
   | "today"
   | "selectedDay"
   | "setSelectedDay"
@@ -34,20 +33,17 @@ const UseCommentsConnectedQuery = gql(`
         history {
           dateCreated
         }
-        excerptHtmlString
-        sourceEntry {
+        htmlString
+        commentEntry {
           entry {
             entryKey
             highlights {
               id
               number
               hue
-              outgoingRelations {
-                object {
-                  ... on Arc {
-                    name
-                  }
-                }
+              arcs {
+                id
+                name
               }
             }
             htmlString
@@ -62,9 +58,9 @@ interface UseCommentsConnectedProps {
   highlightId: string;
 }
 
-export const useCommentsConnected = ({
+export const useCommentsNavigatorConnected = ({
   highlightId,
-}: UseCommentsConnectedProps): CommentsConnectedProps => {
+}: UseCommentsConnectedProps): CommentsNavigatorConnectedProps => {
   const today = IpsumDay.today();
 
   const [selectedDay, setSelectedDay] = useState(today);
@@ -75,32 +71,26 @@ export const useCommentsConnected = ({
     },
   });
 
-  const comments: CommentsConnectedProps["comments"] =
-    data?.highlight.comments.map((comment) => ({
+  const comments: CommentsNavigatorConnectedProps["comments"] =
+    data?.highlight.comments.filter(Boolean).map((comment) => ({
       id: comment.id,
       day: IpsumDay.fromString(comment.history.dateCreated, "iso"),
-      excerptHtmlString: comment.excerptHtmlString,
-      sourceEntry: {
-        entryKey: comment.sourceEntry.entry.entryKey,
-        highlights: comment.sourceEntry.entry.highlights.map((highlight) => ({
+      htmlString: comment.htmlString,
+      commentEntry: {
+        entryKey: comment.commentEntry.entry.entryKey,
+        highlights: comment.commentEntry.entry.highlights.map((highlight) => ({
           highlightId: highlight.id,
           highlightNumber: highlight.number,
           hue: highlight.hue,
-          arcNames: highlight.outgoingRelations
-            .map((relation) =>
-              relation.object.__typename === "Arc"
-                ? relation.object.name
-                : undefined
-            )
-            .filter(Boolean),
+          arcNames: highlight.arcs.map((arc) => arc.name),
         })),
-        htmlString: comment.sourceEntry.entry.htmlString,
+        htmlString: comment.commentEntry.entry.htmlString,
       },
     }));
 
   const [createComment] = useApiAction(apiCreateComment);
 
-  const [updateEntry] = useApiAction(apiUpdateJournalEntry);
+  const [updateCommentEntry] = useApiAction(apiUpdateCommentEntry);
 
   const [deleteComment] = useApiAction(apiDeleteComment);
 
@@ -110,7 +100,7 @@ export const useCommentsConnected = ({
       htmlString,
       objectHighlight: highlightId,
     });
-    return newComment.sourceEntry;
+    return newComment.commentEntry;
   };
 
   const selectedComment = comments.find((comment) =>
@@ -126,16 +116,11 @@ export const useCommentsConnected = ({
   }) => {
     if (!selectedComment) return false;
 
-    return updateEntry({
+    updateCommentEntry({
       entryKey,
-      htmlString: removeEmptyCommentDivs(
-        replaceCommentDiv(
-          selectedComment.sourceEntry.htmlString,
-          htmlString,
-          selectedComment.id
-        )
-      ),
+      htmlString,
     });
+    return true;
   };
 
   const onDeleteComment = () => {

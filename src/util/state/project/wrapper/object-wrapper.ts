@@ -1,4 +1,4 @@
-import { ProjectState } from "../project-state";
+import type { ProjectState } from "../project-state";
 
 export class ObjectWrapper {
   private _projectState: ProjectState;

@@ -1,7 +1,8 @@
 import { Tooltip, Typography as MuiTypography } from "@mui/material";
-import React, { CSSProperties, forwardRef } from "react";
+import type { CSSProperties} from "react";
+import React, { forwardRef } from "react";
 
-import { TypeLineHeight, TypeSize, TypeVariant, TypeWeight } from "./types";
+import type { TypeLineHeight, TypeSize, TypeVariant, TypeWeight } from "./types";
 
 type TypeProps = {
   variant?: TypeVariant;

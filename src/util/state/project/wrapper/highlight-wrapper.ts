@@ -2,8 +2,8 @@ import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { getHighlightOrder } from "util/excerpt";
 
-import { ProjectState } from "../project-state";
-import { InMemoryHighlight } from "../types";
+import type { ProjectState } from "../project-state";
+import type { InMemoryHighlight } from "../types";
 import { ObjectWrapper } from "./object-wrapper";
 
 export class HighlightWrapper extends ObjectWrapper {

@@ -1,4 +1,4 @@
-import { BlockType } from "components/atoms/EntryEditor";
+import type { BlockType } from "components/atoms/EntryEditor";
 
 export interface FormattableEditor {
   isFocused: boolean;

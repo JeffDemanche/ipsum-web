@@ -6,11 +6,12 @@ import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { SerializationContext, SerializationProvider } from "util/serializer";
-import {
+import type {
   DeserializationResult,
+  ProjectState} from "util/state";
+import {
   IpsumStateContext,
   IpsumStateProvider,
-  ProjectState,
   useNormalizeUrl,
 } from "util/state";
 

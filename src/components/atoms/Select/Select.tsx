@@ -9,7 +9,8 @@ import {
   font_weight_light,
   grey700,
 } from "components/styles";
-import React, { CSSProperties } from "react";
+import type { CSSProperties } from "react";
+import React from "react";
 
 import styles from "./Select.less";
 

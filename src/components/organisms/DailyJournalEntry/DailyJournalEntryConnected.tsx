@@ -16,6 +16,7 @@ import { gql } from "util/apollo";
 import { IpsumDay, useToday } from "util/dates";
 import { useIpsumSearchParams } from "util/state";
 
+import { useDailyJournalEntryCommentsConnected } from "../DailyJournalEntryComments";
 import { DailyJournalEntry } from "./DailyJournalEntry";
 
 interface DailyJournalEntryConnectedProps {
@@ -41,6 +42,9 @@ const DailyJournalEntryQuery = gql(`
           }
         }
       }
+    }
+    daysWithJournalEntryOrComments {
+      day
     }
     day(day: $day) {
       comments {
@@ -111,6 +115,9 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
 
   const removeLayer = useUrlAction(urlRemoveLayer);
 
+  const dailyJournalEntryCommentsConnectedProps =
+    useDailyJournalEntryCommentsConnected({ day: entryDay });
+
   const onSetExpanded = (expanded: boolean) => {
     setLayerExpanded({ index: layerIndex, expanded });
   };
@@ -119,8 +126,8 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
     return <div>Loading...</div>;
   }
 
-  const entryDays = data.journalEntryDates.map((date: string) =>
-    IpsumDay.fromString(date, "entry-printed-date")
+  const entryDays = data.daysWithJournalEntryOrComments.map((day) =>
+    IpsumDay.fromString(day.day, "stored-day")
   );
 
   const createEntry = (htmlString: string) => {
@@ -200,6 +207,9 @@ export const DailyJournalEntryConnected: React.FunctionComponent<
       deleteHighlight={onDeleteHighlight}
       onDaySelect={onDayChange}
       onHighlightClick={openHighlightLayer}
+      dailyJournalEntryCommentsConnectedProps={
+        dailyJournalEntryCommentsConnectedProps
+      }
     />
   );
 };

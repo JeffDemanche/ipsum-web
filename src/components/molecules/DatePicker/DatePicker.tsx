@@ -1,8 +1,9 @@
+import type {
+  PickersDayProps} from "@mui/x-date-pickers";
 import {
   DateCalendar,
   LocalizationProvider,
-  PickersDay,
-  PickersDayProps,
+  PickersDay
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import cx from "classnames";
@@ -13,10 +14,12 @@ import {
   font_weight_bold,
   font_weight_light,
 } from "components/styles";
-import dayjs, { Dayjs } from "dayjs";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import type {
+  FunctionComponent} from "react";
 import React, {
   createContext,
-  FunctionComponent,
   useContext,
   useEffect,
   useMemo,

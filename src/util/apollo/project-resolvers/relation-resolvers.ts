@@ -1,4 +1,4 @@
-import { QueryRelationsArgs, StrictTypedTypePolicies } from "util/apollo";
+import type { QueryRelationsArgs, StrictTypedTypePolicies } from "util/apollo";
 import { PROJECT_STATE } from "util/state";
 
 export const RelationResolvers: StrictTypedTypePolicies = {

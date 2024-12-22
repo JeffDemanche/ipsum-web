@@ -1,14 +1,18 @@
 import { Collapse } from "@mui/material";
 import cx from "classnames";
-import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
-import { CommentsConnectedProps } from "components/hooks/use-comments-connected";
-import { HighlightFunctionButtonsConnectedProps } from "components/hooks/use-highlight-function-buttons-connected";
-import { HighlightSRSButtonsConnectedProps } from "components/hooks/use-highlight-srs-buttons-connected";
-import { Comments } from "components/molecules/Comments";
+import type { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
+import type { HighlightFunctionButtonsConnectedProps } from "components/hooks/use-highlight-function-buttons-connected";
+import type { HighlightSRSButtonsConnectedProps } from "components/hooks/use-highlight-srs-buttons-connected";
+import type {
+  CommentsNavigatorConnectedProps} from "components/molecules/CommentsNavigator";
+import {
+  CommentsNavigator
+} from "components/molecules/CommentsNavigator";
 import { PageHeaderHighlight } from "components/molecules/PageHeader";
 import { PageLayout } from "components/molecules/PageLayout";
 import { hueSwatch } from "components/styles";
-import React, { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
+import React from "react";
 import { TestIds } from "util/test-ids";
 
 import styles from "./HighlightPage.less";
@@ -39,7 +43,7 @@ interface HighlightPageProps {
     >["relations"];
   };
 
-  commentsProps: CommentsConnectedProps;
+  commentsProps: CommentsNavigatorConnectedProps;
 }
 
 export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
@@ -134,7 +138,7 @@ export const HighlightPage: FunctionComponent<HighlightPageProps> = ({
                   {
                     elevated: false,
                     component: (
-                      <Comments
+                      <CommentsNavigator
                         className={styles["comments-section"]}
                         {...commentsProps}
                       />

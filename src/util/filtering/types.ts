@@ -1,12 +1,12 @@
-import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
-import { DatePickerDayData } from "components/molecules/DatePicker";
-import { IToken } from "ebnf";
-import { FunctionComponent } from "react";
-import { IpsumDay } from "util/dates";
-import { IpsumSRSCard } from "util/repetition";
+import type { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
+import type { DatePickerDayData } from "components/molecules/DatePicker";
+import type { IToken } from "ebnf";
+import type { FunctionComponent } from "react";
+import type { IpsumDay } from "util/dates";
+import type { IpsumSRSCard } from "util/repetition";
 
-import { FilterTreeAction } from "./components/filter-tree-actions";
-import { IpsumFilteringProgramV1 } from "./ipsum-filtering-program-v1";
+import type { FilterTreeAction } from "./components/filter-tree-actions";
+import type { IpsumFilteringProgramV1 } from "./ipsum-filtering-program-v1";
 
 export interface FilterableOutgoingRelation {
   predicate: string;

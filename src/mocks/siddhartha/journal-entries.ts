@@ -1,4 +1,4 @@
-import { MockedJournalEntry } from "mocks/types";
+import type { MockedJournalEntry } from "mocks/types";
 import { IpsumDay } from "util/dates";
 
 export const journalEntry1_TheSonOfTheBrahman: MockedJournalEntry = {
@@ -13,12 +13,24 @@ export const journalEntry1_TheSonOfTheBrahman: MockedJournalEntry = {
         id: "highlight-chapter1-p-0",
         outgoingRelations: [
           {
-            id: "relation-highlight-chapter1-p-0-arc3-understanding",
+            id: "relation-highlight-chapter1-p-0-arc003-understanding",
             predicate: "relates to",
-            arcId: "arc3_understanding",
+            arcId: "arc003_understanding",
           },
         ],
-        comments: [],
+        comments: [
+          {
+            dayCreated: IpsumDay.fromString("3/4/2020", "entry-printed-date"),
+            highlightId: "highlight-chapter1-p-0",
+            id: "comment-highlight-chapter1-p-0-1",
+            mockedEntry: {
+              entryKey: "comment-entry:comment-highlight-chapter1-p-0-1",
+              sections: [
+                "Looking back on those words, I see the stirring of a younger self, one still seeking, still restless in his pursuit of knowledge and understanding. That moment by the river was a seed—a glimpse of the wisdom that would later unfold in my heart. I felt the river’s song then, but I did not yet fully comprehend its meaning. The thirst I spoke of was the flame of my journey, driving me through asceticism, indulgence, and despair. Now, with time and experience, I understand that the river itself held the answer all along: the symphony I heard was life’s eternal flow, not something to grasp but to be part of. That thirst has since been quenched by the quiet acceptance of the present moment and the unity of all things.",
+              ],
+            },
+          },
+        ],
       },
     },
 
@@ -31,16 +43,42 @@ export const journalEntry1_TheSonOfTheBrahman: MockedJournalEntry = {
         id: "highlight-chapter1-p-1",
         outgoingRelations: [
           {
-            id: "relation-highlight-chapter1-p-1-arc5-govinda",
+            id: "relation-highlight-chapter1-p-1-arc005-govinda",
             predicate: "relates to",
-            arcId: "arc5_govinda",
+            arcId: "arc005_govinda",
+          },
+          {
+            id: "relation-highlight-chapter1-p-1-arc008-gotama",
+            predicate: "relates to",
+            arcId: "arc008_gotama",
+          },
+          {
+            id: "relation-highlight-chapter1-p-1-arc009-enlightenment",
+            predicate: "relates to",
+            arcId: "arc009_enlightenment",
           },
         ],
         comments: [],
       },
     },
 
-    "As I gaze upon the tranquil waters of the river, I cannot help but feel a sense of restlessness stirring within me. The life of luxury and privilege that surrounds me in my father's home no longer holds the allure it once did. The path to true enlightenment lies beyond the confines of material wealth and societal expectations.",
+    {
+      text: "As I gaze upon the tranquil waters of the river, I cannot help but feel a sense of restlessness stirring within me. The life of luxury and privilege that surrounds me in my father's home no longer holds the allure it once did. The path to true enlightenment lies beyond the confines of material wealth and societal expectations.",
+      highlight: {
+        entryKey: "1/1/2020",
+        dayCreated: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
+        hue: 12,
+        id: "highlight-chapter1-p-2",
+        outgoingRelations: [
+          {
+            id: "relation-highlight-chapter1-p-2-arc010-the_river",
+            predicate: "relates to",
+            arcId: "arc010_the_river",
+          },
+        ],
+        comments: [],
+      },
+    },
 
     {
       text: "Tonight, as I sit beneath the luminous canopy of the night sky, I vow to embark on a journey of self-discovery, to seek the truths that lie beyond the veil of illusion. The river, with its ceaseless flow, whispers secrets of the universe, beckoning me to venture forth into the unknown.",
@@ -51,16 +89,37 @@ export const journalEntry1_TheSonOfTheBrahman: MockedJournalEntry = {
         id: "highlight-chapter1-p-3",
         outgoingRelations: [
           {
-            id: "relation-highlight-chapter1-p-1-arc6-journey-of-self-discovery",
+            id: "relation-highlight-chapter1-p-3-arc006-journey-of-self-discovery",
             predicate: "relates to",
-            arcId: "arc6_journey_of_self_discovery",
+            arcId: "arc006_journey_of_self_discovery",
           },
         ],
         comments: [],
       },
     },
 
-    "With each passing moment, I feel the call of destiny growing stronger within me. I know not where this path will lead me, but I am filled with a sense of purpose and determination. Like the river that flows endlessly towards the sea, I shall follow the currents of my own destiny, guided by the inner light of truth and wisdom.",
+    {
+      text: "With each passing moment, I feel the call of destiny growing stronger within me. I know not where this path will lead me, but I am filled with a sense of purpose and determination. Like the river that flows endlessly towards the sea, I shall follow the currents of my own destiny, guided by the inner light of truth and wisdom.",
+      highlight: {
+        entryKey: "1/1/2020",
+        dayCreated: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
+        hue: 190,
+        id: "highlight-chapter1-p-4",
+        outgoingRelations: [
+          {
+            id: "relation-highlight-chapter1-p-4-arc011-sense_of_purpose",
+            predicate: "relates to",
+            arcId: "arc011_sense_of_purpose",
+          },
+          {
+            id: "relation-highlight-chapter1-p-4-arc01-the_river",
+            predicate: "relates to",
+            arcId: "arc010_the_river",
+          },
+        ],
+        comments: [],
+      },
+    },
 
     "In the days to come, I shall bid farewell to the comforts of home and set forth into the great unknown, ready to embrace whatever challenges and revelations await me on this journey of self-discovery. For it is only by venturing into the depths of the unknown that one can truly find enlightenment and inner peace.",
 
@@ -73,7 +132,35 @@ export const journalEntry2_WithTheSamanas: MockedJournalEntry = {
   sections: [
     "As I journey forth from the comforts of my home, each step I take feels like a liberation from the shackles of worldly attachments. The road ahead stretches infinitely, winding its way through verdant forests and sun-kissed meadows. With each passing moment, I feel myself drawing closer to the truth that lies beyond the veil of illusion.",
 
-    "Today, I find myself in the bustling city of Savathi, surrounded by a cacophony of sights and sounds that assault the senses. The streets teem with life, filled with merchants haggling over goods and beggars pleading for alms. Amidst this chaos, I cannot help but feel a sense of detachment, as though I am but a mere observer in the grand theater of life.",
+    {
+      text: "Today, I find myself in the bustling city of Savathi, surrounded by a cacophony of sights and sounds that assault the senses. The streets teem with life, filled with merchants haggling over goods and beggars pleading for alms. Amidst this chaos, I cannot help but feel a sense of detachment, as though I am but a mere observer in the grand theater of life.",
+      highlight: {
+        entryKey: "1/8/2020",
+        dayCreated: IpsumDay.fromString("1/8/2020", "entry-printed-date"),
+        hue: 321,
+        id: "highlight-chapter2-p-1",
+        outgoingRelations: [
+          {
+            id: "relation-highlight-chapter2-p-1-arc012-savathi",
+            predicate: "relates to",
+            arcId: "arc012_savathi",
+          },
+        ],
+        comments: [
+          {
+            dayCreated: IpsumDay.fromString("3/19/2020", "entry-printed-date"),
+            highlightId: "highlight-chapter2-p-1",
+            id: "comment-highlight-chapter2-p-1-1",
+            mockedEntry: {
+              entryKey: "comment-entry:comment-highlight-chapter2-p-1-1",
+              sections: [
+                "The city of Savathi, with its vibrant tapestry of life, was a stark contrast to the solitude and simplicity of my life in the forest. Amidst the chaos and clamor, I found a sense of detachment and inner peace, as though I were but a silent observer in the grand theater of existence. The sights and sounds of the city were like a whirlwind of sensations, each one a reminder of the impermanence and transience of life. In the midst of this chaos, I felt a deep sense of gratitude for the solitude and stillness that had shaped my journey thus far.",
+              ],
+            },
+          },
+        ],
+      },
+    },
 
     "In my quest for enlightenment, I am drawn to the teachings of the Samanas, ascetic wanderers who have renounced the material world in pursuit of spiritual enlightenment. Their austere way of life speaks to something deep within me, a yearning to transcend the limitations of the flesh and attain spiritual liberation.",
 
@@ -223,8 +310,8 @@ export const journalEntry9_TheFerryman: MockedJournalEntry = {
         dayCreated: IpsumDay.fromString("2/26/2020", "entry-printed-date"),
         outgoingRelations: [
           {
-            id: "relation-highlight-chapter9-p-0-arc7-vasudeva",
-            arcId: "arc7_vasudeva",
+            id: "relation-highlight-chapter9-p-0-arc007-vasudeva",
+            arcId: "arc007_vasudeva",
             predicate: "relates to",
           },
         ],
@@ -268,8 +355,8 @@ export const journalEntry10_TheSon: MockedJournalEntry = {
         dayCreated: IpsumDay.fromString("3/4/2020", "entry-printed-date"),
         outgoingRelations: [
           {
-            id: "relation-highlight-chapter10-p-4-arc8-vasudeva",
-            arcId: "arc7_vasudeva",
+            id: "relation-highlight-chapter10-p-4-arc008-vasudeva",
+            arcId: "arc007_vasudeva",
             predicate: "relates to",
           },
         ],

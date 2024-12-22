@@ -1,7 +1,8 @@
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import { $getRoot, $setSelection, EditorState, LexicalEditor } from "lexical";
+import type { EditorState, LexicalEditor } from "lexical";
+import { $getRoot, $setSelection } from "lexical";
 import React, { useEffect, useRef } from "react";
 import { useDebouncedCallback } from "util/hooks";
 
@@ -126,7 +127,7 @@ export const EntryStatePlugin: React.FunctionComponent<
             entryKey,
             htmlString,
           };
-          const entryUpdateFailed = !entryKey || !updateEntry(entry);
+          const entryUpdateFailed = !entryKey || !updateEntry?.(entry);
           if (entryUpdateFailed && !isEmpty) {
             const newEntryKey = createEntry?.(htmlString);
             setEntryKey?.(newEntryKey);

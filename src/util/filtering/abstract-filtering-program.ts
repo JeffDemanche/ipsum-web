@@ -1,4 +1,5 @@
-import { Grammars, IToken } from "ebnf";
+import type { IToken } from "ebnf";
+import { Grammars } from "ebnf";
 
 export abstract class IpsumFilteringProgram {
   private __bnfString: string;

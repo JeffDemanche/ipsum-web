@@ -1,6 +1,7 @@
-import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
+import type { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
 import { RelationsTable } from "components/molecules/RelationsTable";
-import React, { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
+import React from "react";
 
 import styles from "./ArcPage.less";
 

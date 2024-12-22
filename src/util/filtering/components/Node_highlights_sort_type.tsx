@@ -2,7 +2,7 @@ import { MenuItem } from "components/atoms/MenuItem";
 import { Select } from "components/atoms/Select";
 import React from "react";
 
-import { NodeComponent, NodeComponentProps, SortType } from "../types";
+import type { NodeComponent, NodeComponentProps, SortType } from "../types";
 import { changeSortType } from "./filter-tree-actions";
 
 export const Node_highlights_sort_type: NodeComponent = ({

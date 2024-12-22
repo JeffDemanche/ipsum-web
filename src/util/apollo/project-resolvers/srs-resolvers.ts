@@ -1,7 +1,8 @@
-import { History, StrictTypedTypePolicies } from "util/apollo";
+import type { History, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumSRSCard } from "util/repetition";
-import { InMemorySRSCardReview, PROJECT_STATE } from "util/state";
+import type { InMemorySRSCardReview} from "util/state";
+import { PROJECT_STATE } from "util/state";
 
 export const SRSResolvers: StrictTypedTypePolicies = {
   Query: {

@@ -1,7 +1,6 @@
-import { QueryCommentsArgs, StrictTypedTypePolicies } from "util/apollo";
+import type { QueryCommentsArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { excerptCommentDivString } from "util/excerpt";
 import { PROJECT_STATE } from "util/state";
 
 export const CommentResolvers: StrictTypedTypePolicies = {
@@ -41,30 +40,29 @@ export const CommentResolvers: StrictTypedTypePolicies = {
   Comment: {
     keyFields: ["id"],
     fields: {
-      sourceEntry(_, { readField }) {
-        const journalEntryOnDayCreated = IpsumDay.fromString(
-          readField<{ dateCreated: string }>("history").dateCreated,
-          "iso"
-        ).toString("entry-printed-date");
-        return PROJECT_STATE.collection("journalEntries").get(
-          journalEntryOnDayCreated
-        );
+      commentEntry(entryKey, { readField }) {
+        return PROJECT_STATE.collection("commentEntries").get(entryKey) ?? null;
       },
       objectHighlight(objectHighlightId) {
         return (
           PROJECT_STATE.collection("highlights").get(objectHighlightId) ?? null
         );
       },
-      excerptHtmlString(_, { readField }) {
-        const journalEntry = readField<{ entry: string }>("sourceEntry");
-        const entryHtmlString = IpsumTimeMachine.fromString(
-          PROJECT_STATE.collection("entries").get(journalEntry.entry)
-            .trackedHTMLString
-        ).currentValue;
+      htmlString(_, { readField }) {
+        const commentEntry = readField<{ entry: string }>("commentEntry");
 
-        const thisId = readField<string>("id");
+        const trackedHtmlString = PROJECT_STATE.collection("entries").get(
+          commentEntry?.entry
+        )?.trackedHTMLString;
 
-        return excerptCommentDivString(entryHtmlString, thisId);
+        if (!trackedHtmlString) {
+          return null;
+        }
+
+        const entryHtmlString =
+          IpsumTimeMachine.fromString(trackedHtmlString).currentValue;
+
+        return entryHtmlString;
       },
     },
   },
