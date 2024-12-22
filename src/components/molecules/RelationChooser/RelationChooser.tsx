@@ -1,13 +1,14 @@
 import cx from "classnames";
 import { Button } from "components/atoms/Button";
 import { TextField } from "components/atoms/TextField";
-import React, { FunctionComponent, useState } from "react";
-import { RelationSubject } from "util/apollo";
+import type { FunctionComponent} from "react";
+import React, { useState } from "react";
+import type { RelationSubject } from "util/apollo";
 import { TestIds } from "util/test-ids";
 
 import { ArcTag } from "../ArcTag";
 import styles from "./RelationChooser.less";
-import { ArcResult, Relation } from "./types";
+import type { ArcResult, Relation } from "./types";
 
 interface RelationChooserProps {
   maxArcResults: number;

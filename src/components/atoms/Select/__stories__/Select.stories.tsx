@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { MenuItem } from "components/atoms/MenuItem";
-import React, { FunctionComponent, useState } from "react";
+import type { FunctionComponent} from "react";
+import React, { useState } from "react";
 
 import { Select } from "../Select";
 

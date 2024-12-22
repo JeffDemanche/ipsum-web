@@ -4,7 +4,7 @@ import { SerializedSchema, validate } from "util/serializer";
 import { v4 as uuidv4 } from "uuid";
 
 import { ProjectCollection } from "./project-collection";
-import {
+import type {
   DeserializationResult,
   InMemoryArc,
   InMemoryArcEntry,

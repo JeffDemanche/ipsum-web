@@ -2,7 +2,7 @@ import { EntryType } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const updateCommentEntry: APIFunction<
   {

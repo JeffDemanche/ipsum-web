@@ -7,7 +7,7 @@ import {
   sortDates,
 } from "util/dates";
 
-import { PatchesMap, StringifiedTimeMachine, TimeMachine } from "./types";
+import type { PatchesMap, StringifiedTimeMachine, TimeMachine } from "./types";
 
 /**
  * Wrapper for Google's `diff-match-patch` library which augments the

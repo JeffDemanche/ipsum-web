@@ -3,7 +3,7 @@ import { Popover } from "components/atoms/Popover";
 import { Select } from "components/atoms/Select";
 import React, { useState } from "react";
 
-import { NodeComponent, NodeComponentProps } from "../types";
+import type { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
 
 export const Node_predicate: NodeComponent = ({

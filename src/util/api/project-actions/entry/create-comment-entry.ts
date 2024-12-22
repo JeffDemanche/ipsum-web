@@ -1,8 +1,8 @@
 import { EntryType } from "util/apollo";
-import { IpsumDay } from "util/dates";
-import { InMemoryCommentEntry } from "util/state";
+import type { IpsumDay } from "util/dates";
+import type { InMemoryCommentEntry } from "util/state";
 
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 import { createEntry } from "./create-entry";
 
 export const createCommentEntry: APIFunction<

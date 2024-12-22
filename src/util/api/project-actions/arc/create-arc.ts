@@ -1,9 +1,9 @@
 import { IpsumDay } from "util/dates";
-import { InMemoryArc } from "util/state";
+import type { InMemoryArc } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { createArcEntry } from "../entry/create-arc-entry";
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const createArc: APIFunction<
   {

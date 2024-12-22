@@ -1,13 +1,14 @@
-import { QueryHighlightsArgs, StrictTypedTypePolicies } from "util/apollo";
+import type { QueryHighlightsArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { excerptDivString } from "util/excerpt";
 import { highlightImportanceOnDay } from "util/importance";
-import {
-  HighlightWrapper,
+import type {
   InMemoryEntry,
   InMemoryHighlight,
-  InMemoryImportanceRating,
+  InMemoryImportanceRating} from "util/state";
+import {
+  HighlightWrapper,
   PROJECT_STATE,
 } from "util/state";
 

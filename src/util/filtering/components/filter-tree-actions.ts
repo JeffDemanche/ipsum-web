@@ -1,5 +1,5 @@
-import { IpsumFilteringProgramV1 } from "../ipsum-filtering-program-v1";
-import { EndowedNode, FilterType, SortType } from "../types";
+import type { IpsumFilteringProgramV1 } from "../ipsum-filtering-program-v1";
+import type { EndowedNode, FilterType, SortType } from "../types";
 
 export type FilterTreeAction<T> = ({
   program,

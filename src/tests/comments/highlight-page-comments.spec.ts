@@ -1,4 +1,5 @@
-import { expect, Page, test } from "@playwright/test";
+import type { Page} from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { TestIds } from "util/test-ids";
 
 test.beforeEach(async ({ page }) => {

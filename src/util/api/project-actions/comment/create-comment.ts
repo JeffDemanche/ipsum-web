@@ -1,11 +1,11 @@
 import { IpsumDay } from "util/dates";
-import { InMemoryComment } from "util/state";
+import type { InMemoryComment } from "util/state";
 import { v4 as uuidv4 } from "uuid";
 
 import { updateDay } from "../day/update-day";
 import { createCommentEntry } from "../entry/create-comment-entry";
 import { createRelationFromCommentToHighlight } from "../relation/create-relation-from-comment-to-highlight";
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const createComment: APIFunction<
   {

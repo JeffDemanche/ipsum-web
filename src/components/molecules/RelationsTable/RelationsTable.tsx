@@ -2,15 +2,15 @@ import cx from "classnames";
 import { Button } from "components/atoms/Button";
 import { Popover } from "components/atoms/Popover";
 import { Type } from "components/atoms/Type";
-import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
+import type { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
 import { ArcTag } from "components/molecules/ArcTag";
 import { grey700, grey800 } from "components/styles";
 import React, { useMemo, useState } from "react";
-import { RelationSubject } from "util/apollo";
+import type { RelationSubject } from "util/apollo";
 import { TestIds } from "util/test-ids";
 
 import { RelationChooser } from "../RelationChooser/RelationChooser";
-import { Relation as RelationChooserRelation } from "../RelationChooser/types";
+import type { Relation as RelationChooserRelation } from "../RelationChooser/types";
 import styles from "./RelationsTable.less";
 
 interface RelationsTableRelation {

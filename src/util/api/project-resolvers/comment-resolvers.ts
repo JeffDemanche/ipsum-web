@@ -1,4 +1,4 @@
-import { QueryCommentsArgs, StrictTypedTypePolicies } from "util/apollo";
+import type { QueryCommentsArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { PROJECT_STATE } from "util/state";

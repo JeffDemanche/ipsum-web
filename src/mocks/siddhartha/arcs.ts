@@ -1,4 +1,4 @@
-import { MockedArc } from "mocks/types";
+import type { MockedArc } from "mocks/types";
 import { IpsumDay } from "util/dates";
 
 export const arc1_attachment: MockedArc = {

@@ -1,4 +1,4 @@
-import { IpsumDay } from "util/dates";
+import type { IpsumDay } from "util/dates";
 
 export interface SRSCardRating {
   day: IpsumDay;

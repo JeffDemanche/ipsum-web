@@ -1,4 +1,4 @@
-import { IpsumDateTime } from "./dates";
+import type { IpsumDateTime } from "./dates";
 
 export const placeholders = ["Who asks the question? Who answers?"];
 

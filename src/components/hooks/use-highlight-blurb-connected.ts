@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { HighlightBlurb } from "components/molecules/HighlightBlurb";
+import type { HighlightBlurb } from "components/molecules/HighlightBlurb";
 import { urlInsertLayer, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";

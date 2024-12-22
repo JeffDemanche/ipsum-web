@@ -3,7 +3,7 @@ import { Select } from "components/atoms/Select";
 import { Type } from "components/atoms/Type";
 import React from "react";
 
-import { FilterType, NodeComponent, NodeComponentProps } from "../types";
+import type { FilterType, NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
 import { changeFilterType } from "./filter-tree-actions";
 

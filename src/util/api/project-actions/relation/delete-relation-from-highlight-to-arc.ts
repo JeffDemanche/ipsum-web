@@ -1,6 +1,6 @@
 import { client } from "util/apollo";
 
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const deleteRelationFromHighlightToArc: APIFunction<
   { id: string },

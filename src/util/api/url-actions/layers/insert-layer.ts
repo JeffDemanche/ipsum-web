@@ -1,6 +1,6 @@
-import { URLLayer } from "util/state";
+import type { URLLayer } from "util/state";
 
-import { URLFunction } from "../types";
+import type { URLFunction } from "../types";
 
 export const insertLayer: URLFunction<
   { layer: Required<URLLayer>; index?: number },

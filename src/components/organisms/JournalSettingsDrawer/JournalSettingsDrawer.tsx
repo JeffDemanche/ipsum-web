@@ -1,7 +1,8 @@
 import { Button } from "components/atoms/Button";
 import { Drawer } from "components/atoms/Drawer";
 import { PersistentTextField } from "components/atoms/PersistentTextField";
-import React, { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
+import React from "react";
 
 import styles from "./JournalSettingsDrawer.less";
 

@@ -1,6 +1,6 @@
 import { MenuItem } from "components/atoms/MenuItem";
 import { Popover } from "components/atoms/Popover";
-import { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
+import type { RelationChooserConnectedProps } from "components/hooks/use-relation-chooser-connected";
 import { RelationChooser } from "components/molecules/RelationChooser";
 import React, { useState } from "react";
 

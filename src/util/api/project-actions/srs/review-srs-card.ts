@@ -1,9 +1,9 @@
 import { IpsumDay } from "util/dates";
 import { IpsumSRSCard } from "util/repetition";
-import { InMemorySRSCard } from "util/state";
+import type { InMemorySRSCard } from "util/state";
 
 import { updateDay } from "../day/update-day";
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const reviewSRSCard: APIFunction<
   { id: string; day?: IpsumDay; rating: number },

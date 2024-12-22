@@ -1,7 +1,7 @@
-import { IpsumDay } from "util/dates";
-import { DailyJournalURLLayer } from "util/state";
+import type { IpsumDay } from "util/dates";
+import type { DailyJournalURLLayer } from "util/state";
 
-import { URLFunction } from "../types";
+import type { URLFunction } from "../types";
 
 export const setDailyJournalLayerDay: URLFunction<
   { index: number; day: IpsumDay },

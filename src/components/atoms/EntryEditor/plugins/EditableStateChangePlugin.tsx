@@ -1,5 +1,6 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 
 interface EditableStateChangePluginProps {
   editable: boolean;

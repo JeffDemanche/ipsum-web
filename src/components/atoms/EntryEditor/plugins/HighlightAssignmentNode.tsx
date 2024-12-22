@@ -1,4 +1,13 @@
 import { $dfs, $filter } from "@lexical/utils";
+import type {
+  DOMConversionMap,
+  DOMConversionOutput,
+  EditorConfig,
+  LexicalNode,
+  NodeKey,
+  RangeSelection,
+  SerializedElementNode,
+  Spread} from "lexical";
 import {
   $applyNodeReplacement,
   $createTextNode,
@@ -9,15 +18,7 @@ import {
   $isElementNode,
   $isRangeSelection,
   $selectAll,
-  DOMConversionMap,
-  DOMConversionOutput,
-  EditorConfig,
-  ElementNode,
-  LexicalNode,
-  NodeKey,
-  RangeSelection,
-  SerializedElementNode,
-  Spread,
+  ElementNode
 } from "lexical";
 
 export interface HighlightAssignmentNodeAttributes {

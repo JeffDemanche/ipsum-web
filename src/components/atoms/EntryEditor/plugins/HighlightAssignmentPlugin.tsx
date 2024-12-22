@@ -1,16 +1,19 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { NodeEventPlugin } from "@lexical/react/LexicalNodeEventPlugin";
 import { mergeRegister } from "@lexical/utils";
+import type {
+  LexicalCommand,
+  LexicalEditor} from "lexical";
 import {
   $isElementNode,
   COMMAND_PRIORITY_NORMAL,
-  createCommand,
-  LexicalCommand,
-  LexicalEditor,
+  createCommand
 } from "lexical";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { usePrevious } from "util/hooks";
 
+import type {
+  ToggleHighlightAssignmentPayload} from "./HighlightAssignmentNode";
 import {
   $allHighlightAssignmentNodes,
   $isHighlightAssignmentNode,
@@ -18,8 +21,7 @@ import {
   fixHues,
   HighlightAssignmentNode,
   isIdenticalHighlight,
-  removeHighlightAssignmentFromEditor,
-  ToggleHighlightAssignmentPayload,
+  removeHighlightAssignmentFromEditor
 } from "./HighlightAssignmentNode";
 
 interface HighlightAssignmentPluginProps {

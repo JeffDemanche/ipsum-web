@@ -15,7 +15,7 @@ import { Node_ifl } from "./components/Node_ifl";
 import { Node_predicate } from "./components/Node_predicate";
 import { Node_relation_object } from "./components/Node_relation_object";
 import { Node_sort_expression_highlights } from "./components/Node_sort_expression_highlights";
-import { EndowedNodeType, RuleDefinition } from "./types";
+import type { EndowedNodeType, RuleDefinition } from "./types";
 
 const globalRules = `
 STRING    ::= '"' CHAR* '"'

@@ -1,7 +1,7 @@
 import { ArcTag } from "components/molecules/ArcTag";
 import React from "react";
 
-import { NodeComponent, NodeComponentProps } from "../types";
+import type { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
 
 export const Node_relation_object: NodeComponent = ({

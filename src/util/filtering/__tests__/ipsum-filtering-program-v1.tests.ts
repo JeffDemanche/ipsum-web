@@ -2,7 +2,7 @@ import { IpsumDay } from "util/dates";
 import { IpsumSRSCard } from "util/repetition";
 
 import { IpsumFilteringProgramV1 } from "../ipsum-filtering-program-v1";
-import { EndowedNode, FilterableHighlight } from "../types";
+import type { EndowedNode, FilterableHighlight } from "../types";
 import { createFilteringProgram } from "../versions";
 
 const mock_hl = (

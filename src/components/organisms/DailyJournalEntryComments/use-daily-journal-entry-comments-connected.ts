@@ -11,7 +11,7 @@ import {
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 
-import { DailyJournalEntryComments } from "./DailyJournalEntryComments";
+import type { DailyJournalEntryComments } from "./DailyJournalEntryComments";
 
 export type DailyJournalEntryCommentsConnectedProps = Pick<
   React.ComponentProps<typeof DailyJournalEntryComments>,

@@ -9,7 +9,7 @@ import { IpsumDay } from "util/dates";
 import { ProjectState } from "util/state/project";
 
 import { processEntrySections } from "./mock-utils";
-import {
+import type {
   GeneratedMock,
   MockedArc,
   MockedComment,

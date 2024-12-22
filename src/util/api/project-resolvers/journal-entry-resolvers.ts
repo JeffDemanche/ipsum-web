@@ -1,4 +1,4 @@
-import { QueryJournalEntriesArgs, StrictTypedTypePolicies } from "util/apollo";
+import type { QueryJournalEntriesArgs, StrictTypedTypePolicies } from "util/apollo";
 import { parseIpsumDateTime } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { PROJECT_STATE } from "util/state";

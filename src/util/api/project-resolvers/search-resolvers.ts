@@ -1,9 +1,10 @@
-import { StrictTypedTypePolicies } from "util/apollo";
+import type { StrictTypedTypePolicies } from "util/apollo";
 import { IpsumDay } from "util/dates";
-import {
-  createFilteringProgram,
+import type {
   FilterableHighlight,
-  FilterableOutgoingRelation,
+  FilterableOutgoingRelation} from "util/filtering";
+import {
+  createFilteringProgram
 } from "util/filtering";
 import { IpsumSRSCard } from "util/repetition";
 import { PROJECT_STATE } from "util/state";

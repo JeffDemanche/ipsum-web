@@ -1,8 +1,8 @@
-import { ReactiveVar } from "@apollo/client";
-import { ValidatorResult } from "util/serializer";
+import type { ReactiveVar } from "@apollo/client";
+import type { ValidatorResult } from "util/serializer";
 
-import { ProjectCollection } from "./project-collection";
-import { ProjectState } from "./project-state";
+import type { ProjectCollection } from "./project-collection";
+import type { ProjectState } from "./project-state";
 
 export interface InMemoryHistory {
   __typename: "History";

@@ -1,9 +1,9 @@
 import { EntryType } from "util/apollo";
-import { IpsumDay } from "util/dates";
+import type { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
-import { InMemoryArcEntry } from "util/state";
+import type { InMemoryArcEntry } from "util/state";
 
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const updateArcEntry: APIFunction<
   {

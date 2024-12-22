@@ -1,7 +1,7 @@
 import { Type } from "components/atoms/Type";
 import { grey100 } from "components/styles";
 import React from "react";
-import { IpsumDay } from "util/dates";
+import type { IpsumDay } from "util/dates";
 
 import styles from "./PageHeader.less";
 import { PageHeaderNavButtons } from "./PageHeaderNavButtons";

@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { CommentsNavigator } from "components/molecules/CommentsNavigator";
+import type { CommentsNavigator } from "components/molecules/CommentsNavigator";
 import { useState } from "react";
 import {
   apiCreateComment,

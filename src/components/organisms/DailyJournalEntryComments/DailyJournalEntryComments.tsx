@@ -1,6 +1,6 @@
 import { CommentBlurb } from "components/molecules/CommentBlurb";
 import React from "react";
-import { IpsumDay } from "util/dates";
+import type { IpsumDay } from "util/dates";
 
 interface DailyJournalEntryCommentsProps {
   today: IpsumDay;

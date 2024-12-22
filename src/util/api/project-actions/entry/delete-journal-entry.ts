@@ -1,7 +1,7 @@
 import { IpsumDay } from "util/dates";
 
 import { updateDay } from "../day/update-day";
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const deleteJournalEntry: APIFunction<
   {

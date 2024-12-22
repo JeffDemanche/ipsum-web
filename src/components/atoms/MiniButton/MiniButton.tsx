@@ -1,6 +1,7 @@
 import { Button, Tooltip } from "@mui/material";
 import { border_radius_mini, box_shadow_primary } from "components/styles";
-import React, { CSSProperties } from "react";
+import type { CSSProperties } from "react";
+import React from "react";
 
 import styles from "./MiniButton.less";
 

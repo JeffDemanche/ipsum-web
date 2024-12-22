@@ -1,9 +1,9 @@
 import { KeyboardArrowUpSharp } from "@mui/icons-material";
 import cx from "classnames";
 import { MiniButton } from "components/atoms/MiniButton";
-import { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
-import { HighlightFunctionButtonsConnectedProps } from "components/hooks/use-highlight-function-buttons-connected";
-import { HighlightSRSButtonsConnectedProps } from "components/hooks/use-highlight-srs-buttons-connected";
+import type { RelationsTableConnectedProps } from "components/hooks/use-arc-relations-table-connected";
+import type { HighlightFunctionButtonsConnectedProps } from "components/hooks/use-highlight-function-buttons-connected";
+import type { HighlightSRSButtonsConnectedProps } from "components/hooks/use-highlight-srs-buttons-connected";
 import { BlurbExcerpt } from "components/molecules/BlurbExcerpt";
 import { RelationsTable } from "components/molecules/RelationsTable";
 import { grey700, hueSwatch } from "components/styles";

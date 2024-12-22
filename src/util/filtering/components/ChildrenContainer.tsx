@@ -1,7 +1,7 @@
 import cx from "classnames";
 import React from "react";
 
-import { EndowedNode } from "../types";
+import type { EndowedNode } from "../types";
 import styles from "./ChildrenContainer.less";
 
 interface ChildrenContainerProps {

@@ -2,7 +2,7 @@ import { Button } from "components/atoms/Button";
 import { font_size_x_small, grey600 } from "components/styles";
 import React, { useState } from "react";
 
-import { NodeComponent, NodeComponentProps } from "../types";
+import type { NodeComponent, NodeComponentProps } from "../types";
 import { ChildrenContainer } from "./ChildrenContainer";
 import { removeHighlightsSort } from "./filter-tree-actions";
 

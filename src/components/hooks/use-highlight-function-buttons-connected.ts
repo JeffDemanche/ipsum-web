@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
-import { HighlightFunctionButtons } from "components/molecules/HighlightFunctionButtons";
-import React from "react";
+import type { HighlightFunctionButtons } from "components/molecules/HighlightFunctionButtons";
+import type React from "react";
 import { apiDeleteHighlight, useApiAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";

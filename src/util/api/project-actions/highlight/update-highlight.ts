@@ -1,6 +1,6 @@
-import { InMemoryHighlight } from "util/state";
+import type { InMemoryHighlight } from "util/state";
 
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 
 export const updateHighlight: APIFunction<
   {

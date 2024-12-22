@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { RelationChooser } from "components/molecules/RelationChooser";
+import type { RelationChooser } from "components/molecules/RelationChooser";
 import { useState } from "react";
 import {
   apiCreateArc,
@@ -7,7 +7,8 @@ import {
   apiCreateRelationFromHighlightToArc,
   useApiAction,
 } from "util/api";
-import { gql, RelationSubject } from "util/apollo";
+import type { RelationSubject } from "util/apollo";
+import { gql } from "util/apollo";
 
 export type RelationChooserConnectedProps = Pick<
   React.ComponentProps<typeof RelationChooser>,

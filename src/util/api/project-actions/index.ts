@@ -1,7 +1,7 @@
 import { autosave } from "util/serializer";
 import { PROJECT_STATE } from "util/state";
 
-import { APIFunction } from "./types";
+import type { APIFunction } from "./types";
 
 export const useApiAction = <T, U>(f: APIFunction<T, U>) => {
   const projectState = PROJECT_STATE;

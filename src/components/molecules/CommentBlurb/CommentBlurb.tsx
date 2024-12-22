@@ -2,8 +2,8 @@ import cx from "classnames";
 import { BlurbWrapper } from "components/molecules/BlurbWrapper";
 import { HighlightTag } from "components/molecules/HighlightTag";
 import React, { useState } from "react";
-import { Arc, Day } from "util/apollo";
-import { IpsumDay } from "util/dates";
+import type { Arc, Day } from "util/apollo";
+import type { IpsumDay } from "util/dates";
 
 import { Entry } from "../Entry";
 import styles from "./CommentBlurb.less";

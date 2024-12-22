@@ -15,7 +15,7 @@ import {
 } from "util/api";
 import { PROJECT_STATE } from "util/state";
 
-import { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
+import type { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import { arcEntryTypeDef } from "./schemas/arc-entry-schema";
 import { arcTypeDef } from "./schemas/arc-schema";
 import { commentEntryTypeDef } from "./schemas/comment-entry-schema";

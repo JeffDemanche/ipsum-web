@@ -1,6 +1,6 @@
 import cx from "classnames";
 import React from "react";
-import { IpsumDay } from "util/dates";
+import type { IpsumDay } from "util/dates";
 import { TestIds } from "util/test-ids";
 
 import { Entry } from "../Entry";

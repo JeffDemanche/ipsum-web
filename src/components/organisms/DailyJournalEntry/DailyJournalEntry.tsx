@@ -2,12 +2,13 @@ import { Collapse } from "@mui/material";
 import { Entry } from "components/molecules/Entry";
 import { MonthlyNav } from "components/molecules/MonthlyNav";
 import { PageHeaderDailyJournal } from "components/molecules/PageHeader";
-import React, { ComponentProps } from "react";
-import { IpsumDay } from "util/dates";
+import type { ComponentProps } from "react";
+import React from "react";
+import type { IpsumDay } from "util/dates";
 import { TestIds } from "util/test-ids";
 
 import { DailyJournalEntryComments } from "../DailyJournalEntryComments";
-import { DailyJournalEntryCommentsConnectedProps } from "../DailyJournalEntryComments/use-daily-journal-entry-comments-connected";
+import type { DailyJournalEntryCommentsConnectedProps } from "../DailyJournalEntryComments/use-daily-journal-entry-comments-connected";
 import styles from "./DailyJournalEntry.less";
 
 interface DailyJournalEntryProps {

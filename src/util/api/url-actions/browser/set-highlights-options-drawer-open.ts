@@ -1,4 +1,4 @@
-import { URLFunction } from "../types";
+import type { URLFunction } from "../types";
 
 export const setHighlightsOptionsDrawerOpen: URLFunction<boolean, "journal"> = (
   open,

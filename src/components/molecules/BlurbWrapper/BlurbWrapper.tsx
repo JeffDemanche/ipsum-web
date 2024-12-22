@@ -1,7 +1,8 @@
 import { KeyboardArrowRight } from "@mui/icons-material";
 import cx from "classnames";
 import { Button } from "components/atoms/Button";
-import React, { CSSProperties, useState } from "react";
+import type { CSSProperties} from "react";
+import React, { useState } from "react";
 
 import styles from "./BlurbWrapper.less";
 

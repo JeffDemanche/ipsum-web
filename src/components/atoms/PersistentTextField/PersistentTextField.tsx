@@ -1,4 +1,5 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import type { FunctionComponent} from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button } from "../Button";
 import { TextField } from "../TextField";

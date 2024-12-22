@@ -1,4 +1,4 @@
-import { QueryDaysArgs, StrictTypedTypePolicies } from "util/apollo";
+import type { QueryDaysArgs, StrictTypedTypePolicies } from "util/apollo";
 import { IpsumTimeMachine } from "util/diff";
 import { PROJECT_STATE } from "util/state";
 

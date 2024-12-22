@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
-import { HighlightSRSButtons } from "components/molecules/HighlightSRSButtons";
-import React from "react";
+import type { HighlightSRSButtons } from "components/molecules/HighlightSRSButtons";
+import type React from "react";
 import { apiCreateSRSCard, apiReviewSRSCard, useApiAction } from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";

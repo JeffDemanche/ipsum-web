@@ -2,7 +2,7 @@ import { EntryEditor } from "components/atoms/EntryEditor";
 import { Type } from "components/atoms/Type";
 import { HighlightTag } from "components/molecules/HighlightTag";
 import React from "react";
-import { IpsumDay } from "util/dates";
+import type { IpsumDay } from "util/dates";
 import { TestIds } from "util/test-ids";
 
 import styles from "./Entry.less";

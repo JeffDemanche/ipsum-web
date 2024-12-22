@@ -1,4 +1,4 @@
-import { MockedJournalEntry } from "mocks/types";
+import type { MockedJournalEntry } from "mocks/types";
 import { IpsumDay } from "util/dates";
 
 export const journalEntry1_TheSonOfTheBrahman: MockedJournalEntry = {

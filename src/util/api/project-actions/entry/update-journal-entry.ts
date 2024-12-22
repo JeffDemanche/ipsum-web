@@ -2,7 +2,7 @@ import { EntryType } from "util/apollo";
 import { IpsumTimeMachine } from "util/diff";
 import { isEmptyHTMLString } from "util/excerpt";
 
-import { APIFunction } from "../types";
+import type { APIFunction } from "../types";
 import { deleteJournalEntry } from "./delete-journal-entry";
 
 export const updateJournalEntry: APIFunction<

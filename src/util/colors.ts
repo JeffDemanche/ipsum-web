@@ -1,5 +1,5 @@
 import convert from "color-convert";
-import { HSL, RGB } from "color-convert/conversions";
+import type { HSL, RGB } from "color-convert/conversions";
 
 /**
  * Generates a new hue given the last hue created. The new hue will have be 2/11

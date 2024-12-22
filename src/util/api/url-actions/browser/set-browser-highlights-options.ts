@@ -1,9 +1,9 @@
-import {
+import type {
   URLHighlightFilterCriteria,
   URLHighlightSortCriteria,
 } from "util/state";
 
-import { URLFunction } from "../types";
+import type { URLFunction } from "../types";
 
 export const setBrowserDrawerHighlightsOptions: URLFunction<
   {
