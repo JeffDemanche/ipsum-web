@@ -84,7 +84,7 @@ export const HighlightBlurb: React.FunctionComponent<HighlightBlurbProps> = ({
   return (
     <div
       data-testid={TestIds.HighlightBlurb.HighlightBlurb}
-      role="button"
+      role={expanded ? undefined : "button"}
       aria-expanded={expanded}
       tabIndex={0}
       onClick={onBlurbClick}

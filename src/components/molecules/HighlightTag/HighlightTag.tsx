@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { Button } from "components/atoms/Button";
 import {
   font_family_sans,
@@ -6,6 +7,7 @@ import {
   font_size_small,
   font_size_x_small,
   font_weight_citation,
+  hueSwatch,
 } from "components/styles";
 import React, { useMemo } from "react";
 import { TestIds } from "util/test-ids";
@@ -15,6 +17,7 @@ import styles from "./HighlightTag.less";
 interface HighlightTagProps {
   hue: number;
   fontSize?: "x-small" | "small" | "medium";
+  shadowed?: boolean;
 
   /** I.e. date, arc, whatever the highlight is on, etc. */
   objectText?: string;
@@ -28,6 +31,7 @@ interface HighlightTagProps {
 export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
   hue,
   fontSize = "medium",
+  shadowed = true,
   objectText,
   arcNames,
   highlightNumber,
@@ -57,7 +61,7 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
     fontSize: fontSizePx,
     paddingTop: "0",
     paddingBottom: "0",
-    color: `hsla(${hue ?? 0}, ${hue === null ? "0%" : "20%"}, 40%, 1)`,
+    color: hueSwatch(hue, "on_light_background"),
     backgroundColor: "transparent",
     minHeight: elementHeight,
   };
@@ -68,9 +72,9 @@ export const HighlightTag: React.FunctionComponent<HighlightTagProps> = ({
       className={styles["highlight-tag-wrapper"]}
     >
       <div
-        className={styles["highlight-tag"]}
+        className={cx(styles["highlight-tag"], shadowed && styles["shadowed"])}
         style={{
-          backgroundColor: `hsla(${hue ?? 0}, ${hue === null ? "0%" : "80%"}, 95%, 1)`,
+          backgroundColor: hueSwatch(hue, "light_background"),
           minHeight: elementHeight,
         }}
       >

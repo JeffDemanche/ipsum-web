@@ -89,10 +89,14 @@ export const DailyJournalEntry: React.FunctionComponent<
             deleteHighlight={deleteHighlight}
             onHighlightClick={onHighlightClick}
           />
-          <hr />
-          <DailyJournalEntryComments
-            {...dailyJournalEntryCommentsConnectedProps}
-          />
+          {!!dailyJournalEntryCommentsConnectedProps.comments?.length && (
+            <>
+              <hr />
+              <DailyJournalEntryComments
+                {...dailyJournalEntryCommentsConnectedProps}
+              />
+            </>
+          )}
         </div>
       </Collapse>
     </div>

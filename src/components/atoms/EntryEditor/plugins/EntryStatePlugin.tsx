@@ -127,7 +127,7 @@ export const EntryStatePlugin: React.FunctionComponent<
             entryKey,
             htmlString,
           };
-          const entryUpdateFailed = !entryKey || !updateEntry(entry);
+          const entryUpdateFailed = !entryKey || !updateEntry?.(entry);
           if (entryUpdateFailed && !isEmpty) {
             const newEntryKey = createEntry?.(htmlString);
             setEntryKey?.(newEntryKey);

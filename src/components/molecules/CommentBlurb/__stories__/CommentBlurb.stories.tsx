@@ -15,6 +15,7 @@ type StoryCommentBlurb = StoryObj<typeof CommentBlurb>;
 
 export const CommentBlurbExample: StoryCommentBlurb = {
   args: {
+    today: IpsumDay.today(),
     selected: false,
     defaultExpanded: false,
     comment: {
@@ -34,8 +35,11 @@ export const CommentBlurbExample: StoryCommentBlurb = {
           excerptPieces: [
             {
               blockType: "paragraph",
-              innerHtml: siddhartha.journalEntry1_TheSonOfTheBrahman
-                .sections[1] as string,
+              innerHtml: (
+                siddhartha.journalEntry1_TheSonOfTheBrahman.sections[1] as {
+                  text: string;
+                }
+              ).text,
               highlight: { id: "highlight-id", hue: 90 },
             },
             {

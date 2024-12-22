@@ -1,6 +1,6 @@
 import cx from "classnames";
-import { BlurbWrapper } from "components/molecules/BlurbWrapper";
 import { HighlightTag } from "components/molecules/HighlightTag";
+import { hueSwatch } from "components/styles";
 import React, { useState } from "react";
 import type { Arc, Day } from "util/apollo";
 import type { IpsumDay } from "util/dates";
@@ -98,40 +98,41 @@ export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
   };
 
   return (
-    <BlurbWrapper
-      className={cx(
-        className,
-        styles["comment-blurb-wrapper"],
-        expanded && styles["expanded"]
-      )}
-      collapsible
-      defaultExpanded={defaultExpanded}
-      onExpand={onBlurbWrapperExpand}
-      onCollapse={onBlurbWrapperCollapse}
+    <div
+      className={styles["blurb-content"]}
+      style={{
+        borderLeftColor: hueSwatch(comment.highlight.hue, "light_background"),
+      }}
     >
-      <div className={styles["blurb-content"]}>
-        <div className={styles["blurb-header"]}>
-          {showHighlightTag && (
-            <HighlightTag
-              highlightNumber={comment.highlight.highlightNumber}
-              hue={comment.highlight.hue}
-              objectText={comment.highlight.objectText}
-              arcNames={comment.highlight.arcNames}
-              fontSize="x-small"
-              onHighlightClick={() => onHighlightClick(comment.highlight.id)}
-              onObjectTextClick={() =>
-                onHighlightObjectClick(
-                  comment.highlight.id,
-                  comment.highlight.object
-                )
-              }
-            />
-          )}
-        </div>
+      <div className={styles["blurb-header"]}>
+        {showHighlightTag && (
+          <HighlightTag
+            highlightNumber={comment.highlight.highlightNumber}
+            hue={comment.highlight.hue}
+            shadowed={false}
+            objectText={comment.highlight.objectText}
+            arcNames={comment.highlight.arcNames}
+            fontSize="small"
+            onHighlightClick={() => onHighlightClick?.(comment.highlight.id)}
+            onObjectTextClick={() =>
+              onHighlightObjectClick?.(
+                comment.highlight.id,
+                comment.highlight.object
+              )
+            }
+          />
+        )}
+      </div>
+      <div
+        className={cx(styles["blurb-body"], expanded && styles["expanded"])}
+        role={expanded ? undefined : "button"}
+        aria-expanded={expanded}
+        onClick={onBlurbWrapperExpand}
+      >
         <Entry
           editorNamespace={`comment-blurb:${comment.id}`}
           entryKey={`comment-entry:${comment.id}`}
-          editable={editable}
+          editable={editable && expanded}
           showHighlights={expanded}
           maxLines={expanded ? 0 : maxLines ?? 3}
           highlights={comment.commentEntry.highlights}
@@ -144,6 +145,6 @@ export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
           onHighlightClick={onHighlightClick}
         />
       </div>
-    </BlurbWrapper>
+    </div>
   );
 };

@@ -11,12 +11,20 @@
 .blurb-content {
   display: flex;
   flex-direction: column;
+  border-left: 2px solid;
 
   .blurb-header {
     display: flex;
     flex-direction: row;
     gap: @grid_x_1;
-    align-items: center;
-    height: @grid_x_3;
+  }
+
+  .blurb-body {
+    padding-left: @grid_x_1;
+
+    &:not(.expanded) {
+      opacity: @opacity_collapsed;
+      cursor: pointer;
+    }
   }
 }
