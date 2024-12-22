@@ -1,4 +1,7 @@
-import type { QueryCommentEntriesArgs, StrictTypedTypePolicies } from "util/apollo";
+import type {
+  QueryCommentEntriesArgs,
+  StrictTypedTypePolicies,
+} from "util/apollo";
 import { PROJECT_STATE } from "util/state";
 
 export const CommentEntryResolvers: StrictTypedTypePolicies = {

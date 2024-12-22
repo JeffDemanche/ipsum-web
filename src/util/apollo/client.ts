@@ -1,5 +1,8 @@
 import { ApolloClient, from, gql, InMemoryCache } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
+import { PROJECT_STATE } from "util/state";
+
+import type { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
 import {
   ArcEntryResolvers,
   ArcResolvers,
@@ -12,10 +15,7 @@ import {
   RelationResolvers,
   SearchResolvers,
   SRSResolvers,
-} from "util/api";
-import { PROJECT_STATE } from "util/state";
-
-import type { StrictTypedTypePolicies } from "./__generated__/apollo-helpers";
+} from "./project-resolvers";
 import { arcEntryTypeDef } from "./schemas/arc-entry-schema";
 import { arcTypeDef } from "./schemas/arc-schema";
 import { commentEntryTypeDef } from "./schemas/comment-entry-schema";
