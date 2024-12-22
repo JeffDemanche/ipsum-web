@@ -1,4 +1,5 @@
 import type { QueryDaysArgs, StrictTypedTypePolicies } from "util/apollo";
+import { IpsumDay } from "util/dates";
 import { IpsumTimeMachine } from "util/diff";
 import { PROJECT_STATE } from "util/state";
 
@@ -20,9 +21,15 @@ export const DayResolvers: StrictTypedTypePolicies = {
         return Object.values(PROJECT_STATE.collection("days").getAll());
       },
       daysWithJournalEntryOrComments() {
-        return Object.values(PROJECT_STATE.collection("days").getAll()).filter(
-          (day) => day.journalEntry || day.comments?.length > 0
-        );
+        return Object.values(PROJECT_STATE.collection("days").getAll())
+          .filter((day) => day.journalEntry || day.comments?.length > 0)
+          .sort((a, b) =>
+            IpsumDay.fromString(a.day, "stored-day").isAfter(
+              IpsumDay.fromString(b.day, "stored-day")
+            )
+              ? 1
+              : -1
+          );
       },
     },
   },

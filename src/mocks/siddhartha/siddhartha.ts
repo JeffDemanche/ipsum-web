@@ -1,13 +1,18 @@
 import { generateMock } from "mocks/generate-mock";
 
 import {
-  arc1_attachment,
-  arc2_knowledge,
-  arc3_understanding,
-  arc4_asceticism,
-  arc5_govinda,
-  arc6_journey_of_self_discovery,
-  arc7_vasudeva,
+  arc001_attachment,
+  arc002_knowledge,
+  arc003_understanding,
+  arc004_asceticism,
+  arc005_govinda,
+  arc006_journey_of_self_discovery,
+  arc007_vasudeva,
+  arc008_gotama,
+  arc009_enlightenment,
+  arc010_the_river,
+  arc011_sense_of_purpose,
+  arc012_savathi,
 } from "./arcs";
 import {
   journalEntry1_TheSonOfTheBrahman,
@@ -41,13 +46,18 @@ export const mockSiddhartha = () => {
       journalEntry12_Govinda,
     ],
     arcs: [
-      arc1_attachment,
-      arc2_knowledge,
-      arc3_understanding,
-      arc4_asceticism,
-      arc5_govinda,
-      arc6_journey_of_self_discovery,
-      arc7_vasudeva,
+      arc001_attachment,
+      arc002_knowledge,
+      arc003_understanding,
+      arc004_asceticism,
+      arc005_govinda,
+      arc006_journey_of_self_discovery,
+      arc007_vasudeva,
+      arc008_gotama,
+      arc009_enlightenment,
+      arc010_the_river,
+      arc011_sense_of_purpose,
+      arc012_savathi,
     ],
   });
 };

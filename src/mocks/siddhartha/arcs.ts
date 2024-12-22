@@ -1,8 +1,8 @@
 import type { MockedArc } from "mocks/types";
 import { IpsumDay } from "util/dates";
 
-export const arc1_attachment: MockedArc = {
-  id: "arc1_attachment",
+export const arc001_attachment: MockedArc = {
+  id: "arc001_attachment",
   name: "attachment",
   hue: 0,
   arcEntry: {
@@ -12,8 +12,8 @@ export const arc1_attachment: MockedArc = {
   },
 };
 
-export const arc2_knowledge: MockedArc = {
-  id: "arc2_knowledge",
+export const arc002_knowledge: MockedArc = {
+  id: "arc002_knowledge",
   name: "knowledge",
   hue: 13,
   arcEntry: {
@@ -25,8 +25,8 @@ export const arc2_knowledge: MockedArc = {
   },
 };
 
-export const arc3_understanding: MockedArc = {
-  id: "arc3_understanding",
+export const arc003_understanding: MockedArc = {
+  id: "arc003_understanding",
   name: "understanding",
   hue: 172,
   arcEntry: {
@@ -36,13 +36,13 @@ export const arc3_understanding: MockedArc = {
         highlight: {
           id: "highlight-understanding-p-3",
           hue: 172,
-          entryKey: "arc-entry:understanding:arc3_understanding",
+          entryKey: "arc-entry:understanding:arc003_understanding",
           dayCreated: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
           comments: [],
           outgoingRelations: [
             {
               id: "relation-highlight-understanding-p-3-arc4_asceticism",
-              arcId: "arc4_asceticism",
+              arcId: "arc004_asceticism",
               predicate: "relates to",
             },
           ],
@@ -57,8 +57,8 @@ export const arc3_understanding: MockedArc = {
   },
 };
 
-export const arc4_asceticism: MockedArc = {
-  id: "arc4_asceticism",
+export const arc004_asceticism: MockedArc = {
+  id: "arc004_asceticism",
   name: "asceticism",
   hue: 92,
   arcEntry: {
@@ -72,8 +72,8 @@ export const arc4_asceticism: MockedArc = {
   },
 };
 
-export const arc5_govinda: MockedArc = {
-  id: "arc5_govinda",
+export const arc005_govinda: MockedArc = {
+  id: "arc005_govinda",
   name: "govinda",
   hue: 34,
   arcEntry: {
@@ -83,13 +83,13 @@ export const arc5_govinda: MockedArc = {
         highlight: {
           id: "highlight-govinda-p-0",
           hue: 34,
-          entryKey: "arc-entry:govinda:arc5_govinda",
+          entryKey: "arc-entry:govinda:arc005_govinda",
           dayCreated: IpsumDay.fromString("1/1/2020", "entry-printed-date"),
           comments: [],
           outgoingRelations: [
             {
               id: "relation-highlight-govinda-p-0-arc6_journey_of_self_discovery",
-              arcId: "arc6_journey_of_self_discovery",
+              arcId: "arc006_journey_of_self_discovery",
               predicate: "relates to",
             },
           ],
@@ -105,8 +105,8 @@ export const arc5_govinda: MockedArc = {
   },
 };
 
-export const arc6_journey_of_self_discovery: MockedArc = {
-  id: "arc6_journey_of_self_discovery",
+export const arc006_journey_of_self_discovery: MockedArc = {
+  id: "arc006_journey_of_self_discovery",
   name: "journey of self discovery",
   hue: 236,
   arcEntry: {
@@ -114,10 +114,55 @@ export const arc6_journey_of_self_discovery: MockedArc = {
   },
 };
 
-export const arc7_vasudeva: MockedArc = {
-  id: "arc7_vasudeva",
+export const arc007_vasudeva: MockedArc = {
+  id: "arc007_vasudeva",
   name: "vasudeva",
   hue: 12,
+  arcEntry: {
+    sections: [],
+  },
+};
+
+export const arc008_gotama: MockedArc = {
+  id: "arc008_gotama",
+  name: "gotama",
+  hue: 109,
+  arcEntry: {
+    sections: [],
+  },
+};
+
+export const arc009_enlightenment: MockedArc = {
+  id: "arc009_enlightenment",
+  name: "enlightenment",
+  hue: 198,
+  arcEntry: {
+    sections: [],
+  },
+};
+
+export const arc010_the_river: MockedArc = {
+  id: "arc010_the_river",
+  name: "the river",
+  hue: 18,
+  arcEntry: {
+    sections: [],
+  },
+};
+
+export const arc011_sense_of_purpose: MockedArc = {
+  id: "arc011_sense_of_purpose",
+  name: "sense of purpose",
+  hue: 290,
+  arcEntry: {
+    sections: [],
+  },
+};
+
+export const arc012_savathi: MockedArc = {
+  id: "arc012_savathi",
+  name: "savathi",
+  hue: 120,
   arcEntry: {
     sections: [],
   },
