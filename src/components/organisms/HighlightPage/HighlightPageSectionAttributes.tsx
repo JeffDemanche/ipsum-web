@@ -34,7 +34,7 @@ export const HighlightPageSectionAttributes: FunctionComponent<
           orientation="horizontal"
           {...highlightSRSButtonsProps}
         />
-        <div></div>
+        <div className={styles["vertical-divider"]}></div>
         <HighlightFunctionButtons
           orientation="horizontal"
           {...highlightFunctionButtonsProps}
