@@ -3,6 +3,8 @@ import { IpsumDay } from "util/dates";
 import { ProjectState } from "util/state";
 
 import { apiCreateEntry, apiCreateHighlight } from "..";
+import { createComment } from "../comment/create-comment";
+import { deleteHighlight } from "../highlight/delete-highlight";
 
 describe("API highlight actions", () => {
   describe("createHighlight", () => {
@@ -42,6 +44,42 @@ describe("API highlight actions", () => {
       expect(highlightInState.history.dateCreated).toEqual(
         dayCreated.toString("iso")
       );
+    });
+  });
+
+  describe("deleteHighlight", () => {
+    test("should remove all comments associated with the highlight", () => {
+      const state = new ProjectState();
+      const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
+
+      apiCreateEntry(
+        {
+          entryKey: "entry-key",
+          dayCreated,
+          htmlString: "<div>hello world</div>",
+          entryType: EntryType.Journal,
+        },
+        { projectState: state }
+      );
+      const highlight = apiCreateHighlight(
+        { entryKey: "entry-key", dayCreated },
+        { projectState: state }
+      );
+
+      const comment = createComment(
+        {
+          objectHighlight: highlight.id,
+          htmlString: "<div>hello world</div>",
+          dayCreated,
+        },
+        { projectState: state }
+      );
+
+      expect(state.collection("comments").has(comment.id)).toBeTruthy();
+
+      deleteHighlight({ id: highlight.id }, { projectState: state });
+
+      expect(state.collection("comments").has(comment.id)).toBeFalsy();
     });
   });
 });

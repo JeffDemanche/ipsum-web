@@ -15,6 +15,10 @@ export const deleteComment: APIFunction<{ id: string }, boolean> = (
 
   const comment = projectState.collection("comments").get(args.id);
 
+  comment.outgoingRelations.forEach((id) =>
+    projectState.collection("relations").delete(id)
+  );
+
   projectState.collection("commentEntries").delete(comment.commentEntry);
 
   projectState.collection("comments").delete(args.id);

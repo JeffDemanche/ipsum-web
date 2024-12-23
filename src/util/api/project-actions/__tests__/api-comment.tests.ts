@@ -9,7 +9,7 @@ import { createHighlight } from "../highlight/create-highlight";
 
 describe("API comment actions", () => {
   describe("createComment", () => {
-    test("should create a comment, commentEntry, and add comment to day object", () => {
+    test("should create a comment, commentEntry, relation, and add comment to day object", () => {
       const state = new ProjectState();
       const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
 
@@ -51,6 +51,11 @@ describe("API comment actions", () => {
       expect(state.collection("comments").has(comment.id)).toBeTruthy();
       expect(commentEntry).toBeDefined();
       expect(day.comments).toContain(comment.id);
+      expect(
+        Object.entries(
+          state.collection("relations").getAllByField("subject", comment.id)
+        )
+      ).toHaveLength(1);
     });
 
     test("should not create comment if one already exists on the highlight for day", () => {
@@ -142,6 +147,46 @@ describe("API comment actions", () => {
       expect(state.collection("comments").has(comment.id)).toBeFalsy();
       expect(commentEntry).toBeUndefined();
       expect(day.comments).not.toContain(comment.id);
+    });
+
+    test("should remove relation from the state", () => {
+      const state = new ProjectState();
+      const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
+
+      const journalEntry = createEntry(
+        {
+          dayCreated,
+          entryKey: dayCreated.toString("entry-printed-date"),
+          htmlString: "<p>hello world</p>",
+          entryType: EntryType.Journal,
+        },
+        { projectState: state }
+      );
+
+      const objectHighlight = createHighlight(
+        {
+          dayCreated,
+          entryKey: journalEntry.entryKey,
+        },
+        { projectState: state }
+      );
+
+      const comment = createComment(
+        {
+          dayCreated,
+          objectHighlight: objectHighlight.id,
+          htmlString: "<p>goodbye world</p>",
+        },
+        { projectState: state }
+      );
+
+      deleteComment({ id: comment.id }, { projectState: state });
+
+      expect(
+        Object.entries(
+          state.collection("relations").getAllByField("subject", comment.id)
+        )
+      ).toHaveLength(0);
     });
   });
 });

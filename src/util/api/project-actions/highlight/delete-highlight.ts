@@ -1,3 +1,4 @@
+import { deleteComment } from "../comment/delete-comment";
 import type { APIFunction } from "../types";
 
 export const deleteHighlight: APIFunction<{ id: string }, boolean> = (
@@ -11,6 +12,10 @@ export const deleteHighlight: APIFunction<{ id: string }, boolean> = (
   if (!highlight) {
     return;
   }
+
+  highlight.comments.forEach((id) =>
+    deleteComment({ id }, { projectState: projectState })
+  );
 
   Object.values(projectState.collection("relations").getAll()).forEach(
     (relation) => {
