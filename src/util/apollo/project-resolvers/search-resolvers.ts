@@ -2,10 +2,9 @@ import type { StrictTypedTypePolicies } from "util/apollo";
 import { IpsumDay } from "util/dates";
 import type {
   FilterableHighlight,
-  FilterableOutgoingRelation} from "util/filtering";
-import {
-  createFilteringProgram
+  FilterableOutgoingRelation,
 } from "util/filtering";
+import { createFilteringProgram } from "util/filtering";
 import { IpsumSRSCard } from "util/repetition";
 import { PROJECT_STATE } from "util/state";
 
@@ -24,7 +23,7 @@ export const SearchResolvers: StrictTypedTypePolicies = {
                 const relationObj =
                   PROJECT_STATE.collection("relations").get(relation);
 
-                if (relationObj.objectType !== "Arc") {
+                if (!relationObj || relationObj.objectType !== "Arc") {
                   return undefined;
                 }
 

@@ -1,16 +1,21 @@
 import type { StaticInMemoryProjectState } from "util/state";
 
-type ValidatorStepResult =
-  | { result: "pass" }
-  | { result: "fail"; message: string };
+import { validatorBrokenRelations } from "./operations/broken-relations";
 
-interface ValidatorStep {
+type ValidatorStepResult<T> =
+  | { result: "pass" }
+  | { result: "fail"; message: string; context?: T };
+
+export interface ValidatorStep<T> {
   description: string;
-  fn: (value: StaticInMemoryProjectState) => ValidatorStepResult;
-  fix?: (value: StaticInMemoryProjectState) => StaticInMemoryProjectState;
+  fn: (value: StaticInMemoryProjectState) => ValidatorStepResult<T>;
+  fix?: (
+    value: StaticInMemoryProjectState,
+    context: T
+  ) => StaticInMemoryProjectState;
 }
 
-const steps: ValidatorStep[] = [
+const steps: ValidatorStep<unknown>[] = [
   {
     description: "Ensure every daily journal entry has a day object",
     fn: (value) => {
@@ -63,6 +68,7 @@ const steps: ValidatorStep[] = [
       return fixedValue;
     },
   },
+  validatorBrokenRelations,
 ];
 
 export interface ValidatorResult {
@@ -91,7 +97,7 @@ export const validate = (
           const result = step.fn(fixedValue);
 
           if (result.result === "fail") {
-            fixedValue = step.fix?.(fixedValue) ?? fixedValue;
+            fixedValue = step.fix?.(fixedValue, result.context) ?? fixedValue;
           }
         }
 
