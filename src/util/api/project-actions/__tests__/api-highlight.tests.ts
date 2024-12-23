@@ -3,8 +3,12 @@ import { IpsumDay } from "util/dates";
 import { ProjectState } from "util/state";
 
 import { apiCreateEntry, apiCreateHighlight } from "..";
+import { createArc } from "../arc/create-arc";
 import { createComment } from "../comment/create-comment";
+import { createEntry } from "../entry/create-entry";
+import { createHighlight } from "../highlight/create-highlight";
 import { deleteHighlight } from "../highlight/delete-highlight";
+import { createRelationFromHighlightToArc } from "../relation/create-relation-from-highlight-to-arc";
 
 describe("API highlight actions", () => {
   describe("createHighlight", () => {
@@ -80,6 +84,55 @@ describe("API highlight actions", () => {
       deleteHighlight({ id: highlight.id }, { projectState: state });
 
       expect(state.collection("comments").has(comment.id)).toBeFalsy();
+    });
+
+    test("should remove incoming relations from arcs associated with the highlight", () => {
+      const state = new ProjectState();
+      const dayCreated = IpsumDay.fromString("1/7/2020", "stored-day");
+
+      createEntry(
+        {
+          entryKey: "entry-key",
+          dayCreated,
+          htmlString: "<div>hello world</div>",
+          entryType: EntryType.Journal,
+        },
+        { projectState: state }
+      );
+      const highlight = createHighlight(
+        { entryKey: "entry-key", dayCreated },
+        { projectState: state }
+      );
+
+      const arc = createArc(
+        {
+          name: "arc",
+          id: "arc-id",
+        },
+        { projectState: state }
+      );
+
+      createRelationFromHighlightToArc(
+        {
+          arcId: arc.id,
+          highlightId: highlight.id,
+          predicate: "relates to",
+        },
+        { projectState: state }
+      );
+
+      const incomingRelationsBefore = state
+        .collection("arcs")
+        .get(arc.id).incomingRelations;
+
+      deleteHighlight({ id: highlight.id }, { projectState: state });
+
+      const incomingRelationsAfter = state
+        .collection("arcs")
+        .get(arc.id).incomingRelations;
+
+      expect(incomingRelationsBefore).toHaveLength(1);
+      expect(incomingRelationsAfter).toHaveLength(0);
     });
   });
 });

@@ -19,6 +19,9 @@ test.describe("Highlight Deletion", () => {
       .getByTestId(TestIds.HighlightTag.ObjectTextButton)
       .first();
 
+    const firstHighlightTagTextContextBefore =
+      await firstHighlightTagObject.textContent();
+
     await firstHighlightTagObject.click();
 
     const highlightPage = page.getByTestId(TestIds.HighlightPage.HighlightPage);
@@ -29,14 +32,17 @@ test.describe("Highlight Deletion", () => {
 
     await deleteButton.click();
 
-    const highlightBlurbs = await dailyJournalEntry
-      .getByTestId(TestIds.HighlightBlurb.HighlightBlurb)
-      .all();
+    await page.waitForTimeout(500);
 
-    expect(highlightBlurbs).toHaveLength(0);
+    const firstHighlightTagTextContextAfter =
+      await firstHighlightTagObject.textContent();
 
-    expect(await page.isVisible(TestIds.HighlightPage.HighlightPage)).toBe(
-      false
+    expect(firstHighlightTagTextContextBefore).not.toEqual(
+      firstHighlightTagTextContextAfter
     );
+
+    expect(
+      page.getByTestId(TestIds.HighlightPage.HighlightPage)
+    ).not.toBeVisible();
   });
 });

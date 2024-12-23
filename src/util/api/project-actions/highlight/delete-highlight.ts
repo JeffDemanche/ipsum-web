@@ -1,4 +1,5 @@
 import { deleteComment } from "../comment/delete-comment";
+import { deleteRelationFromHighlightToArc } from "../relation/delete-relation-from-highlight-to-arc";
 import type { APIFunction } from "../types";
 
 export const deleteHighlight: APIFunction<{ id: string }, boolean> = (
@@ -16,6 +17,17 @@ export const deleteHighlight: APIFunction<{ id: string }, boolean> = (
   highlight.comments.forEach((id) =>
     deleteComment({ id }, { projectState: projectState })
   );
+
+  highlight.outgoingRelations.forEach((id) => {
+    const relation = projectState.collection("relations").get(id);
+
+    if (relation.objectType === "Arc" && relation.object === args.id) {
+      deleteRelationFromHighlightToArc(
+        { id: relation.id },
+        { projectState: projectState }
+      );
+    }
+  });
 
   Object.values(projectState.collection("relations").getAll()).forEach(
     (relation) => {

@@ -73,9 +73,17 @@ const HighlightPageQuery = gql(`
 export const HighlightPageConnected: React.FunctionComponent<
   HighlightPageConnectedProps
 > = (props) => {
+  const removeLayer = useUrlAction(urlRemoveLayer);
+
+  const onClose = () => {
+    removeLayer({ index: props.layerIndex });
+  };
+
   return (
     <ErrorBoundary
-      fallback={<PageHeaderError text="Error in highlight page" />}
+      fallback={
+        <PageHeaderError onClose={onClose} text="Error in highlight page" />
+      }
     >
       <WithErrorBoundary {...props} />
     </ErrorBoundary>

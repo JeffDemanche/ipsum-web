@@ -1,7 +1,12 @@
 import { useQuery } from "@apollo/client";
 import type { HighlightFunctionButtons } from "components/molecules/HighlightFunctionButtons";
 import type React from "react";
-import { apiDeleteHighlight, useApiAction } from "util/api";
+import {
+  apiDeleteHighlight,
+  urlRemoveHighlightLayer,
+  useApiAction,
+  useUrlAction,
+} from "util/api";
 import { gql } from "util/apollo";
 import { IpsumDay } from "util/dates";
 
@@ -31,6 +36,8 @@ export const useHighlightFunctionButtonsConnected = ({
   const { data } = useQuery(UseHighlightFunctionButtonsConnectedQuery, {
     variables: { highlightId },
   });
+
+  const removeHighlightLayer = useUrlAction(urlRemoveHighlightLayer);
 
   const [deleteHighlight] = useApiAction(apiDeleteHighlight);
 
@@ -63,6 +70,8 @@ export const useHighlightFunctionButtonsConnected = ({
     })();
 
   const onDelete = () => {
+    removeHighlightLayer({ highlightId });
+
     deleteHighlight({ id: highlightId });
   };
 

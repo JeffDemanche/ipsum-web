@@ -25,3 +25,4 @@ export { insertLayer as urlInsertLayer } from "./layers/insert-layer";
 export { removeLayer as urlRemoveLayer } from "./layers/remove-layer";
 export { setDailyJournalLayerDay as urlSetDailyJournalLayerDay } from "./layers/set-daily-journal-layer-day";
 export { setLayerExpanded as urlSetLayerExpanded } from "./layers/set-layer-expanded";
+export { removeHighlightLayer as urlRemoveHighlightLayer } from "./layers/remove-highlight-layer";
