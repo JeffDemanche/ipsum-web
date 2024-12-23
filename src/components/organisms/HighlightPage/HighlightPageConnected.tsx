@@ -1,8 +1,10 @@
 import { useQuery } from "@apollo/client";
+import ErrorBoundary from "components/atoms/ErrorBoundary";
 import { useHighlightFunctionButtonsConnected } from "components/hooks/use-highlight-function-buttons-connected";
 import { useHighlightRelationsTableConnected } from "components/hooks/use-highlight-relations-table-connected";
 import { useHighlightSRSButtonsConnected } from "components/hooks/use-highlight-srs-buttons-connected";
 import { useCommentsNavigatorConnected } from "components/molecules/CommentsNavigator";
+import { PageHeaderError } from "components/molecules/PageHeader";
 import React from "react";
 import { urlRemoveLayer, urlSetLayerExpanded, useUrlAction } from "util/api";
 import { gql } from "util/apollo";
@@ -69,6 +71,18 @@ const HighlightPageQuery = gql(`
 `);
 
 export const HighlightPageConnected: React.FunctionComponent<
+  HighlightPageConnectedProps
+> = (props) => {
+  return (
+    <ErrorBoundary
+      fallback={<PageHeaderError text="Error in highlight page" />}
+    >
+      <WithErrorBoundary {...props} />
+    </ErrorBoundary>
+  );
+};
+
+const WithErrorBoundary: React.FunctionComponent<
   HighlightPageConnectedProps
 > = ({ layerIndex, highlightId }) => {
   const setLayerExpanded = useUrlAction(urlSetLayerExpanded);

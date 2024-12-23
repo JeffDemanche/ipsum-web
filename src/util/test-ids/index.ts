@@ -27,7 +27,11 @@ export const TestIds = {
   },
   HighlightBlurb: {
     HighlightBlurb: "highlight-blurb.highlight-blurb",
-    DeleteButton: "highlight-blurb.delete-button",
+  },
+  HighlightFunctionButtons: {
+    HighlightFunctionButtons:
+      "highlight-function-buttons.highlight-function-buttons",
+    DeleteButton: "highlight-function-buttons.delete-button",
   },
   HighlightPage: {
     HighlightPage: "highlight-page.highlight-page",

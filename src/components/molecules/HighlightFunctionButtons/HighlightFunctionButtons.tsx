@@ -90,11 +90,14 @@ export const HighlightFunctionButtons: React.FunctionComponent<
   }
 
   return (
-    <div className={cx(styles["function-buttons"], styles[orientation])}>
+    <div
+      data-testid={TestIds.HighlightFunctionButtons.HighlightFunctionButtons}
+      className={cx(styles["function-buttons"], styles[orientation])}
+    >
       {blurbNotification}
       {showDeleteButton && onDelete && (
         <MiniButton
-          data-testid={TestIds.HighlightBlurb.DeleteButton}
+          data-testid={TestIds.HighlightFunctionButtons.DeleteButton}
           onClick={onDelete}
           tooltip="Delete highlight"
           foregroundColor={grey700}

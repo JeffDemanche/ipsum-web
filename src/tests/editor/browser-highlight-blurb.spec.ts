@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { getCurrentLocalDateTime, IpsumDateTime } from "util/dates";
 import { TestIds } from "util/test-ids";
 
 test.beforeEach(async ({ page }) => {
@@ -42,9 +41,9 @@ test.describe("Browser Highlight Blurb", () => {
 
     await page.waitForTimeout(1000);
 
-    const deleteHighlightButton = page.getByTestId(
-      TestIds.HighlightBlurb.DeleteButton
-    );
+    const deleteHighlightButton = page
+      .getByTestId(TestIds.HighlightBlurb.HighlightBlurb)
+      .getByTestId(TestIds.HighlightFunctionButtons.DeleteButton);
 
     expect(highlightBlurb).toBeVisible();
 

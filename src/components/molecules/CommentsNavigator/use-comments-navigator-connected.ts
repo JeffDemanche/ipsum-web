@@ -72,7 +72,7 @@ export const useCommentsNavigatorConnected = ({
   });
 
   const comments: CommentsNavigatorConnectedProps["comments"] =
-    data?.highlight.comments.filter(Boolean).map((comment) => ({
+    data?.highlight?.comments.filter(Boolean).map((comment) => ({
       id: comment.id,
       day: IpsumDay.fromString(comment.history.dateCreated, "iso"),
       htmlString: comment.htmlString,
