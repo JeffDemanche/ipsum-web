@@ -1,5 +1,3 @@
-import { MonthlyNav } from "components/molecules/MonthlyNav";
-
 export const TestIds = {
   ArcPage: {
     ArcPage: "arc-page.arc-page",
@@ -10,6 +8,9 @@ export const TestIds = {
   },
   BrowserDrawer: {
     BrowserDrawerOpened: "browser-drawer.browser-drawer-opened",
+  },
+  CommentBlurb: {
+    CommentBlurb: "comment-blurb.comment-blurb",
   },
   Comments: {
     Comments: "comments.comments",

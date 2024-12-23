@@ -6,6 +6,7 @@ import { grey700, hueSwatch } from "components/styles";
 import React, { useState } from "react";
 import type { Arc, Day } from "util/apollo";
 import type { IpsumDay } from "util/dates";
+import { TestIds } from "util/test-ids";
 
 import { Entry } from "../Entry";
 import styles from "./CommentBlurb.less";
@@ -102,6 +103,7 @@ export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
   return (
     <div
       className={styles["blurb-content"]}
+      data-testid={TestIds.CommentBlurb.CommentBlurb}
       style={{
         borderLeftColor: hueSwatch(comment.highlight.hue, "light_background"),
       }}

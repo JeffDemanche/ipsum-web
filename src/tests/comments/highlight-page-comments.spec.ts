@@ -1,4 +1,4 @@
-import type { Page} from "@playwright/test";
+import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import { TestIds } from "util/test-ids";
 
@@ -39,7 +39,7 @@ const createComment = async (page: Page) => {
 };
 
 test.describe("Highlight Page Comments", () => {
-  test("writing a comment on a highlight adds it to today's journal entry", async ({
+  test("writing a comment on a highlight adds it as a comment blurb to today's journal entry", async ({
     page,
   }) => {
     await createComment(page);
@@ -48,23 +48,22 @@ test.describe("Highlight Page Comments", () => {
       TestIds.DailyJournalEntry.DailyJournalEntry
     );
 
-    const dailyJournalEntryContent = dailyJournalEntry.getByTestId(
-      TestIds.EntryEditor.ContentEditable
-    );
-
-    const commentNode = await dailyJournalEntryContent
-      .locator("[data-comment-id]")
+    const commentBlurbs = await dailyJournalEntry
+      .getByTestId(TestIds.CommentBlurb.CommentBlurb)
       .all();
 
-    const commentNodeP = await commentNode.at(0).locator("p").all();
+    expect(commentBlurbs).toHaveLength(1);
 
-    expect(commentNodeP).toHaveLength(1);
-    expect((await commentNodeP[0].innerText()).trim()).toBe(
+    const commentBlurbEditor = (await commentBlurbs)[0].getByTestId(
+      TestIds.EntryEditor.EntryEditor
+    );
+
+    expect((await commentBlurbEditor.innerText()).trim()).toBe(
       "This is a comment"
     );
   });
 
-  test("deleting a comment from the highlight page removes it from today's journal entry", async ({
+  test("deleting a comment from the highlight page removes the blurb from today's journal entry", async ({
     page,
   }) => {
     await createComment(page);
