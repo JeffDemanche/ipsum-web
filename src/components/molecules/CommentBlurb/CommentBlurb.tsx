@@ -1,6 +1,8 @@
+import { KeyboardArrowUpSharp } from "@mui/icons-material";
 import cx from "classnames";
+import { MiniButton } from "components/atoms/MiniButton";
 import { HighlightTag } from "components/molecules/HighlightTag";
-import { hueSwatch } from "components/styles";
+import { grey700, hueSwatch } from "components/styles";
 import React, { useState } from "react";
 import type { Arc, Day } from "util/apollo";
 import type { IpsumDay } from "util/dates";
@@ -88,7 +90,7 @@ export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
   const editable = today.equals(comment.day) || yesterday.equals(comment.day);
 
   const onBlurbWrapperExpand = () => {
-    setExpanded(!expanded);
+    setExpanded(true);
     onExpand?.();
   };
 
@@ -127,7 +129,7 @@ export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
         className={cx(styles["blurb-body"], expanded && styles["expanded"])}
         role={expanded ? undefined : "button"}
         aria-expanded={expanded}
-        onClick={onBlurbWrapperExpand}
+        onClick={!expanded ? onBlurbWrapperExpand : undefined}
       >
         <Entry
           editorNamespace={`comment-blurb:${comment.id}`}
@@ -145,6 +147,16 @@ export const CommentBlurb: React.FunctionComponent<CommentBlurbProps> = ({
           onHighlightClick={onHighlightClick}
         />
       </div>
+      {expanded && (
+        <div className={styles["blurb-footer"]}>
+          <MiniButton
+            onClick={onBlurbWrapperCollapse}
+            foregroundColor={grey700}
+          >
+            <KeyboardArrowUpSharp />
+          </MiniButton>
+        </div>
+      )}
     </div>
   );
 };
