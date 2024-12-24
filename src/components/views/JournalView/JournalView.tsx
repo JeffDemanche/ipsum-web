@@ -2,13 +2,12 @@ import { FormattingControlsProvider } from "components/molecules/FormattingContr
 import { BrowserDrawerConnected } from "components/organisms/BrowserDrawer";
 import { JournalSettingsDrawerConnected } from "components/organisms/JournalSettingsDrawer";
 import { JournalViewPagesSectionConnected } from "components/organisms/JournalViewPagesSection";
+import { ProjectLoadingStatusPage } from "components/organisms/ProjectLoadingStatusPage";
 import { mockSiddhartha } from "mocks/siddhartha/siddhartha";
 import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { SerializationContext, SerializationProvider } from "util/serializer";
-import type {
-  DeserializationResult,
-  ProjectState} from "util/state";
+import type { DeserializationResult, ProjectState } from "util/state";
 import {
   IpsumStateContext,
   IpsumStateProvider,
@@ -84,38 +83,19 @@ const WithSerializationProvider = ({
     }
   }, [deserializationResult]);
 
-  if (deserializationResult?.result === "parse_error") {
+  if (
+    deserializationResult?.result === "parse_error" ||
+    deserializationResult?.result === "validator_error"
+  ) {
     return (
-      <>
-        <h1>There was an error parsing the file</h1>
-        <samp>
-          {deserializationResult?.messages.map((error, i) => (
-            <span key={i}>
-              {error}
-              <br></br>
-            </span>
-          ))}
-        </samp>
-        <br></br>
-        <button onClick={() => resetToInitial()}>Clear autosave state</button>
-      </>
-    );
-  } else if (deserializationResult?.result === "validator_error") {
-    return (
-      <>
-        <h1>There was an error validating the file</h1>
-        <samp>
-          {deserializationResult.validator.messages.map((error, i) => (
-            <span key={i}>
-              {error}
-              <br></br>
-            </span>
-          ))}
-        </samp>
-        <br></br>
-        <button onClick={() => validatorFix()}>Run autofix script</button>
-        <button onClick={() => resetToInitial()}>Clear autosave state</button>
-      </>
+      <ProjectLoadingStatusPage
+        status={{
+          type: "serialization_error",
+          deserializationResult,
+          validatorFix,
+          resetToInitial,
+        }}
+      />
     );
   }
 
