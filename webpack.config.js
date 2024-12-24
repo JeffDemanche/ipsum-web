@@ -62,12 +62,17 @@ module.exports = (env) => ({
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: __dirname + "/src/index.html",
+      template: __dirname + "/src/assets/index.html",
       filename: "index.html",
       favicon: __dirname + "/src/assets/favicon.svg",
     }),
     new CopyWebpackPlugin({
-      patterns: [{ from: "./src/assets" }],
+      patterns: [
+        {
+          from: "./src/assets",
+          filter: (resourcePath) => !resourcePath.includes("index.html"),
+        },
+      ],
     }),
   ],
   devServer: {
