@@ -1,14 +1,10 @@
+import { ProjectLoadingStatusPage } from "components/organisms/ProjectLoadingStatusPage";
 import React, { createContext, useCallback, useEffect, useState } from "react";
 import { urlOverwriteJournalUrl, useUrlAction } from "util/api";
 import { useIpsumIDBWrapper } from "util/indexed-db";
 import { readFromFile, validate, writeToFile } from "util/serializer";
-import type {
-  DeserializationResult} from "util/state";
-import {
-  PROJECT_STATE,
-  ProjectState,
-  useModifySearchParams,
-} from "util/state";
+import type { DeserializationResult } from "util/state";
+import { PROJECT_STATE, ProjectState, useModifySearchParams } from "util/state";
 
 import { autosave } from "./autosave";
 
@@ -147,7 +143,7 @@ export const SerializationProvider: React.FunctionComponent<
     if (hasLoadedAutosave) {
       return children;
     } else {
-      return <p>loading autosave...</p>;
+      return <ProjectLoadingStatusPage status={{ type: "loading_autosave" }} />;
     }
   })();
 
