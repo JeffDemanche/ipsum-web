@@ -1,0 +1,42 @@
+name: Linter
+
+on: push
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "21"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check types
+        run: npx tsc --noEmit --skipLibCheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test
+
+      # TODO Fix playwright tests
+
+      # - name: Install playwright browsers
+      #   run: npx playwright install --with-deps
+
+      # - name: Playwright tests
+      #   run: npx playwright test
